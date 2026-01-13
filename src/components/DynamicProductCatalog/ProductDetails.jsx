@@ -670,39 +670,64 @@ const ProductDetails = () => {
               {/* Pricing Tiers Display */}
               {product.pricingTiers && product.pricingTiers.length > 0 && (
                 <div className="mb-4 max-h-32 overflow-y-auto">
-                  <p className="text-gray-600 text-sm mb-2 font-semibold">
-                    {product.pricingTiers[0].minWeight !== undefined
-                      ? "Price by Weight:"
-                      : product.pricingTiers[0].size &&
-                        product.pricingTiers[0].pricePerTon
-                      ? "Volume Pricing:"
-                      : "Volume Pricing:"}
-                  </p>
-                  {product.pricingTiers[0].minWeight !== undefined &&
-                    product.pricingTiers.map((tier, index) => (
-                      <p key={index} className="text-gray-700 text-xs mb-1">
-                        {tier.minWeight}-{tier.maxWeight}g:{" "}
-                        <span className="font-semibold text-teal-700">
-                          {tier.pricePerKg}
-                        </span>
-                      </p>
-                    ))}
-                  {product.pricingTiers[0].size &&
-                    product.pricingTiers[0].pricePerTon &&
-                    product.pricingTiers.map((tier, index) => (
-                      <p key={index} className="text-gray-700 text-xs mb-1">
-                        Size({tier.size}) - price(
-                        <span className="font-semibold text-teal-700">
-                          {tier.pricePerTon}
-                        </span>
-                        )
-                      </p>
-                    ))}
+                  {/* Price by Weight */}
                   {product.pricingTiers[0].minWeight !== undefined && (
-                    <p className="text-xs text-amber-600 mt-2 font-medium">
-                      *Final price varies by actual weight
-                    </p>
+                    <>
+                      <p className="text-gray-600 text-sm mb-2 font-semibold">
+                        Price by Weight:
+                      </p>
+                      {product.pricingTiers.map((tier, index) => (
+                        <p key={index} className="text-gray-700 text-xs mb-1">
+                          {tier.minWeight}-{tier.maxWeight}g:{" "}
+                          <span className="font-semibold text-teal-700">
+                            {tier.pricePerKg}
+                          </span>
+                        </p>
+                      ))}
+                      <p className="text-xs text-amber-600 mt-2 font-medium">
+                        *Final price varies by actual weight
+                      </p>
+                    </>
                   )}
+
+                  {/* Volume Pricing by Size */}
+                  {product.pricingTiers[0].size &&
+                    product.pricingTiers[0].pricePerTon && (
+                      <>
+                        <p className="text-gray-600 text-sm mb-2 font-semibold">
+                          Volume Pricing:
+                        </p>
+                        {product.pricingTiers.map((tier, index) => (
+                          <p key={index} className="text-gray-700 text-xs mb-1">
+                            Size({tier.size}) - price(
+                            <span className="font-semibold text-teal-700">
+                              {tier.pricePerTon}
+                            </span>
+                            )
+                          </p>
+                        ))}
+                      </>
+                    )}
+
+                  {/* Volume Pricing by Quantity (for tires) */}
+                  {product.pricingTiers[0].minQuantity !== undefined &&
+                    product.pricingTiers[0].pricePerTire && (
+                      <>
+                        <p className="text-gray-600 text-sm mb-2 font-semibold">
+                          Volume Pricing:
+                        </p>
+                        {product.pricingTiers.map((tier, index) => (
+                          <p key={index} className="text-gray-700 text-xs mb-1">
+                            {tier.minQuantity}
+                            {tier.maxQuantity ? `-${tier.maxQuantity}` : "+"}{" "}
+                            tires:{" "}
+                            <span className="font-semibold text-teal-700">
+                              {tier.pricePerTire}
+                            </span>
+                          </p>
+                        ))}
+                      </>
+                    )}
                 </div>
               )}
 
