@@ -146,7 +146,31 @@ const ProductList = ({
                 onMouseLeave={() => setHoveredProduct(null)}
               >
                 {/* Product Image */}
-                <div className="h-48 w-full bg-gray-100 rounded-md mb-4 flex items-center justify-center overflow-hidden">
+                <div className="h-48 w-full bg-gray-100 rounded-sm mb-4 flex items-center justify-center overflow-hidden relative">
+                  {/* Discount Badge */}
+                  {product.offerPrice && product.price && calculateDiscount(product.price, product.offerPrice) > 0 && (() => {
+                    const discount = calculateDiscount(product.price, product.offerPrice);
+                    let badgeColor = '';
+                    
+                    if (discount <= 30) {
+                      badgeColor = 'bg-blue-500 text-white';
+                    }else if (discount <= 40) {
+                      badgeColor = 'bg-orange-500 text-white';
+                    } else if (discount <= 50) {
+                      badgeColor = 'bg-red-500 text-white';
+                    } else if (discount <= 80) {
+                      badgeColor = 'bg-green-500 text-white';
+                    } else {
+                      badgeColor = 'bg-black-600 text-white';
+                    }
+                    
+                    return (
+                      <div className={`absolute top-2 right-0 ${badgeColor} px-1 py-1 rounded-sm text-[10px] font-bold shadow-lg z-10`}>
+                        {discount}% OFF
+                      </div>
+                    );
+                  })()}
+                  
                   {displayImage ? (
                     <img
                       src={displayImage}
