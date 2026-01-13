@@ -292,6 +292,8 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("specifications");
+  const [categoryInfo, setCategoryInfo] = useState(null);
+  const [subcategoryInfo, setSubcategoryInfo] = useState(null);
 
   useEffect(() => {
     // Reset states when ID changes
@@ -308,25 +310,45 @@ const ProductDetails = () => {
     fetch("/categories.json")
       .then((res) => res.json())
       .then((data) => {
-        // Flatten products while preserving category information
+        // Find the product and its category/subcategory info
+        let foundProduct = null;
+        let foundCategory = null;
+        let foundSubcategory = null;
+
+        data.forEach((cat) => {
+          cat.subcategories?.forEach((sub) => {
+            const product = sub.products?.find(
+              (p) => String(p.id) === String(id)
+            );
+            if (product) {
+              foundProduct = {
+                ...product,
+                categoryName: cat.name,
+                subcategoryName: sub.name,
+              };
+              foundCategory = { name: cat.name, icon: cat.icon };
+              foundSubcategory = { name: sub.name };
+            }
+          });
+        });
+
+        // Flatten products for recommendations
         const allProducts = data.flatMap(
           (cat) =>
             cat.subcategories?.flatMap((sub) =>
               (sub.products || []).map((product) => ({
                 ...product,
                 categoryName: cat.name,
+                subcategoryName: sub.name,
               }))
             ) || []
-        );
-
-        // Find the product based on the current ID
-        const foundProduct = allProducts.find(
-          (p) => String(p.id) === String(id)
         );
 
         // Update product state
         setProduct(foundProduct || null);
         setSelectedImage(foundProduct?.image || null);
+        setCategoryInfo(foundCategory);
+        setSubcategoryInfo(foundSubcategory);
 
         // Check if product is a tyre
         const tyreCheck =
@@ -360,6 +382,11 @@ const ProductDetails = () => {
     } else {
       navigate("/");
     }
+  };
+
+  // Helper function to convert name to URL slug
+  const nameToSlug = (name) => {
+    return name.replace(/\s+/g, "-");
   };
 
   const renderStars = (rating = 0) => {
@@ -419,14 +446,48 @@ const ProductDetails = () => {
 
       <div className="w-full bg-gray-50 px-4 lg:px-0">
         <div className="max-w-7xl mx-auto p-6 text-gray-800 rounded-lg">
-          {/* Back Button */}
-          <button
-            onClick={handleGoBack}
-            className="flex items-center text-teal-700 hover:text-teal-800 mb-6 transition-colors duration-200"
-          >
-            <FaArrowLeft className="mr-2" />
-            Back
-          </button>
+          {/* Breadcrumb Navigation */}
+          <div className="mb-6">
+            <nav className="flex items-center text-sm text-gray-600 flex-wrap">
+              <button
+                onClick={() => navigate("/products")}
+                className="hover:text-teal-600 transition-colors"
+              >
+                Products
+              </button>
+              {/* {categoryInfo && (
+                <>
+                  <span className="mx-2">/</span>
+                  <button
+                    onClick={() => {
+                      const categorySlug = nameToSlug(categoryInfo.name);
+                      navigate(`/products`);
+                    }}
+                    className="hover:text-teal-600 transition-colors"
+                  >
+                    {categoryInfo.name}
+                  </button>
+                </>
+              )} */}
+              {subcategoryInfo && categoryInfo && (
+                <>
+                  <span className="mx-2">/</span>
+                  <button
+                    onClick={() => {
+                      const categorySlug = nameToSlug(categoryInfo.name);
+                      const subcategorySlug = nameToSlug(subcategoryInfo.name);
+                      navigate(`/products/c/${categorySlug}/${subcategorySlug}`);
+                    }}
+                    className="hover:text-teal-600 transition-colors"
+                  >
+                    {subcategoryInfo.name}
+                  </button>
+                </>
+              )}
+              <span className="mx-2">/</span>
+              <span className="text-teal-600 font-medium">{product?.name}</span>
+            </nav>
+          </div>
 
           <h2 className="text-3xl font-bold mb-12 text-center text-teal-800 hover:text-teal-900 transition-colors duration-300 border-b-2 border-amber-400 pb-2">
             {product.keyAttributes?.["Brand"] || "Product Details"}
