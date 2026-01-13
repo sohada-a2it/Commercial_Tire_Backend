@@ -271,6 +271,7 @@ const ProductDetails = () => {
   const [isTyre, setIsTyre] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("specifications");
 
   useEffect(() => {
     // Reset states when ID changes
@@ -763,44 +764,251 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* Additional Product Specifications */}
-          {product.keyAttributes && (
-            <div className="mt-12">
-              <h3 className="text-2xl font-bold text-teal-800 mb-6 border-b-2 border-amber-400 pb-2">
+          {/* Tabbed Interface for Product Details */}
+          <div className="mt-12">
+            {/* Tab Navigation */}
+            <div className="flex border-b border-gray-200 mb-6">
+              <button
+                onClick={() => setActiveTab("specifications")}
+                className={`px-6 py-3 font-semibold transition-colors relative ${
+                  activeTab === "specifications"
+                    ? "text-teal-600 border-b-2 border-teal-600"
+                    : "text-gray-600 hover:text-teal-600"
+                }`}
+              >
                 Technical Specifications
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(product.keyAttributes).map(([key, value]) => {
-                  // Skip supplier-specific fields that will be shown separately
-                  const supplierFields = [
-                    "Brand",
-                    "Manufacturer",
-                    "Origin",
-                    "Place of Origin",
-                    "Packaging",
-                    "Package",
-                    "Supply Ability",
-                    "Shelf Life",
-                    "Processing",
-                  ];
-                  if (supplierFields.includes(key)) return null;
-
-                  if (typeof value === "string" || typeof value === "number") {
-                    return (
-                      <div
-                        key={key}
-                        className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm"
-                      >
-                        <p className="text-gray-600 text-sm">{key}</p>
-                        <p className="text-teal-800 font-medium">{value}</p>
-                      </div>
-                    );
-                  }
-                  return null;
-                })}
-              </div>
+              </button>
+              <button
+                onClick={() => setActiveTab("pricing")}
+                className={`px-6 py-3 font-semibold transition-colors relative ${
+                  activeTab === "pricing"
+                    ? "text-teal-600 border-b-2 border-teal-600"
+                    : "text-gray-600 hover:text-teal-600"
+                }`}
+              >
+                Pricing Options
+              </button>
+              <button
+                onClick={() => setActiveTab("reviews")}
+                className={`px-6 py-3 font-semibold transition-colors relative ${
+                  activeTab === "reviews"
+                    ? "text-teal-600 border-b-2 border-teal-600"
+                    : "text-gray-600 hover:text-teal-600"
+                }`}
+              >
+                Reviews
+              </button>
             </div>
-          )}
+
+            {/* Tab Content */}
+            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              {/* Technical Specifications Tab */}
+              {activeTab === "specifications" && product.keyAttributes && (
+                <div>
+                  <h3 className="text-3xl font-bold text-teal-800 mb-4">
+                    Product Specifications
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {Object.entries(product.keyAttributes).map(([key, value]) => {
+                      // Skip supplier-specific fields that will be shown separately
+                      const supplierFields = [
+                        "Brand",
+                        "Manufacturer",
+                        "Origin",
+                        "Place of Origin",
+                        "Packaging",
+                        "Package",
+                        "Supply Ability",
+                        "Shelf Life",
+                        "Processing",
+                      ];
+                      if (supplierFields.includes(key)) return null;
+
+                      if (typeof value === "string" || typeof value === "number") {
+                        return (
+                          <div
+                            key={key}
+                            className="bg-gray-50 p-2 rounded-lg border border-teal-100"
+                          >
+                            <p className="text-gray-600 text-sm mb-1">{key}</p>
+                            <p className="text-teal-800 font-medium">{value}</p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Pricing Options Tab */}
+              {activeTab === "pricing" && (
+                <div>
+                  <h3 className="text-xl font-bold text-teal-800 mb-4">
+                    Pricing Details
+                  </h3>
+                  <div className="space-y-6">
+                    {/* Base Price */}
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-teal-700 mb-2">Base Price</h4>
+                      {product.price && product.offerPrice ? (
+                        <div>
+                          <div className="flex items-center gap-3 mb-2">
+                            <p className="text-2xl font-bold text-amber-600">
+                              {product.offerPrice}
+                            </p>
+                            <p className="text-xl line-through text-gray-500">
+                              {product.price}
+                            </p>
+                            <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
+                              {Math.round(
+                                ((parsePrice(product.price) - parsePrice(product.offerPrice)) /
+                                  parsePrice(product.price)) *
+                                  100
+                              )}% OFF
+                            </span>
+                          </div>
+                        </div>
+                      ) : product.price ? (
+                        <p className="text-2xl font-bold text-teal-800">{product.price}</p>
+                      ) : (
+                        <p className="text-gray-500">Price available upon request</p>
+                      )}
+                    </div>
+
+                    {/* Volume/Tier Pricing */}
+                    {product.pricingTiers && product.pricingTiers.length > 0 && (
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <h4 className="font-semibold text-teal-700 mb-3">
+                          {product.pricingTiers[0].minWeight !== undefined
+                            ? "Price by Weight Range"
+                            : "Volume Pricing"}
+                        </h4>
+                        <div className="space-y-2">
+                          {product.pricingTiers[0].minWeight !== undefined &&
+                            product.pricingTiers.map((tier, index) => (
+                              <div
+                                key={index}
+                                className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
+                              >
+                                <span className="text-gray-700">
+                                  {tier.minWeight}g - {tier.maxWeight}g
+                                </span>
+                                <span className="font-semibold text-teal-700">
+                                  {tier.pricePerKg}
+                                </span>
+                              </div>
+                            ))}
+                          {product.pricingTiers[0].minQuantity !== undefined &&
+                            product.pricingTiers.map((tier, index) => (
+                              <div
+                                key={index}
+                                className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
+                              >
+                                <span className="text-gray-700">
+                                  {tier.minQuantity}
+                                  {tier.maxQuantity ? ` - ${tier.maxQuantity}` : '+'} units
+                                </span>
+                                <span className="font-semibold text-teal-700">
+                                  {tier.pricePerTire || tier.pricePerUnit}
+                                </span>
+                              </div>
+                            ))}
+                          {product.pricingTiers[0].size &&
+                            product.pricingTiers[0].pricePerTon &&
+                            product.pricingTiers.map((tier, index) => (
+                              <div
+                                key={index}
+                                className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
+                              >
+                                <span className="text-gray-700">Size: {tier.size}</span>
+                                <span className="font-semibold text-teal-700">
+                                  {tier.pricePerTon}
+                                </span>
+                              </div>
+                            ))}
+                        </div>
+                        {product.pricingTiers[0].minWeight !== undefined && (
+                          <p className="text-xs text-amber-600 mt-3 font-medium">
+                            *Final price varies by actual weight
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* MOQ Information */}
+                    {product.keyAttributes?.MOQ && (
+                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <h4 className="font-semibold text-blue-700 mb-2">
+                          Minimum Order Quantity
+                        </h4>
+                        <p className="text-blue-900 text-lg font-bold">
+                          {product.keyAttributes.MOQ}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Customization Options */}
+                    {product.customizationOptions &&
+                      product.customizationOptions.length > 0 && (
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-semibold text-teal-700 mb-2">
+                            Customization Options
+                          </h4>
+                          <ul className="list-disc list-inside text-gray-700 space-y-1">
+                            {product.customizationOptions.map((option, index) => (
+                              <li key={index}>{option}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                  </div>
+                </div>
+              )}
+
+              {/* Reviews Tab */}
+              {activeTab === "reviews" && (
+                <div>
+                  <h3 className="text-xl font-bold text-teal-800 mb-4">Customer Reviews</h3>
+                  {product.rating ? (
+                    <div>
+                      {/* Overall Rating Summary */}
+                      <div className="bg-gray-50 p-6 rounded-lg mb-6">
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className="text-center">
+                            <div className="text-5xl font-bold text-teal-800">
+                              {product.rating.toFixed(1)}
+                            </div>
+                            <div className="flex items-center justify-center mt-2">
+                              {renderStars(product.rating)}
+                            </div>
+                            <p className="text-gray-600 mt-2">
+                              {product.reviewCount || 0} reviews
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Sample Reviews (Placeholder - you can add actual review data) */}
+                      <div className="space-y-4">
+                        <p className="text-gray-600 italic">
+                          Customer reviews will be displayed here. Contact us for detailed customer feedback and testimonials.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="text-gray-400 text-5xl mb-4">⭐</div>
+                      <p className="text-gray-600 mb-2">No reviews yet</p>
+                      <p className="text-sm text-gray-500">
+                        Be the first to review this product!
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Supplier Information */}
           <div className="mt-12 bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
