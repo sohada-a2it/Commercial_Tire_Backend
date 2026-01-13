@@ -825,10 +825,10 @@ const ProductDetails = () => {
 
               {/* Quantity Selector */}
               <div className="mb-4">
-                <label className="text-gray-600 text-sm mb-2 block">
+                <label className="text-teal-700 text-lg mb-2 block text-center underline underline-offset-2 underline-teal-600 font-semibold">
                   Quantity:
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between gap-3 mx-5">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     className="p-2 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
