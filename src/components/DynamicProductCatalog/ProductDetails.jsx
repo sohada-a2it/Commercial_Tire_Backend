@@ -294,6 +294,7 @@ const ProductDetails = () => {
   const [activeTab, setActiveTab] = useState("specifications");
   const [categoryInfo, setCategoryInfo] = useState(null);
   const [subcategoryInfo, setSubcategoryInfo] = useState(null);
+  const [showLightbox, setShowLightbox] = useState(false);
 
   useEffect(() => {
     // Reset states when ID changes
@@ -496,12 +497,20 @@ const ProductDetails = () => {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left: Image Gallery */}
             <div className="flex flex-col items-center lg:w-2/5 relative">
-              <div className="relative overflow-hidden group w-full max-w-lg">
+              <div className="relative overflow-hidden group w-full max-w-lg cursor-pointer"
+                onClick={() => setShowLightbox(true)}
+              >
                 <img
                   src={selectedImage || product.image}
                   alt={product.name}
                   className="w-full h-auto max-h-80 object-contain mb-4 transition-transform duration-300 border border-gray-200 rounded-lg"
                 />
+                {/* Plus Icon Overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center mb-4">
+                  <div className="bg-white rounded-full p-3 opacity-0 group-hover:opacity-100 transform scale-0 group-hover:scale-100 transition-all duration-300 shadow-lg">
+                    <FaPlus className="w-6 h-6 text-teal-600" />
+                  </div>
+                </div>
               </div>
               <div className="flex gap-2">
                 {[product.image, ...(product.additionalImages || [])].map(
@@ -1249,6 +1258,47 @@ const ProductDetails = () => {
           )}
         </div>
       </div>
+
+      {/* Lightbox Modal */}
+      {showLightbox && (
+        <div 
+          className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center p-4"
+          onClick={() => setShowLightbox(false)}
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setShowLightbox(false)}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-50"
+            aria-label="Close"
+          >
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+          
+          {/* Image */}
+          <div 
+            className="relative max-w-7xl max-h-[90vh] w-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedImage || product.image}
+              alt={product.name}
+              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };
