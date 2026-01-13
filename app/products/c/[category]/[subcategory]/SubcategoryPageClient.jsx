@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useNavigate } from "@/lib/navigation";
 import ProductList from "@/components/DynamicProductCatalog/ProductList";
@@ -23,6 +23,33 @@ const SubcategoryPageClient = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [sortBy, setSortBy] = useState("");
   const [showSortDropdown, setShowSortDropdown] = useState(false);
+
+  // Refs for click outside detection
+  const brandDropdownRef = useRef(null);
+  const sortDropdownRef = useRef(null);
+
+  // Handle click outside to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        brandDropdownRef.current &&
+        !brandDropdownRef.current.contains(event.target)
+      ) {
+        setShowBrandDropdown(false);
+      }
+      if (
+        sortDropdownRef.current &&
+        !sortDropdownRef.current.contains(event.target)
+      ) {
+        setShowSortDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -290,7 +317,7 @@ const SubcategoryPageClient = () => {
 
           <div className="flex flex-wrap gap-3">
             {/* Sort by Price Dropdown */}
-            <div className="relative">
+            <div className="relative" ref={sortDropdownRef}>
               <button
                 onClick={toggleSortDropdown}
                 className="flex items-center justify-between px-6 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors min-w-[180px]"
@@ -345,7 +372,7 @@ const SubcategoryPageClient = () => {
 
             {/* Brand Filter Dropdown */}
             {uniqueBrands.length > 0 && (
-              <div className="relative">
+              <div className="relative" ref={brandDropdownRef}>
                 <button
                   onClick={toggleBrandDropdown}
                   className="flex items-center justify-between px-6 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors min-w-[150px]"
