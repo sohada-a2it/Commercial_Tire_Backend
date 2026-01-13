@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Vehicle Parts and Accessories",
-    "icon": "🚗",
+    "icon": "🚛",
     "subcategories": [
       {
         "id": 101,
@@ -12676,7 +12676,7 @@
   {
     "id": 3,
     "name": "Dry Food",
-    "icon": "🍚",
+    "icon": "🌾",
     "subcategories": [
       {
         "id": 301,

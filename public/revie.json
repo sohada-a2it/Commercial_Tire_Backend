@@ -1,0 +1,18 @@
+"userReviews": [
+    {
+        "username": "Jack Gruber",
+        "rating": 10.0,
+        "date": "2025-09-06",
+        "title": "Great compact drone for the price",
+        "text": "Bought for my 14-year-old. He was flying instantly with very little past drone experience. Setup documentation is a little lacking. Camera is OK but decent for the price. Handles wind well, charges quickly, and is compact with a nice soft case.",
+        "verified": true
+    },
+    {
+        "username": "Barbara & Russ Spaulding",
+        "rating": 10.0,
+        "date": "2024-02-03",
+        "title": "I love this Drone",
+        "text": "This is my first drone and I’m very impressed. Stable, easy to control, and the remote fits perfectly with my Pixel 7 Pro. Batteries last around 25 minutes each. Great value, fun to fly, and comes with a perfect carrying case.",
+        "verified": true
+    }
+]
