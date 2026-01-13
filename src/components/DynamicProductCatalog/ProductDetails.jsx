@@ -687,9 +687,13 @@ const ProductDetails = () => {
                   <span className="flex items-center">
                     {renderStars(product.userReviews[0].rating)}
                   </span>
-                  <span className="text-gray-600">
-                    ({product.userReviews.length  || 0} reviews)
-                  </span>
+                  <div className="text-sm font-bold text-teal-800">
+                    ({(
+                        product.userReviews.reduce((sum, review) => sum + review.rating, 0) /
+                        product.userReviews.length
+                    ).toFixed(1)})
+                  </div>
+                  
                 </div>
               )}
 
@@ -1097,9 +1101,65 @@ const ProductDetails = () => {
               {activeTab === "reviews" && (
                 <div>
                   <h3 className="text-xl font-bold text-teal-800 mb-4">Customer Reviews</h3>
-                  {product.rating ? (
+                  {product.userReviews && product.userReviews.length > 0 ? (
                     <div>
                       {/* Overall Rating Summary */}
+                      <div className="bg-gray-50 p-6 rounded-lg mb-6">
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className="text-center">
+                            <div className="text-5xl font-bold text-teal-800">
+                              {(
+                                product.userReviews.reduce((sum, review) => sum + review.rating, 0) /
+                                product.userReviews.length
+                              ).toFixed(1)}
+                            </div>
+                            <div className="flex items-center justify-center mt-2">
+                              {renderStars(
+                                product.userReviews.reduce((sum, review) => sum + review.rating, 0) /
+                                  product.userReviews.length
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* User Reviews */}
+                      <div className="space-y-4">
+                        {product.userReviews.map((review, index) => (
+                          <div key={index} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                            <div className="flex items-start justify-between mb-3">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h4 className="font-semibold text-gray-800">{review.username}</h4>
+                                  {review.verified && (
+                                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                                      ✓ Verified Purchase
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <div className="flex">{renderStars(review.rating)}</div>
+                                  <span className="text-sm text-gray-500">
+                                    {new Date(review.date).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric'
+                                    })}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            {review.title && (
+                              <h5 className="font-semibold text-gray-900 mb-2">{review.title}</h5>
+                            )}
+                            <p className="text-gray-700 text-sm leading-relaxed">{review.text}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : product.rating ? (
+                    <div>
+                      {/* Overall Rating Summary (fallback when no userReviews but rating exists) */}
                       <div className="bg-gray-50 p-6 rounded-lg mb-6">
                         <div className="flex items-center gap-4 mb-4">
                           <div className="text-center">
@@ -1115,8 +1175,6 @@ const ProductDetails = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Sample Reviews (Placeholder - you can add actual review data) */}
                       <div className="space-y-4">
                         <p className="text-gray-600 italic">
                           Customer reviews will be displayed here. Contact us for detailed customer feedback and testimonials.
