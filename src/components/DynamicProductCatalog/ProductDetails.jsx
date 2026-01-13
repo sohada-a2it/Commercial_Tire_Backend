@@ -503,7 +503,7 @@ const ProductDetails = () => {
                 <img
                   src={selectedImage || product.image}
                   alt={product.name}
-                  className="w-full h-auto max-h-80 object-contain mb-4 transition-transform duration-300 border border-gray-200 rounded-lg"
+                  className="w-full h-auto max-h-66 md:max-h-80 object-contain mb-4 transition-transform duration-300 border border-gray-200 rounded-lg"
                 />
                 {/* Plus Icon Overlay */}
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center mb-4">
