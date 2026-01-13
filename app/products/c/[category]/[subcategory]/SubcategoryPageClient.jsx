@@ -320,7 +320,7 @@ const SubcategoryPageClient = () => {
               </button>
 
               {showSortDropdown && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg z-10 border border-gray-200 overflow-hidden">
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
                   <div
                     className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
                     onClick={() => handleSortSelect("")}
@@ -369,7 +369,7 @@ const SubcategoryPageClient = () => {
                 </button>
 
                 {showBrandDropdown && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 border border-gray-200 overflow-hidden">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
                     <div
                       className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
                       onClick={() => handleBrandSelect(null)}
