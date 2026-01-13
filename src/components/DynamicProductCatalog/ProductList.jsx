@@ -175,14 +175,14 @@ const ProductList = ({
                   <div className="absolute -left-16 top-1/2 -translate-y-1/2 group-hover:left-2 flex flex-col gap-2 transition-all duration-300 z-[2]">
                     <button
                       onClick={() => handleAddToCart(product)}
-                      className="bg-white hover:bg-teal-600 hover:text-white text-teal-600 p-3 rounded-full shadow-lg transition-colors"
+                      className="bg-white hover:bg-teal-600 hover:text-white text-teal-600 p-3 rounded-sm shadow-lg transition-colors"
                       title="Add to Cart"
                     >
                       <ShoppingCart className="w-5 h-5" />
                     </button>
                     <Link
                       href={`/product/${product.id}`}
-                      className="bg-white hover:bg-teal-600 hover:text-white text-teal-600 p-3 rounded-full shadow-lg transition-colors"
+                      className="bg-white hover:bg-teal-600 hover:text-white text-teal-600 p-3 rounded-sm shadow-lg transition-colors"
                       title="View Details"
                     >
                       <Eye className="w-5 h-5" />
