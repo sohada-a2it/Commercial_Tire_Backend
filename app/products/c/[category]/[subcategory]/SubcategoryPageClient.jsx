@@ -337,14 +337,14 @@ const SubcategoryPageClient = () => {
               </h1>
             </div>
 
-            <div className="flex flex-row flex-wrap gap-3 w-full lg:w-auto">
+            <div className="flex flex-row gap-2 sm:gap-3 w-full lg:w-auto">
             {/* Sort by Price Dropdown */}
-            <div className="relative flex-1 sm:flex-initial" ref={sortDropdownRef}>
+            <div className="relative flex-1 sm:flex-initial min-w-0" ref={sortDropdownRef}>
               <button
                 onClick={toggleSortDropdown}
-                className="w-full flex items-center justify-between px-3 py-3 border border-teal-200 bg-teal-50 text-teal-800 rounded-md hover:bg-teal-200 transition-colors sm:min-w-[180px]"
+                className="w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-3 border border-teal-200 bg-teal-50 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[180px]"
               >
-                <span>
+                <span className="truncate sm:truncate-none">
                   {sortBy === "price-low-high" 
                     ? "Low to High"
                     : sortBy === "price-high-low"
@@ -352,7 +352,7 @@ const SubcategoryPageClient = () => {
                     : "Sort by Price"}
                 </span>
                 <svg
-                  className={`ml-0 h-4 w-4 transition-transform ${
+                  className={`ml-1 sm:ml-0 h-4 w-4 flex-shrink-0 transition-transform ${
                     showSortDropdown ? "rotate-180" : ""
                   }`}
                   fill="none"
@@ -369,7 +369,7 @@ const SubcategoryPageClient = () => {
               </button>
 
               {showSortDropdown && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
+                <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-full sm:w-56 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
                   <div
                     className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
                     onClick={() => handleSortSelect("")}
@@ -394,14 +394,14 @@ const SubcategoryPageClient = () => {
 
             {/* Tire Type Filter Dropdown - Only for Truck Tires */}
             {isTruckTires && (
-              <div className="relative flex-1 sm:flex-initial" ref={tireTypeDropdownRef}>
+              <div className="relative flex-1 sm:flex-initial min-w-0" ref={tireTypeDropdownRef}>
                 <button
                   onClick={toggleTireTypeDropdown}
-                  className="w-full flex items-center justify-between px-2 py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors sm:min-w-[150px]"
+                  className="w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
                 >
-                  <span>{selectedTireType || "Tire Type"}</span>
+                  <span className="truncate sm:truncate-none">{selectedTireType || "Tire Type"}</span>
                   <svg
-                    className={`ml-0 h-4 w-4 transition-transform ${
+                    className={`ml-1 sm:ml-0 h-4 w-4 flex-shrink-0 transition-transform ${
                       showTireTypeDropdown ? "rotate-180" : ""
                     }`}
                     fill="none"
@@ -418,7 +418,7 @@ const SubcategoryPageClient = () => {
                 </button>
 
                 {showTireTypeDropdown && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
+                  <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-full sm:w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
                     <div
                       className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
                       onClick={() => handleTireTypeSelect(null)}
@@ -450,14 +450,14 @@ const SubcategoryPageClient = () => {
 
             {/* Brand Filter Dropdown */}
             {uniqueBrands.length > 0 && (
-              <div className="relative flex-1 sm:flex-initial" ref={brandDropdownRef}>
+              <div className="relative flex-1 sm:flex-initial min-w-0" ref={brandDropdownRef}>
                 <button
                   onClick={toggleBrandDropdown}
-                  className="w-full flex items-center justify-between px-2 py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors sm:min-w-[150px]"
+                  className="w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
                 >
-                  <span>{selectedBrand || "All Brands"}</span>
+                  <span className="truncate sm:truncate-none">{selectedBrand || "All Brands"}</span>
                   <svg
-                    className={`ml-2 h-4 w-4 transition-transform ${
+                    className={`ml-1 sm:ml-2 h-4 w-4 flex-shrink-0 transition-transform ${
                       showBrandDropdown ? "rotate-180" : ""
                     }`}
                     fill="none"
@@ -474,7 +474,7 @@ const SubcategoryPageClient = () => {
                 </button>
 
                 {showBrandDropdown && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
+                  <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-full sm:w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden max-h-60 overflow-y-auto">
                     <div
                       className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
                       onClick={() => handleBrandSelect(null)}

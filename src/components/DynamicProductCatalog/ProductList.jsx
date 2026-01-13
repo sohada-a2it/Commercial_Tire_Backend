@@ -165,7 +165,7 @@ const ProductList = ({
                     }
                     
                     return (
-                      <div className={`absolute top-2 right-0 ${badgeColor} px-1 py-1 rounded-sm text-[10px] font-bold shadow-lg z-10`}>
+                      <div className={`absolute top-2 right-0 ${badgeColor} px-1 py-1 rounded-sm text-[10px] font-bold shadow-lg z-[1]`}>
                         {discount}% OFF
                       </div>
                     );
