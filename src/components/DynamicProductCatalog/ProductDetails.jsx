@@ -1100,14 +1100,14 @@ const ProductDetails = () => {
               {/* Reviews Tab */}
               {activeTab === "reviews" && (
                 <div>
-                  <h3 className="text-xl font-bold text-teal-800 mb-4">Customer Reviews</h3>
+                  <h3 className="text-3xl font-bold text-teal-800 mb-4">Customer Reviews</h3>
                   {product.userReviews && product.userReviews.length > 0 ? (
                     <div>
                       {/* Overall Rating Summary */}
-                      <div className="bg-gray-50 p-6 rounded-lg mb-6">
-                        <div className="flex items-center gap-4 mb-4">
+                      <div className="bg-gray-50 p-3 rounded-lg mb-2">
+                        <div className="flex items-center gap-4 mb-2">
                           <div className="text-center">
-                            <div className="text-5xl font-bold text-teal-800">
+                            <div className="text-4xl font-bold text-teal-800">
                               {(
                                 product.userReviews.reduce((sum, review) => sum + review.rating, 0) /
                                 product.userReviews.length
