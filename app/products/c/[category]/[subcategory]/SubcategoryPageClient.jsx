@@ -21,6 +21,8 @@ const SubcategoryPageClient = () => {
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [allProducts, setAllProducts] = useState([]);
+  const [sortBy, setSortBy] = useState("");
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -137,6 +139,15 @@ const SubcategoryPageClient = () => {
 
   const toggleBrandDropdown = () => {
     setShowBrandDropdown(!showBrandDropdown);
+  };
+
+  const handleSortSelect = (sortOption) => {
+    setSortBy(sortOption);
+    setShowSortDropdown(false);
+  };
+
+  const toggleSortDropdown = () => {
+    setShowSortDropdown(!showSortDropdown);
   };
 
   // Get unique brands from current subcategory products
@@ -268,7 +279,7 @@ const SubcategoryPageClient = () => {
           </form>
         </div>
 
-        {/* Category Header with Brand Filter */}
+        {/* Category Header with Brand Filter and Sort */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold text-teal-800 flex items-center">
@@ -277,16 +288,23 @@ const SubcategoryPageClient = () => {
             </h1>
           </div>
 
-          {uniqueBrands.length > 0 && (
+          <div className="flex flex-wrap gap-3">
+            {/* Sort by Price Dropdown */}
             <div className="relative">
               <button
-                onClick={toggleBrandDropdown}
-                className="flex items-center justify-between px-6 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors min-w-[150px]"
+                onClick={toggleSortDropdown}
+                className="flex items-center justify-between px-6 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors min-w-[180px]"
               >
-                <span>{selectedBrand || "All Brands"}</span>
+                <span>
+                  {sortBy === "price-low-high" 
+                    ? "Low to High"
+                    : sortBy === "price-high-low"
+                    ? "High to Low"
+                    : "Sort by Price"}
+                </span>
                 <svg
                   className={`ml-2 h-4 w-4 transition-transform ${
-                    showBrandDropdown ? "rotate-180" : ""
+                    showSortDropdown ? "rotate-180" : ""
                   }`}
                   fill="none"
                   viewBox="0 0 24 24"
@@ -301,27 +319,77 @@ const SubcategoryPageClient = () => {
                 </svg>
               </button>
 
-              {showBrandDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 border border-gray-200 overflow-hidden">
+              {showSortDropdown && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg z-10 border border-gray-200 overflow-hidden">
                   <div
                     className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
-                    onClick={() => handleBrandSelect(null)}
+                    onClick={() => handleSortSelect("")}
                   >
-                    All Brands
+                    Default
                   </div>
-                  {uniqueBrands.map((brand) => (
-                    <div
-                      key={brand}
-                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
-                      onClick={() => handleBrandSelect(brand)}
-                    >
-                      {brand}
-                    </div>
-                  ))}
+                  <div
+                    className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                    onClick={() => handleSortSelect("price-low-high")}
+                  >
+                    Low to High
+                  </div>
+                  <div
+                    className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                    onClick={() => handleSortSelect("price-high-low")}
+                  >
+                    High to Low
+                  </div>
                 </div>
               )}
             </div>
-          )}
+
+            {/* Brand Filter Dropdown */}
+            {uniqueBrands.length > 0 && (
+              <div className="relative">
+                <button
+                  onClick={toggleBrandDropdown}
+                  className="flex items-center justify-between px-6 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors min-w-[150px]"
+                >
+                  <span>{selectedBrand || "All Brands"}</span>
+                  <svg
+                    className={`ml-2 h-4 w-4 transition-transform ${
+                      showBrandDropdown ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {showBrandDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 border border-gray-200 overflow-hidden">
+                    <div
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
+                      onClick={() => handleBrandSelect(null)}
+                    >
+                      All Brands
+                    </div>
+                    {uniqueBrands.map((brand) => (
+                      <div
+                        key={brand}
+                        className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                        onClick={() => handleBrandSelect(brand)}
+                      >
+                        {brand}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Products List */}
@@ -329,6 +397,7 @@ const SubcategoryPageClient = () => {
           category={category}
           subcategory={subcategory}
           selectedBrand={selectedBrand}
+          sortBy={sortBy}
           isHomePage={false}
         />
       </div>

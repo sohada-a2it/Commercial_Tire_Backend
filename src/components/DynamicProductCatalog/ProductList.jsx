@@ -24,6 +24,7 @@ const ProductList = ({
   category,
   subcategory,
   selectedBrand,
+  sortBy = "",
   isHomePage = false,
 }) => {
   const [showAllProducts, setShowAllProducts] = useState(false);
@@ -34,11 +35,27 @@ const ProductList = ({
   const categoryName = category?.name || "General";
 
   // Filter products by selected brand
-  const filteredProducts = selectedBrand
+  let filteredProducts = selectedBrand
     ? (subcategory.products || []).filter(
         (product) => product.keyAttributes?.["Brand"] === selectedBrand
       )
     : subcategory.products || [];
+
+  // Sort products by price if sortBy is specified
+  if (sortBy) {
+    filteredProducts = [...filteredProducts].sort((a, b) => {
+      // Get the effective price (offerPrice if available, otherwise regular price)
+      const priceA = parsePrice(a.offerPrice || a.price);
+      const priceB = parsePrice(b.offerPrice || b.price);
+
+      if (sortBy === "price-low-high") {
+        return priceA - priceB;
+      } else if (sortBy === "price-high-low") {
+        return priceB - priceA;
+      }
+      return 0;
+    });
+  }
 
   // Handle add to cart
   const handleAddToCart = (product) => {
