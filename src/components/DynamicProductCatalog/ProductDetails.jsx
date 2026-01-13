@@ -853,7 +853,7 @@ const ProductDetails = () => {
                   <h3 className="text-3xl font-bold text-teal-800 mb-4">
                     Product Specifications
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {Object.entries(product.keyAttributes).map(([key, value]) => {
                       // Skip supplier-specific fields that will be shown separately
                       const supplierFields = [
