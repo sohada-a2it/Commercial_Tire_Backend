@@ -185,7 +185,7 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
 
   return (
     <div className="mt-12 relative max-w-7xl mx-auto">
-      <h3 className="text-2xl font-bold text-center text-teal-800 mb-6 border-b-2 border-amber-400 pb-2">
+      <h3 className="text-3xl font-bold text-center text-teal-800 mb-6 border-b-2 border-amber-400 pb-2">
         Recommended {isTyre ? "Tyres" : "Products"}
       </h3>
 
@@ -217,7 +217,7 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
           {displayProducts.map((product, idx) => (
             <div
               key={`${product.id}-${idx}`}
-              className="min-w-[220px] mr-5 bg-white p-4 rounded-lg flex-shrink-0 cursor-pointer hover:shadow-lg transition border border-gray-200"
+              className="min-w-[220px] mr-5 bg-white p-4 rounded-lg flex-shrink-0 cursor-pointer hover:shadow-lg transition border border-teal-100"
             >
               <img
                 src={product.image || ""}
