@@ -124,17 +124,27 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
   const CARD_WIDTH = 240; // width of each card including margin
   const VISIBLE_CARDS = 4;
 
-  // Auto slide every 5 seconds
+  // Create an infinite loop by duplicating products if needed
+  const displayProducts = total > 0 ? [...recs, ...recs, ...recs] : [];
+
+  // Auto slide every 3 seconds
   useEffect(() => {
-    if (total > VISIBLE_CARDS) startAutoSlide();
+    if (total > 0) startAutoSlide();
     return () => stopAutoSlide();
   }, [total]);
 
   const startAutoSlide = () => {
     stopAutoSlide();
     intervalRef.current = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % total);
-    }, 5000);
+      setCurrentIndex((prev) => {
+        const next = prev + 1;
+        // Reset to 0 when we reach the original array length to create seamless loop
+        if (next >= total) {
+          return 0;
+        }
+        return next;
+      });
+    }, 3000); // Changed to 3 seconds
   };
 
   const stopAutoSlide = () => {
@@ -143,13 +153,23 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
 
   const prevSlide = () => {
     stopAutoSlide();
-    setCurrentIndex((prev) => (prev - 1 + total) % total);
+    setCurrentIndex((prev) => {
+      if (prev === 0) {
+        return total - 1;
+      }
+      return prev - 1;
+    });
     startAutoSlide();
   };
 
   const nextSlide = () => {
     stopAutoSlide();
-    setCurrentIndex((prev) => (prev + 1) % total);
+    setCurrentIndex((prev) => {
+      if (prev >= total - 1) {
+        return 0;
+      }
+      return prev + 1;
+    });
     startAutoSlide();
   };
 
@@ -169,8 +189,8 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
         Recommended {isTyre ? "Tyres" : "Products"}
       </h3>
 
-      {/* Navigation arrows - only show if we have more products than visible */}
-      {total > VISIBLE_CARDS && (
+      {/* Navigation arrows - always show if we have products */}
+      {total > 0 && (
         <>
           <button
             onClick={prevSlide}
@@ -194,9 +214,9 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
           className="flex transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(${translateX}px)` }}
         >
-          {recs.map((product, idx) => (
+          {displayProducts.map((product, idx) => (
             <div
-              key={product.id || idx}
+              key={`${product.id}-${idx}`}
               className="min-w-[220px] mr-5 bg-white p-4 rounded-lg flex-shrink-0 cursor-pointer hover:shadow-lg transition border border-gray-200"
             >
               <img
@@ -776,7 +796,7 @@ const ProductDetails = () => {
                     : "text-gray-600 hover:text-teal-600"
                 }`}
               >
-                Technical Specifications
+                ⚙️ Technical Specifications
               </button>
               <button
                 onClick={() => setActiveTab("pricing")}
@@ -786,7 +806,7 @@ const ProductDetails = () => {
                     : "text-gray-600 hover:text-teal-600"
                 }`}
               >
-                Pricing Options
+               💲Pricing Options
               </button>
               <button
                 onClick={() => setActiveTab("reviews")}
@@ -796,7 +816,7 @@ const ProductDetails = () => {
                     : "text-gray-600 hover:text-teal-600"
                 }`}
               >
-                Reviews
+                ⭐ Reviews
               </button>
             </div>
 
