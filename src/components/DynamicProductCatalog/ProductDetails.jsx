@@ -729,10 +729,9 @@ const ProductDetails = () => {
                 {product.price && product.offerPrice ? (
                   <>
                   <div className="flex items-center justify-center">
-
-<div>
- <p className="text-black text-xl mr-1">Price: </p>
-</div>
+                  <div>
+                  <p className="text-black text-xl mr-1">Price: </p>
+                  </div>
                    
                     <div className="flex items-center gap-1">
                       <p className="font-bold text-2xl text-amber-600">
@@ -909,8 +908,8 @@ const ProductDetails = () => {
                 onClick={() => setActiveTab("specifications")}
                 className={`px-6 py-3 font-semibold transition-colors relative ${
                   activeTab === "specifications"
-                    ? "text-teal-600 border-b-2 border-teal-600"
-                    : "text-gray-600 hover:text-teal-600"
+                    ? "text-teal-600 border-b-2 border-teal-600 text-lg"
+                    : "text-gray-600 hover:text-teal-600 text-sm"
                 }`}
               >
                 ⚙️ Technical Specifications
@@ -919,8 +918,8 @@ const ProductDetails = () => {
                 onClick={() => setActiveTab("pricing")}
                 className={`px-6 py-3 font-semibold transition-colors relative ${
                   activeTab === "pricing"
-                    ? "text-teal-600 border-b-2 border-teal-600"
-                    : "text-gray-600 hover:text-teal-600"
+                    ? "text-teal-600 border-b-2 border-teal-600 text-lg"
+                    : "text-gray-600 hover:text-teal-600 text-sm"
                 }`}
               >
                💲Pricing Options
@@ -929,8 +928,8 @@ const ProductDetails = () => {
                 onClick={() => setActiveTab("reviews")}
                 className={`px-6 py-3 font-semibold transition-colors relative ${
                   activeTab === "reviews"
-                    ? "text-teal-600 border-b-2 border-teal-600"
-                    : "text-gray-600 hover:text-teal-600"
+                    ? "text-teal-600 border-b-2 border-teal-600 text-lg"
+                    : "text-gray-600 hover:text-teal-600 text-sm"
                 }`}
               >
                 ⭐ Reviews
