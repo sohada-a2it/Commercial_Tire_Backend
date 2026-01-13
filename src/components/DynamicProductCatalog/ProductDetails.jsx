@@ -472,7 +472,7 @@ const ProductDetails = () => {
                 Price: {product?.price || "N/A"}
               </p>
 
-              <div className="grid grid-cols-2 gap-3 text-sm text-gray-700 mt-4">
+              <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 mt-4">
                 {/* Conditionally render attributes based on product type */}
                 {product.keyAttributes?.["Load Range"] && (
                   <p>
@@ -613,8 +613,8 @@ const ProductDetails = () => {
 
               {/* Product Description */}
               {product.description && (
-                <div className="mt-4">
-                  <h3 className="text-lg font-semibold mb-2 text-teal-800">
+                <div className="mt-8">
+                  <h3 className="text-2xl font-semibold mb-1 text-teal-800 ">
                     Description
                   </h3>
                   <p className="text-gray-700 text-sm">{product.description}</p>
