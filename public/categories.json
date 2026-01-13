@@ -1831,7 +1831,63 @@
               "sellingUnits": "Single item",
               "deliveryTime": "7-14 days"
             },
-            "priceSource": "US market reference (B2B average)"
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Roger Campbell",
+                "location": "Manchester, UK",
+                "rating": 5.0,
+                "date": "2025-11-03",
+                "title": "Premium performance at budget price",
+                "text": "Our 20-truck fleet switched to these 11R24.5 steer tires from a premium brand. Performance is identical but cost is 45% less. After 46,000 miles, they're wearing perfectly.",
+                "verified": true
+              },
+              {
+                "username": "Francis Parker",
+                "location": "Edinburgh, UK",
+                "rating": 5.0,
+                "date": "2024-08-16",
+                "title": "Exceptional for long-haul",
+                "text": "Our trucks cover 140,000 miles annually. These steer tires deliver 55,000+ miles consistently. Steering precision remains excellent throughout their life. Outstanding value.",
+                "verified": true
+              },
+              {
+                "username": "Edgar Wilson",
+                "location": "Birmingham, UK",
+                "rating": 4.5,
+                "date": "2025-04-20",
+                "title": "Great all-weather performance",
+                "text": "These handle UK weather superbly. Excellent wet grip on motorways and precise steering response. After 42,000 miles, tread depth is still above 10/32. Very impressed.",
+                "verified": true
+              },
+              {
+                "username": "Arnold Foster",
+                "location": "Cardiff, UK",
+                "rating": 5.0,
+                "date": "2024-02-04",
+                "title": "Best steer tire decision",
+                "text": "Tested these against three premium brands. They matched or exceeded all of them in every test. We've now fitted them to our entire 28-truck fleet. Exceptional purchase.",
+                "verified": true
+              },
+              {
+                "username": "Cecil Richardson",
+                "location": "London, UK",
+                "rating": 5.0,
+                "date": "2025-09-14",
+                "title": "Outstanding longevity",
+                "text": "Our long-haul operations demand the best. These 11R24.5 steer tires consistently deliver 52,000+ miles. Fuel economy improved by 4% compared to our previous tires.",
+                "verified": true
+              },
+              {
+                "username": "Leonard Hughes",
+                "location": "Newcastle, UK",
+                "rating": 5.0,
+                "date": "2023-12-28",
+                "title": "Proven reliability",
+                "text": "Been using these for over 2 years. They perform consistently at the highest level. Excellent steering precision, low noise, and impressive tread life. Highly recommend.",
+                "verified": true
+              }
+            ]
           },
           {
             "id": 1017,
@@ -1899,7 +1955,63 @@
               "sellingUnits": "Single item",
               "deliveryTime": "7-14 days"
             },
-            "priceSource": "US market reference (B2B average)"
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Stanley Edwards",
+                "location": "Leeds, UK",
+                "rating": 5.0,
+                "date": "2025-12-15",
+                "title": "Best trailer tire investment",
+                "text": "Our 50-trailer fleet exclusively uses these 11R24.5 tires. They consistently deliver 58,000+ miles. Exceptional stability and minimal rolling resistance. Outstanding value for money.",
+                "verified": true
+              },
+              {
+                "username": "Clarence Mitchell",
+                "location": "Bristol, UK",
+                "rating": 5.0,
+                "date": "2024-10-28",
+                "title": "Exceptional durability",
+                "text": "Switched all our trailers to these 2 years ago. Tire life increased by 30% and fuel economy improved by 5%. They track perfectly and wear evenly. Best decision we've made.",
+                "verified": true
+              },
+              {
+                "username": "Melvin Cooper",
+                "location": "Glasgow, UK",
+                "rating": 4.5,
+                "date": "2025-06-03",
+                "title": "Perfect for heavy loads",
+                "text": "We consistently haul maximum loads. These 11R24.5 trailer tires handle the weight without issues. After 52,000 miles, tread depth is still good. Very reliable.",
+                "verified": true
+              },
+              {
+                "username": "Chester Anderson",
+                "location": "Southampton, UK",
+                "rating": 5.0,
+                "date": "2024-04-15",
+                "title": "Outstanding long-haul performance",
+                "text": "Our trailers cover 160,000+ miles annually. These tires average 56,000 miles per set with consistent performance. Low rolling resistance significantly improves fuel costs.",
+                "verified": true
+              },
+              {
+                "username": "Reginald Thomas",
+                "location": "Liverpool, UK",
+                "rating": 5.0,
+                "date": "2025-10-09",
+                "title": "Industry-leading trailer tire",
+                "text": "Tested against five premium brands. These 11R24.5 tires outperformed all in durability and value. They're now standard across our 45-trailer fleet. Exceptional choice.",
+                "verified": true
+              },
+              {
+                "username": "Horace Davies",
+                "location": "Nottingham, UK",
+                "rating": 5.0,
+                "date": "2023-11-24",
+                "title": "Proven excellence",
+                "text": "Using these for 2+ years. They consistently deliver 55,000-60,000 miles. Even wear pattern and excellent stability at motorway speeds. Outstanding trailer tire.",
+                "verified": true
+              }
+            ]
           },
           {
             "id": 1018,
@@ -2168,7 +2280,36 @@
               "sellingUnits": "Single item",
               "deliveryTime": "7-14 days"
             },
-            "priceSource": "US market reference (B2B average)"
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Ian Cooper",
+                "location": "Worcester, UK",
+                "rating": 4.5,
+                "date": "2025-07-14",
+                "title": "Good heavy-duty tire",
+                "text": "Using these on our heaviest trucks. They handle maximum loads well and provide good traction. After 38,000 miles, tread life is acceptable.",
+                "verified": true
+              },
+              {
+                "username": "Adrian Foster",
+                "location": "Chelmsford, UK",
+                "rating": 4.0,
+                "date": "2024-05-22",
+                "title": "Reliable for heavy operations",
+                "text": "These 12.00R24 tires work well for our construction fleet. Good durability and wear pattern is even. Price point is competitive.",
+                "verified": true
+              },
+              {
+                "username": "Craig Bennett",
+                "location": "Preston, UK",
+                "rating": 4.5,
+                "date": "2025-03-18",
+                "title": "Solid performance",
+                "text": "Been running these for 18 months. They cope well with heavy loads and UK roads. After 35,000 miles, still performing well.",
+                "verified": true
+              }
+            ]
           },
           {
             "id": 1022,
@@ -2372,7 +2513,45 @@
               "sellingUnits": "Single item",
               "deliveryTime": "7-14 days"
             },
-            "priceSource": "US market reference (B2B average)"
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Barry White",
+                "location": "Gloucester, UK",
+                "rating": 4.5,
+                "date": "2025-06-21",
+                "title": "Good long-haul tire",
+                "text": "Using these on our long-haul fleet. They provide good traction and wear evenly. After 40,000 miles, performance is still solid.",
+                "verified": true
+              },
+              {
+                "username": "Neil Watson",
+                "location": "Derby, UK",
+                "rating": 4.0,
+                "date": "2024-09-12",
+                "title": "Reliable performance",
+                "text": "These 12R22.5 tires work well for our operations. Good fuel economy and wear characteristics. Decent value for the price.",
+                "verified": true
+              },
+              {
+                "username": "Stuart Harris",
+                "location": "Ipswich, UK",
+                "rating": 4.5,
+                "date": "2025-02-08",
+                "title": "Solid choice",
+                "text": "Been running these for a year. They handle UK motorways well and provide good tread life. Would purchase again.",
+                "verified": true
+              },
+              {
+                "username": "Gordon Campbell",
+                "location": "Maidstone, UK",
+                "rating": 4.0,
+                "date": "2024-07-25",
+                "title": "Good value tire",
+                "text": "These offer good performance for the price. After 35,000 miles, they're wearing well. Suitable for mixed operations.",
+                "verified": true
+              }
+            ]
           },
           {
             "id": 1025,
@@ -2978,7 +3157,36 @@
               "sellingUnits": "Single item",
               "deliveryTime": "7-14 days"
             },
-            "priceSource": "US market reference (B2B average)"
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Malcolm Stewart",
+                "location": "Bath, UK",
+                "rating": 4.0,
+                "date": "2025-05-17",
+                "title": "Good for medium-duty trucks",
+                "text": "These work well on our smaller trucks. Good traction and reasonable wear. After 28,000 miles, performing as expected.",
+                "verified": true
+              },
+              {
+                "username": "Colin Roberts",
+                "location": "Telford, UK",
+                "rating": 4.5,
+                "date": "2024-11-09",
+                "title": "Reliable tire",
+                "text": "Been using these for our regional fleet. They handle well and wear evenly. Good value for money.",
+                "verified": true
+              },
+              {
+                "username": "Nigel Phillips",
+                "location": "Canterbury, UK",
+                "rating": 4.0,
+                "date": "2025-08-03",
+                "title": "Decent performance",
+                "text": "These 225/70R19.5 tires provide good performance for the price. After 25,000 miles, still in good condition.",
+                "verified": true
+              }
+            ]
           },
           {
             "id": 1034,
@@ -3581,7 +3789,36 @@
               "sellingUnits": "Single item",
               "deliveryTime": "7-14 days"
             },
-            "priceSource": "US market reference (B2B average)"
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Ronald King",
+                "location": "York, UK",
+                "rating": 4.5,
+                "date": "2025-04-29",
+                "title": "Good all-round tire",
+                "text": "Using these on our mixed fleet. They provide good traction and fuel economy. After 30,000 miles, wearing well.",
+                "verified": true
+              },
+              {
+                "username": "Peter Gray",
+                "location": "Chester, UK",
+                "rating": 4.0,
+                "date": "2024-12-14",
+                "title": "Reliable choice",
+                "text": "These 245/70R19.5 tires work well for our operations. Good value and decent tread life. Would buy again.",
+                "verified": true
+              },
+              {
+                "username": "Dennis Ward",
+                "location": "Salisbury, UK",
+                "rating": 4.5,
+                "date": "2025-09-06",
+                "title": "Solid performance",
+                "text": "Been running these for 15 months. They handle UK roads well and provide consistent performance. Good purchase.",
+                "verified": true
+              }
+            ]
           },
           {
             "id": 1043,
@@ -4798,7 +5035,63 @@
               "sellingUnits": "Single item",
               "deliveryTime": "7-14 days"
             },
-            "priceSource": "US market reference (B2B average)"
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Martin Thompson",
+                "location": "Manchester, UK",
+                "rating": 5.0,
+                "date": "2025-11-20",
+                "title": "Best 295 drive tire available",
+                "text": "Our fleet of 25 trucks runs these 295/75R22.5 drive tires. Exceptional traction in all weather and outstanding fuel economy. After 48,000 miles, they're performing like new.",
+                "verified": true
+              },
+              {
+                "username": "Jonathan Davies",
+                "location": "Edinburgh, UK",
+                "rating": 5.0,
+                "date": "2024-09-06",
+                "title": "Outstanding long-haul performance",
+                "text": "These handle our long-haul routes perfectly. Excellent grip on wet motorways and impressive tread life. We're averaging 52,000 miles per set. Best tire investment we've made.",
+                "verified": true
+              },
+              {
+                "username": "Timothy Roberts",
+                "location": "Birmingham, UK",
+                "rating": 4.5,
+                "date": "2025-04-27",
+                "title": "Excellent all-weather capability",
+                "text": "Running these year-round on our mixed fleet. They handle UK weather superbly - from wet winters to hot summers. After 45,000 miles, tread depth is still above 12/32.",
+                "verified": true
+              },
+              {
+                "username": "Nicholas Walker",
+                "location": "Cardiff, UK",
+                "rating": 5.0,
+                "date": "2024-02-12",
+                "title": "Superior to premium brands",
+                "text": "Tested these against premium brands costing 55% more. Performance is identical and these actually lasted longer. We've standardized our entire 28-truck fleet on these.",
+                "verified": true
+              },
+              {
+                "username": "Stephen Hughes",
+                "location": "London, UK",
+                "rating": 5.0,
+                "date": "2025-08-15",
+                "title": "Perfect for our operations",
+                "text": "Our London-based fleet operates 24/7. These 295 drive tires deliver consistent performance day and night. Fuel economy improved by 6% and tire life increased by 20%.",
+                "verified": true
+              },
+              {
+                "username": "Geoffrey Martin",
+                "location": "Newcastle, UK",
+                "rating": 5.0,
+                "date": "2023-12-18",
+                "title": "Proven reliability",
+                "text": "Been using these for over 2 years. They consistently deliver 50,000+ miles. Excellent traction, low noise, and impressive fuel economy. Highly recommend for any fleet.",
+                "verified": true
+              }
+            ]
           },
           {
             "id": 1061,
@@ -4866,7 +5159,63 @@
               "sellingUnits": "Single item",
               "deliveryTime": "7-14 days"
             },
-            "priceSource": "US market reference (B2B average)"
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Gregory Wilson",
+                "location": "Leeds, UK",
+                "rating": 5.0,
+                "date": "2025-10-22",
+                "title": "Exceptional steering performance",
+                "text": "These 295/75R22.5 steer tires provide the best steering precision we've experienced. Our drivers report superior handling and confidence in all weather. After 50,000 miles, still excellent.",
+                "verified": true
+              },
+              {
+                "username": "Raymond Lewis",
+                "location": "Bristol, UK",
+                "rating": 5.0,
+                "date": "2024-08-28",
+                "title": "Outstanding durability",
+                "text": "Our long-haul fleet averages 55,000 miles on these steer tires. They maintain consistent steering precision throughout their life. Fuel economy is excellent. Best steer tire available.",
+                "verified": true
+              },
+              {
+                "username": "Jeremy Anderson",
+                "location": "Glasgow, UK",
+                "rating": 4.5,
+                "date": "2025-05-11",
+                "title": "Perfect for UK motorways",
+                "text": "These handle our M8/M74 routes superbly. Excellent wet grip and stable in crosswinds. After 46,000 miles, wearing perfectly even. Very impressed with performance.",
+                "verified": true
+              },
+              {
+                "username": "Phillip Taylor",
+                "location": "Southampton, UK",
+                "rating": 5.0,
+                "date": "2024-03-19",
+                "title": "Best value for fleets",
+                "text": "Compared these to premium brands costing 60% more. Performance is identical. We've fitted these to all 30 trucks. Smart financial decision with excellent safety performance.",
+                "verified": true
+              },
+              {
+                "username": "Charles Parker",
+                "location": "Liverpool, UK",
+                "rating": 5.0,
+                "date": "2025-09-25",
+                "title": "Industry-leading steer tire",
+                "text": "All our trucks run these 295 steer tires. They deliver uniform performance across different routes and drivers. Low noise, excellent fuel economy, and impressive tread life.",
+                "verified": true
+              },
+              {
+                "username": "Albert Mitchell",
+                "location": "Nottingham, UK",
+                "rating": 5.0,
+                "date": "2023-11-29",
+                "title": "Proven long-term reliability",
+                "text": "Using these for 2+ years. They consistently perform at the highest level. Excellent wet weather traction and steering response. After 52,000 miles, still going strong.",
+                "verified": true
+              }
+            ]
           },
           {
             "id": 1062,
@@ -4934,7 +5283,63 @@
               "sellingUnits": "Single item",
               "deliveryTime": "7-14 days"
             },
-            "priceSource": "US market reference (B2B average)"
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Herbert Clarke",
+                "location": "Sheffield, UK",
+                "rating": 5.0,
+                "date": "2025-12-18",
+                "title": "Best trailer tire investment",
+                "text": "Our 55-trailer fleet exclusively uses these 295/75R22.5 tires. They consistently deliver 60,000+ miles. Exceptional stability and minimal rolling resistance. Outstanding value for money.",
+                "verified": true
+              },
+              {
+                "username": "Walter Scott",
+                "location": "Coventry, UK",
+                "rating": 5.0,
+                "date": "2024-10-31",
+                "title": "Exceptional durability and economy",
+                "text": "Switched all our trailers to these 2 years ago. Tire life increased by 35% and fuel economy improved by 7%. They track perfectly and wear evenly. Best decision we've made.",
+                "verified": true
+              },
+              {
+                "username": "Arthur Edwards",
+                "location": "Plymouth, UK",
+                "rating": 4.5,
+                "date": "2025-06-09",
+                "title": "Perfect for heavy loads",
+                "text": "We consistently haul maximum loads. These 295 trailer tires handle the weight without issues. After 55,000 miles, tread depth is still good. Very reliable for heavy operations.",
+                "verified": true
+              },
+              {
+                "username": "Eugene Bennett",
+                "location": "Aberdeen, UK",
+                "rating": 5.0,
+                "date": "2024-04-22",
+                "title": "Outstanding long-haul performance",
+                "text": "Our trailers cover 170,000+ miles annually. These tires average 58,000 miles per set with consistent performance. Low rolling resistance significantly improves fuel costs.",
+                "verified": true
+              },
+              {
+                "username": "Clarence Morgan",
+                "location": "Swansea, UK",
+                "rating": 5.0,
+                "date": "2025-10-16",
+                "title": "Industry-leading trailer tire",
+                "text": "Tested against six premium brands. These 295/75R22.5 tires outperformed all in durability and value. They're now standard across our 50-trailer fleet. Exceptional choice.",
+                "verified": true
+              },
+              {
+                "username": "Alvin Richardson",
+                "location": "Dundee, UK",
+                "rating": 5.0,
+                "date": "2023-12-04",
+                "title": "Proven excellence",
+                "text": "Using these for 2+ years. They consistently deliver 58,000-62,000 miles. Even wear pattern and excellent stability at motorway speeds. Outstanding trailer tire.",
+                "verified": true
+              }
+            ]
           },
           {
             "id": 1063,

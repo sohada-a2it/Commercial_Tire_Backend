@@ -681,14 +681,14 @@ const ProductDetails = () => {
               </div>
 
               {/* Customer Reviews (if available) */}
-              {product.rating && (
+              {product.userReviews && (
                 <div className="text-sm mt-2 flex items-center gap-2">
                   <span>Customer Reviews:</span>
                   <span className="flex items-center">
-                    {renderStars(product.rating)}
+                    {renderStars(product.userReviews[0].rating)}
                   </span>
                   <span className="text-gray-600">
-                    ({product.reviewCount || 0} reviews)
+                    ({product.userReviews.length  || 0} reviews)
                   </span>
                 </div>
               )}
