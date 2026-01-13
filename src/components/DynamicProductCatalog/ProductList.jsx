@@ -24,6 +24,7 @@ const ProductList = ({
   category,
   subcategory,
   selectedBrand,
+  selectedTireType,
   sortBy = "",
   isHomePage = false,
 }) => {
@@ -34,12 +35,22 @@ const ProductList = ({
   // Get category name from the category object
   const categoryName = category?.name || "General";
 
-  // Filter products by selected brand
-  let filteredProducts = selectedBrand
-    ? (subcategory.products || []).filter(
-        (product) => product.keyAttributes?.["Brand"] === selectedBrand
-      )
-    : subcategory.products || [];
+  // Filter products by selected brand and tire type
+  let filteredProducts = subcategory.products || [];
+
+  // Filter by brand
+  if (selectedBrand) {
+    filteredProducts = filteredProducts.filter(
+      (product) => product.keyAttributes?.["Brand"] === selectedBrand
+    );
+  }
+
+  // Filter by tire type (for Truck Tires) - using Pattern attribute
+  if (selectedTireType) {
+    filteredProducts = filteredProducts.filter(
+      (product) => product.keyAttributes?.["Pattern"] === selectedTireType
+    );
+  }
 
   // Sort products by price if sortBy is specified
   if (sortBy) {

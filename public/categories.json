@@ -36,6 +36,11 @@
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Durable drive tire for regional haul. Designed for reliable performance in various regional applications.",
             "image": "/assets/truck/Double Coin/Drive/10.00R20.png",
+            "images": [
+              "/assets/truck/Double Coin/Drive/10.00R15TR.png",
+              "/assets/truck/Double Coin/Drive/10.00R20.png",
+              "/assets/truck/Double Coin/Drive/10.00R20.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-1000R20",
               "Model": "RR202",

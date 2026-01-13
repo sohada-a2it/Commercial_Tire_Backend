@@ -23,10 +23,13 @@ const SubcategoryPageClient = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [sortBy, setSortBy] = useState("");
   const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [selectedTireType, setSelectedTireType] = useState(null);
+  const [showTireTypeDropdown, setShowTireTypeDropdown] = useState(false);
 
   // Refs for click outside detection
   const brandDropdownRef = useRef(null);
   const sortDropdownRef = useRef(null);
+  const tireTypeDropdownRef = useRef(null);
 
   // Handle click outside to close dropdowns
   useEffect(() => {
@@ -42,6 +45,12 @@ const SubcategoryPageClient = () => {
         !sortDropdownRef.current.contains(event.target)
       ) {
         setShowSortDropdown(false);
+      }
+      if (
+        tireTypeDropdownRef.current &&
+        !tireTypeDropdownRef.current.contains(event.target)
+      ) {
+        setShowTireTypeDropdown(false);
       }
     };
 
@@ -176,6 +185,18 @@ const SubcategoryPageClient = () => {
   const toggleSortDropdown = () => {
     setShowSortDropdown(!showSortDropdown);
   };
+
+  const handleTireTypeSelect = (tireType) => {
+    setSelectedTireType(tireType);
+    setShowTireTypeDropdown(false);
+  };
+
+  const toggleTireTypeDropdown = () => {
+    setShowTireTypeDropdown(!showTireTypeDropdown);
+  };
+
+  // Check if current subcategory is Truck Tires
+  const isTruckTires = subcategory?.name?.toLowerCase() === "truck tires";
 
   // Get unique brands from current subcategory products
   const getUniqueBrands = () => {
@@ -371,6 +392,62 @@ const SubcategoryPageClient = () => {
               )}
             </div>
 
+            {/* Tire Type Filter Dropdown - Only for Truck Tires */}
+            {isTruckTires && (
+              <div className="relative flex-1 sm:flex-initial" ref={tireTypeDropdownRef}>
+                <button
+                  onClick={toggleTireTypeDropdown}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors sm:min-w-[150px]"
+                >
+                  <span>{selectedTireType || "Tire Type"}</span>
+                  <svg
+                    className={`ml-2 h-4 w-4 transition-transform ${
+                      showTireTypeDropdown ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {showTireTypeDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
+                    <div
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
+                      onClick={() => handleTireTypeSelect(null)}
+                    >
+                      All Types
+                    </div>
+                    <div
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                      onClick={() => handleTireTypeSelect("Drive")}
+                    >
+                      Drive
+                    </div>
+                    <div
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                      onClick={() => handleTireTypeSelect("Steer")}
+                    >
+                      Steer
+                    </div>
+                    <div
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                      onClick={() => handleTireTypeSelect("Trailer")}
+                    >
+                      Trailer
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Brand Filter Dropdown */}
             {uniqueBrands.length > 0 && (
               <div className="relative flex-1 sm:flex-initial" ref={brandDropdownRef}>
@@ -426,6 +503,7 @@ const SubcategoryPageClient = () => {
           category={category}
           subcategory={subcategory}
           selectedBrand={selectedBrand}
+          selectedTireType={selectedTireType}
           sortBy={sortBy}
           isHomePage={false}
         />
