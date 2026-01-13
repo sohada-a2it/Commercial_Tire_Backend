@@ -447,8 +447,9 @@ const ProductDetails = () => {
 
       <div className="w-full bg-gray-50 px-4 lg:px-0">
         <div className="max-w-7xl mx-auto p-6 text-gray-800 rounded-lg">
+
           {/* Breadcrumb Navigation */}
-          <div className="mb-6">
+          <div className="mb-3">
             <nav className="flex items-center text-sm text-gray-600 flex-wrap">
               <button
                 onClick={() => navigate("/products")}
@@ -488,6 +489,16 @@ const ProductDetails = () => {
               <span className="mx-2">/</span>
               <span className="text-teal-600 font-medium">{product?.name}</span>
             </nav>
+          </div>
+                    {/* Back Button */}
+          <div className="mb-3">
+            <button
+              onClick={() => window.history.back()}
+              className="flex items-center gap-2 text-teal-700 hover:text-teal-800 font-medium transition-colors group"
+            >
+              <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
+              <span>Back</span>
+            </button>
           </div>
 
           <h2 className="text-3xl font-bold mb-12 text-center text-teal-800 hover:text-teal-900 transition-colors duration-300 border-b-2 border-amber-400 pb-2">
