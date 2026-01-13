@@ -307,20 +307,21 @@ const SubcategoryPageClient = () => {
         </div>
 
         {/* Category Header with Brand Filter and Sort */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-teal-800 flex items-center">
-              <span className="mr-3 text-3xl">{category?.icon}</span>
-              {subcategory?.name}
-            </h1>
-          </div>
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-teal-800 flex items-center">
+                <span className="mr-3 text-3xl">{category?.icon}</span>
+                {subcategory?.name}
+              </h1>
+            </div>
 
-          <div className="flex flex-wrap gap-3">
+            <div className="flex flex-row flex-wrap gap-3 w-full lg:w-auto">
             {/* Sort by Price Dropdown */}
-            <div className="relative" ref={sortDropdownRef}>
+            <div className="relative flex-1 sm:flex-initial" ref={sortDropdownRef}>
               <button
                 onClick={toggleSortDropdown}
-                className="flex items-center justify-between px-6 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors min-w-[180px]"
+                className="w-full flex items-center justify-between px-4 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors sm:min-w-[180px]"
               >
                 <span>
                   {sortBy === "price-low-high" 
@@ -372,10 +373,10 @@ const SubcategoryPageClient = () => {
 
             {/* Brand Filter Dropdown */}
             {uniqueBrands.length > 0 && (
-              <div className="relative" ref={brandDropdownRef}>
+              <div className="relative flex-1 sm:flex-initial" ref={brandDropdownRef}>
                 <button
                   onClick={toggleBrandDropdown}
-                  className="flex items-center justify-between px-6 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors min-w-[150px]"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors sm:min-w-[150px]"
                 >
                   <span>{selectedBrand || "All Brands"}</span>
                   <svg
@@ -416,6 +417,7 @@ const SubcategoryPageClient = () => {
                 )}
               </div>
             )}
+          </div>
           </div>
         </div>
 
