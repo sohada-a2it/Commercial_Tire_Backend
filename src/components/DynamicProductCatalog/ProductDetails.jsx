@@ -728,18 +728,24 @@ const ProductDetails = () => {
                 {/* Updated Price Display */}
                 {product.price && product.offerPrice ? (
                   <>
-                    <p className="text-gray-900 text-lg">Price : </p>
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center">
+
+<div>
+ <p className="text-black text-xl mr-1">Price: </p>
+</div>
+                   
+                    <div className="flex items-center gap-1">
                       <p className="font-bold text-2xl text-amber-600">
                         {product.offerPrice}
                       </p>
 
                       <span className="text-gray-700">-</span>
 
-                      <p className="font-bold text-2xl line-through text-gray-500">
+                      <p className="font-bold text-xl line-through text-gray-500">
                         {product.price}
                       </p>
                     </div>
+                  </div>
                   </>
                 ) : product.price ? (
                   <>
