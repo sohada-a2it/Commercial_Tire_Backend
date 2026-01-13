@@ -870,7 +870,7 @@ const ProductDetails = () => {
                   <div className="space-y-6">
                     {/* Base Price */}
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold text-teal-700 mb-2">Base Price</h4>
+                      <h4 className="font-semibold text-teal-700 mb-2 text-lg">Base Price</h4>
                       {product.price && product.offerPrice ? (
                         <div>
                           <div className="flex items-center gap-3 mb-2">
@@ -909,7 +909,7 @@ const ProductDetails = () => {
                             product.pricingTiers.map((tier, index) => (
                               <div
                                 key={index}
-                                className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
+                                className="flex justify-between items-center bg-white p-3 rounded border border-teal-100"
                               >
                                 <span className="text-gray-700">
                                   {tier.minWeight}g - {tier.maxWeight}g
