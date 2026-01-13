@@ -342,7 +342,7 @@ const SubcategoryPageClient = () => {
             <div className="relative flex-1 sm:flex-initial" ref={sortDropdownRef}>
               <button
                 onClick={toggleSortDropdown}
-                className="w-full flex items-center justify-between px-4 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors sm:min-w-[180px]"
+                className="w-full flex items-center justify-between px-3 py-3 border border-teal-200 bg-teal-50 text-teal-800 rounded-md hover:bg-teal-200 transition-colors sm:min-w-[180px]"
               >
                 <span>
                   {sortBy === "price-low-high" 
@@ -352,7 +352,7 @@ const SubcategoryPageClient = () => {
                     : "Sort by Price"}
                 </span>
                 <svg
-                  className={`ml-2 h-4 w-4 transition-transform ${
+                  className={`ml-0 h-4 w-4 transition-transform ${
                     showSortDropdown ? "rotate-180" : ""
                   }`}
                   fill="none"
@@ -397,11 +397,11 @@ const SubcategoryPageClient = () => {
               <div className="relative flex-1 sm:flex-initial" ref={tireTypeDropdownRef}>
                 <button
                   onClick={toggleTireTypeDropdown}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors sm:min-w-[150px]"
+                  className="w-full flex items-center justify-between px-2 py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors sm:min-w-[150px]"
                 >
                   <span>{selectedTireType || "Tire Type"}</span>
                   <svg
-                    className={`ml-2 h-4 w-4 transition-transform ${
+                    className={`ml-0 h-4 w-4 transition-transform ${
                       showTireTypeDropdown ? "rotate-180" : ""
                     }`}
                     fill="none"
@@ -453,7 +453,7 @@ const SubcategoryPageClient = () => {
               <div className="relative flex-1 sm:flex-initial" ref={brandDropdownRef}>
                 <button
                   onClick={toggleBrandDropdown}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-teal-100 text-teal-800 rounded-lg hover:bg-teal-200 transition-colors sm:min-w-[150px]"
+                  className="w-full flex items-center justify-between px-2 py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors sm:min-w-[150px]"
                 >
                   <span>{selectedBrand || "All Brands"}</span>
                   <svg
