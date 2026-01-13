@@ -512,24 +512,36 @@ const ProductDetails = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2">
-                {[product.image, ...(product.additionalImages || [])].map(
-                  (img, idx) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt={`Thumbnail ${idx + 1}`}
-                      onClick={() => {
-                        setSelectedImage(img);
-                      }}
-                      className={`h-12 border-2 rounded ${
-                        selectedImage === img
-                          ? "border-amber-400"
-                          : "border-gray-300 opacity-50"
-                      } cursor-pointer`}
-                    />
-                  )
-                )}
+              <div className="flex gap-2 flex-wrap justify-center">
+                {/* First thumbnail - main image */}
+                <img
+                  src={product.image}
+                  alt="Main thumbnail"
+                  onClick={() => {
+                    setSelectedImage(product.image);
+                  }}
+                  className={`h-16 w-16 object-cover border-2 rounded cursor-pointer ${
+                    selectedImage === product.image
+                      ? "border-amber-400"
+                      : "border-gray-300 opacity-50"
+                  }`}
+                />
+                {/* Additional thumbnails from images array */}
+                {(product.images || []).map((img, idx) => (
+                  <img
+                    key={idx}
+                    src={img}
+                    alt={`Thumbnail ${idx + 2}`}
+                    onClick={() => {
+                      setSelectedImage(img);
+                    }}
+                    className={`h-16 w-16 object-cover border-2 rounded cursor-pointer ${
+                      selectedImage === img
+                        ? "border-amber-400"
+                        : "border-gray-300 opacity-50"
+                    }`}
+                  />
+                ))}
               </div>
             </div>
 

@@ -29,6 +29,7 @@ const ProductList = ({
   isHomePage = false,
 }) => {
   const [showAllProducts, setShowAllProducts] = useState(false);
+  const [hoveredProduct, setHoveredProduct] = useState(null);
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
@@ -131,18 +132,26 @@ const ProductList = ({
       {displayedProducts && displayedProducts.length > 0 ? (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {displayedProducts.map((product) => (
+            {displayedProducts.map((product) => {
+              // Get display image - show first image from images array on hover, otherwise main image
+              const displayImage = hoveredProduct === product.id && product.images?.[0]
+                ? product.images[0]
+                : product.image;
+              
+              return (
               <div
                 key={product.id}
                 className=" border border-teal-100 rounded-lg p-4 hover:shadow-md transition-shadow flex flex-col"
+                onMouseEnter={() => setHoveredProduct(product.id)}
+                onMouseLeave={() => setHoveredProduct(null)}
               >
                 {/* Product Image */}
                 <div className="h-48 w-full bg-gray-100 rounded-md mb-4 flex items-center justify-center overflow-hidden">
-                  {product.image ? (
+                  {displayImage ? (
                     <img
-                      src={product.image}
+                      src={displayImage}
                       alt={product.name}
-                      className="object-contain h-full w-full p-2"
+                      className="object-contain h-full w-full p-2 transition-all duration-300"
                     />
                   ) : (
                     <div className="text-gray-400 text-sm">
@@ -250,7 +259,8 @@ const ProductList = ({
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
 
           {/* Show "See All" button if there are more products to show */}
