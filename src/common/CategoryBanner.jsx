@@ -18,7 +18,7 @@ const CategoryBanner = ({ category, products }) => {
         title: 'Fresh from the Ocean',
         subtitle: 'Premium quality frozen seafood delivered to your doorstep.',
         bgColor: 'from-cyan-100 to-cyan-50',
-        image: '/assets/category_banner/fish-banner.png'
+        image: '/assets/category_banner/fish-banner.jpg'
       },
       'Metals and Metal Products': {
         title: 'Industrial Grade Quality',
