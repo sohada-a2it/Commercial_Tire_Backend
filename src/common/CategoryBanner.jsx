@@ -115,18 +115,7 @@ const CategoryBanner = ({ category, products }) => {
         {/* Bottom Section - Product Slider */}
         <div className="relative w-full">
           <div className="flex items-end justify-center gap-4">
-            {/* Previous Button */}
-            <button
-              onClick={() => {
-                setIsAutoPlaying(false);
-                handlePrev();
-              }}
-              className="p-3 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-all z-30 flex-shrink-0 mb-8"
-              aria-label="Previous products"
-            >
-              <ChevronLeft className="w-6 h-6 text-gray-700" />
-            </button>
-
+            
             {/* Product Cards Container */}
             <div className="flex-1 relative flex items-end justify-center overflow-hidden max-w-5xl">
               <div className="flex items-end justify-center gap-4 lg:gap-6">
@@ -146,17 +135,7 @@ const CategoryBanner = ({ category, products }) => {
               </div>
             </div>
 
-            {/* Next Button */}
-            <button
-              onClick={() => {
-                setIsAutoPlaying(false);
-                handleNext();
-              }}
-              className="p-3 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-all z-30 flex-shrink-0 mb-8"
-              aria-label="Next products"
-            >
-              <ChevronRight className="w-6 h-6 text-gray-700" />
-            </button>
+            
           </div>
 
           {/* Dots Indicator */}
