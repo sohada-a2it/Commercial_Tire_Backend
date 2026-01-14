@@ -167,6 +167,11 @@ const ProductCard = ({ product, isMain, addToCart }) => {
 
   const rating = getAverageRating();
   const reviewCount = product.userReviews?.length || 0;
+  
+  // Check if product is a truck
+  const isTruck = product.category?.toLowerCase().includes('truck') || 
+                  product.subcategory?.toLowerCase().includes('truck') ||
+                  product.name?.toLowerCase().includes('truck');
 
   return (
     <div className={`relative ${isMain ? 'h-[200px] w-[310px]' : 'h-[180px] w-[260px]'}`}>
@@ -177,7 +182,7 @@ const ProductCard = ({ product, isMain, addToCart }) => {
         </div>
 
         {/* Large Image that's half in, half out - ABSOLUTE positioned */}
-        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? 'w-44 h-80 -translate-x-24' : 'w-48 h-48 -translate-x-24'}`}>
+        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? (isTruck ? 'w-44 h-80 -translate-x-24' : 'w-44 h-130 -translate-x-24') : 'w-48 h-130 -translate-x-24'}`}>
           <img
             src={product.image}
             alt={product.name}
