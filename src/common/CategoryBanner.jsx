@@ -11,8 +11,6 @@ const CategoryBanner = ({ category, products }) => {
   const getBannerInfo = () => {
     const bannerData = {
       'Vehicle Parts and Accessories': {
-        title: 'Premium Automotive Parts',
-        subtitle: 'High-quality parts and accessories for all vehicle types.',
         bgColor: 'from-blue-100 to-blue-50',
         image: '/assets/category_banner/vehicle-banner.png'
       },
