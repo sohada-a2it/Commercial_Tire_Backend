@@ -205,3 +205,12 @@ Double Coin FT105 245/70R19.5 Drive Tire-have one image
 don't have image:Double coin steer tire
 Double Coin FT105 10R17.5 Steer Tire -1005
 Double Coin FT105 120.00R15 Steer Tire -1019
+
+don't have image:Double coin trailer tire
+Double Coin FT105 120.00R15 Trailer Tire
+Double Coin RR202 12.00R24 Trailer Tire
+Double Coin FT105 235/75R17.5 Trailer Tire
+Double Coin FT105 265/70R19.5 Trailer Tire
+Double Coin RLB4 275/70R22.5 Trailer Tire
+Double Coin RR202 305/75R24.5 Trailer Tire
+Double Coin FT105 9R22.5 Trailer Tire

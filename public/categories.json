@@ -276,10 +276,10 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Durable trailer tire for regional haul.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/10.00R20.png",
+            "image": "/assets/truck/Double Coin/Trailer/RR202 10.00R20-1.png",
             "images": [
-              "/assets/truck/Double Coin/Trailer_Tire/10.00R20-2.png",
-              "/assets/truck/Double Coin/Trailer_Tire/10.00R20-3.png"
+              "/assets/truck/Double Coin/Trailer/RR202 10.00R20-2.png",
+              "/assets/truck/Double Coin/Trailer/RR202 10.00R20-3.png"
             ],
             "keyAttributes": {
               "Product Code": "DC-TR-1000R20",
@@ -404,7 +404,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Light-duty trailer tire for urban logistics.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/10R17.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 10R17.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 10R17.5-2.png",
+              "/assets/truck/Double Coin/Trailer/FT105 10R17.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-10R1775",
               "Model": "RR202",
@@ -756,7 +760,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Narrower trailer tire for lightweight applications.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/10 R22.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 10R22.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 10R22.5-2.png",
+              "/assets/truck/Double Coin/Trailer/FT105 10R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-10R225",
               "Model": "RR202",
@@ -1126,7 +1134,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Versatile trailer tire for mixed applications.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/11.00R22.png",
+            "image": "/assets/truck/Double Coin/Trailer/RR202 11.00R22-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/RR202 11.00R22-2.png",
+              "/assets/truck/Double Coin/Trailer/RR202 11.00R22-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-1100R22",
               "Model": "RR202",
@@ -1505,7 +1517,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Durable trailer tire for general hauling.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/11R22.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/RLB400 11R22.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/RLB400 11R22.5-2.png",
+              "/assets/truck/Double Coin/Trailer/RLB400 11R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-11R225",
               "Model": "RR202",
@@ -1757,7 +1773,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Long-lasting trailer tire.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/11R24.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 11R24.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 11R24.5-2.png",
+              "/assets/truck/Double Coin/Trailer/FT105 11R24.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-11R245",
               "Model": "RSA1",
@@ -2500,7 +2520,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "High-performance trailer tire for long-haul.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/12R22.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 12R22.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 12R22.5-2.png",
+              "/assets/truck/Double Coin/Trailer/FT105 12R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-12R225",
               "Model": "RR202",
@@ -2798,7 +2822,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Heavy-duty trailer tire for maximum load capacity.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/12R24.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/RR202 12R24.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/RR202 12R24.5-2.png",
+              "/assets/truck/Double Coin/Trailer/RR202 12R24.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-12R245",
               "Model": "RR202",
@@ -3109,7 +3137,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Light-duty trailer tire for urban delivery.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/21575R17.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 21575R17.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 21575R17.5-2.png",
+              "/assets/truck/Double Coin/Trailer/FT105 21575R17.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-21575R175",
               "Model": "RR202",
@@ -3399,7 +3431,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Medium-duty trailer tire for regional haul.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/22570R19.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 22570R19.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 22570R19.5-2(1).webp",
+              "/assets/truck/Double Coin/Trailer/FT105 22570R19.5-3(1).png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-22570R195",
               "Model": "RR202",
@@ -4013,7 +4049,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Versatile trailer tire for light trucks.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/24570R17.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 24570R17.5-1(1).png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 24570R17.5-2(1).webp",
+              "/assets/truck/Double Coin/Trailer/FT105 24570R17.5-3(1).png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-24570R175",
               "Model": "RR202",
@@ -4316,7 +4356,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Medium-duty trailer tire for regional haul.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/24570R19.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 24570R19.5-1(1).png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 24570R19.5-2.png",
+              "/assets/truck/Double Coin/Trailer/FT105 24570R19.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-24570R195",
               "Model": "RR202",
@@ -4626,7 +4670,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Compact trailer tire for urban applications.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/25570R22.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 25570R22.5-1(1).png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 25570R22.5-2-2.png",
+              "/assets/truck/Double Coin/Trailer/FT105 25570R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-25570R225",
               "Model": "RR202",
@@ -5467,7 +5515,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Wide trailer tire for medium-duty applications.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/28570R19.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 28570R19.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 28570R19.5-2.png",
+              "/assets/truck/Double Coin/Trailer/FT105 28570R19.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-28570R195",
               "Model": "RR202",
@@ -5772,7 +5824,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "High-capacity trailer tire for heavy loads.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/28575R24.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/RR202 28575R24.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/RR202 28575R24.5-2.png",
+              "/assets/truck/Double Coin/Trailer/RR202 28575R24.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-28575R245",
               "Model": "RR202",
@@ -6121,7 +6177,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Stable trailer tire for mixed loads.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/29575R22.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/FT105 29575R22.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/FT105 29575R22.5-2.png",
+              "/assets/truck/Double Coin/Trailer/FT105 29575R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-29575R225",
               "Model": "RR202",
@@ -6473,7 +6533,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Taller trailer tire for improved stability.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/29580R22.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/RLB4 29580R22.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/RLB4 29580R22.5-2.png",
+              "/assets/truck/Double Coin/Trailer/RLB4 29580R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-29580R225",
               "Model": "RLB4",
@@ -7093,7 +7157,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "High-capacity trailer tire for heavy loads.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/31580R22.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/RLB4 31580R22.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/RLB4 31580R22.5-2.png",
+              "/assets/truck/Double Coin/Trailer/RLB4 31580R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-31580R225",
               "Model": "RLB4",
@@ -7293,7 +7361,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Wide-base trailer tire for maximum stability.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/38555R19.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/RR202 38555R19.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/RR202 38555R19.5-2.webp",
+              "/assets/truck/Double Coin/Trailer/RR202 38555R19.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-38555R195",
               "Model": "RR202",
@@ -7599,7 +7671,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Wide-base trailer tire for maximum load capacity.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/38555R22.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/RR202 38555R22.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/RR202 38555R22.5-2.png",
+              "/assets/truck/Double Coin/Trailer/RR202 38555R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-38555R225",
               "Model": "RR202",
@@ -7905,7 +7981,10 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Wide-base trailer tire for maximum load capacity.",
-            "image": "/assets/truck/Double Coin/Trailer_Tire/38565R22.5.png",
+            "image": "/assets/truck/Double Coin/Trailer/RR202 38565R22.5-1.png",
+            "images": [
+              "/assets/truck/Double Coin/Trailer/RR202 38565R22.5-2.png"
+            ],
             "keyAttributes": {
               "Product Code": "DC-TR-38565R225",
               "Model": "RR202",
