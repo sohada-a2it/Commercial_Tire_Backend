@@ -182,7 +182,7 @@ const ProductCard = ({ product, isMain, addToCart }) => {
         </div>
 
         {/* Large Image that's half in, half out - ABSOLUTE positioned */}
-        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? (isTruck ? 'w-44 h-80 -translate-x-24' : 'w-44 h-130 -translate-x-24') : 'w-48 h-130 -translate-x-24'}`}>
+        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? (isTruck ? 'w-44 h-70 -translate-x-24' : 'w-44 h-130 -translate-x-24') : 'w-48 h-130 -translate-x-24'}`}>
           <img
             src={product.image}
             alt={product.name}
