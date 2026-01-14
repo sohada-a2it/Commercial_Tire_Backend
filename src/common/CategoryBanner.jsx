@@ -192,68 +192,58 @@ const ProductCard = ({ product, isMain }) => {
         </div>
 
         {/* Right Side - Product Info - Now takes full width */}
-        <div className={`absolute right-0 top-0 bottom-0 ${isMain ? 'w-[240px] px-4 py-4' : 'w-[210px] px-3.5 py-3'} flex flex-col justify-between`}>
-          {/* Top Info */}
-          <div>
-            {/* Brand Name */}
-            <h3 className={`font-bold text-gray-900 ${isMain ? 'text-lg' : 'text-base'} leading-none`}>
-              {product.keyAttributes?.Brand || 'Premium'}
-            </h3>
-            
-            {/* Product Name/Model */}
-            <p className={`${isMain ? 'text-sm' : 'text-xs'} text-gray-600 leading-tight`}>
-              {product.keyAttributes?.Model || product.name}
-            </p>
+        <div className={`absolute right-0 top-0 bottom-0 ${isMain ? 'w-[240px] px-4 py-4' : 'w-[210px] px-3.5 py-3'} flex flex-col`}>
+          {/* Brand Name */}
+          <h3 className={`font-bold text-gray-900 ${isMain ? 'text-lg' : 'text-base'} leading-none`}>
+            {product.keyAttributes?.Brand || 'Premium'}
+          </h3>
+          
+          {/* Product Name/Model */}
+          <p className={`${isMain ? 'text-sm mb-2' : 'text-xs mb-1.5'} text-gray-600 leading-tight`}>
+            {product.keyAttributes?.Model || product.name}
+          </p>
 
-            
-          </div>
-
-          {/* Bottom Info */}
+          {/* Price */}
           <div>
-            {/* Price */}
-            <div>
-              <div className="flex items-baseline gap-1">
-                <span className={`font-bold text-gray-900 ${isMain ? 'text-3xl' : 'text-2xl'} leading-none`}>
-                  {product.offerPrice || product.price}
-                </span>
-                <span className={`${isMain ? 'text-xs' : 'text-[11px]'} text-gray-500`}>per each</span>
-              </div>
-              {product.offerPrice && (
-                <div className={`${isMain ? 'text-sm' : 'text-xs'} text-gray-400 line-through leading-none`}>
-                  {product.price}
-                </div>
-              )}
+            <div className="flex items-baseline gap-1">
+              <span className={`font-bold text-gray-900 ${isMain ? 'text-3xl' : 'text-2xl'} leading-none`}>
+                {product.offerPrice || product.price}
+              </span>
+              <span className={`${isMain ? 'text-xs' : 'text-[11px]'} text-gray-500`}>per each</span>
             </div>
-
-            {/* Rating */}
-            {reviewCount > 0 && (
-              <div className="flex items-center gap-1.5 mt-1">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`${isMain ? 'w-4 h-4' : 'w-3.5 h-3.5'} ${
-                        i < Math.floor(rating)
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'fill-gray-200 text-gray-200'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className={`${isMain ? 'text-xs' : 'text-[11px]'} text-gray-600 font-medium`}>
-                  {reviewCount} opinions
-                </span>
+            {product.offerPrice && (
+              <div className={`${isMain ? 'text-sm' : 'text-xs'} text-gray-400 line-through leading-none`}>
+                {product.price}
               </div>
             )}
-
-            {/* Buy Now Button */}
-            <button className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMain ? 'py-2.5 text-sm mt-2' : 'py-2 text-xs mt-1.5'} rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2`}>
-              <span>🛒</span> Buy now
-            </button>
           </div>
-        </div>
 
-        {/* Sale Badge */}
+          {/* Rating */}
+          {reviewCount > 0 && (
+            <div className="flex items-center gap-1.5 mt-1">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`${isMain ? 'w-4 h-4' : 'w-3.5 h-3.5'} ${
+                      i < Math.floor(rating)
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'fill-gray-200 text-gray-200'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className={`${isMain ? 'text-xs' : 'text-[11px]'} text-gray-600 font-medium`}>
+                {reviewCount} opinions
+              </span>
+            </div>
+          )}
+
+          {/* Buy Now Button - Pushed to bottom */}
+          <button className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMain ? 'py-2.5 text-sm' : 'py-2 text-xs'} rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-auto`}>
+            <span>🛒</span> Buy now
+          </button>
+        </div>        {/* Sale Badge */}
         {product.offerPrice && (
           <div className={`absolute ${isMain ? 'top-3 right-3 px-3 py-1.5 text-xs' : 'top-2.5 right-2.5 px-2.5 py-1 text-[10px]'} bg-red-500 text-white font-bold rounded-lg shadow-lg z-20`}>
             SALE
