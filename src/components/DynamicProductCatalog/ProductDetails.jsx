@@ -734,181 +734,163 @@ const ProductDetails = () => {
             </div>
 
             {/* Right: Purchase Box */}
-            <div className="lg:w-1/4 bg-white text-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 h-fit">
-              <div className="mb-4">
-                {/* Updated Price Display */}
-                {product.price && product.offerPrice ? (
-                  <>
-                  <div className="flex items-center justify-center">
-                  <div>
-                  <p className="text-black text-xl mr-1">Price: </p>
-                  </div>
-                   
-                    <div className="flex items-center gap-1">
-                      <p className="font-bold text-2xl text-amber-600">
-                        {product.offerPrice}
-                      </p>
+  {/* Right: Purchase Box - Compact Style */}
+<div className="lg:w-1/4 bg-white text-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 h-fit">
+  {/* Price Section - Compact */}
+  <div className="mb-4">
+    {product.price && product.offerPrice ? (
+      <div className="text-center">
+        <div className="flex items-center justify-center gap-2 mb-1">
+          <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-semibold">
+            SALE
+          </span>
+          <span className="text-xs text-gray-500 line-through">
+            {product.price}
+          </span>
+        </div>
+        <div className="text-2xl font-bold text-amber-600">
+          {product.offerPrice}
+        </div>
+      </div>
+    ) : product.price ? (
+      <div className="text-center">
+        <div className="text-sm text-gray-500 mb-1">Price</div>
+        <div className="text-2xl font-bold text-teal-800">
+          {product.price}
+        </div>
+      </div>
+    ) : (
+      <div className="text-center text-gray-500 text-sm">
+        Price available upon request
+      </div>
+    )}
+  </div>
 
-                      <span className="text-gray-700">-</span>
-
-                      <p className="font-bold text-xl line-through text-gray-500">
-                        {product.price}
-                      </p>
-                    </div>
-                  </div>
-                  </>
-                ) : product.price ? (
-                  <>
-                    <p className="text-gray-600 text-sm">Price:</p>
-                    <p className="font-bold text-2xl text-teal-800">
-                      {product.price}
-                    </p>
-                  </>
-                ) : (
-                  <p className="text-gray-500">Price: N/A</p>
-                )}
-              </div>
-
-              {/* Pricing Tiers Display */}
-              {product.pricingTiers && product.pricingTiers.length > 0 && (
-                <div className="mb-4 max-h-32 overflow-y-auto">
-                  {/* Price by Weight */}
-                  {product.pricingTiers[0].minWeight !== undefined && (
-                    <>
-                      <p className="text-gray-600 text-sm mb-2 font-semibold">
-                        Price by Weight:
-                      </p>
-                      {product.pricingTiers.map((tier, index) => (
-                        <p key={index} className="text-gray-700 text-xs mb-1">
-                          {tier.minWeight}-{tier.maxWeight}g:{" "}
-                          <span className="font-semibold text-teal-700">
-                            {tier.pricePerKg}
-                          </span>
-                        </p>
-                      ))}
-                      <p className="text-xs text-amber-600 mt-2 font-medium">
-                        *Final price varies by actual weight
-                      </p>
-                    </>
-                  )}
-
-                  {/* Volume Pricing by Size */}
-                  {product.pricingTiers[0].size &&
-                    product.pricingTiers[0].pricePerTon && (
-                      <>
-                        <p className="text-gray-600 text-sm mb-2 font-semibold">
-                          Volume Pricing:
-                        </p>
-                        {product.pricingTiers.map((tier, index) => (
-                          <p key={index} className="text-gray-700 text-xs mb-1">
-                            Size({tier.size}) - price(
-                            <span className="font-semibold text-teal-700">
-                              {tier.pricePerTon}
-                            </span>
-                            )
-                          </p>
-                        ))}
-                      </>
-                    )}
-
-                  {/* Volume Pricing by Quantity (for tires) */}
-                  {product.pricingTiers[0].minQuantity !== undefined &&
-                    product.pricingTiers[0].pricePerTire && (
-                      <>
-                        <p className="text-gray-600 text-sm mb-2 font-semibold">
-                          Volume Pricing:
-                        </p>
-                        {product.pricingTiers.map((tier, index) => (
-                          <p key={index} className="text-gray-700 text-xs mb-1">
-                            {tier.minQuantity}
-                            {tier.maxQuantity ? `-${tier.maxQuantity}` : "+"}{" "}
-                            tires:{" "}
-                            <span className="font-semibold text-teal-700">
-                              {tier.pricePerTire}
-                            </span>
-                          </p>
-                        ))}
-                      </>
-                    )}
-                </div>
-              )}
-
-              {product.keyAttributes?.MOQ && (
-                <p className="text-gray-600 font-bold text-sm mb-4">
-                  MOQ: {product.keyAttributes.MOQ}
-                </p>
-              )}
-
-              {/* Quantity Selector */}
-              <div className="mb-4">
-                <label className="text-teal-700 text-lg mb-2 block text-center underline underline-offset-2 underline-teal-600 font-semibold">
-                  Quantity:
-                </label>
-                <div className="flex items-center justify-between gap-3 mx-5">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-2 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
-                  >
-                    <FaMinus className="w-4 h-4" />
-                  </button>
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) =>
-                      setQuantity(Math.max(1, parseInt(e.target.value) || 1))
-                    }
-                    className="w-20 text-center border border-teal-300 bg-white rounded-md px-3 py-2"
-                    min="1"
-                  />
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="p-2 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
-                  >
-                    <FaPlus className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Add to Cart Button */}
-              <button
-                onClick={() => {
-                  const priceNum = parsePrice(
-                    product.offerPrice || product.price || "0"
-                  );
-
-                  // Extract MOQ from product attributes with unit
-                  let moqValue = 50;
-                  let moqUnit = "units";
-                  if (product.keyAttributes && product.keyAttributes.MOQ) {
-                    const moqStr = product.keyAttributes.MOQ.toString().trim();
-                    // Match number and optional unit (e.g., "100 Tons", "50 tires", "10")
-                    const moqMatch = moqStr.match(/(\d+)\s*([a-zA-Z]+)?/);
-                    if (moqMatch) {
-                      moqValue = parseInt(moqMatch[1]);
-                      // If unit is present, use it; otherwise default to "units"
-                      moqUnit = moqMatch[2] || "units";
-                    }
-                  }
-
-                  addToCart({
-                    id: product.id,
-                    name: product.name,
-                    price: priceNum,
-                    offerPrice: product.offerPrice,
-                    quantity: quantity,
-                    image: product.image,
-                    category: product.categoryName || "General",
-                    moq: moqValue,
-                    moqUnit: moqUnit,
-                    pricingTiers: product.pricingTiers || [],
-                  });
-                }}
-                className="w-full border border-cyan-700 hover:bg-teal-600 hover:text-white text-cyan-600 px-6 py-2 rounded-sm transition-all shadow-md hover:shadow-lg mb-3 flex items-center justify-center gap-2"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                Add to Cart
-              </button>
+  {/* Volume Pricing - Compact Table */}
+  {product.pricingTiers && product.pricingTiers.length > 0 && (
+    <div className="mb-4 border-t border-gray-100 pt-3">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-md font-semibold text-red-500">Volume Pricing</span>
+        <span className="text-xs text-teal-600">Save more</span>
+      </div>
+      
+      <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
+        {/* Price by Weight */}
+        {product.pricingTiers[0].minWeight !== undefined && (
+          product.pricingTiers.map((tier, index) => (
+            <div key={index} className="flex items-center justify-between text-xs">
+              <span className="text-gray-600">{tier.minWeight}-{tier.maxWeight}g</span>
+              <span className="font-semibold text-teal-700">{tier.pricePerKg}</span>
             </div>
+          ))
+        )}
+
+        {/* Volume Pricing by Size */}
+        {product.pricingTiers[0].size && product.pricingTiers[0].pricePerTon && (
+          product.pricingTiers.map((tier, index) => (
+            <div key={index} className="flex items-center justify-between text-xs">
+              <span className="text-gray-600">Size {tier.size}</span>
+              <span className="font-semibold text-teal-700">{tier.pricePerTon}</span>
+            </div>
+          ))
+        )}
+
+        {/* Volume Pricing by Quantity */}
+        {product.pricingTiers[0].minQuantity !== undefined && (
+          product.pricingTiers.map((tier, index) => (
+            <div key={index} className="flex items-center justify-between text-xs">
+              <span className="text-gray-600">
+                {tier.minQuantity}
+                {tier.maxQuantity ? `-${tier.maxQuantity}` : '+'}
+              </span>
+              <span className="font-semibold text-teal-700">
+                {tier.pricePerTire || tier.pricePerUnit}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  )}
+
+  {/* MOQ - Compact */}
+  {product.keyAttributes?.MOQ && (
+    <div className="mb-4 p-2 bg-blue-50 rounded border border-blue-100">
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-blue-700 font-medium">MOQ:</span>
+        <span className="text-blue-900 font-bold">{product.keyAttributes.MOQ}</span>
+      </div>
+    </div>
+  )}
+
+  {/* Quantity Selector - Compact */}
+  <div className="mb-4">
+    <div className="flex items-center justify-between mb-2">
+      <span className="text-sm font-medium text-gray-700">Quantity</span>
+      <span className="text-xs text-gray-500">Add {quantity} to cart</span>
+    </div>
+    <div className="flex items-center justify-center gap-3">
+      <button
+        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+        className="p-2 hover:bg-gray-100 rounded transition-colors"
+        aria-label="Decrease quantity"
+      >
+        <FaMinus className="w-4 h-4 text-yellow-600" />
+      </button>
+<input
+  type="number"
+  value={quantity}
+  onChange={(e) =>
+    setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+  }
+  className="w-16 text-center font-semibold border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-200 bg-white dark:bg-white text-gray-900 dark:text-gray-900"
+  min="1"
+/>
+      <button
+        onClick={() => setQuantity(quantity + 1)}
+        className="p-2 hover:bg-gray-100 rounded transition-colors"
+        aria-label="Increase quantity"
+      >
+        <FaPlus className="w-4 h-4 text-yellow-600" />
+      </button>
+    </div>
+  </div>
+
+  {/* Add to Cart Button - Compact */}
+  <button
+    onClick={() => {
+      const priceNum = parsePrice(product.offerPrice || product.price || "0");
+      
+      let moqValue = 50;
+      let moqUnit = "units";
+      if (product.keyAttributes && product.keyAttributes.MOQ) {
+        const moqStr = product.keyAttributes.MOQ.toString().trim();
+        const moqMatch = moqStr.match(/(\d+)\s*([a-zA-Z]+)?/);
+        if (moqMatch) {
+          moqValue = parseInt(moqMatch[1]);
+          moqUnit = moqMatch[2] || "units";
+        }
+      }
+
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: priceNum,
+        offerPrice: product.offerPrice,
+        quantity: quantity,
+        image: product.image,
+        category: product.categoryName || "General",
+        moq: moqValue,
+        moqUnit: moqUnit,
+        pricingTiers: product.pricingTiers || [],
+      });
+    }}
+    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-md transition-colors flex items-center justify-center gap-2 shadow hover:shadow-md"
+  >
+    <ShoppingCart className="w-4 h-4" />
+    <span>Add to Cart</span>
+  </button>
+</div>
           </div>
 
           {/* Tabbed Interface for Product Details */}
