@@ -179,7 +179,7 @@ const ProductCard = ({ product, isMain }) => {
       {/* Product Card Container */}
       <div className="bg-white rounded-[16px] shadow-lg h-full overflow-visible relative">
         {/* Season/Category Badge */}
-        <div className={`absolute top-3 left-3 ${isMain ? 'text-[11px]' : 'text-[10px]'} text-blue-600 font-semibold flex items-center gap-1 z-20`}>
+        <div className={`absolute top-3 left-3 ${isMain ? 'text-[11px]' : 'text-[10px]'} text-blue-600 font-semibold flex items-center gap-6 z-20`}>
         </div>
 
         {/* Large Image that's half in, half out - ABSOLUTE positioned */}
