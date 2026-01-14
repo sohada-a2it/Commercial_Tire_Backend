@@ -175,7 +175,7 @@ const ProductCard = ({ product, isMain }) => {
   const reviewCount = product.userReviews?.length || 0;
 
   return (
-    <div className={`relative ${isMain ? 'h-[240px] w-[380px]' : 'h-[220px] w-[340px]'}`}>
+    <div className={`relative ${isMain ? 'h-[220px] w-[320px]' : 'h-[180px] w-[260px]'}`}>
       {/* Product Card Container */}
       <div className="bg-white rounded-[16px] shadow-lg h-full overflow-visible relative">
         {/* Season/Category Badge */}
@@ -183,7 +183,7 @@ const ProductCard = ({ product, isMain }) => {
         </div>
 
         {/* Large Image that's half in, half out - ABSOLUTE positioned */}
-        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? 'w-64 h-64 -translate-x-24' : 'w-48 h-48 -translate-x-24'}`}>
+        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? 'w-44 h-84 -translate-x-24' : 'w-48 h-48 -translate-x-24'}`}>
           <img
             src={product.image}
             alt={product.name}
