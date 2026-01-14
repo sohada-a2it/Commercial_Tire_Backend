@@ -109,7 +109,7 @@ const CategoryBanner = ({ category, products }) => {
   };
 
   return (
-    <div className="relative w-full h-[500px] lg:h-[450px] overflow-hidden rounded-lg max-w-7xl mx-auto">
+    <div className="relative w-full h-[400px] lg:h-[500px] overflow-hidden rounded-lg max-w-7xl mx-auto">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -136,11 +136,11 @@ const CategoryBanner = ({ category, products }) => {
         </div>
 
         {/* Bottom Section - Product Slider */}
-        <div className="relative w-full">
+        <div className="relative w-full pb-4">
           <div className="flex items-end justify-center">
             {/* Product Cards Container */}
-            <div className="relative flex items-end justify-center w-full">
-              <div className="flex items-end justify-center gap-2 lg:gap-4">
+            <div className="relative flex items-end justify-center w-full -mr-10">
+              <div className="flex items-end justify-center gap-2 lg:gap-20">
                 {getVisibleProducts().map((product, idx) => (
                   <div
                     key={`${product.id}-${idx}`}
