@@ -197,11 +197,10 @@ const ProductCard = ({ product, isMain }) => {
     <div className="bg-white rounded-xl shadow-2xl overflow-hidden aspect-square flex">
       {/* Left Side - Product Image (50%) */}
       <div className="relative w-1/2 bg-white p-4 flex items-center justify-center">
-        <Image
+        <img
           src={product.image}
           alt={product.name}
-          fill
-          className="object-contain p-2"
+          className="w-full h-full object-contain"
         />
         {product.offerPrice && (
           <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold">
