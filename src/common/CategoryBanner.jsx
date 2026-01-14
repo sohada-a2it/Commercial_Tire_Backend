@@ -42,7 +42,7 @@ const CategoryBanner = ({ category, products }) => {
   const selectDiverseProducts = (products) => {
     if (!products || products.length === 0) return [];
     
-    const brands = ['Bridgestone', 'Michelin', 'Firestone', 'Goodyear', 'Double Coin'];
+    const brands = ['Roadlux', 'Michelin', 'Firestone', 'Goodyear', 'Double Coin'];
     const selectedProducts = [];
     const usedBrands = new Set();
     
