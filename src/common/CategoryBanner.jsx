@@ -120,7 +120,7 @@ const CategoryBanner = ({ category, products }) => {
           priority
         />
         {/* Dark overlay for better text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/40"></div>
       </div>
 
       {/* Content Overlay */}
@@ -175,7 +175,7 @@ const ProductCard = ({ product, isMain }) => {
   const reviewCount = product.userReviews?.length || 0;
 
   return (
-    <div className={`relative ${isMain ? 'h-[220px] w-[320px]' : 'h-[180px] w-[260px]'}`}>
+    <div className={`relative ${isMain ? 'h-[200px] w-[310px]' : 'h-[180px] w-[260px]'}`}>
       {/* Product Card Container */}
       <div className="bg-white rounded-[16px] shadow-lg h-full overflow-visible relative">
         {/* Season/Category Badge */}
@@ -183,7 +183,7 @@ const ProductCard = ({ product, isMain }) => {
         </div>
 
         {/* Large Image that's half in, half out - ABSOLUTE positioned */}
-        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? 'w-44 h-84 -translate-x-24' : 'w-48 h-48 -translate-x-24'}`}>
+        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? 'w-44 h-94 -translate-x-24' : 'w-48 h-48 -translate-x-24'}`}>
           <img
             src={product.image}
             alt={product.name}
