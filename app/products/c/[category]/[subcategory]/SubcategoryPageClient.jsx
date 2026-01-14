@@ -6,6 +6,7 @@ import { useNavigate } from "@/lib/navigation";
 import ProductList from "@/components/DynamicProductCatalog/ProductList";
 import SearchSuggestion from "@/components/Search/SearchSuggestion.jsx";
 import ClientSideMetadata from "@/components/shared/ClientSideMetadata";
+import CategoryBanner from "@/common/CategoryBanner";
 
 const SubcategoryPageClient = () => {
   const params = useParams();
@@ -275,6 +276,16 @@ const SubcategoryPageClient = () => {
             </span>
           </nav>
         </div>
+
+        {/* Category Banner */}
+        {category?.name && subcategory?.products && (
+          <div className="mb-8">
+            <CategoryBanner 
+              category={category.name} 
+              products={subcategory.products} 
+            />
+          </div>
+        )}
 
         {/* Search Bar Section */}
         <div className="mb-8 text-center relative">
