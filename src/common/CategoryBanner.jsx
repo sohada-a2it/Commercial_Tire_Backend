@@ -91,10 +91,6 @@ const CategoryBanner = ({ category, products }) => {
     setCurrentIndex((prev) => (prev + 1) % displayProducts.length);
   };
 
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + displayProducts.length) % displayProducts.length);
-  };
-
   const getVisibleProducts = () => {
     const visible = [];
     for (let i = 0; i < 3; i++) {
@@ -126,31 +122,8 @@ const CategoryBanner = ({ category, products }) => {
           priority
         />
         {/* Dark overlay for better text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50"></div>
       </div>
-
-      {/* Navigation Arrows */}
-      <button
-        onClick={() => {
-          setIsAutoPlaying(false);
-          handlePrev();
-        }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all hover:scale-110"
-        aria-label="Previous product"
-      >
-        <ChevronLeft size={24} />
-      </button>
-      
-      <button
-        onClick={() => {
-          setIsAutoPlaying(false);
-          handleNext();
-        }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all hover:scale-110"
-        aria-label="Next product"
-      >
-        <ChevronRight size={24} />
-      </button>
 
       {/* Content Overlay */}
       <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-between py-8">
@@ -169,7 +142,7 @@ const CategoryBanner = ({ category, products }) => {
           <div className="flex items-end justify-center">
             {/* Product Cards Container */}
             <div className="relative flex items-end justify-center w-full">
-              <div className="flex items-end justify-center gap-8 lg:gap-12">
+              <div className="flex items-end justify-center gap-4 lg:gap-6">
                 {getVisibleProducts().map((product, idx) => (
                   <div
                     key={`${product.id}-${idx}`}
@@ -221,11 +194,12 @@ const ProductCard = ({ product, isMain }) => {
   const reviewCount = product.userReviews?.length || 0;
 
   return (
-    <div className={`relative ${isMain ? 'h-64 w-[400px]' : 'h-56 w-[350px]'}`}>
+    <div className={`relative ${isMain ? 'h-[240px] w-[380px]' : 'h-[220px] w-[340px]'}`}>
       {/* Product Card Container */}
-      <div className="bg-white rounded-xl shadow-2xl h-full overflow-visible flex relative">
+      <div className="bg-white rounded-[16px] shadow-lg h-full overflow-visible flex relative">
+
         {/* Left Side - Large Image that's half in, half out */}
-        <div className={`absolute left-0 top-1/2 -translate-y-1/2 ${isMain ? 'w-56 h-56 -translate-x-24' : 'w-48 h-48 -translate-x-20'}`}>
+        <div className={`absolute left-0 top-1/2 -translate-y-1/2 ${isMain ? 'w-52 h-52 -translate-x-20' : 'w-44 h-44 -translate-x-16'}`}>
           <img
             src={product.image}
             alt={product.name}
@@ -234,37 +208,32 @@ const ProductCard = ({ product, isMain }) => {
         </div>
 
         {/* Right Side - Product Info */}
-        <div className={`w-full ${isMain ? 'pl-36' : 'pl-32'} pr-4  flex flex-col justify-between`}>
+        <div className={`ml-auto ${isMain ? 'w-[240px] px-2 py-4' : 'w-[210px] px-4 py-3'} flex flex-col justify-between`}>
           {/* Top Info */}
-          <div className="space-y-1">
-            {/* Product Name */}
-            <h3 className={`font-bold text-gray-900 ${isMain ? 'text-base' : 'text-sm'} leading-tight line-clamp-2`}>
-              {product.name}
+          <div>
+            {/* Brand Name */}
+            <h3 className={`font-bold text-gray-900 ${isMain ? 'text-lg' : 'text-base'} leading-none mb-0.5`}>
+              {product.keyAttributes?.Brand || 'Premium'}
             </h3>
             
-            {/* Location/Brand */}
-            <div className="text-xs text-gray-600 font-medium">
-              {product.keyAttributes?.Brand || product.keyAttributes?.Location || 'Premium'}
-            </div>
-
-            {/* Model/Type */}
-            <div className="text-xs text-gray-500 uppercase tracking-wide">
-              {product.keyAttributes?.Model || product.keyAttributes?.Type || 'Standard'}
-            </div>
+            {/* Product Name/Model */}
+            <p className={`${isMain ? 'text-sm' : 'text-xs'} text-gray-600 leading-tight`}>
+              {product.keyAttributes?.Model || product.name}
+            </p>
           </div>
 
           {/* Bottom Info */}
-          <div className="space-y-2">
+          <div>
             {/* Price */}
-            <div>
+            <div className="mb-1.5">
               <div className="flex items-baseline gap-1">
-                <span className={`font-bold text-gray-900 ${isMain ? 'text-xl' : 'text-lg'}`}>
+                <span className={`font-bold text-gray-900 ${isMain ? 'text-3xl' : 'text-2xl'} leading-none`}>
                   {product.offerPrice || product.price}
                 </span>
-                <span className="text-xs text-gray-500">per each</span>
+                <span className={`${isMain ? 'text-xs' : 'text-[11px]'} text-gray-500`}>per each</span>
               </div>
               {product.offerPrice && (
-                <div className="text-xs text-gray-500 line-through">
+                <div className={`${isMain ? 'text-sm' : 'text-xs'} text-gray-400 line-through leading-none mt-0.5`}>
                   {product.price}
                 </div>
               )}
@@ -272,30 +241,35 @@ const ProductCard = ({ product, isMain }) => {
 
             {/* Rating */}
             {reviewCount > 0 && (
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 mb-2.5">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`${isMain ? 'w-3.5 h-3.5' : 'w-3 h-3'} ${
+                      className={`${isMain ? 'w-4 h-4' : 'w-3.5 h-3.5'} ${
                         i < Math.floor(rating)
                           ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
+                          : 'fill-gray-200 text-gray-200'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-xs text-gray-600">
+                <span className={`${isMain ? 'text-xs' : 'text-[11px]'} text-gray-600 font-medium`}>
                   {reviewCount} opinions
                 </span>
               </div>
             )}
+
+            {/* Buy Now Button */}
+            <button className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMain ? 'py-2.5 text-sm' : 'py-2 text-xs'} rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2`}>
+              <span>🛒</span> Buy now
+            </button>
           </div>
         </div>
 
         {/* Sale Badge */}
         {product.offerPrice && (
-          <div className={`absolute top-2 right-2 bg-red-500 text-white ${isMain ? 'px-2.5 py-1 text-xs' : 'px-2 py-0.5 text-xs'} font-bold rounded-md shadow-md z-10`}>
+          <div className={`absolute ${isMain ? 'top-3 right-3 px-3 py-1.5 text-xs' : 'top-2.5 right-2.5 px-2.5 py-1 text-[10px]'} bg-red-500 text-white font-bold rounded-lg shadow-lg z-20`}>
             SALE
           </div>
         )}
