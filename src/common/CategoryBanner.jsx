@@ -101,7 +101,7 @@ const CategoryBanner = ({ category, products }) => {
   };
 
   return (
-    <div className="relative w-full h-[400px] lg:h-[500px] overflow-hidden rounded-lg max-w-7xl mx-auto">
+    <div className="relative w-full h-[400px] lg:h-[450px] overflow-hidden rounded-lg max-w-7xl mx-auto">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -112,7 +112,7 @@ const CategoryBanner = ({ category, products }) => {
           priority
         />
         {/* Dark overlay for better text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/10"></div>
       </div>
 
       {/* Content Overlay */}
@@ -175,7 +175,7 @@ const ProductCard = ({ product, isMain }) => {
         </div>
 
         {/* Large Image that's half in, half out - ABSOLUTE positioned */}
-        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? 'w-44 h-100 -translate-x-24' : 'w-48 h-48 -translate-x-24'}`}>
+        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? 'w-44 h-130 -translate-x-24' : 'w-48 h-48 -translate-x-24'}`}>
           <img
             src={product.image}
             alt={product.name}
