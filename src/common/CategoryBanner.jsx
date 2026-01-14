@@ -109,7 +109,7 @@ const CategoryBanner = ({ category, products }) => {
   };
 
   return (
-    <div className="relative w-full h-[500px] lg:h-[550px] overflow-hidden rounded-lg max-w-7xl mx-auto">
+    <div className="relative w-full h-[500px] lg:h-[450px] overflow-hidden rounded-lg max-w-7xl mx-auto">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -245,7 +245,7 @@ const ProductCard = ({ product, isMain }) => {
           </button>
         </div>        {/* Sale Badge */}
         {product.offerPrice && (
-          <div className={`absolute ${isMain ? 'top-3 right-3 px-3 py-1.5 text-xs' : 'top-2.5 right-2.5 px-2.5 py-1 text-[10px]'} bg-red-500 text-white font-bold rounded-lg shadow-lg z-20`}>
+          <div className={`absolute ${isMain ? 'top-1 right-3 px-3 py-0.5 text-xs' : 'top-2.5 right-2.5 px-2.5 py-1 text-[8px]'} bg-red-500 text-white font-semibold rounded-lg shadow-lg z-20`}>
             SALE
           </div>
         )}
