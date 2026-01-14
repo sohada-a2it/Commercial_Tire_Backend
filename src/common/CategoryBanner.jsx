@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ShoppingCart, Star } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 const CategoryBanner = ({ category, products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const { addToCart } = useCart();
 
   // Get banner info based on category
   const getBannerInfo = () => {
@@ -142,7 +144,7 @@ const CategoryBanner = ({ category, products }) => {
                       ${getCardOpacity(product.position)}
                     `}
                   >
-                    <ProductCard product={product} isMain={product.position === 0} />
+                    <ProductCard product={product} isMain={product.position === 0} addToCart={addToCart} />
                   </div>
                 ))}
               </div>
@@ -156,7 +158,7 @@ const CategoryBanner = ({ category, products }) => {
 };
 
 // Product Card with half-in, half-out image (like the reference image)
-const ProductCard = ({ product, isMain }) => {
+const ProductCard = ({ product, isMain, addToCart }) => {
   const getAverageRating = () => {
     if (!product.userReviews || product.userReviews.length === 0) return 0;
     const sum = product.userReviews.reduce((acc, review) => acc + review.rating, 0);
@@ -232,7 +234,10 @@ const ProductCard = ({ product, isMain }) => {
           )}
 
           {/* Buy Now Button - Pushed to bottom */}
-          <button className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMain ? 'py-2.5 text-sm' : 'py-2 text-xs'} rounded-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-auto`}>
+          <button 
+            onClick={() => addToCart(product)}
+            className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMain ? 'py-2.5 text-sm' : 'py-2 text-xs'} rounded-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-auto`}
+          >
             <ShoppingCart className="w-5 h-5 hover:scale-50" /> Add To Cart
           </button>
         </div>        {/* Sale Badge */}
