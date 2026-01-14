@@ -15,26 +15,18 @@ const CategoryBanner = ({ category, products }) => {
         image: '/assets/category_banner/vehicle-banner.png'
       },
       'Frozen Fish': {
-        title: 'Fresh from the Ocean',
-        subtitle: 'Premium quality frozen seafood delivered to your doorstep.',
         bgColor: 'from-cyan-100 to-cyan-50',
         image: '/assets/category_banner/fish-banner.jpg'
       },
       'Metals and Metal Products': {
-        title: 'Industrial Grade Quality',
-        subtitle: 'High-purity metals for all your industrial needs.',
         bgColor: 'from-gray-100 to-gray-50',
         image: '/assets/category_banner/metal-banner.png'
       },
       'Dry Food': {
-        title: 'Nature\'s Best Selection',
-        subtitle: 'Premium quality dry foods from farm to table.',
         bgColor: 'from-amber-100 to-amber-50',
         image: '/assets/category_banner/food-banner.png'
       },
       'Agriculture': {
-        title: 'Farm Fresh Produce',
-        subtitle: 'Organic and fresh agricultural products delivered daily.',
         bgColor: 'from-green-100 to-green-50',
         image: '/assets/category_banner/agriculture-banner.png'
       }
