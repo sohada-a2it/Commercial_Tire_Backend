@@ -194,16 +194,14 @@ NEXT_PUBLIC_SITE_URL=https://asianimportexport.com
 # NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_template_id
 # NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
 don't have image:Double coin Drive tire
-Double Coin FT105 10R17.5 Drive Tire
-Double Coin FT105 12.00R15 Drive Tire
-Double Coin RLB4 275/70R22.5 Drive Tire
-Double Coin RR202 385/55R19.5 Drive Tire
+Double Coin FT105 10R17.5 Drive Tire -1004
+Double Coin FT105 12.00R15 Drive Tire -1018
+Double Coin RLB4 275/70R22.5 Drive Tire -1051
+Double Coin RR202 385/55R19.5 Drive Tire -1072
 don't change:
 Double Coin FT105 245/70R19.5 Drive Tire-have one image
 
 
 don't have image:Double coin steer tire
-Double Coin FT105 10R17.5 Steer Tire
-Double Coin FT105 120.00R15 Steer Tire
-
-
+Double Coin FT105 10R17.5 Steer Tire -1005
+Double Coin FT105 120.00R15 Steer Tire -1019
