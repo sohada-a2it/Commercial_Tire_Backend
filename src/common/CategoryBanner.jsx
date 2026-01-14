@@ -1,7 +1,7 @@
 // components/CategoryBanner.jsx
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ShoppingCart, Star } from 'lucide-react';
 
 const CategoryBanner = ({ category, products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -232,12 +232,12 @@ const ProductCard = ({ product, isMain }) => {
           )}
 
           {/* Buy Now Button - Pushed to bottom */}
-          <button className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMain ? 'py-2.5 text-sm' : 'py-2 text-xs'} rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-auto`}>
-            <span>🛒</span> Buy now
+          <button className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMain ? 'py-2.5 text-sm' : 'py-2 text-xs'} rounded-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-auto`}>
+            <ShoppingCart className="w-5 h-5 hover:scale-50" /> Add To Cart
           </button>
         </div>        {/* Sale Badge */}
         {product.offerPrice && (
-          <div className={`absolute ${isMain ? 'top-1 right-3 px-3 py-0.5 text-xs' : 'top-2.5 right-2.5 px-2.5 py-1 text-[8px]'} bg-red-500 text-white font-semibold rounded-lg shadow-lg z-20`}>
+          <div className={`absolute ${isMain ? 'top-1 right-3 px-3 py-0.5 text-xs' : 'top-2.5 right-2.5 px-2.5 py-1 text-[8px]'} bg-red-500 text-white font-semibold rounded-md shadow-md z-20`}>
             SALE
           </div>
         )}
