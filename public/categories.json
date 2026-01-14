@@ -1862,7 +1862,6 @@
             "description": "Durable steering tire for long-haul applications.",
             "image": "/assets/truck/Double Coin/Steer/FT105 11R24.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 11R24.5-1.png",
               "/assets/truck/Double Coin/Steer/FT105 11R24.5-2.png",
               "/assets/truck/Double Coin/Steer/FT105 11R24.5-3.png"
             ],
@@ -2394,7 +2393,6 @@
             "description": "High-capacity drive tire for heavy loads. Designed for maximum load carrying capability and durability.",
             "image": "/assets/truck/Double Coin/Drive/RR202 12.00R24-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/RR202 12.00R24-1.png",
               "/assets/truck/Double Coin/Drive/RR202 12.00R24-2.png",
               "/assets/truck/Double Coin/Drive/RR202 12.00R24-3.png"
             ],
@@ -2496,7 +2494,6 @@
             "description": "High-capacity steer tire for heavy loads.",
             "image": "/assets/truck/Double Coin/Steer/RR202 12.00R24-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RR202 12.00R24-1.png",
               "/assets/truck/Double Coin/Steer/RR202 12.00R24-2.png",
               "/assets/truck/Double Coin/Steer/RR202 12.00R24-3.png"
             ],
@@ -2705,7 +2702,6 @@
             "description": "High-performance drive tire for long-haul. Engineered for extended mileage and reliable performance.",
             "image": "/assets/truck/Double Coin/Drive/FT105 12R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/FT105 12R22.5-1.png",
               "/assets/truck/Double Coin/Drive/FT105 12R22.5-2.png",
               "/assets/truck/Double Coin/Drive/FT105 12R22.5-3.png"
             ],
@@ -2816,7 +2812,6 @@
             "description": "High-performance steer tire for long-haul.",
             "image": "/assets/truck/Double Coin/Steer/FT105 12R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 12R22.5-1.png",
               "/assets/truck/Double Coin/Steer/FT105 12R22.5-2.png",
               "/assets/truck/Double Coin/Steer/FT105 12R22.5-3(1).png"
             ],
@@ -3023,11 +3018,10 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Heavy-duty drive tire for maximum load capacity. Built to handle the most demanding applications.",
-            "image": "/assets/truck/Double Coin/Drive/RR202 12R24.5 -2.png",
+            "image": "/assets/truck/Double Coin/Drive/RR202 12R24.5-2.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/RR202 12R24.5 -2.png",
-              "/assets/truck/Double Coin/Drive/RR202 12R24.5 -3.png",
-              "/assets/truck/Double Coin/Drive/RR202 12R24.5 -4.png"
+              "/assets/truck/Double Coin/Drive/RR202 12R24.5-3.png",
+              "/assets/truck/Double Coin/Drive/RR202 12R24.5-4.png"
             ],
             "keyAttributes": {
               "Product Code": "DC-12R245",
@@ -3124,7 +3118,6 @@
             "description": "Heavy-duty steer tire for maximum load capacity.",
             "image": "/assets/truck/Double Coin/Steer/RR202 12R24.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RR202 12R24.5-1.png",
               "/assets/truck/Double Coin/Steer/RR202 12R24.5-2.png",
               "/assets/truck/Double Coin/Steer/RR202 12R24.5-3.webp"
             ],
@@ -3322,7 +3315,6 @@
             "description": "Light-duty drive tire for urban delivery. Perfect for city operations and light commercial vehicles.",
             "image": "/assets/truck/Double Coin/Drive/FT105 21575R17.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/FT105 21575R17.5-1.png",
               "/assets/truck/Double Coin/Drive/FT105 21575R17.5-2.png",
               "/assets/truck/Double Coin/Drive/FT105 21575R17.5-3.webp"
             ],
@@ -3429,7 +3421,6 @@
             "description": "Light-duty steer tire for urban delivery.",
             "image": "/assets/truck/Double Coin/Steer/FT105 21575R17.5-1(1).png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 21575R17.5-1(1).png",
               "/assets/truck/Double Coin/Steer/FT105 21575R17.5-2(1).webp",
               "/assets/truck/Double Coin/Steer/FT105 21575R17.5-3(1).png"
             ],
@@ -3627,7 +3618,6 @@
             "description": "Medium-duty drive tire for regional haul. Balanced performance for various regional applications.",
             "image": "/assets/truck/Double Coin/Drive/22570R19.5 -1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/22570R19.5 -1.png",
               "/assets/truck/Double Coin/Drive/22570R19.5-2.png",
               "/assets/truck/Double Coin/Drive/22570R19.5-3.png"
             ],
@@ -3729,7 +3719,6 @@
             "description": "Medium-duty steer tire for regional haul.",
             "image": "/assets/truck/Double Coin/Steer/FT105 22570R19.5-1(1).png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 22570R19.5-1(1).png",
               "/assets/truck/Double Coin/Steer/FT105 22570R19.5-2(1).png",
               "/assets/truck/Double Coin/Steer/FT105 22570R19.5-3(1).png"
             ],
@@ -3927,7 +3916,6 @@
             "description": "Light-duty drive tire for urban logistics. Ideal for delivery services and light commercial use.",
             "image": "/assets/truck/Double Coin/Drive/FT105 23575R17.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/FT105 23575R17.5-1.png",
               "/assets/truck/Double Coin/Drive/FT105 23575R17.5-2.png",
               "/assets/truck/Double Coin/Drive/FT105 23575R17.5-3.png"
             ],
@@ -4026,7 +4014,6 @@
             "description": "Light-duty steer tire for urban logistics.",
             "image": "/assets/truck/Double Coin/Steer/FT105 23575R17.5-1(1).png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 23575R17.5-1(1).png",
               "/assets/truck/Double Coin/Steer/FT105 23575R17.5-2(1).png",
               "/assets/truck/Double Coin/Steer/FT105 23575R17.5-3(1).png"
             ],
@@ -4232,7 +4219,6 @@
             "description": "Versatile drive tire for light trucks. Suitable for various light commercial applications.",
             "image": "/assets/truck/Double Coin/Drive/FT105 24570R17.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/FT105 24570R17.5-1.png",
               "/assets/truck/Double Coin/Drive/FT105 24570R17.5-2.png",
               "/assets/truck/Double Coin/Drive/FT105 24570R17.5-3.png"
             ],
@@ -4339,7 +4325,6 @@
             "description": "Versatile steer tire for light trucks.",
             "image": "/assets/truck/Double Coin/Steer/24570R17.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/24570R17.5-1.png",
               "/assets/truck/Double Coin/Steer/24570R17.5-2.png",
               "/assets/truck/Double Coin/Steer/24570R17.5-3.png"
             ],
@@ -4544,11 +4529,7 @@
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Medium-duty drive tire for regional haul. Designed for reliable performance in regional applications.",
             "image": "/assets/truck/Double Coin/Drive/FT105 24570R19.5-2.png",
-            "images": [
-              "/assets/truck/Double Coin/Drive/FT105 24570R19.5-2.png",
-              "/assets/truck/Double Coin/Drive/FT105 24570R19.5-2.png",
-              "/assets/truck/Double Coin/Drive/FT105 24570R19.5-2.png"
-            ],
+            "images": [],
             "keyAttributes": {
               "Product Code": "DC-24570R195",
               "Model": "RLB400",
@@ -4647,7 +4628,6 @@
             "description": "Medium-duty steer tire for regional haul.",
             "image": "/assets/truck/Double Coin/Steer/FT105 24570R19.5-1(1).png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 24570R19.5-1(1).png",
               "/assets/truck/Double Coin/Steer/FT105 24570R19.5-2(1).png",
               "/assets/truck/Double Coin/Steer/FT105 24570R19.5-3(1).png"
             ],
@@ -4853,9 +4833,7 @@
             "description": "Compact drive tire for urban delivery. Ideal for city driving and frequent stop-and-go applications.",
             "image": "/assets/truck/Double Coin/Drive/FT105 25570R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/FT105 25570R22.5-1.png",
-              "/assets/truck/Double Coin/Drive/FT105 25570R22.5-3.png",
-              "/assets/truck/Double Coin/Drive/FT105 25570R22.5-1.png"
+              "/assets/truck/Double Coin/Drive/FT105 25570R22.5-3.png"
             ],
             "keyAttributes": {
               "Product Code": "DC-25570R225",
@@ -4960,7 +4938,6 @@
             "description": "Compact steer tire for urban applications.",
             "image": "/assets/truck/Double Coin/Steer/FT105 25570R22.5-1(1).png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 25570R22.5-1(1).png",
               "/assets/truck/Double Coin/Steer/FT105 25570R22.5-2(1).png",
               "/assets/truck/Double Coin/Steer/FT105 25570R22.5-3.png"
             ],
@@ -5158,7 +5135,6 @@
             "description": "Wider drive tire for improved stability. Offers better traction and handling characteristics.",
             "image": "/assets/truck/Double Coin/Drive/FT105 26570R19.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/FT105 26570R19.5-1.png",
               "/assets/truck/Double Coin/Drive/FT105 26570R19.5-2.png",
               "/assets/truck/Double Coin/Drive/FT105 26570R19.5-3.png"
             ],
@@ -5257,7 +5233,6 @@
             "description": "Wider steer tire for improved stability.",
             "image": "/assets/truck/Double Coin/Steer/FT105 26570R19.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 26570R19.5-1.png",
               "/assets/truck/Double Coin/Steer/FT105 26570R19.5-2.png",
               "/assets/truck/Double Coin/Steer/FT105 26570R19.5-3.png"
             ],
@@ -5457,11 +5432,7 @@
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Stable drive performance for mixed terrain.",
             "image": "/assets/truck/Double Coin/Drive/27570R22.5.png",
-            "images": [
-              "/assets/truck/Double Coin/Drive/27570R22.5.png",
-              "/assets/truck/Double Coin/Drive/27570R22.5.png",
-              "/assets/truck/Double Coin/Drive/27570R22.5.png"
-            ],
+            "images": [],
             "keyAttributes": {
               "Product Code": "DC-27570R225",
               "Model": "RLB4",
@@ -5581,7 +5552,6 @@
             "description": "Stable steer performance for mixed terrain.",
             "image": "/assets/truck/Double Coin/Steer/RLB4 27570R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RLB4 27570R22.5-1.png",
               "/assets/truck/Double Coin/Steer/RLB4 27570R22.5-2.png",
               "/assets/truck/Double Coin/Steer/RLB4 27570R22.5-3.png"
             ],
@@ -5822,7 +5792,6 @@
             "description": "Wide drive tire for medium-duty applications.",
             "image": "/assets/truck/Double Coin/Drive/FT105 28570R19.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/FT105 28570R19.5-1.png",
               "/assets/truck/Double Coin/Drive/FT105 28570R19.5-2.png",
               "/assets/truck/Double Coin/Drive/FT105 28570R19.5-3.png"
             ],
@@ -5929,7 +5898,6 @@
             "description": "Wide steer tire for medium-duty applications.",
             "image": "/assets/truck/Double Coin/Steer/FT105 28570R19.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 28570R19.5-1.png",
               "/assets/truck/Double Coin/Steer/FT105 28570R19.5-2.png",
               "/assets/truck/Double Coin/Steer/FT105 28570R19.5-3.png"
             ],
@@ -6138,9 +6106,7 @@
             "description": "High-capacity drive tire for heavy loads.",
             "image": "/assets/truck/Double Coin/Drive/RR202 28575R24.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/RR202 28575R24.5-1.png",
-              "/assets/truck/Double Coin/Drive/RR202 28575R24.5-2.png",
-              "/assets/truck/Double Coin/Drive/RR202 28575R24.5-1.png"
+              "/assets/truck/Double Coin/Drive/RR202 28575R24.5-2.png"
             ],
             "keyAttributes": {
               "Product Code": "DC-28575R245",
@@ -6237,7 +6203,6 @@
             "description": "High-capacity steer tire for heavy loads.",
             "image": "/assets/truck/Double Coin/Steer/RR202 28575R24.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RR202 28575R24.5-1.png",
               "/assets/truck/Double Coin/Steer/RR202 28575R24.5-2.png",
               "/assets/truck/Double Coin/Steer/RR202 28575R24.5-3.png"
             ],
@@ -6437,7 +6402,6 @@
             "description": "Versatile drive tire for mixed terrain. Suitable for both highway and regional applications.",
             "image": "/assets/truck/Double Coin/Drive/RLB400 29575R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/RLB400 29575R22.5-1.png",
               "/assets/truck/Double Coin/Drive/RLB400 29575R22.5-2.png",
               "/assets/truck/Double Coin/Drive/RLB400 29575R22.5-3.png"
             ],
@@ -6566,7 +6530,6 @@
             "description": "Stable steering performance with reinforced shoulders.",
             "image": "/assets/truck/Double Coin/Steer/FT105 29575R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 29575R22.5-1.png",
               "/assets/truck/Double Coin/Steer/FT105 29575R22.5-2.png",
               "/assets/truck/Double Coin/Steer/FT105 29575R22.5-3.png"
             ],
@@ -6803,7 +6766,6 @@
             "description": "Taller drive tire for improved fuel economy.",
             "image": "/assets/truck/Double Coin/Drive/RLB4 29580R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/RLB4 29580R22.5-1.png",
               "/assets/truck/Double Coin/Drive/RLB4 29580R22.5-2.png",
               "/assets/truck/Double Coin/Drive/RLB4 29580R22.5-3.png"
             ],
@@ -6926,7 +6888,6 @@
             "description": "Taller steer tire for improved stability.",
             "image": "/assets/truck/Double Coin/Steer/RLB4 29580R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RLB4 29580R22.5-1.png",
               "/assets/truck/Double Coin/Steer/RLB4 29580R22.5-2.png",
               "/assets/truck/Double Coin/Steer/RLB4 29580R22.5-3.png"
             ],
@@ -7167,7 +7128,6 @@
             "description": "High-performance drive tire for extreme loads.",
             "image": "/assets/truck/Double Coin/Drive/RR202 30575R24.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/RR202 30575R24.5-1.png",
               "/assets/truck/Double Coin/Drive/RR202 30575R24.5-2.png",
               "/assets/truck/Double Coin/Drive/RR202 30575R24.5-3.png"
             ],
@@ -7274,7 +7234,6 @@
             "description": "High-performance steer tire for extreme loads.",
             "image": "/assets/truck/Double Coin/Steer/RR202 30575R24.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RR202 30575R24.5-1.png",
               "/assets/truck/Double Coin/Steer/RR202 30575R24.5-2.png",
               "/assets/truck/Double Coin/Steer/RR202 30575R24.5-3.png"
             ],
@@ -7467,7 +7426,6 @@
             "description": "High-load drive tire for long-haul efficiency. Engineered for maximum durability and fuel economy.",
             "image": "/assets/truck/Double Coin/Drive/RLB4 31580R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/RLB4 31580R22.5-1.png",
               "/assets/truck/Double Coin/Drive/RLB4 31580R22.5-2.png",
               "/assets/truck/Double Coin/Drive/RLB4 31580R22.5-3.png"
             ],
@@ -7566,7 +7524,6 @@
             "description": "High-stability steer tire for heavy loads.",
             "image": "/assets/truck/Double Coin/Steer/RLB4 31580R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RLB4 31580R22.5-1.png",
               "/assets/truck/Double Coin/Steer/RLB4 31580R22.5-2.png",
               "/assets/truck/Double Coin/Steer/RLB4 31580R22.5-3.png"
             ],
@@ -7866,7 +7823,6 @@
             "description": "Wide-base steer tire for maximum stability.",
             "image": "/assets/truck/Double Coin/Steer/RR202 38555R19.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RR202 38555R19.5-1.png",
               "/assets/truck/Double Coin/Steer/RR202 38555R19.5-2.png",
               "/assets/truck/Double Coin/Steer/RR202 38555R19.5-3.png"
             ],
@@ -8075,7 +8031,6 @@
             "description": "Wide-base drive tire for maximum load capacity.",
             "image": "/assets/truck/Double Coin/Drive/RR202 38555R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/RR202 38555R22.5-1.png",
               "/assets/truck/Double Coin/Drive/RR202 38555R22.5-2.png",
               "/assets/truck/Double Coin/Drive/RR202 38555R22.5-3.png"
             ],
@@ -8174,7 +8129,6 @@
             "description": "Wide-base steer tire for maximum load capacity.",
             "image": "/assets/truck/Double Coin/Steer/RR202 38555R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RR202 38555R22.5-1.png",
               "/assets/truck/Double Coin/Steer/RR202 38555R22.5-2.png",
               "/assets/truck/Double Coin/Steer/RR202 38555R22.5-3.png"
             ],
@@ -8375,7 +8329,6 @@
             "description": "Wide-base drive tire for maximum load capacity. Offers superior stability and weight savings.",
             "image": "/assets/truck/Double Coin/Drive/RR202 38565R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/RR202 38565R22.5-1.png",
               "/assets/truck/Double Coin/Drive/RR202 38565R22.5-2.png",
               "/assets/truck/Double Coin/Drive/RR202 38565R22.5-3.png"
             ],
@@ -8482,7 +8435,6 @@
             "description": "Wide-base steer tire for maximum load capacity.",
             "image": "/assets/truck/Double Coin/Steer/RR202 38565R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/RR202 38565R22.5-1.png",
               "/assets/truck/Double Coin/Steer/RR202 38565R22.5-2.png",
               "/assets/truck/Double Coin/Steer/RR202 38565R22.5-3.png"
             ],
@@ -8688,7 +8640,6 @@
             "description": "Compact drive tire for light-duty applications. Provides reliable performance for smaller commercial vehicles.",
             "image": "/assets/truck/Double Coin/Drive/FT105 9R22.5 Drive-1.png",
             "images": [
-              "/assets/truck/Double Coin/Drive/FT105 9R22.5 Drive-1.png",
               "/assets/truck/Double Coin/Drive/FT105 9R22.5 Drive-2.png",
               "/assets/truck/Double Coin/Drive/FT105 9R22.5 Drive-3.png"
             ],
@@ -8787,7 +8738,6 @@
             "description": "Compact steer tire for light-duty applications.",
             "image": "/assets/truck/Double Coin/Steer/FT105 9R22.5-1.png",
             "images": [
-              "/assets/truck/Double Coin/Steer/FT105 9R22.5-1.png",
               "/assets/truck/Double Coin/Steer/FT105 9R22.5-2.jpg",
               "/assets/truck/Double Coin/Steer/FT105 9R22.5-3.png"
             ],
