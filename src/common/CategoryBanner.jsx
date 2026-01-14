@@ -170,6 +170,7 @@ const ProductCard = ({ product, isMain }) => {
     <div className={`relative ${isMain ? 'h-[200px] w-[310px]' : 'h-[180px] w-[260px]'}`}>
       {/* Product Card Container */}
       <div className="bg-white rounded-[16px] shadow-lg h-full overflow-visible relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/10"></div>
         {/* Season/Category Badge */}
         <div className={`absolute top-3 left-3 ${isMain ? 'text-[11px]' : 'text-[10px]'} text-blue-600 font-semibold flex items-center gap-6 z-20`}>
         </div>
