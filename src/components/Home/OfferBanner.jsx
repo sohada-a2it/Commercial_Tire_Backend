@@ -52,7 +52,7 @@ const OfferBanner = () => {
   }, [prevSeconds]);
 
   return (
-    <div className="relative w-full bg-white py-8 md:py-12">
+    <div className="relative w-full bg-white py-4 md:py-4">
       <div className="max-w-7xl mx-auto px-4">
         {/* Banner with Countdown Inside */}
         <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-lg">
@@ -70,69 +70,74 @@ const OfferBanner = () => {
             <div className="flex gap-3 md:gap-6">
               {/* Weeks */}
               <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
                   <span className="text-3xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.weeks).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider drop-shadow-lg">
                   WEEKS
                 </span>
               </div>
 
               {/* Days */}
               <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
                   <span className="text-3xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.days).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider drop-shadow-lg">
                   DAYS
                 </span>
               </div>
 
               {/* Hours */}
               <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
                   <span className="text-3xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.hours).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider drop-shadow-lg">
                   HOURS
                 </span>
               </div>
 
               {/* Minutes */}
               <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
                   <span className="text-3xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.minutes).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider drop-shadow-lg">
                   MINUTES
                 </span>
               </div>
 
               {/* Seconds - With Animation */}
               <div className="flex flex-col items-center">
-                <div className={`bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden transition-transform duration-300 ${
+                <div className={`bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden transition-transform duration-300 animate-pulse-glow ${
                   isAnimating ? 'scale-110' : 'scale-100'
                 }`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
                   <span className={`text-3xl md:text-4xl font-bold text-gray-900 relative z-10 transition-all duration-300 ${
                     isAnimating ? 'scale-125' : 'scale-100'
                   }`}>
                     {String(timeLeft.seconds).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider drop-shadow-lg">
                   SECONDS
                 </span>
               </div>
