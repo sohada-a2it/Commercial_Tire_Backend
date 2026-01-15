@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
 import { ShoppingBag } from "lucide-react";
 import { Link, useNavigate, useLocation } from "@/lib/navigation";
@@ -13,6 +13,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { getCartItemCount, toggleCart } = useCart();
+  const productsDropdownRef = useRef(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -21,6 +22,23 @@ const Navbar = () => {
   const toggleProducts = () => {
     setIsProductsOpen(!isProductsOpen);
   };
+
+  // Close products dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target)) {
+        setIsProductsOpen(false);
+      }
+    };
+
+    if (isProductsOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isProductsOpen]);
 
   // Product categories
   const productCategories = [
@@ -119,7 +137,7 @@ const Navbar = () => {
             Home
           </Link>
 
-          <div className="relative">
+          <div className="relative" ref={productsDropdownRef}>
             <button
               onClick={toggleProducts}
               className={`font-medium flex items-center py-2 border-b-2 ${
