@@ -295,6 +295,8 @@ const ProductDetails = () => {
   const [categoryInfo, setCategoryInfo] = useState(null);
   const [subcategoryInfo, setSubcategoryInfo] = useState(null);
   const [showLightbox, setShowLightbox] = useState(false);
+  const [expandedSidebarPricing, setExpandedSidebarPricing] = useState(false);
+  const [expandedSpecsPricing, setExpandedSpecsPricing] = useState(false);
 
   useEffect(() => {
     // Reset states when ID changes
@@ -774,40 +776,100 @@ const ProductDetails = () => {
         <span className="text-xs text-teal-600">Save more</span>
       </div>
       
-      <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
+      <div className="space-y-1.5 pr-1">
         {/* Price by Weight */}
         {product.pricingTiers[0].minWeight !== undefined && (
-          product.pricingTiers.map((tier, index) => (
-            <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
-              <span className="text-gray-600">{tier.minWeight}-{tier.maxWeight}g</span>
-              <span className="font-semibold text-teal-700">{tier.pricePerKg}</span>
-            </div>
-          ))
+          <>
+            {product.pricingTiers.slice(0, expandedSidebarPricing ? product.pricingTiers.length : 3).map((tier, index) => (
+              <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
+                <span className="text-gray-600">{tier.minWeight}-{tier.maxWeight}g</span>
+                <span className="font-semibold text-teal-700">{tier.pricePerKg}</span>
+              </div>
+            ))}
+            {product.pricingTiers.length > 3 && (
+              <button
+                onClick={() => setExpandedSidebarPricing(!expandedSidebarPricing)}
+                className="w-full text-xs text-teal-600 hover:text-teal-800 font-medium py-1 flex items-center justify-center gap-1"
+              >
+                {expandedSidebarPricing ? (
+                  <>
+                    <span>Show Less</span>
+                    <span>↑</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Show More ({product.pricingTiers.length - 3} more)</span>
+                    <span>↓</span>
+                  </>
+                )}
+              </button>
+            )}
+          </>
         )}
 
         {/* Volume Pricing by Size */}
         {product.pricingTiers[0].size && product.pricingTiers[0].pricePerTon && (
-          product.pricingTiers.map((tier, index) => (
-            <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
-              <span className="text-gray-600">Size {tier.size}</span>
-              <span className="font-semibold text-teal-700">{tier.pricePerTon}</span>
-            </div>
-          ))
+          <>
+            {product.pricingTiers.slice(0, expandedSidebarPricing ? product.pricingTiers.length : 3).map((tier, index) => (
+              <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
+                <span className="text-gray-600">Size {tier.size}</span>
+                <span className="font-semibold text-teal-700">{tier.pricePerTon}</span>
+              </div>
+            ))}
+            {product.pricingTiers.length > 3 && (
+              <button
+                onClick={() => setExpandedSidebarPricing(!expandedSidebarPricing)}
+                className="w-full text-xs text-teal-600 hover:text-teal-800 font-medium py-1 flex items-center justify-center gap-1"
+              >
+                {expandedSidebarPricing ? (
+                  <>
+                    <span>Show Less</span>
+                    <span>↑</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Show More ({product.pricingTiers.length - 3} more)</span>
+                    <span>↓</span>
+                  </>
+                )}
+              </button>
+            )}
+          </>
         )}
 
         {/* Volume Pricing by Quantity */}
         {product.pricingTiers[0].minQuantity !== undefined && (
-          product.pricingTiers.map((tier, index) => (
-            <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
-              <span className="text-gray-600">
-                {tier.minQuantity}
-                {tier.maxQuantity ? `-${tier.maxQuantity}` : '+'}
-              </span>
-              <span className="font-semibold text-teal-700">
-                {tier.pricePerTire || tier.pricePerUnit}
-              </span>
-            </div>
-          ))
+          <>
+            {product.pricingTiers.slice(0, expandedSidebarPricing ? product.pricingTiers.length : 3).map((tier, index) => (
+              <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
+                <span className="text-gray-600">
+                  {tier.minQuantity}
+                  {tier.maxQuantity ? `-${tier.maxQuantity}` : '+'}
+                </span>
+                <span className="font-semibold text-teal-700">
+                  {tier.pricePerTire || tier.pricePerUnit}
+                </span>
+              </div>
+            ))}
+            {product.pricingTiers.length > 3 && (
+              <button
+                onClick={() => setExpandedSidebarPricing(!expandedSidebarPricing)}
+                className="w-full text-xs text-teal-600 hover:text-teal-800 font-medium py-1 flex items-center justify-center gap-1"
+              >
+                {expandedSidebarPricing ? (
+                  <>
+                    <span>Show Less</span>
+                    <span>↑</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Show More ({product.pricingTiers.length - 3} more)</span>
+                    <span>↓</span>
+                  </>
+                )}
+              </button>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -1014,48 +1076,111 @@ const ProductDetails = () => {
                             : "Volume Pricing"}
                         </h4>
                         <div className="space-y-2">
-                          {product.pricingTiers[0].minWeight !== undefined &&
-                            product.pricingTiers.map((tier, index) => (
-                              <div
-                                key={index}
-                                className="flex justify-between items-center bg-white p-3 rounded border border-teal-100"
-                              >
-                                <span className="text-gray-700">
-                                  {tier.minWeight}g - {tier.maxWeight}g
-                                </span>
-                                <span className="font-semibold text-teal-700">
-                                  {tier.pricePerKg}
-                                </span>
-                              </div>
-                            ))}
-                          {product.pricingTiers[0].minQuantity !== undefined &&
-                            product.pricingTiers.map((tier, index) => (
-                              <div
-                                key={index}
-                                className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
-                              >
-                                <span className="text-gray-700">
-                                  {tier.minQuantity}
-                                  {tier.maxQuantity ? ` - ${tier.maxQuantity}` : '+'} units
-                                </span>
-                                <span className="font-semibold text-teal-700">
-                                  {tier.pricePerTire || tier.pricePerUnit}
-                                </span>
-                              </div>
-                            ))}
+                          {product.pricingTiers[0].minWeight !== undefined && (
+                            <>
+                              {product.pricingTiers.slice(0, expandedSpecsPricing ? product.pricingTiers.length : 3).map((tier, index) => (
+                                <div
+                                  key={index}
+                                  className="flex justify-between items-center bg-white p-3 rounded border border-teal-100"
+                                >
+                                  <span className="text-gray-700">
+                                    {tier.minWeight}g - {tier.maxWeight}g
+                                  </span>
+                                  <span className="font-semibold text-teal-700">
+                                    {tier.pricePerKg}
+                                  </span>
+                                </div>
+                              ))}
+                              {product.pricingTiers.length > 3 && (
+                                <button
+                                  onClick={() => setExpandedSpecsPricing(!expandedSpecsPricing)}
+                                  className="w-full text-sm text-teal-600 hover:text-teal-800 font-medium py-2 flex items-center justify-center gap-1 border border-teal-200 rounded hover:bg-teal-50 transition-colors"
+                                >
+                                  {expandedSpecsPricing ? (
+                                    <>
+                                      <span>Show Less</span>
+                                      <span>↑</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span>Show {product.pricingTiers.length - 3} More</span>
+                                      <span>↓</span>
+                                    </>
+                                  )}
+                                </button>
+                              )}
+                            </>
+                          )}
+                          {product.pricingTiers[0].minQuantity !== undefined && (
+                            <>
+                              {product.pricingTiers.slice(0, expandedSpecsPricing ? product.pricingTiers.length : 3).map((tier, index) => (
+                                <div
+                                  key={index}
+                                  className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
+                                >
+                                  <span className="text-gray-700">
+                                    {tier.minQuantity}
+                                    {tier.maxQuantity ? ` - ${tier.maxQuantity}` : '+'} units
+                                  </span>
+                                  <span className="font-semibold text-teal-700">
+                                    {tier.pricePerTire || tier.pricePerUnit}
+                                  </span>
+                                </div>
+                              ))}
+                              {product.pricingTiers.length > 3 && (
+                                <button
+                                  onClick={() => setExpandedSpecsPricing(!expandedSpecsPricing)}
+                                  className="w-full text-sm text-teal-600 hover:text-teal-800 font-medium py-2 flex items-center justify-center gap-1 border border-teal-200 rounded hover:bg-teal-50 transition-colors"
+                                >
+                                  {expandedSpecsPricing ? (
+                                    <>
+                                      <span>Show Less</span>
+                                      <span>↑</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span>Show {product.pricingTiers.length - 3} More</span>
+                                      <span>↓</span>
+                                    </>
+                                  )}
+                                </button>
+                              )}
+                            </>
+                          )}
                           {product.pricingTiers[0].size &&
-                            product.pricingTiers[0].pricePerTon &&
-                            product.pricingTiers.map((tier, index) => (
-                              <div
-                                key={index}
-                                className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
-                              >
-                                <span className="text-gray-700">Size: {tier.size}</span>
-                                <span className="font-semibold text-teal-700">
-                                  {tier.pricePerTon}
-                                </span>
-                              </div>
-                            ))}
+                            product.pricingTiers[0].pricePerTon && (
+                            <>
+                              {product.pricingTiers.slice(0, expandedSpecsPricing ? product.pricingTiers.length : 3).map((tier, index) => (
+                                <div
+                                  key={index}
+                                  className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
+                                >
+                                  <span className="text-gray-700">Size: {tier.size}</span>
+                                  <span className="font-semibold text-teal-700">
+                                    {tier.pricePerTon}
+                                  </span>
+                                </div>
+                              ))}
+                              {product.pricingTiers.length > 3 && (
+                                <button
+                                  onClick={() => setExpandedSpecsPricing(!expandedSpecsPricing)}
+                                  className="w-full text-sm text-teal-600 hover:text-teal-800 font-medium py-2 flex items-center justify-center gap-1 border border-teal-200 rounded hover:bg-teal-50 transition-colors"
+                                >
+                                  {expandedSpecsPricing ? (
+                                    <>
+                                      <span>Show Less</span>
+                                      <span>↑</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span>Show {product.pricingTiers.length - 3} More</span>
+                                      <span>↓</span>
+                                    </>
+                                  )}
+                                </button>
+                              )}
+                            </>
+                          )}
                         </div>
                         {product.pricingTiers[0].minWeight !== undefined && (
                           <p className="text-xs text-amber-600 mt-3 font-medium">
