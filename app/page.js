@@ -4,6 +4,7 @@ import Banner from "@/components/Home/Banner";
 import ServicesSection from "@/components/Home/ServicesSection";
 import WhyChooseUs from "@/components/Home/WhyChooseUs";
 import { generateFAQSchema } from "@/lib/structuredData";
+import OfferBanner from "@/components/Home/OfferBanner";
 
 export const metadata = {
   title: "Asian Import Export Co LTD - Global Trade Partner",
@@ -102,6 +103,7 @@ export default function Home() {
       >
         <ProductCatalog isHomePage={true} />
       </Suspense>
+      <OfferBanner/>
       <ServicesSection />
       <WhyChooseUs />
     </>
