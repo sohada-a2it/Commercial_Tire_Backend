@@ -214,18 +214,3 @@ Double Coin FT105 265/70R19.5 Trailer Tire -1050
 Double Coin RLB4 275/70R22.5 Trailer Tire -1053
 Double Coin RR202 305/75R24.5 Trailer Tire -1068
 Double Coin FT105 9R22.5 Trailer Tire -1083
-
-
-
-
-don't have image:Firestone 
-Firestone FS560 10R22.5 Steer Tire
-Firestone FT413 10R22.5 Trailer Tire
-Firestone FD694 255/70R22.5 Drive Tire
-Firestone FS560 255/70R22.5 Steer Tire
-Firestone FT413 255/70R22.5 Trailer Tire
-Firestone FS560 295/80R22.5 Steer Tire
-Firestone FT413 295/80R22.5 Trailer Tire
-Firestone FS560 315/80R22.5 Steer Tire
-Firestone FS560 385/65R22.5 Steer Tire
-Firestone FT413 385/65R22.5 Trailer Tire
