@@ -42,10 +42,10 @@ const OfferBanner = () => {
     <div className="relative w-full bg-white py-8 md:py-12">
       <div className="max-w-7xl mx-auto px-4">
         {/* Banner with Countdown Inside */}
-        <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden rounded-lg">
+        <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-lg ">
           {/* Background Image */}
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-cover bg-center "
             style={{
               backgroundImage: "url('/assets/banner2.png')",
               backgroundPosition: "center",
