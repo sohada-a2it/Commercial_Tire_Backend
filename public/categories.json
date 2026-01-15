@@ -11798,6 +11798,2428 @@
             ]
           },
           {
+            "id": 1132,
+            "name": "Bridgestone M771 11R22.5 Drive Tire",
+            "price": "$320.00",
+            "offerPrice": "$175.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$220.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$195.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$175.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Premium drive tire for long haul applications. Designed for exceptional durability and fuel efficiency.",
+            "image": "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -2.png",
+              "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-M771-11R22.5",
+              "Model": "M771",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "20/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "120lb/54kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "A",
+              "Wet Grip": "A",
+              "Noise Level": "70 dB",
+              "Feature": [
+                "Premium",
+                "Long Haul",
+                "Fuel Efficient"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1133,
+            "name": "Bridgestone M760 11R22.5 Drive Tire",
+            "price": "$310.00",
+            "offerPrice": "$170.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$215.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$190.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$170.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Versatile drive tire for mixed service applications. Engineered for reliable performance across various conditions.",
+            "image": "/assets/truck/Bridgestone/Drive/11r22.5 Drive M760 -2.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/11r22.5 Drive M760 -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-M760-11R22.5",
+              "Model": "M760",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "19/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "118lb/54kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "71 dB",
+              "Feature": [
+                "Versatile",
+                "Mixed Service",
+                "Reliable"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1134,
+            "name": "Bridgestone W920 11R22.5 Drive Tire",
+            "price": "$330.00",
+            "offerPrice": "$180.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$225.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$200.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$180.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Winter drive tire for severe weather conditions. Designed for superior traction in winter conditions.",
+            "image": "/assets/truck/Bridgestone/Drive/11r22.5 Drive W920 -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/11r22.5 Drive W920 -2.png",
+              "/assets/truck/Bridgestone/Drive/11r22.5 Drive W920 -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-W920-11R22.5",
+              "Model": "W920",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "21/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "122lb/55kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "C",
+              "Wet Grip": "A",
+              "Noise Level": "72 dB",
+              "Feature": [
+                "Winter",
+                "Severe Weather",
+                "Superior Traction"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1135,
+            "name": "Bridgestone M799 11R24.5 Drive Tire",
+            "price": "$340.00",
+            "offerPrice": "$185.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$230.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$205.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$185.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Heavy-duty drive tire for 11R24.5 applications. Engineered for maximum durability and performance.",
+            "image": "/assets/truck/Bridgestone/Drive/11r24.5 Drive M799 M775 L320-1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/11r24.5 Drive M799 M775 L320-2.png",
+              "/assets/truck/Bridgestone/Drive/11r24.5 Drive M799 M775 L320-3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-M799-11R24.5",
+              "Model": "M799",
+              "Size": "11R24.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "149/146",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "22/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "7160lb/110psi",
+              "Dual Max Load/Pressure": "6610lb/110psi",
+              "Static Load Radius": "20.8 inches",
+              "Revs Per Mile": 468,
+              "Weight": "130lb/59kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "71 dB",
+              "Feature": [
+                "Heavy Duty",
+                "Maximum Durability",
+                "Performance"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "43.7 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1136,
+            "name": "Bridgestone M760 295/75R22.5 Drive Tire",
+            "price": "$345.00",
+            "offerPrice": "$190.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$235.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$210.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$190.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Wide base drive tire for heavy load applications. Designed for maximum load capacity and stability.",
+            "image": "/assets/truck/Bridgestone/Drive/295_75r22.5 Drive M760 -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/295_75r22.5 Drive M760 -2.png",
+              "/assets/truck/Bridgestone/Drive/295_75r22.5 Drive M760 -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-M760-295/75R22.5",
+              "Model": "M760",
+              "Size": "295/75R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "144/141",
+              "Speed Symbol": "L",
+              "Section Width": "11.6 inches",
+              "Tread Depth": "20/32",
+              "Rim Width": "9.00 inches",
+              "Single Max Load/Pressure": "6175lb/120psi",
+              "Dual Max Load/Pressure": "5675lb/120psi",
+              "Static Load Radius": "19.8 inches",
+              "Revs Per Mile": 496,
+              "Weight": "128lb/58kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "72 dB",
+              "Feature": [
+                "Wide Base",
+                "Heavy Load",
+                "Maximum Stability"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.5 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1138,
+            "name": "Bridgestone M863 315/80R22.5 Drive Tire",
+            "price": "$360.00",
+            "offerPrice": "$195.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$245.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$220.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$195.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Extra wide drive tire for maximum traction. Engineered for superior grip and load capacity.",
+            "image": "/assets/truck/Bridgestone/Drive/315_80r22.5 Drive M863 M870-1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/315_80r22.5 Drive M863 M870-2.png",
+              "/assets/truck/Bridgestone/Drive/315_80r22.5 Drive M863 M870-3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-M863-315/80R22.5",
+              "Model": "M863",
+              "Size": "315/80R22.5",
+              "Ply Rating": 18,
+              "Load Range": "J",
+              "Load Index": "156/150",
+              "Speed Symbol": "L",
+              "Section Width": "12.4 inches",
+              "Tread Depth": "22/32",
+              "Rim Width": "9.00 inches",
+              "Single Max Load/Pressure": "8270lb/120psi",
+              "Dual Max Load/Pressure": "7160lb/120psi",
+              "Static Load Radius": "21.5 inches",
+              "Revs Per Mile": 458,
+              "Weight": "145lb/66kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "73 dB",
+              "Feature": [
+                "Extra Wide",
+                "Maximum Traction",
+                "Superior Grip"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "45.3 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1139,
+            "name": "Bridgestone M726ELA 11R22.5 Drive Tire",
+            "price": "$325.00",
+            "offerPrice": "$178.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$222.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$198.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$178.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Ecopia drive tire for enhanced fuel efficiency. Designed with advanced fuel-saving technology.",
+            "image": "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -2.png",
+              "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-M726ELA-11R22.5",
+              "Model": "M726ELA",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "19/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "115lb/52kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "A",
+              "Wet Grip": "A",
+              "Noise Level": "69 dB",
+              "Feature": [
+                "Ecopia",
+                "Fuel Efficient",
+                "Advanced Technology"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1140,
+            "name": "Bridgestone R283S 11R22.5 Steer Tire",
+            "price": "$305.00",
+            "offerPrice": "$168.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$210.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$188.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$168.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Premium steer tire for excellent handling. Engineered for superior steering response and stability.",
+            "image": "/assets/truck/Bridgestone/Steer/11r22.5 Steer R283S -1.png",
+            "images": [],
+            "keyAttributes": {
+              "Product Code": "BS-R283S-11R22.5",
+              "Model": "R283S",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "17/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "112lb/51kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Steer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "70 dB",
+              "Feature": [
+                "Premium",
+                "Excellent Handling",
+                "Superior Response"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1141,
+            "name": "Bridgestone R283S 11R24.5 Steer Tire",
+            "price": "$320.00",
+            "offerPrice": "$175.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$218.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$195.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$175.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Premium steer tire for 11R24.5 applications. Designed for superior control and long tread life.",
+            "image": "/assets/truck/Bridgestone/Steer/11r24.5 Steer R283S -1.png",
+            "images": [],
+            "keyAttributes": {
+              "Product Code": "BS-R283S-11R24.5",
+              "Model": "R283S",
+              "Size": "11R24.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "149/146",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "17/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "7160lb/110psi",
+              "Dual Max Load/Pressure": "6610lb/110psi",
+              "Static Load Radius": "20.8 inches",
+              "Revs Per Mile": 468,
+              "Weight": "125lb/57kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Steer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "70 dB",
+              "Feature": [
+                "Premium",
+                "Superior Control",
+                "Long Tread Life"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "43.7 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1142,
+            "name": "Bridgestone R283S 295/75R22.5 Steer Tire",
+            "price": "$335.00",
+            "offerPrice": "$183.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$228.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$203.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$183.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Wide base steer tire for enhanced stability. Engineered for superior handling and even wear.",
+            "image": "/assets/truck/Bridgestone/Steer/295_75r22.5 Steer R283S -1.png",
+            "images": [],
+            "keyAttributes": {
+              "Product Code": "BS-R283S-295/75R22.5",
+              "Model": "R283S",
+              "Size": "295/75R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "144/141",
+              "Speed Symbol": "L",
+              "Section Width": "11.6 inches",
+              "Tread Depth": "17/32",
+              "Rim Width": "9.00 inches",
+              "Single Max Load/Pressure": "6175lb/120psi",
+              "Dual Max Load/Pressure": "5675lb/120psi",
+              "Static Load Radius": "19.8 inches",
+              "Revs Per Mile": 496,
+              "Weight": "120lb/54kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Steer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "71 dB",
+              "Feature": [
+                "Wide Base",
+                "Enhanced Stability",
+                "Even Wear"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.5 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1143,
+            "name": "Bridgestone R123 11R22.5 Trailer Tire",
+            "price": "$295.00",
+            "offerPrice": "$162.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$205.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$183.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$162.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Premium trailer tire for long-lasting performance. Designed for durability and low rolling resistance.",
+            "image": "/assets/truck/Bridgestone/Trailer/11r22.5 Trailer R123 -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Trailer/11r22.5 Trailer R123 -2.png",
+              "/assets/truck/Bridgestone/Trailer/11r22.5 Trailer R123 -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-R123-11R22.5",
+              "Model": "R123",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "16/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "108lb/49kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Trailer",
+              "Fuel Efficiency": "A",
+              "Wet Grip": "B",
+              "Noise Level": "69 dB",
+              "Feature": [
+                "Premium",
+                "Long Lasting",
+                "Low Rolling Resistance"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1144,
+            "name": "Bridgestone R123 11R24.5 Trailer Tire",
+            "price": "$310.00",
+            "offerPrice": "$170.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$213.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$190.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$170.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Premium trailer tire for 11R24.5 applications. Engineered for maximum mileage and reliability.",
+            "image": "/assets/truck/Bridgestone/Trailer/11r24.5 Trailer R123 -1.png.png",
+            "images": [],
+            "keyAttributes": {
+              "Product Code": "BS-R123-11R24.5",
+              "Model": "R123",
+              "Size": "11R24.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "149/146",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "16/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "7160lb/110psi",
+              "Dual Max Load/Pressure": "6610lb/110psi",
+              "Static Load Radius": "20.8 inches",
+              "Revs Per Mile": 468,
+              "Weight": "120lb/54kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Trailer",
+              "Fuel Efficiency": "A",
+              "Wet Grip": "B",
+              "Noise Level": "69 dB",
+              "Feature": [
+                "Premium",
+                "Maximum Mileage",
+                "Reliable"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "43.7 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1145,
+            "name": "Bridgestone R123 295/75R22.5 Trailer Tire",
+            "price": "$325.00",
+            "offerPrice": "$178.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$223.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$198.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$178.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Wide base trailer tire for enhanced load capacity. Designed for stability and fuel efficiency.",
+            "image": "/assets/truck/Bridgestone/Trailer/295_75r22.5 Trailer R123 -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Trailer/295_75r22.5 Trailer R123 -2.png",
+              "/assets/truck/Bridgestone/Trailer/295_75r22.5 Trailer R123 -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-R123-295/75R22.5",
+              "Model": "R123",
+              "Size": "295/75R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "144/141",
+              "Speed Symbol": "L",
+              "Section Width": "11.6 inches",
+              "Tread Depth": "16/32",
+              "Rim Width": "9.00 inches",
+              "Single Max Load/Pressure": "6175lb/120psi",
+              "Dual Max Load/Pressure": "5675lb/120psi",
+              "Static Load Radius": "19.8 inches",
+              "Revs Per Mile": 496,
+              "Weight": "118lb/54kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Trailer",
+              "Fuel Efficiency": "A",
+              "Wet Grip": "B",
+              "Noise Level": "70 dB",
+              "Feature": [
+                "Wide Base",
+                "Enhanced Load Capacity",
+                "Fuel Efficient"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.5 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1146,
+            "name": "Bridgestone M775 11R24.5 Drive Tire",
+            "price": "$345.00",
+            "offerPrice": "$188.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$233.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$208.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$188.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Heavy-duty drive tire for severe service. Engineered for maximum traction in demanding conditions.",
+            "image": "/assets/truck/Bridgestone/Drive/11r24.5 Drive M799 M775 L320-1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/11r24.5 Drive M799 M775 L320-2.png",
+              "/assets/truck/Bridgestone/Drive/11r24.5 Drive M799 M775 L320-3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-M775-11R24.5",
+              "Model": "M775",
+              "Size": "11R24.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "149/146",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "23/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "7160lb/110psi",
+              "Dual Max Load/Pressure": "6610lb/110psi",
+              "Static Load Radius": "20.8 inches",
+              "Revs Per Mile": 468,
+              "Weight": "132lb/60kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "C",
+              "Wet Grip": "A",
+              "Noise Level": "72 dB",
+              "Feature": [
+                "Heavy Duty",
+                "Severe Service",
+                "Maximum Traction"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "43.7 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1147,
+            "name": "Bridgestone L320 11R22.5 Drive Tire",
+            "price": "$315.00",
+            "offerPrice": "$172.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$217.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$193.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$172.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "All-position drive tire for versatile applications. Designed for reliable performance across multiple positions.",
+            "image": "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -2.png",
+              "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-L320-11R22.5",
+              "Model": "L320",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "18/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "117lb/53kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "71 dB",
+              "Feature": [
+                "All Position",
+                "Versatile",
+                "Reliable"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1148,
+            "name": "Bridgestone M870 315/80R22.5 Drive Tire",
+            "price": "$365.00",
+            "offerPrice": "$198.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$248.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$223.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$198.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Premium wide base drive tire for highway applications. Engineered for long haul efficiency.",
+            "image": "/assets/truck/Bridgestone/Drive/315_80r22.5 Drive M863 M870-1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/315_80r22.5 Drive M863 M870-2.png",
+              "/assets/truck/Bridgestone/Drive/315_80r22.5 Drive M863 M870-3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-M870-315/80R22.5",
+              "Model": "M870",
+              "Size": "315/80R22.5",
+              "Ply Rating": 18,
+              "Load Range": "J",
+              "Load Index": "156/150",
+              "Speed Symbol": "L",
+              "Section Width": "12.4 inches",
+              "Tread Depth": "21/32",
+              "Rim Width": "9.00 inches",
+              "Single Max Load/Pressure": "8270lb/120psi",
+              "Dual Max Load/Pressure": "7160lb/120psi",
+              "Static Load Radius": "21.5 inches",
+              "Revs Per Mile": 458,
+              "Weight": "148lb/67kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "A",
+              "Wet Grip": "A",
+              "Noise Level": "72 dB",
+              "Feature": [
+                "Premium",
+                "Wide Base",
+                "Long Haul"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "45.3 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1149,
+            "name": "Bridgestone R297 11R22.5 Steer Tire",
+            "price": "$310.00",
+            "offerPrice": "$170.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$213.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$190.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$170.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "All-season steer tire with enhanced traction. Designed for year-round performance.",
+            "image": "/assets/truck/Bridgestone/Steer/11r22.5 Steer R283S -1.png",
+            "images": [],
+            "keyAttributes": {
+              "Product Code": "BS-R297-11R22.5",
+              "Model": "R297",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "18/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "114lb/52kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Steer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "70 dB",
+              "Feature": [
+                "All Season",
+                "Enhanced Traction",
+                "Year Round"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1150,
+            "name": "Bridgestone R268 11R22.5 Steer Tire",
+            "price": "$298.00",
+            "offerPrice": "$163.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$208.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$185.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$163.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Regional steer tire for mixed service. Engineered for versatility and durability.",
+            "image": "/assets/truck/Bridgestone/Steer/11r22.5 Steer R283S -1.png",
+            "images": [],
+            "keyAttributes": {
+              "Product Code": "BS-R268-11R22.5",
+              "Model": "R268",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "17/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "110lb/50kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Steer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "71 dB",
+              "Feature": [
+                "Regional",
+                "Mixed Service",
+                "Versatile"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1151,
+            "name": "Bridgestone R238 11R24.5 Steer Tire",
+            "price": "$325.00",
+            "offerPrice": "$178.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$220.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$198.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$178.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Long haul steer tire for extended mileage. Designed for maximum tread life.",
+            "image": "/assets/truck/Bridgestone/Steer/11r24.5 Steer R283S -1.png",
+            "images": [],
+            "keyAttributes": {
+              "Product Code": "BS-R238-11R24.5",
+              "Model": "R238",
+              "Size": "11R24.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "149/146",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "18/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "7160lb/110psi",
+              "Dual Max Load/Pressure": "6610lb/110psi",
+              "Static Load Radius": "20.8 inches",
+              "Revs Per Mile": 468,
+              "Weight": "127lb/58kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Steer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "71 dB",
+              "Feature": [
+                "Long Haul",
+                "Extended Mileage",
+                "Maximum Tread Life"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "43.7 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1152,
+            "name": "Bridgestone R250F 295/75R22.5 Steer Tire",
+            "price": "$340.00",
+            "offerPrice": "$185.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$230.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$205.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$185.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Fuel-efficient wide base steer tire. Engineered for reduced rolling resistance.",
+            "image": "/assets/truck/Bridgestone/Steer/295_75r22.5 Steer R283S -1.png",
+            "images": [],
+            "keyAttributes": {
+              "Product Code": "BS-R250F-295/75R22.5",
+              "Model": "R250F",
+              "Size": "295/75R22.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "144/141",
+              "Speed Symbol": "L",
+              "Section Width": "11.6 inches",
+              "Tread Depth": "18/32",
+              "Rim Width": "9.00 inches",
+              "Single Max Load/Pressure": "6175lb/120psi",
+              "Dual Max Load/Pressure": "5675lb/120psi",
+              "Static Load Radius": "19.8 inches",
+              "Revs Per Mile": 496,
+              "Weight": "122lb/55kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Steer",
+              "Fuel Efficiency": "A",
+              "Wet Grip": "A",
+              "Noise Level": "70 dB",
+              "Feature": [
+                "Fuel Efficient",
+                "Wide Base",
+                "Low Rolling Resistance"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.5 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1153,
+            "name": "Bridgestone R150 11R22.5 Trailer Tire",
+            "price": "$288.00",
+            "offerPrice": "$158.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$200.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$178.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$158.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Value trailer tire for regional applications. Designed for reliable performance and value.",
+            "image": "/assets/truck/Bridgestone/Trailer/11r22.5 Trailer R123 -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Trailer/11r22.5 Trailer R123 -2.png",
+              "/assets/truck/Bridgestone/Trailer/11r22.5 Trailer R123 -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-R150-11R22.5",
+              "Model": "R150",
+              "Size": "11R22.5",
+              "Ply Rating": 14,
+              "Load Range": "G",
+              "Load Index": "144/141",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "15/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "105lb/48kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Trailer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "B",
+              "Noise Level": "70 dB",
+              "Feature": [
+                "Value",
+                "Regional",
+                "Reliable"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1154,
+            "name": "Bridgestone R238 11R24.5 Trailer Tire",
+            "price": "$305.00",
+            "offerPrice": "$167.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$210.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$188.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$167.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Long-lasting trailer tire for 11R24.5 applications. Engineered for extended service life.",
+            "image": "/assets/truck/Bridgestone/Trailer/11r24.5 Trailer R123 -1.png.png",
+            "images": [],
+            "keyAttributes": {
+              "Product Code": "BS-R238-11R24.5",
+              "Model": "R238",
+              "Size": "11R24.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "149/146",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "16/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "7160lb/110psi",
+              "Dual Max Load/Pressure": "6610lb/110psi",
+              "Static Load Radius": "20.8 inches",
+              "Revs Per Mile": 468,
+              "Weight": "118lb/54kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Trailer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "B",
+              "Noise Level": "70 dB",
+              "Feature": [
+                "Long Lasting",
+                "Extended Service Life",
+                "Durable"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "43.7 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1155,
+            "name": "Bridgestone R168 295/75R22.5 Trailer Tire",
+            "price": "$318.00",
+            "offerPrice": "$174.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$218.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$195.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$174.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Wide base trailer tire for enhanced stability. Designed for smooth rolling and durability.",
+            "image": "/assets/truck/Bridgestone/Trailer/295_75r22.5 Trailer R123 -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Trailer/295_75r22.5 Trailer R123 -2.png",
+              "/assets/truck/Bridgestone/Trailer/295_75r22.5 Trailer R123 -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-R168-295/75R22.5",
+              "Model": "R168",
+              "Size": "295/75R22.5",
+              "Ply Rating": 14,
+              "Load Range": "G",
+              "Load Index": "144/141",
+              "Speed Symbol": "L",
+              "Section Width": "11.6 inches",
+              "Tread Depth": "15/32",
+              "Rim Width": "9.00 inches",
+              "Single Max Load/Pressure": "6175lb/120psi",
+              "Dual Max Load/Pressure": "5675lb/120psi",
+              "Static Load Radius": "19.8 inches",
+              "Revs Per Mile": 496,
+              "Weight": "115lb/52kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Trailer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "B",
+              "Noise Level": "71 dB",
+              "Feature": [
+                "Wide Base",
+                "Enhanced Stability",
+                "Smooth Rolling"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.5 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1156,
+            "name": "Bridgestone R192 11R22.5 Trailer Tire",
+            "price": "$292.00",
+            "offerPrice": "$160.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$203.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$181.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$160.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "All-purpose trailer tire for diverse conditions. Engineered for versatile performance.",
+            "image": "/assets/truck/Bridgestone/Trailer/11r22.5 Trailer R123 -1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Trailer/11r22.5 Trailer R123 -2.png",
+              "/assets/truck/Bridgestone/Trailer/11r22.5 Trailer R123 -3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-R192-11R22.5",
+              "Model": "R192",
+              "Size": "11R22.5",
+              "Ply Rating": 14,
+              "Load Range": "G",
+              "Load Index": "144/141",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "16/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5675lb/105psi",
+              "Static Load Radius": "19.5 inches",
+              "Revs Per Mile": 500,
+              "Weight": "107lb/49kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Trailer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "B",
+              "Noise Level": "70 dB",
+              "Feature": [
+                "All Purpose",
+                "Diverse Conditions",
+                "Versatile"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "41.0 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1157,
+            "name": "Bridgestone L320 11R24.5 Drive Tire",
+            "price": "$335.00",
+            "offerPrice": "$183.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$228.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$203.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$183.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)",
+              "Special compound formulation (Min. order: 100 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "All-position drive tire for 11R24.5 applications. Designed for versatile multi-position use.",
+            "image": "/assets/truck/Bridgestone/Drive/11r24.5 Drive M799 M775 L320-1.png",
+            "images": [
+              "/assets/truck/Bridgestone/Drive/11r24.5 Drive M799 M775 L320-2.png",
+              "/assets/truck/Bridgestone/Drive/11r24.5 Drive M799 M775 L320-3.png"
+            ],
+            "keyAttributes": {
+              "Product Code": "BS-L320-11R24.5",
+              "Model": "L320",
+              "Size": "11R24.5",
+              "Ply Rating": 16,
+              "Load Range": "H",
+              "Load Index": "149/146",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "18/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "7160lb/110psi",
+              "Dual Max Load/Pressure": "6610lb/110psi",
+              "Static Load Radius": "20.8 inches",
+              "Revs Per Mile": 468,
+              "Weight": "128lb/58kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "71 dB",
+              "Feature": [
+                "All Position",
+                "Versatile",
+                "Multi Position"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Bridgestone",
+              "Manufacturer": "Bridgestone Corporation",
+              "Origin": "USA & Japan",
+              "Overall Diameter": "43.7 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              }
+            ]
+          },
+          {
             "id": 1137,
             "name": "Michelin X Multi T 11R22.5 Trailer Tire",
             "price": "$280.00",
