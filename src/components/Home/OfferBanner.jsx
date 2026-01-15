@@ -45,7 +45,7 @@ const OfferBanner = () => {
         <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-lg ">
           {/* Background Image */}
           <img
-            src="/assets/banner2.png"
+            src="/assets/banner3.png"
             alt="Offer Banner"
             className="w-full h-full object-fill"
           />
