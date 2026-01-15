@@ -49,12 +49,14 @@ const OfferBanner = () => {
             alt="Offer Banner"
             className="w-full h-full object-fill"
           />
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black bg-opacity-10"></div>
 
           {/* Limited Time Offer and Countdown - Left Bottom Inside Banner */}
           <div className="absolute bottom-1 left-8 z-10">
             {/* Limited Time Offer Label */}
             <div className="mb-1">
-              <span className="text-gray-700 font-semibold text-md md:text-xl tracking-wider uppercase ml-10">
+              <span className="text-white font-semibold text-md md:text-xl tracking-wider uppercase ml-10">
                 LIMITED TIME OFFER!
               </span>
             </div>
@@ -68,7 +70,7 @@ const OfferBanner = () => {
                     {timeLeft.days}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-medium text-gray-800 mt-1 uppercase">
+                <span className="text-xs md:text-sm font-medium text-white mt-1 uppercase">
                   Days
                 </span>
               </div>
@@ -80,7 +82,7 @@ const OfferBanner = () => {
                     {String(timeLeft.hours).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-medium text-gray-800 mt-1 uppercase">
+                <span className="text-xs md:text-sm font-medium text-white mt-1 uppercase">
                   Hours
                 </span>
               </div>
@@ -92,7 +94,7 @@ const OfferBanner = () => {
                     {String(timeLeft.minutes).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-medium text-gray-800 mt-1 uppercase">
+                <span className="text-xs md:text-sm font-medium text-white mt-1 uppercase">
                   Mins
                 </span>
               </div>
@@ -104,7 +106,7 @@ const OfferBanner = () => {
                     {String(timeLeft.seconds).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-medium text-gray-800 mt-1 uppercase">
+                <span className="text-xs md:text-sm font-medium text-white mt-1 uppercase">
                   Secs
                 </span>
               </div>
