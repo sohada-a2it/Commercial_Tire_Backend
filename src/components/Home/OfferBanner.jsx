@@ -63,7 +63,7 @@ const OfferBanner = () => {
             <div className="flex gap-3 md:gap-4">
               {/* Days */}
               <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-4 border-[#f3d1a9]">
+                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-2 border-[#f3d1a9]">
                   <span className="text-xl md:text-2xl font-bold text-gray-800">
                     {timeLeft.days}
                   </span>
@@ -75,7 +75,7 @@ const OfferBanner = () => {
 
               {/* Hours */}
               <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-4 border-[#f3d1a9]">
+                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-2 border-[#f3d1a9]">
                   <span className="text-xl md:text-2xl font-bold text-gray-800">
                     {String(timeLeft.hours).padStart(2, "0")}
                   </span>
@@ -87,7 +87,7 @@ const OfferBanner = () => {
 
               {/* Minutes */}
               <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-4 border-[#f3d1a9]">
+                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-2 border-[#f3d1a9]">
                   <span className="text-xl md:text-2xl font-bold text-gray-800">
                     {String(timeLeft.minutes).padStart(2, "0")}
                   </span>
@@ -99,7 +99,7 @@ const OfferBanner = () => {
 
               {/* Seconds */}
               <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-4 border-[#f3d1a9]">
+                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-2 border-[#f3d1a9]">
                   <span className="text-xl md:text-2xl font-bold text-gray-800">
                     {String(timeLeft.seconds).padStart(2, "0")}
                   </span>
