@@ -7667,7 +7667,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Standard drive tire for 10R22.5 applications. Designed for standard applications with reliable performance.",
-            "image": "/assets/truck/Firestone/Drive/10 R22.5.png",
+            "image": "/assets/truck/Firestone/Drive/FD694 10R22.5-1.png",
+            "images": [
+              "/assets/truck/Firestone/Drive/FD694 10R22.5-2.png",
+              "/assets/truck/Firestone/Drive/FD694 10R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FD701",
               "Model": "FD694",
@@ -7786,6 +7790,10 @@
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Standard steer tire for 10R22.5 size. Designed for standard applications with precise steering.",
             "image": "/assets/truck/Firestone/Steer/10 R22.5.png",
+            "images": [
+              "/assets/truck/Firestone/Steer/10 R22.5.png",
+              "/assets/truck/Firestone/Steer/10 R22.5.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FS567",
               "Model": "FS560",
@@ -7903,7 +7911,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Standard trailer tire for 10R22.5 applications. Designed for standard applications with reliable performance.",
-            "image": "/assets/truck/Firestone/Trailer_Tire/10 R22.5.png",
+            "image": "/assets/truck/Firestone/Trailer/10 R22.5.png",
+            "images": [
+              "/assets/truck/Firestone/Trailer/10 R22.5.png",
+              "/assets/truck/Firestone/Trailer/10 R22.5.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FT420",
               "Model": "FT413",
@@ -8021,7 +8033,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Reliable drive tire for mixed use. Designed for versatility and durability in various applications.",
-            "image": "/assets/truck/Firestone/Drive/11R22.5.png",
+            "image": "/assets/truck/Firestone/Drive/FD694 11R22.5-1.png",
+            "images": [
+              "/assets/truck/Firestone/Drive/FD694 11R22.5-2.png",
+              "/assets/truck/Firestone/Drive/FD694 11R22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FD694",
               "Model": "FD694",
@@ -8139,7 +8155,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Steer tire for standard 11R22.5 fitment. Designed for precise steering and reliable performance.",
-            "image": "/assets/truck/Firestone/Steer/11R22.5.png",
+            "image": "/assets/truck/Firestone/Steer/FS560 11r22.5 steer-1.png",
+            "images": [
+              "/assets/truck/Firestone/Steer/FS560 11r22.5 steer-2.png",
+              "/assets/truck/Firestone/Steer/FS560 11r22.5 steer-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FS561",
               "Model": "FS560",
@@ -8257,7 +8277,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Trailer tire for standard 11R22.5 fitment. Designed for reliable performance and durability.",
-            "image": "/assets/truck/Firestone/Trailer_Tire/11R22.5.png",
+            "image": "/assets/truck/Firestone/Trailer/FS560 11r22.5 trailer-1.png",
+            "images": [
+              "/assets/truck/Firestone/Trailer/FS560 11r22.5 trailer-2.png",
+              "/assets/truck/Firestone/Trailer/FS560 11r22.5 trailer-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FT414",
               "Model": "FT413",
@@ -8375,7 +8399,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Drive tire for 24.5\" wheel positions. Designed for larger wheel applications with reliable performance.",
-            "image": "/assets/truck/Firestone/Drive/11R24.5.png",
+            "image": "/assets/truck/Firestone/Drive/FD711 FD694 FD692 11r24.5 Drive-1.png",
+            "images": [
+              "/assets/truck/Firestone/Drive/FD711 FD694 FD692 11r24.5 Drive-2.png",
+              "/assets/truck/Firestone/Drive/FD711 FD694 FD692 11r24.5 Drive-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FD695",
               "Model": "FD694",
@@ -8493,7 +8521,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Steer tire for 24.5\" wheel positions. Designed for larger wheel applications with precise steering.",
-            "image": "/assets/truck/Firestone/Steer/11R24.5.png",
+            "image": "/assets/truck/Firestone/Steer/FS492 11r24.5 steer-1.png",
+            "images": [
+              "/assets/truck/Firestone/Steer/FS492 11r24.5 steer-2.webp",
+              "/assets/truck/Firestone/Steer/FS492 11r24.5 steer-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FS562",
               "Model": "FS560",
@@ -8611,7 +8643,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Trailer tire for 24.5\" wheel positions. Designed for larger wheel applications with reliable performance.",
-            "image": "/assets/truck/Firestone/Trailer_Tire/11R24.5.png",
+            "image": "/assets/truck/Firestone/Trailer/FS492 11r24.5 trailer-1.png",
+            "images": [
+              "/assets/truck/Firestone/Trailer/FS492 11r24.5 trailer-2.png",
+              "/assets/truck/Firestone/Trailer/FS492 11r24.5 trailer-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FT415",
               "Model": "FT413",
@@ -9035,7 +9071,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Versatile drive tire for regional haul. Designed for regional applications with reliable performance.",
-            "image": "/assets/truck/Firestone/Drive/29575R22.5.png",
+            "image": "/assets/truck/Firestone/Drive/29575r22.5-1.png",
+            "images": [
+              "/assets/truck/Firestone/Drive/29575r22.5-2.png",
+              "/assets/truck/Firestone/Drive/29575r22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FD696",
               "Model": "FD694",
@@ -9153,7 +9193,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Steer tire for regional haul applications. Designed for regional use with precise steering.",
-            "image": "/assets/truck/Firestone/Steer/29575R22.5.png",
+            "image": "/assets/truck/Firestone/Steer/295_75r22.5 Steer FS560 FS561A FS591-1.png",
+            "images": [
+              "/assets/truck/Firestone/Steer/295_75r22.5 Steer FS560 FS561A FS591-2.png",
+              "/assets/truck/Firestone/Steer/295_75r22.5 Steer FS560 FS561A FS591-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FS563",
               "Model": "FS560",
@@ -9271,7 +9315,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Trailer tire for mixed-service use. Designed for versatility and reliable performance.",
-            "image": "/assets/truck/Firestone/Trailer_Tire/29575R22.5.png",
+            "image": "/assets/truck/Firestone/Trailer/295_75r22.5 Trailer FT492 FT409 FS591-1.png",
+            "images": [
+              "/assets/truck/Firestone/Trailer/295_75r22.5 Trailer FT492 FT409 FS591-2.png",
+              "/assets/truck/Firestone/Trailer/295_75r22.5 Trailer FT492 FT409 FS591-3png.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FT416",
               "Model": "FT413",
@@ -9389,7 +9437,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Long-haul drive tire with durability. Designed for extended service life and reliable performance.",
-            "image": "/assets/truck/Firestone/Drive/29580R22.5.png",
+            "image": "/assets/truck/Firestone/Drive/29580r22.5-1.png",
+            "images": [
+              "/assets/truck/Firestone/Drive/29580r22.5-2.png",
+              "/assets/truck/Firestone/Drive/29580r22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FD697",
               "Model": "FD694",
@@ -9508,6 +9560,10 @@
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "High-load steer tire for stability. Designed for maximum stability and precise steering.",
             "image": "/assets/truck/Firestone/Steer/29580R22.5.png",
+            "images": [
+              "/assets/truck/Firestone/Steer/29580R22.5.png",
+              "/assets/truck/Firestone/Steer/29580R22.5.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FS564",
               "Model": "FS560",
@@ -9625,8 +9681,15 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Durable trailer tire for even wear. Designed for consistent performance and longevity.",
-            "image": "/assets/truck/Firestone/Trailer_Tire/29580R22.5.png",
+            "image": "/assets/truck/Firestone/Trailer/29580R22.5.png",
+            "images": [
+              "/assets/truck/Firestone/Trailer/29580R22.5.png",
+              "/assets/truck/Firestone/Trailer/29580R22.5.png"
+            ],
             "keyAttributes": {
+              "Product Code": "FS-FT417",
+              "Model": "FT413",
+              "Size": "295/80R22.5",
               "Product Code": "FS-FT413",
               "Model": "FT413",
               "Size": "295/80R22.5",
@@ -9743,7 +9806,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Wide-base drive tire for fuel efficiency. Designed for improved fuel economy and performance.",
-            "image": "/assets/truck/Firestone/Drive/31580R22.5.png",
+            "image": "/assets/truck/Firestone/Drive/31580r22.5-1.png",
+            "images": [
+              "/assets/truck/Firestone/Drive/31580r22.5-2.png",
+              "/assets/truck/Firestone/Drive/31580r22.5-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FD698",
               "Model": "FD694",
@@ -9939,7 +10006,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "High-capacity trailer tire for heavy loads. Designed for maximum load capacity and durability.",
-            "image": "/assets/truck/Firestone/Trailer_Tire/31580R22.5.png",
+            "image": "/assets/truck/Firestone/Trailer/315_80r22.5 Trailer FS400-1.png",
+            "images": [
+              "/assets/truck/Firestone/Trailer/315_80r22.5 Trailer FS400-2.png",
+              "/assets/truck/Firestone/Trailer/315_80r22.5 Trailer FS400-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FT417",
               "Model": "FT413",
@@ -10033,7 +10104,11 @@
             ],
             "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
             "description": "Wide-base single tire for heavy loads. Designed for maximum load capacity and performance.",
-            "image": "/assets/truck/Firestone/Drive/38565R22.5.png",
+            "image": "/assets/truck/Firestone/Drive/FS818 385_65r22.5 Drive-1.png",
+            "images": [
+              "/assets/truck/Firestone/Drive/FS818 385_65r22.5 Drive-2.png",
+              "/assets/truck/Firestone/Drive/FS818 385_65r22.5 Drive-3.png"
+            ],
             "keyAttributes": {
               "Product Code": "FS-FD699",
               "Model": "FD694",
