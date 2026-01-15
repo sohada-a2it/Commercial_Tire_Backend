@@ -772,7 +772,7 @@ const ProductDetails = () => {
   {product.pricingTiers && product.pricingTiers.length > 0 && (
     <div className="mb-4 border-t border-gray-100 pt-3">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-md font-semibold text-red-500">Volume Pricing</span>
+        <span className="text-md font-semibold text-red-500">Volume Pricing<span>↓</span></span>
         <span className="text-xs text-teal-600">Save more</span>
       </div>
       
