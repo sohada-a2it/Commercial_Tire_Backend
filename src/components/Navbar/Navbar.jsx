@@ -123,11 +123,11 @@ const Navbar = () => {
               alt="Asian Import and Export"
               width={150}
               height={64}
-              className="h-16 w-auto"
+              className="h-10 md:h-16 w-auto"
             />
             <div className="ml-1 text-white">
-              <p className="font-semibold text-lg">ASIAN IMPORT & EXPORT Co. LTD</p>
-              <p className="text-sm text-yellow-500 ">Manufacturer & Wholesaler</p>
+              <p className="font-semibold md:text-lg text-sm">ASIAN IMPORT & EXPORT Co. LTD</p>
+              <p className="md:text-sm text-xs text-yellow-500 ">Manufacturer & Wholesaler</p>
             </div>
           </Link>
         </div>
