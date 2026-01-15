@@ -778,7 +778,7 @@ const ProductDetails = () => {
         {/* Price by Weight */}
         {product.pricingTiers[0].minWeight !== undefined && (
           product.pricingTiers.map((tier, index) => (
-            <div key={index} className="flex items-center justify-between text-xs">
+            <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
               <span className="text-gray-600">{tier.minWeight}-{tier.maxWeight}g</span>
               <span className="font-semibold text-teal-700">{tier.pricePerKg}</span>
             </div>
@@ -788,7 +788,7 @@ const ProductDetails = () => {
         {/* Volume Pricing by Size */}
         {product.pricingTiers[0].size && product.pricingTiers[0].pricePerTon && (
           product.pricingTiers.map((tier, index) => (
-            <div key={index} className="flex items-center justify-between text-xs">
+            <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
               <span className="text-gray-600">Size {tier.size}</span>
               <span className="font-semibold text-teal-700">{tier.pricePerTon}</span>
             </div>
@@ -798,7 +798,7 @@ const ProductDetails = () => {
         {/* Volume Pricing by Quantity */}
         {product.pricingTiers[0].minQuantity !== undefined && (
           product.pricingTiers.map((tier, index) => (
-            <div key={index} className="flex items-center justify-between text-xs">
+            <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
               <span className="text-gray-600">
                 {tier.minQuantity}
                 {tier.maxQuantity ? `-${tier.maxQuantity}` : '+'}
