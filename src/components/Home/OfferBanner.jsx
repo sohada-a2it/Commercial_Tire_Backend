@@ -44,12 +44,10 @@ const OfferBanner = () => {
         {/* Banner with Countdown Inside */}
         <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-lg ">
           {/* Background Image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center "
-            style={{
-              backgroundImage: "url('/assets/banner2.png')",
-              backgroundPosition: "center",
-            }}
+          <img
+            src="/assets/banner2.png"
+            alt="Offer Banner"
+            className="w-full h-full object-fill"
           />
 
           {/* Limited Time Offer and Countdown - Left Bottom Inside Banner */}
