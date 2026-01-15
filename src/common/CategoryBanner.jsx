@@ -114,7 +114,7 @@ const CategoryBanner = ({ category, products }) => {
           priority
         />
         {/* Dark overlay for better text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/10"></div>
       </div>
 
       {/* Content Overlay */}
