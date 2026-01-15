@@ -269,8 +269,6 @@ const SubcategoryPageClient = () => {
               Products
             </button>
             <span className="mx-2">/</span>
-            <span className="text-teal-600 font-medium">{category?.name}</span>
-            <span className="mx-2">/</span>
             <span className="text-teal-600 font-medium">
               {subcategory?.name}
             </span>
