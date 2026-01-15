@@ -10314,7 +10314,7 @@
               {
                 "minQuantity": 200,
                 "maxQuantity": null,
-                "pricePerTire": "$128.00"
+                "pricePerTire": "$138.00"
               }
             ],
             "customizationOptions": [
@@ -10432,7 +10432,7 @@
               {
                 "minQuantity": 200,
                 "maxQuantity": null,
-                "pricePerTire": "$125.00"
+                "pricePerTire": "$145.00"
               }
             ],
             "customizationOptions": [
@@ -11627,7 +11627,7 @@
             "id": 1120,
             "name": "Goodyear Fuel Max RSA 295/75R22.5 Drive Tire",
             "price": "$300.00",
-            "offerPrice": "$147.00",
+            "offerPrice": "$165.00",
             "pricingTiers": [
               {
                 "minQuantity": 0,
@@ -11642,7 +11642,7 @@
               {
                 "minQuantity": 200,
                 "maxQuantity": null,
-                "pricePerTire": "$147.00"
+                "pricePerTire": "$165.00"
               }
             ],
             "customizationOptions": [
@@ -11980,23 +11980,23 @@
           {
             "id": 1123,
             "name": "Goodyear Fuel Max RSA+ 295/80R22.5 Drive Tire",
-            "price": "$300.00",
-            "offerPrice": "$210.00",
+            "price": "$200.00",
+            "offerPrice": "$165.00",
             "pricingTiers": [
               {
                 "minQuantity": 0,
                 "maxQuantity": 49,
-                "pricePerTire": "$320.00"
+                "pricePerTire": "$220.00"
               },
               {
                 "minQuantity": 50,
                 "maxQuantity": 199,
-                "pricePerTire": "$280.00"
+                "pricePerTire": "$180.00"
               },
               {
                 "minQuantity": 200,
                 "maxQuantity": null,
-                "pricePerTire": "$265.00"
+                "pricePerTire": "$165.00"
               }
             ],
             "customizationOptions": [
@@ -12098,23 +12098,23 @@
           {
             "id": 1124,
             "name": "Goodyear G397 LHS 295/80R22.5 Steer Tire",
-            "price": "$300.00",
-            "offerPrice": "$265.00",
+            "price": "$200.00",
+            "offerPrice": "$165.00",
             "pricingTiers": [
               {
                 "minQuantity": 0,
                 "maxQuantity": 49,
-                "pricePerTire": "$300.00"
+                "pricePerTire": "$200.00"
               },
               {
                 "minQuantity": 50,
                 "maxQuantity": 199,
-                "pricePerTire": "$280.00"
+                "pricePerTire": "$180.00"
               },
               {
                 "minQuantity": 200,
                 "maxQuantity": null,
-                "pricePerTire": "$265.00"
+                "pricePerTire": "$165.00"
               }
             ],
             "customizationOptions": [
