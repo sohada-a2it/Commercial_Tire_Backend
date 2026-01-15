@@ -4,11 +4,14 @@ import React, { useState, useEffect } from "react";
 
 const OfferBanner = () => {
   const [timeLeft, setTimeLeft] = useState({
+    weeks: 0,
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0,
   });
+  const [prevSeconds, setPrevSeconds] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     // Set target date to 350 days from January 15, 2026
@@ -20,11 +23,21 @@ const OfferBanner = () => {
       const difference = targetDate - now;
 
       if (difference > 0) {
+        const seconds = Math.floor((difference / 1000) % 60);
+        
+        // Trigger animation when seconds change
+        if (seconds !== prevSeconds) {
+          setIsAnimating(true);
+          setPrevSeconds(seconds);
+          setTimeout(() => setIsAnimating(false), 300);
+        }
+
         setTimeLeft({
-          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          weeks: Math.floor(difference / (1000 * 60 * 60 * 24 * 7)),
+          days: Math.floor((difference / (1000 * 60 * 60 * 24)) % 7),
           hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
           minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60),
+          seconds: seconds,
         });
       }
     };
@@ -36,13 +49,13 @@ const OfferBanner = () => {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [prevSeconds]);
 
   return (
     <div className="relative w-full bg-white py-8 md:py-12">
       <div className="max-w-7xl mx-auto px-4">
         {/* Banner with Countdown Inside */}
-        <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-lg ">
+        <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-lg">
           {/* Background Image */}
           <img
             src="/assets/banner3.png"
@@ -52,62 +65,75 @@ const OfferBanner = () => {
           {/* Overlay */}
           <div className="absolute inset-0 bg-black bg-opacity-10"></div>
 
-          {/* Limited Time Offer and Countdown - Left Bottom Inside Banner */}
-          <div className="absolute bottom-1 left-8 z-10">
-            {/* Limited Time Offer Label */}
-            <div className="mb-1">
-              <span className="text-white font-semibold text-md md:text-xl tracking-wider uppercase ml-10">
-                LIMITED TIME OFFER!
-              </span>
-            </div>
-
-            {/* Countdown Timer */}
-            <div className="flex gap-3 md:gap-4">
-              {/* Days */}
+          {/* Countdown Timer - Centered */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex gap-3 md:gap-6">
+              {/* Weeks */}
               <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-2 border-[#f3d1a9]">
-                  <span className="text-xl md:text-2xl font-bold text-gray-800">
-                    {timeLeft.days}
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <span className="text-3xl md:text-4xl font-bold text-gray-900 relative z-10">
+                    {String(timeLeft.weeks).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-medium text-white mt-1 uppercase">
-                  Days
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                  WEEKS
+                </span>
+              </div>
+
+              {/* Days */}
+              <div className="flex flex-col items-center">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <span className="text-3xl md:text-4xl font-bold text-gray-900 relative z-10">
+                    {String(timeLeft.days).padStart(2, "0")}
+                  </span>
+                </div>
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                  DAYS
                 </span>
               </div>
 
               {/* Hours */}
               <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-2 border-[#f3d1a9]">
-                  <span className="text-xl md:text-2xl font-bold text-gray-800">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <span className="text-3xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.hours).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-medium text-white mt-1 uppercase">
-                  Hours
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                  HOURS
                 </span>
               </div>
 
               {/* Minutes */}
               <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-2 border-[#f3d1a9]">
-                  <span className="text-xl md:text-2xl font-bold text-gray-800">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <span className="text-3xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.minutes).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-medium text-white mt-1 uppercase">
-                  Mins
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                  MINUTES
                 </span>
               </div>
 
-              {/* Seconds */}
+              {/* Seconds - With Animation */}
               <div className="flex flex-col items-center">
-                <div className="bg-white rounded-full w-12 h-12 md:w-16 md:h-16 flex items-center justify-center shadow-lg border-2 border-[#f3d1a9]">
-                  <span className="text-xl md:text-2xl font-bold text-gray-800">
+                <div className={`bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-16 h-16 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden transition-transform duration-300 ${
+                  isAnimating ? 'scale-110' : 'scale-100'
+                }`}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+                  <span className={`text-3xl md:text-4xl font-bold text-gray-900 relative z-10 transition-all duration-300 ${
+                    isAnimating ? 'scale-125' : 'scale-100'
+                  }`}>
                     {String(timeLeft.seconds).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-xs md:text-sm font-medium text-white mt-1 uppercase">
-                  Secs
+                <span className="text-xs md:text-sm font-bold text-white mt-2 uppercase tracking-wider">
+                  SECONDS
                 </span>
               </div>
             </div>
