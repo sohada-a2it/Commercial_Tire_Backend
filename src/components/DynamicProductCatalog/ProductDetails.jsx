@@ -739,9 +739,9 @@ const ProductDetails = () => {
   {/* Right: Purchase Box - Compact Style */}
 <div className="lg:w-1/4 bg-white text-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 h-fit">
   {/* Price Section - Compact */}
-  <div className="mb-4">
+  <div className="mb-2">
     {product.price && product.offerPrice ? (
-      <div className="text-center">
+      <div className="text-center border-b border-teal-200">
         <div className="flex items-center justify-center gap-2 mb-1">
           <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-semibold">
             SALE
@@ -750,7 +750,7 @@ const ProductDetails = () => {
             {product.price}
           </span>
         </div>
-        <div className="text-2xl font-bold text-amber-600">
+        <div className="text-2xl font-bold text-amber-600 shadow-glow-sm">
           {product.offerPrice}
         </div>
       </div>
@@ -770,7 +770,7 @@ const ProductDetails = () => {
 
   {/* Volume Pricing - Compact Table */}
   {product.pricingTiers && product.pricingTiers.length > 0 && (
-    <div className="mb-4 border-t border-gray-100 pt-3">
+    <div className="mb-4  pt-3">
       <div className="flex items-center justify-between mb-2">
         <span className="text-md font-semibold text-red-500">Volume Pricing<span>↓</span></span>
         <span className="text-xs text-teal-600">Save more</span>
@@ -782,8 +782,8 @@ const ProductDetails = () => {
           <>
             {product.pricingTiers.slice(0, expandedSidebarPricing ? product.pricingTiers.length : 3).map((tier, index) => (
               <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
-                <span className="text-gray-600">{tier.minWeight}-{tier.maxWeight}g</span>
-                <span className="font-semibold text-teal-700">{tier.pricePerKg}</span>
+                <span className="text-gray-600 font-bold">{tier.minWeight}-{tier.maxWeight}g</span>
+                <span className=" text-teal-700 font-bold">{tier.pricePerKg}</span>
               </div>
             ))}
             {product.pricingTiers.length > 3 && (
@@ -812,8 +812,8 @@ const ProductDetails = () => {
           <>
             {product.pricingTiers.slice(0, expandedSidebarPricing ? product.pricingTiers.length : 3).map((tier, index) => (
               <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
-                <span className="text-gray-600">Size {tier.size}</span>
-                <span className="font-semibold text-teal-700">{tier.pricePerTon}</span>
+                <span className="text-gray-600 font-bold">Size {tier.size}</span>
+                <span className=" text-teal-700 font-bold">{tier.pricePerTon}</span>
               </div>
             ))}
             {product.pricingTiers.length > 3 && (
@@ -842,11 +842,11 @@ const ProductDetails = () => {
           <>
             {product.pricingTiers.slice(0, expandedSidebarPricing ? product.pricingTiers.length : 3).map((tier, index) => (
               <div key={index} className="flex items-center justify-between text-xs border-b border-teal-100 ">
-                <span className="text-gray-600">
+                <span className="text-gray-600 font-bold">
                   {tier.minQuantity}
                   {tier.maxQuantity ? `-${tier.maxQuantity}` : '+'}
                 </span>
-                <span className="font-semibold text-teal-700">
+                <span className=" text-teal-700 font-bold">
                   {tier.pricePerTire || tier.pricePerUnit}
                 </span>
               </div>
