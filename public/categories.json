@@ -11007,8 +11007,24 @@
             "id": 1114,
             "name": "Goodyear Endurance RSA HD 11R24.5 Drive Tire",
             "price": "$360.00",
-            "offerPrice": "$208.00",
-            "pricingTiers": [],
+            "offerPrice": "$175.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$210.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$190.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$175.00"
+              }
+            ],
             "customizationOptions": [
               "Custom sidewall Branding (Min. order: 50 tires)",
               "Special compound formulation (Min. order: 100 tires)"
@@ -11110,7 +11126,23 @@
             "name": "Goodyear G395 XT LHS 11R24.5 Steer Tire",
             "price": "$360.00",
             "offerPrice": "$205.00",
-            "pricingTiers": [],
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$270.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$220.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$205.00"
+              }
+            ],
             "customizationOptions": [
               "Custom sidewall Branding (Min. order: 50 tires)",
               "Special compound formulation (Min. order: 100 tires)"
@@ -11212,7 +11244,23 @@
             "name": "Goodyear G316 LHT 11R24.5 Trailer Tire",
             "price": "$360.00",
             "offerPrice": "$205.00",
-            "pricingTiers": [],
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$270.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$220.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$205.00"
+              }
+            ],
             "customizationOptions": [
               "Custom sidewall Branding (Min. order: 50 tires)",
               "Special compound formulation (Min. order: 100 tires)"
@@ -11314,7 +11362,23 @@
             "name": "Goodyear Regional RSD 255/70R22.5 Drive Tire",
             "price": "$250.00",
             "offerPrice": "$225.00",
-            "pricingTiers": [],
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$275.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$240.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$225.00"
+              }
+            ],
             "customizationOptions": [
               "Custom sidewall Branding (Min. order: 50 tires)",
               "Special compound formulation (Min. order: 100 tires)"
@@ -11392,7 +11456,23 @@
             "name": "Goodyear G395 LHS 255/70R22.5 Steer Tire",
             "price": "$250.00",
             "offerPrice": "$222.00",
-            "pricingTiers": [],
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$275.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$240.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$222.00"
+              }
+            ],
             "customizationOptions": [
               "Custom sidewall Branding (Min. order: 50 tires)",
               "Special compound formulation (Min. order: 100 tires)"
@@ -11680,7 +11760,7 @@
               {
                 "minQuantity": 200,
                 "maxQuantity": null,
-                "pricePerTire": "$147.00"
+                "pricePerTire": "$165.00"
               }
             ],
             "customizationOptions": [
@@ -11798,7 +11878,7 @@
               {
                 "minQuantity": 200,
                 "maxQuantity": null,
-                "pricePerTire": "$147.00"
+                "pricePerTire": "$165.00"
               }
             ],
             "customizationOptions": [
@@ -11902,7 +11982,23 @@
             "name": "Goodyear Fuel Max RSA+ 295/80R22.5 Drive Tire",
             "price": "$300.00",
             "offerPrice": "$210.00",
-            "pricingTiers": [],
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$320.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$280.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$265.00"
+              }
+            ],
             "customizationOptions": [
               "Custom sidewall Branding (Min. order: 50 tires)",
               "Special compound formulation (Min. order: 100 tires)"
@@ -12003,7 +12099,24 @@
             "id": 1124,
             "name": "Goodyear G397 LHS 295/80R22.5 Steer Tire",
             "price": "$300.00",
-            "offerPrice": "$207.00",
+            "offerPrice": "$265.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$300.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$280.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$265.00"
+              }
+            ],
             "customizationOptions": [
               "Custom sidewall Branding (Min. order: 50 tires)",
               "Special compound formulation (Min. order: 100 tires)"
@@ -12104,7 +12217,24 @@
             "id": 1125,
             "name": "Goodyear G317 LHT 295/80R22.5 Trailer Tire",
             "price": "$300.00",
-            "offerPrice": "$207.00",
+            "offerPrice": "$265.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$300.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$280.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$265.00"
+              }
+            ],
             "customizationOptions": [
               "Custom sidewall Branding (Min. order: 50 tires)",
               "Special compound formulation (Min. order: 100 tires)"
