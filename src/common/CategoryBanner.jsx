@@ -113,7 +113,7 @@ const CategoryBanner = ({ category, products }) => {
   };
 
   return (
-    <div className="relative w-full h-[350px] lg:h-[450px] overflow-visible rounded-lg max-w-7xl mx-auto">
+    <div className="relative w-full h-[150px]  lg:h-[450px] overflow-visible rounded-lg max-w-7xl mx-auto">
       {/* Background Image */}
       <div className="absolute inset-0 z-0 rounded-lg overflow-hidden">
         <Image
@@ -167,7 +167,7 @@ const CategoryBanner = ({ category, products }) => {
 
       {/* Mobile Slider - Shows after 3 seconds */}
       {showMobileSlider && (
-        <div className="lg:hidden absolute bottom-0 left-0 right-0 z-20 pb-4 px-4 transform translate-y-1/2">
+        <div className="lg:hidden absolute bottom-4 left-16 right-4 z-20">
           <div className="transition-all duration-500 ease-in-out">
             {displayProducts[currentIndex] && (
               <ProductCard 
@@ -202,19 +202,19 @@ const ProductCard = ({ product, isMain, addToCart, isMobile = false }) => {
 
   // Responsive sizing
   const cardSize = isMobile 
-    ? 'h-[180px] w-full max-w-md mx-auto' 
-    : (isMain ? 'h-[200px] w-[310px]' : 'h-[180px] w-[260px]');
+    ? 'h-[150px] w-[220px] mx-auto' 
+    : (isMain ? 'h-[200px] w-[310px]' : 'h-[120px] w-[210px]');
   
   const imageSize = isMobile
-    ? (isTruck ? 'w-36 h-50 -translate-x-16' : 'w-36 h-full -translate-x-16')
+    ? (isTruck ? 'w-28 h-40 -translate-x-12' : 'w-28 h-full -translate-x-12')
     : (isMain ? (isTruck ? 'w-44 h-70 -translate-x-24' : 'w-44 h-130 -translate-x-24') : 'w-48 h-130 -translate-x-24');
   
   const contentWidth = isMobile 
-    ? 'w-[calc(100%-80px)]'
-    : (isMain ? 'w-[240px]' : 'w-[210px]');
+    ? 'w-[calc(100%-65px)]'
+    : (isMain ? 'w-[210px]' : 'w-[160px]');
   
   const contentPadding = isMobile 
-    ? 'px-3 py-3'
+    ? 'px-1.5 py-2.5'
     : (isMain ? 'px-4 py-4' : 'px-3.5 py-3');
 
   return (
