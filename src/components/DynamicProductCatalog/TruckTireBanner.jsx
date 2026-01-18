@@ -98,14 +98,6 @@ const TruckTireBanner = ({ onBrandClick }) => {
 
   return (
     <div className="mb-8 relative">
-      <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Shop by Brand
-        </h2>
-        <p className="text-gray-600 text-sm mt-1">
-          Choose from our premium truck tire brands
-        </p> 
-      </div>
 
       <div className="relative max-w-6xl mx-auto">
         {/* Navigation arrows */}
@@ -171,11 +163,12 @@ const TruckTireBanner = ({ onBrandClick }) => {
 
 
                   {/* Content */}
-                  <div className="relative h-full flex items-center justify-center p-6">
+                  <div className="relative h-full flex items-end justify-end p-2">
                     {/* Shop Now Button */}
-                    <button className="bg-white/90 backdrop-blur-sm text-teal-600 px-6 py-2 rounded-full font-semibold hover:bg-teal-600 hover:text-white transition-all duration-300 shadow-lg transform group-hover:scale-110">
-                      Shop Now
+                    <button className="bg-transparent border border-teal-200 text-sm text-teal-600 px-3 py-1 rounded-full font-semibold transition-all duration-300 hover:bg-teal-600 hover:text-white hover:border-teal-100 shadow-lg transform group-hover:scale-110 ">
+                       Shop Now
                     </button>
+
                   </div>
                 </div>
               </div>
