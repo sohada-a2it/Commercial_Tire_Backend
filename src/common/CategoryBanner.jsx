@@ -113,7 +113,7 @@ const CategoryBanner = ({ category, products }) => {
   };
 
   return (
-    <div className="relative w-full h-[150px]  lg:h-[450px] overflow-visible rounded-lg max-w-7xl mx-auto">
+    <div className="relative w-full h-[180px]  lg:h-[450px] overflow-visible rounded-lg max-w-7xl mx-auto">
       {/* Background Image */}
       <div className="absolute inset-0 z-0 rounded-lg overflow-hidden">
         <Image
@@ -203,7 +203,7 @@ const ProductCard = ({ product, isMain, addToCart, isMobile = false }) => {
   // Responsive sizing
   const cardSize = isMobile 
     ? 'h-[150px] w-[220px] mx-auto' 
-    : (isMain ? 'h-[200px] w-[310px]' : 'h-[120px] w-[210px]');
+    : (isMain ? 'h-[200px] w-[310px]' : 'h-[180px] w-[260px]');
   
   const imageSize = isMobile
     ? (isTruck ? 'w-28 h-40 -translate-x-12' : 'w-28 h-full -translate-x-12')
@@ -211,7 +211,7 @@ const ProductCard = ({ product, isMain, addToCart, isMobile = false }) => {
   
   const contentWidth = isMobile 
     ? 'w-[calc(100%-65px)]'
-    : (isMain ? 'w-[210px]' : 'w-[160px]');
+    : (isMain ? 'w-[240px]' : 'w-[210px]');
   
   const contentPadding = isMobile 
     ? 'px-1.5 py-2.5'
@@ -249,7 +249,7 @@ const ProductCard = ({ product, isMain, addToCart, isMobile = false }) => {
           {/* Price */}
           <div>
             <div className="flex items-baseline gap-1">
-              <span className={`font-bold text-gray-900 ${isMobile ? 'text-2xl' : (isMain ? 'text-3xl' : 'text-2xl')} leading-none`}>
+              <span className={`font-bold text-gray-900 ${isMobile ? 'text-xl' : (isMain ? 'text-3xl' : 'text-2xl')} leading-none`}>
                 {product.offerPrice || product.price}
               </span>
               <span className={`${isMobile ? 'text-[10px]' : (isMain ? 'text-xs' : 'text-[11px]')} text-gray-500`}>per each</span>
@@ -285,9 +285,9 @@ const ProductCard = ({ product, isMain, addToCart, isMobile = false }) => {
           {/* Buy Now Button - Pushed to bottom */}
           <button 
             onClick={() => addToCart(product)}
-            className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMobile ? 'py-2 text-xs' : (isMain ? 'py-2.5 text-sm' : 'py-2 text-xs')} rounded-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-auto`}
+            className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMobile ? 'py-1 text-xs' : (isMain ? 'py-2.5 text-sm' : 'py-2 text-xs')} rounded-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-auto`}
           >
-            <ShoppingCart className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} hover:scale-50`} /> Add To Cart
+            <ShoppingCart className={`${isMobile ? 'w-3 h-3' : 'w-5 h-5'} hover:scale-50`} /> Add To Cart
           </button>
         </div>        {/* Sale Badge */}
         {product.offerPrice && (
