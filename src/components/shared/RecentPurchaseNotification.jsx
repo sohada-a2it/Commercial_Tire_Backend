@@ -1,13 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, ShoppingCart, Eye } from "lucide-react";
+import { useNavigate } from "@/lib/navigation";
+import { useCart } from "@/context/CartContext";
 
 const RecentPurchaseNotification = ({ products = [] }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     if (!products || products.length === 0) return;
@@ -29,7 +33,7 @@ const RecentPurchaseNotification = ({ products = [] }) => {
           const nextIndex = (index + 1) % products.length;
           setCurrentIndex(nextIndex);
           showNotification(nextIndex);
-        }, 30000); // 30 seconds gap
+        }, 2000); // 3 seconds gap
       }, 30000); // Show for 30 seconds
     };
 
@@ -49,6 +53,34 @@ const RecentPurchaseNotification = ({ products = [] }) => {
     setIsAnimating(false);
   };
 
+  const handleSeeDetails = () => {
+    if (currentProduct?.id) {
+      navigate(`/product/${currentProduct.id}`);
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (!currentProduct) return;
+
+    const priceStr = currentProduct.offerPrice || currentProduct.price || "0";
+    const priceNum = parseFloat(priceStr.replace(/[^0-9.]/g, "")) || 0;
+
+    addToCart({
+      id: currentProduct.id,
+      name: currentProduct.name,
+      price: priceNum,
+      offerPrice: currentProduct.offerPrice,
+      quantity: 1,
+      image: currentProduct.image,
+      category: currentProduct.category || "General",
+      moq: 50,
+      moqUnit: "units",
+    });
+
+    // Optional: Show a brief success indicator or close the popup
+    // setIsVisible(false);
+  };
+
   const getRandomLocation = () => {
     const locations = [
       "New York, USA",
@@ -65,19 +97,6 @@ const RecentPurchaseNotification = ({ products = [] }) => {
     return locations[Math.floor(Math.random() * locations.length)];
   };
 
-  const getRandomTimeAgo = () => {
-    const times = [
-      "2 mins ago",
-      "5 mins ago",
-      "8 mins ago",
-      "12 mins ago",
-      "15 mins ago",
-      "Just now",
-      "A moment ago",
-    ];
-    return times[Math.floor(Math.random() * times.length)];
-  };
-
   if (!currentProduct) return null;
 
   return (
@@ -90,7 +109,7 @@ const RecentPurchaseNotification = ({ products = [] }) => {
     >
       <div className="bg-white rounded-lg shadow-2xl max-w-sm overflow-hidden border border-gray-200 animate-slide-in">
         {/* Header */}
-        <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 px-4 py-2 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 px-4 py-1 flex items-center justify-between">
           <span className="text-white text-sm font-semibold">
             Someone purchased
           </span>
@@ -104,33 +123,45 @@ const RecentPurchaseNotification = ({ products = [] }) => {
         </div>
 
         {/* Content */}
-        <div className="p-4 flex items-start gap-3">
-          {/* Product Image */}
-          <div className="flex-shrink-0">
-            <img
-              src={currentProduct.image}
-              alt={currentProduct.name}
-              className="w-16 h-16 object-contain rounded border border-gray-200"
-            />
-          </div>
+        <div className="px-6 py-2">
+          <div className="flex items-start gap-3 mb-0">
+            {/* Product Image */}
+            <div className="flex-shrink-0">
+              <img
+                src={currentProduct.image}
+                alt={currentProduct.name}
+                className="w-16 h-16 object-contain rounded border border-gray-200"
+              />
+            </div>
 
-          {/* Product Info */}
-          <div className="flex-1 min-w-0">
-            <h4 className="text-sm font-semibold text-gray-800 line-clamp-2 mb-1">
-              {currentProduct.name}
-            </h4>
-            <p className="text-xs text-gray-600 mb-2">
-              In {getRandomLocation()}
-            </p>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">
-                {getRandomTimeAgo()}
-              </span>
-              <span className="text-xs text-teal-600 font-medium cursor-pointer hover:underline">
-                Verify
-              </span>
+            {/* Product Info */}
+            <div className="flex-1 min-w-0">
+              <h4 className="text-sm font-semibold text-gray-800 line-clamp-2 mb-1">
+                {currentProduct.name}
+              </h4>
+              <p className="text-xs text-gray-600 mb-2">
+                In {getRandomLocation()}
+              </p>
+              {/* Price */}
+                   {/* Action Buttons */}
+          <div className="flex gap-2">
+            <button
+              onClick={handleSeeDetails}
+              className="flex-1 flex items-center justify-center gap-1  border-b-teal-500 hover:text-red-600 text-teal-600 text-xs font-medium  px-3 rounded transition-colors"
+            >
+              See Details
+            </button>
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 flex items-center justify-center gap-1  border-b-teal-500 hover:text-red-500 text-teal-600 text-xs font-medium px-3 rounded transition-colors"
+            >
+              Add to Cart
+            </button>
+          </div>
             </div>
           </div>
+
+     
         </div>
 
         {/* Footer indicator */}

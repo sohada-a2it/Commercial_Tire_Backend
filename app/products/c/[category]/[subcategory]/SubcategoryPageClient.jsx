@@ -29,6 +29,7 @@ const SubcategoryPageClient = () => {
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [selectedTireType, setSelectedTireType] = useState(null);
   const [showTireTypeDropdown, setShowTireTypeDropdown] = useState(false);
+  const [popupProducts, setPopupProducts] = useState([]);
 
   // Refs for click outside detection
   const brandDropdownRef = useRef(null);
@@ -142,6 +143,22 @@ const SubcategoryPageClient = () => {
             subcategory: foundSubcategory.name,
           })) || [];
         setAllProducts(products);
+
+        // Fetch popup products from popup.json
+        try {
+          const popupResponse = await fetch("/popup.json");
+          if (popupResponse.ok) {
+            const popupData = await popupResponse.json();
+            
+            // Get products for current category and subcategory
+            const categoryProducts = popupData[foundCategory.name];
+            if (categoryProducts && categoryProducts[foundSubcategory.name]) {
+              setPopupProducts(categoryProducts[foundSubcategory.name]);
+            }
+          }
+        } catch (popupErr) {
+          console.error("Error fetching popup products:", popupErr);
+        }
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to load products. Please try again later.");
@@ -574,10 +591,10 @@ const SubcategoryPageClient = () => {
         />
       </div>
 
-      {/* Recent Purchase Notification - Only show for Truck Tires */}
-      {isTruckTires && subcategory?.products && (
+      {/* Recent Purchase Notification - Show for all subcategories with popup products */}
+      {popupProducts && popupProducts.length > 0 && (
         <RecentPurchaseNotification 
-          products={subcategory.products.slice(0, 10)} 
+          products={popupProducts} 
         />
       )}
     </div>
