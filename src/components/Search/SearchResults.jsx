@@ -49,9 +49,17 @@ const SearchResultsContent = () => {
   }, []);
 
   useEffect(() => {
-    const query = new URLSearchParams(location.search).get("q") || "";
+    const searchParams = new URLSearchParams(location.search);
+    const query = searchParams.get("q") || "";
+    const brand = searchParams.get("brand") || "";
+    const tireType = searchParams.get("tireType") || "";
+    const sort = searchParams.get("sort") || "";
+    
     setSearchQuery(query);
     setInputValue(query);
+    setSelectedBrand(brand);
+    setSelectedTireType(tireType);
+    setSortBy(sort);
 
     if (query) {
       performSearch(query);
@@ -133,19 +141,52 @@ const SearchResultsContent = () => {
     (product) => product.subcategory?.toLowerCase() === "truck tires"
   );
 
+  // Helper function to update URL with current filters
+  const updateURLWithFilters = (brand, sort, tireType) => {
+    const params = new URLSearchParams(location.search);
+    
+    if (brand) {
+      params.set('brand', brand);
+    } else {
+      params.delete('brand');
+    }
+    
+    if (sort) {
+      params.set('sort', sort);
+    } else {
+      params.delete('sort');
+    }
+    
+    if (tireType) {
+      params.set('tireType', tireType);
+    } else {
+      params.delete('tireType');
+    }
+
+    const queryString = params.toString();
+    const newUrl = queryString 
+      ? `${window.location.pathname}?${queryString}`
+      : window.location.pathname;
+    
+    window.history.replaceState({}, '', newUrl);
+  };
+
   const handleBrandSelect = (brand) => {
     setSelectedBrand(brand);
     setShowBrandDropdown(false);
+    updateURLWithFilters(brand, sortBy, selectedTireType);
   };
 
   const handleTireTypeSelect = (tireType) => {
     setSelectedTireType(tireType);
     setShowTireTypeDropdown(false);
+    updateURLWithFilters(selectedBrand, sortBy, tireType);
   };
 
   const handleSortSelect = (sortOption) => {
     setSortBy(sortOption);
     setShowSortDropdown(false);
+    updateURLWithFilters(selectedBrand, sortOption, selectedTireType);
   };
 
   const handleNewSearch = (e) => {
