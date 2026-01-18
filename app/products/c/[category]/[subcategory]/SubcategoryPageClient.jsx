@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useNavigate } from "@/lib/navigation";
 import ProductList from "@/components/DynamicProductCatalog/ProductList";
 import SearchSuggestion from "@/components/Search/SearchSuggestion.jsx";
@@ -10,6 +10,7 @@ import CategoryBanner from "@/common/CategoryBanner";
 
 const SubcategoryPageClient = () => {
   const params = useParams();
+  const searchParams = useSearchParams();
   const navigate = useNavigate();
 
   const [category, setCategory] = useState(null);
@@ -31,6 +32,33 @@ const SubcategoryPageClient = () => {
   const brandDropdownRef = useRef(null);
   const sortDropdownRef = useRef(null);
   const tireTypeDropdownRef = useRef(null);
+
+  // Initialize filters from URL params on mount and when params change
+  useEffect(() => {
+    const brandParam = searchParams.get('brand');
+    const sortParam = searchParams.get('sort');
+    const tireTypeParam = searchParams.get('tireType');
+
+    setSelectedBrand(brandParam || null);
+    setSortBy(sortParam || "");
+    setSelectedTireType(tireTypeParam || null);
+  }, [searchParams]);
+
+  // Helper function to update URL with current filters
+  const updateURLWithFilters = (brand, sort, tireType) => {
+    const params = new URLSearchParams();
+    
+    if (brand) params.set('brand', brand);
+    if (sort) params.set('sort', sort);
+    if (tireType) params.set('tireType', tireType);
+
+    const queryString = params.toString();
+    const newUrl = queryString 
+      ? `${window.location.pathname}?${queryString}`
+      : window.location.pathname;
+    
+    window.history.replaceState({}, '', newUrl);
+  };
 
   // Handle click outside to close dropdowns
   useEffect(() => {
@@ -172,6 +200,7 @@ const SubcategoryPageClient = () => {
   const handleBrandSelect = (brand) => {
     setSelectedBrand(brand);
     setShowBrandDropdown(false);
+    updateURLWithFilters(brand, sortBy, selectedTireType);
   };
 
   const toggleBrandDropdown = () => {
@@ -181,6 +210,7 @@ const SubcategoryPageClient = () => {
   const handleSortSelect = (sortOption) => {
     setSortBy(sortOption);
     setShowSortDropdown(false);
+    updateURLWithFilters(selectedBrand, sortOption, selectedTireType);
   };
 
   const toggleSortDropdown = () => {
@@ -190,6 +220,7 @@ const SubcategoryPageClient = () => {
   const handleTireTypeSelect = (tireType) => {
     setSelectedTireType(tireType);
     setShowTireTypeDropdown(false);
+    updateURLWithFilters(selectedBrand, sortBy, tireType);
   };
 
   const toggleTireTypeDropdown = () => {
