@@ -33,7 +33,7 @@ const RecentPurchaseNotification = ({ products = [] }) => {
           const nextIndex = (index + 1) % products.length;
           setCurrentIndex(nextIndex);
           showNotification(nextIndex);
-        }, 2000); // 2 seconds gap
+        }, 4000); // 4 seconds gap
       }, 10000); // Show for 10 seconds
     };
 
