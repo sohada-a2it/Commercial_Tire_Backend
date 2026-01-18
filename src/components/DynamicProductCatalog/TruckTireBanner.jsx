@@ -147,7 +147,7 @@ const TruckTireBanner = ({ onBrandClick }) => {
 
         {/* Slider container */}
         <div className="overflow-hidden rounded-lg">
-          <div className="flex gap-8 transition-transform duration-500 ease-in-out">
+          <div className="flex gap-4 transition-transform duration-500 ease-in-out">
             {visibleBrands.map((brand, idx) => (
               <div
                 key={`${brand.name}-${idx}`}
