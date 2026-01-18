@@ -86,7 +86,9 @@ const Navbar = () => {
 
   const handleProductClick = (categorySlug, subcategoryName) => {
     const subcategorySlug = nameToSlug(subcategoryName);
-    navigate(`/products/c/${categorySlug}/${subcategorySlug}`);
+    const path = `/products/c/${categorySlug}/${subcategorySlug}`;
+    console.log('Navigating to:', path, 'from category:', categorySlug, 'item:', subcategoryName);
+    navigate(path);
     setIsProductsOpen(false);
     setIsMenuOpen(false);
   };
@@ -319,93 +321,77 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-40"
-          onClick={() => setIsMenuOpen(false)}
-        />
-      )}
-
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden mt-4 py-4 border-t border-teal-700 bg-teal-800 rounded-lg relative z-50">
-          <div className="flex flex-col space-y-1 px-4">
-            <Link
-              to="/"
-              className={getMobileLinkClasses("/")}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Home
-            </Link>
+        <>
+          {/* Overlay */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 lg:hidden pointer-events-auto"
+            style={{ top: '72px', zIndex: 30 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMenuOpen(false);
+            }}
+          />
+          
+          {/* Menu Content */}
+          <div 
+            className="lg:hidden mt-4 py-4 border-t border-teal-700 bg-teal-800 rounded-lg relative pointer-events-auto" 
+            style={{ zIndex: 40 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col space-y-1 px-4">
+              <Link
+                to="/"
+                className={getMobileLinkClasses("/")}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
 
-            <div>
-              <button
-                onClick={toggleProducts}
-                className="text-white font-medium flex items-center justify-between w-full py-3 px-4"
+              <Link
+                to="/products"
+                className={getMobileLinkClasses("/products")}
+                onClick={() => setIsMenuOpen(false)}
               >
                 Products
-                <FaChevronDown
-                  className={`transform transition-transform ${
-                    isProductsOpen ? "rotate-180" : ""
-                  }`}
-                />
+              </Link>
+
+              <button
+                onClick={() => {
+                  toggleCart();
+                  setIsMenuOpen(false);
+                }}
+                className="relative text-white hover:text-amber-300 transition-colors py-3 px-4 rounded-md hover:bg-teal-700 text-left"
+              >
+                <div className="flex items-center gap-2">
+                  <ShoppingBag className="w-5 h-5" />
+                  <span className="font-medium">Cart</span>
+                  {getCartItemCount() > 0 && (
+                    <span className="ml-1 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center">
+                      {getCartItemCount()}
+                    </span>
+                  )}
+                </div>
               </button>
 
-              {isProductsOpen && (
-                <div className="pl-2 bg-teal-700 rounded p-1">
-                  {productCategories.map((category, index) => (
-                    <div key={index} className="mb-2">
-                      <p className="text-xs font-semibold text-teal-200 mb-1">
-                        {category.name}
-                      </p>
-                      <div>
-                        {category.items.map((item, i) => (
-                          <button
-                            key={i}
-                            onClick={() => handleProductClick(category.categorySlug, item)}
-                            className="block w-full text-left text-white py-1 px-1 hover:bg-teal-600 text-xs"
-                          >
-                            {item}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <Link
+                to="/aboutUs"
+                className={getMobileLinkClasses("/aboutUs")}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                About Us
+              </Link>
+              <Link
+                to="/contact"
+                className={getMobileLinkClasses("/contact")}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Contact
+              </Link>
             </div>
-
-            <button
-              onClick={toggleCart}
-              className="relative text-white hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-300 ml-3">
-              <div className="flex items-center gap-1">
-                <ShoppingBag className="w-5 h-5" />
-                <span className="font-medium">Cart</span>
-                {getCartItemCount() > 0 && (
-                  <span className="ml-1 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center">
-                    {getCartItemCount()}
-                  </span>
-                )}
-              </div>
-            </button>
-
-            <Link
-              to="/aboutUs"
-              className={getMobileLinkClasses("/aboutUs")}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              About Us
-            </Link>
-            <Link
-              to="/contact"
-              className={getMobileLinkClasses("/contact")}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Contact
-            </Link>
           </div>
-        </div>
+        </>
       )}
     </nav>
   );
