@@ -109,9 +109,9 @@ const RecentPurchaseNotification = ({ products = [] }) => {
     >
       <div className="bg-white rounded-xl shadow-2xl w-[340px] overflow-hidden border border-gray-100 animate-slide-in">
         {/* Header */}
-        <div className="bg-gradient-to-r from-teal-500 to-teal-600 px-4 py-1 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-600 px-4 py-1 flex items-center justify-between">
           <span className="text-white text-sm font-semibold">
-            Someone just bought!
+            🎉Someone just purchased!
           </span>
           <button
             onClick={handleClose}
@@ -148,14 +148,14 @@ const RecentPurchaseNotification = ({ products = [] }) => {
               <div className="flex gap-4">
                 <button
                   onClick={handleSeeDetails}
-                  className="flex items-center gap-1 text-teal-600 hover:text-teal-700 text-xs font-medium transition-colors"
+                  className="flex items-center gap-1 text-teal-600 hover:text-orange-500 text-xs font-medium transition-colors"
                 >
                   <Eye className="w-3.5 h-3.5 flex-shrink-0" />
                   <span>See Details</span>
                 </button>
                 <button
                   onClick={handleAddToCart}
-                  className="flex items-center gap-1 text-teal-600 hover:text-teal-700 text-xs font-medium transition-colors"
+                  className="flex items-center gap-1 text-teal-600 hover:text-orange-500 text-xs font-medium transition-colors"
                 >
                   <ShoppingCart className="w-3.5 h-3.5 flex-shrink-0" />
                   <span>Add to Cart</span>
