@@ -106,13 +106,13 @@ const RecentPurchaseNotification = ({ products = [] }) => {
 
   return (
     <div
-      className={`fixed bottom-4 left-1 md:left-4 right-4 sm:right-auto sm:w-[340px] md:w-[400px] z-[45] transition-all duration-500 ease-in-out  ${
+      className={`fixed bottom-4 left-1 md:left-4 right-4 sm:right-auto w-3/4 sm:w-[340px] md:w-[400px] z-[45] transition-all duration-500 ease-in-out  ${
         isVisible
           ? "translate-x-0 opacity-100"
           : "-translate-x-full opacity-0"
       }`}
     >
-      <div className="bg-white rounded-md shadow-2xl overflow-hidden border border-gray-100 animate-slide-in max-w-[340px] md:max-w-none mx-auto sm:mx-0">
+      <div className="bg-white rounded-md shadow-2xl overflow-hidden border border-gray-100 animate-slide-in mx-auto sm:mx-0">
         {/* Header */}
         <div className="bg-gradient-to-r from-yellow-400 to-orange-600 px-3 md:px-4 py-1 md:py-1 flex items-center justify-between">
           <span className="text-white text-xs md:text-sm font-semibold">
