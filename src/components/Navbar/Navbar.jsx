@@ -319,9 +319,17 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-40"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden mt-4 py-4 border-t border-teal-700 bg-teal-800 rounded-lg">
+        <div className="lg:hidden mt-4 py-4 border-t border-teal-700 bg-teal-800 rounded-lg relative z-50">
           <div className="flex flex-col space-y-1 px-4">
             <Link
               to="/"
