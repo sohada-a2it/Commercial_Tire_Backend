@@ -145,8 +145,7 @@ const RecentPurchaseNotification = ({ products = [] }) => {
                 {currentProduct.name}
               </h4>
               <p className="text-[10px] md:text-xs text-gray-500 mb-1 md:mb-1.5 flex items-center gap-1">
-                <span className="inline-block w-1 h-1 bg-green-500 rounded-full"></span>
-                {getRandomLocation()}
+                📍{getRandomLocation()}
               </p>
               
               {/* Action Buttons */}
