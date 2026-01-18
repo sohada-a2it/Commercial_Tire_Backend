@@ -1,7 +1,7 @@
 "use client";
 
 // pages/SearchResults.jsx
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useLocation, useNavigate } from "@/lib/navigation";
 import ProductList from "../DynamicProductCatalog/ProductList";
 import SearchSuggestion from "./SearchSuggestion.jsx";
@@ -14,8 +14,39 @@ const SearchResultsContent = () => {
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [selectedTireType, setSelectedTireType] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [showBrandDropdown, setShowBrandDropdown] = useState(false);
+  const [showTireTypeDropdown, setShowTireTypeDropdown] = useState(false);
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
+  
+  const brandDropdownRef = useRef(null);
+  const tireTypeDropdownRef = useRef(null);
+  const sortDropdownRef = useRef(null);
+  
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Handle click outside to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (brandDropdownRef.current && !brandDropdownRef.current.contains(event.target)) {
+        setShowBrandDropdown(false);
+      }
+      if (tireTypeDropdownRef.current && !tireTypeDropdownRef.current.contains(event.target)) {
+        setShowTireTypeDropdown(false);
+      }
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target)) {
+        setShowSortDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const query = new URLSearchParams(location.search).get("q") || "";
@@ -80,6 +111,41 @@ const SearchResultsContent = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Get unique brands from search results
+  const getUniqueBrands = () => {
+    if (!searchResults || searchResults.length === 0) return [];
+    const brands = [
+      ...new Set(
+        searchResults
+          .map((product) => product.keyAttributes?.["Brand"])
+          .filter((brand) => brand)
+      ),
+    ];
+    return brands.sort();
+  };
+
+  const uniqueBrands = getUniqueBrands();
+
+  // Check if results contain truck tires
+  const hasTruckTires = searchResults.some(
+    (product) => product.subcategory?.toLowerCase() === "truck tires"
+  );
+
+  const handleBrandSelect = (brand) => {
+    setSelectedBrand(brand);
+    setShowBrandDropdown(false);
+  };
+
+  const handleTireTypeSelect = (tireType) => {
+    setSelectedTireType(tireType);
+    setShowTireTypeDropdown(false);
+  };
+
+  const handleSortSelect = (sortOption) => {
+    setSortBy(sortOption);
+    setShowSortDropdown(false);
   };
 
   const handleNewSearch = (e) => {
@@ -197,16 +263,181 @@ const SearchResultsContent = () => {
 
         {/* Results */}
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold text-teal-800 mb-4">
-            Search Results for "{searchQuery}"
-          </h1>
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-teal-800">
+                Search Results
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Found {searchResults.length} product(s) for "{searchQuery}"
+              </p>
+            </div>
+
+            {/* Filters Section - Same layout as product page */}
+            {searchResults.length > 0 && (
+              <div className="flex flex-row gap-2 sm:gap-3 w-full lg:w-auto">
+                {/* Sort by Price Dropdown */}
+                <div className="relative flex-1 sm:flex-initial min-w-0" ref={sortDropdownRef}>
+                  <button
+                    onClick={() => setShowSortDropdown(!showSortDropdown)}
+                    className="w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-3 border border-teal-200 bg-teal-50 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[180px]"
+                  >
+                    <span className="truncate sm:truncate-none">
+                      {sortBy === "price-low-high" 
+                        ? "Low to High"
+                        : sortBy === "price-high-low"
+                        ? "High to Low"
+                        : "Sort by Price"}
+                    </span>
+                    <svg
+                      className={`ml-1 sm:ml-0 h-4 w-4 flex-shrink-0 transition-transform ${
+                        showSortDropdown ? "rotate-180" : ""
+                      }`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  {showSortDropdown && (
+                    <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-full sm:w-56 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
+                      <div
+                        className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
+                        onClick={() => handleSortSelect("")}
+                      >
+                        Default
+                      </div>
+                      <div
+                        className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                        onClick={() => handleSortSelect("price-low-high")}
+                      >
+                        Low to High
+                      </div>
+                      <div
+                        className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                        onClick={() => handleSortSelect("price-high-low")}
+                      >
+                        High to Low
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Tire Type Filter Dropdown - Only if truck tires in results */}
+                {hasTruckTires && (
+                  <div className="relative flex-1 sm:flex-initial min-w-0" ref={tireTypeDropdownRef}>
+                    <button
+                      onClick={() => setShowTireTypeDropdown(!showTireTypeDropdown)}
+                      className="w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
+                    >
+                      <span className="truncate sm:truncate-none">{selectedTireType || "Tire Type"}</span>
+                      <svg
+                        className={`ml-1 sm:ml-0 h-4 w-4 flex-shrink-0 transition-transform ${
+                          showTireTypeDropdown ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+
+                    {showTireTypeDropdown && (
+                      <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-full sm:w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
+                        <div
+                          className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
+                          onClick={() => handleTireTypeSelect("")}
+                        >
+                          All Types
+                        </div>
+                        <div
+                          className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                          onClick={() => handleTireTypeSelect("Drive")}
+                        >
+                          Drive
+                        </div>
+                        <div
+                          className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                          onClick={() => handleTireTypeSelect("Steer")}
+                        >
+                          Steer
+                        </div>
+                        <div
+                          className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                          onClick={() => handleTireTypeSelect("Trailer")}
+                        >
+                          Trailer
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Brand Filter Dropdown */}
+                {uniqueBrands.length > 0 && (
+                  <div className="relative flex-1 sm:flex-initial min-w-0" ref={brandDropdownRef}>
+                    <button
+                      onClick={() => setShowBrandDropdown(!showBrandDropdown)}
+                      className="w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
+                    >
+                      <span className="truncate sm:truncate-none">{selectedBrand || "All Brands"}</span>
+                      <svg
+                        className={`ml-1 sm:ml-2 h-4 w-4 flex-shrink-0 transition-transform ${
+                          showBrandDropdown ? "rotate-180" : ""
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+
+                    {showBrandDropdown && (
+                      <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-full sm:w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 max-h-64 overflow-y-auto">
+                        <div
+                          className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
+                          onClick={() => handleBrandSelect("")}
+                        >
+                          All Brands
+                        </div>
+                        {uniqueBrands.map((brand) => (
+                          <div
+                            key={brand}
+                            className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                            onClick={() => handleBrandSelect(brand)}
+                          >
+                            {brand}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           {searchResults.length > 0 ? (
             <>
-              <p className="text-gray-600 mb-6">
-                Found {searchResults.length} product(s)
-              </p>
-
               {/* Create a mock subcategory object for ProductList */}
               <ProductList
                 category={{ name: "Search Results" }}
@@ -214,7 +445,9 @@ const SearchResultsContent = () => {
                   name: `Results for "${searchQuery}"`,
                   products: searchResults,
                 }}
-                selectedBrand={null}
+                selectedBrand={selectedBrand}
+                selectedTireType={selectedTireType}
+                sortBy={sortBy}
               />
             </>
           ) : (
