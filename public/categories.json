@@ -14220,123 +14220,6 @@
             ]
           },
           {
-            "id": 1137,
-            "name": "Michelin X Multi T 11R22.5 Trailer Tire",
-            "price": "$280.00",
-            "offerPrice": "$128.00",
-            "pricingTiers": [
-              {
-                "minQuantity": 0,
-                "maxQuantity": 49,
-                "pricePerTire": "$200.00"
-              },
-              {
-                "minQuantity": 50,
-                "maxQuantity": 199,
-                "pricePerTire": "$180.00"
-              },
-              {
-                "minQuantity": 200,
-                "maxQuantity": null,
-                "pricePerTire": "$128.00"
-              }
-            ],
-            "customizationOptions": [
-              "Custom sidewall Branding (Min. order: 50 tires)"
-            ],
-            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
-            "description": "Trailer tire for standard 11R22.5 fitment. Provides reliable performance and even wear for trailer axle applications.",
-            "image": "/assets/truck/Michelin/Trailer_Tire/11R22.5.png",
-            "keyAttributes": {
-              "Product Code": "57375",
-              "Model": "X Multi T",
-              "Size": "11R22.5",
-              "Ply Rating": 16,
-              "Load Range": "G",
-              "Load Index": "146/143",
-              "Speed Symbol": "L",
-              "Section Width": "11.0 inches",
-              "Tread Depth": "16/32",
-              "Rim Width": "8.25 inches",
-              "Single Max Load/Pressure": "6175lb/105psi",
-              "Dual Max Load/Pressure": "5850lb/105psi",
-              "Static Load Radius": "19.9 inches",
-              "Revs Per Mile": 498,
-              "Weight": "118lb/54kg",
-              "Tire Type": "Tubeless",
-              "Pattern": "Trailer",
-              "Fuel Efficiency": "B",
-              "Wet Grip": "A",
-              "Noise Level": "71 dB",
-              "Feature": [
-                "Standard Fitment",
-                "Reliable",
-                "Even Wear"
-              ],
-              "MOQ": "50 tires",
-              "Packaging": "Individual",
-              "Brand": "Michelin",
-              "Manufacturer": "Michelin",
-              "Origin": "China & Thailand",
-              "Overall Diameter": "41.8 inches"
-            },
-            "packagingAndDelivery": {
-              "sellingUnits": "Single item",
-              "deliveryTime": "7-14 days"
-            },
-            "priceSource": "US market reference (B2B average)",
-            "userReviews": [
-              {
-                "username": "Mike Thompson",
-                "rating": 5,
-                "date": "2025-10-15",
-                "title": "Excellent performance and durability",
-                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
-                "verified": true
-              },
-              {
-                "username": "Sarah Johnson",
-                "rating": 5,
-                "date": "2025-09-22",
-                "title": "Best value for the money",
-                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
-                "verified": true
-              },
-              {
-                "username": "Robert Chen",
-                "rating": 4.5,
-                "date": "2025-08-30",
-                "title": "Solid performance",
-                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
-                "verified": true
-              },
-              {
-                "username": "James Parker",
-                "rating": 4,
-                "date": "2025-09-05",
-                "title": "Good quality tire",
-                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
-                "verified": true
-              },
-              {
-                "username": "Linda Brown",
-                "rating": 4.5,
-                "date": "2025-08-12",
-                "title": "Solid choice for fleet use",
-                "text": "We've equipped half our fleet with these tires. They're holding up well and provide consistent performance. The fuel economy hasn't changed much, which is good.",
-                "verified": true
-              },
-              {
-                "username": "Kevin White",
-                "rating": 4,
-                "date": "2025-08-20",
-                "title": "Decent tire for the price",
-                "text": "These tires do the job. Nothing spectacular but they're reliable and affordable. Good enough for our local delivery routes.",
-                "verified": true
-              }
-            ]
-          },
-          {
             "id": 1132,
             "name": "Michelin X Line Energy D 10R22.5 Drive Tire",
             "price": "$250.00",
@@ -14396,6 +14279,123 @@
               "Manufacturer": "Michelin",
               "Origin": "China & Thailand",
               "Overall Diameter": "40.2 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              },
+              {
+                "username": "Linda Brown",
+                "rating": 4.5,
+                "date": "2025-08-12",
+                "title": "Solid choice for fleet use",
+                "text": "We've equipped half our fleet with these tires. They're holding up well and provide consistent performance. The fuel economy hasn't changed much, which is good.",
+                "verified": true
+              },
+              {
+                "username": "Kevin White",
+                "rating": 4,
+                "date": "2025-08-20",
+                "title": "Decent tire for the price",
+                "text": "These tires do the job. Nothing spectacular but they're reliable and affordable. Good enough for our local delivery routes.",
+                "verified": true
+              }
+            ]
+          },
+          {
+            "id": 1137,
+            "name": "Michelin X Multi T 11R22.5 Trailer Tire",
+            "price": "$280.00",
+            "offerPrice": "$128.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$200.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$180.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$128.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Trailer tire for standard 11R22.5 fitment. Provides reliable performance and even wear for trailer axle applications.",
+            "image": "/assets/truck/Michelin/Trailer_Tire/11R22.5.png",
+            "keyAttributes": {
+              "Product Code": "57375",
+              "Model": "X Multi T",
+              "Size": "11R22.5",
+              "Ply Rating": 16,
+              "Load Range": "G",
+              "Load Index": "146/143",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "16/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6175lb/105psi",
+              "Dual Max Load/Pressure": "5850lb/105psi",
+              "Static Load Radius": "19.9 inches",
+              "Revs Per Mile": 498,
+              "Weight": "118lb/54kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Trailer",
+              "Fuel Efficiency": "B",
+              "Wet Grip": "A",
+              "Noise Level": "71 dB",
+              "Feature": [
+                "Standard Fitment",
+                "Reliable",
+                "Even Wear"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Michelin",
+              "Manufacturer": "Michelin",
+              "Origin": "China & Thailand",
+              "Overall Diameter": "41.8 inches"
             },
             "packagingAndDelivery": {
               "sellingUnits": "Single item",
@@ -16600,6 +16600,123 @@
             ]
           },
           {
+            "id": 1159,
+            "name": "Roadlux RD550 11R22.5 Drive Tire",
+            "price": "$280.00",
+            "offerPrice": "$134.00",
+            "pricingTiers": [
+              {
+                "minQuantity": 0,
+                "maxQuantity": 49,
+                "pricePerTire": "$160.00"
+              },
+              {
+                "minQuantity": 50,
+                "maxQuantity": 199,
+                "pricePerTire": "$154.00"
+              },
+              {
+                "minQuantity": 200,
+                "maxQuantity": null,
+                "pricePerTire": "$134.00"
+              }
+            ],
+            "customizationOptions": [
+              "Custom sidewall Branding (Min. order: 50 tires)"
+            ],
+            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
+            "description": "Budget all-position drive tire. Offers versatility and value for various applications.",
+            "image": "/assets/truck/Roadlux/Drive/11R22.5.png",
+            "keyAttributes": {
+              "Product Code": "RL-RD550",
+              "Model": "RD550",
+              "Size": "11R22.5",
+              "Ply Rating": 14,
+              "Load Range": "G",
+              "Load Index": "149/146",
+              "Speed Symbol": "L",
+              "Section Width": "11.0 inches",
+              "Tread Depth": "18/32",
+              "Rim Width": "8.25 inches",
+              "Single Max Load/Pressure": "6610lb/105psi",
+              "Dual Max Load/Pressure": "6005lb/105psi",
+              "Static Load Radius": "20.2 inches",
+              "Revs Per Mile": 496,
+              "Weight": "112lb/51kg",
+              "Tire Type": "Tubeless",
+              "Pattern": "Drive",
+              "Fuel Efficiency": "C",
+              "Wet Grip": "B",
+              "Noise Level": "73 dB",
+              "Feature": [
+                "All-Position",
+                "Budget",
+                "Versatile"
+              ],
+              "MOQ": "50 tires",
+              "Packaging": "Individual",
+              "Brand": "Roadlux",
+              "Manufacturer": "Roadlux",
+              "Origin": "Thailand",
+              "Overall Diameter": "41.8 inches"
+            },
+            "packagingAndDelivery": {
+              "sellingUnits": "Single item",
+              "deliveryTime": "7-14 days"
+            },
+            "priceSource": "US market reference (B2B average)",
+            "userReviews": [
+              {
+                "username": "Mike Thompson",
+                "rating": 5,
+                "date": "2025-10-15",
+                "title": "Excellent performance and durability",
+                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
+                "verified": true
+              },
+              {
+                "username": "Sarah Johnson",
+                "rating": 5,
+                "date": "2025-09-22",
+                "title": "Best value for the money",
+                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
+                "verified": true
+              },
+              {
+                "username": "Robert Chen",
+                "rating": 4.5,
+                "date": "2025-08-30",
+                "title": "Solid performance",
+                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
+                "verified": true
+              },
+              {
+                "username": "James Parker",
+                "rating": 4,
+                "date": "2025-09-05",
+                "title": "Good quality tire",
+                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
+                "verified": true
+              },
+              {
+                "username": "Linda Brown",
+                "rating": 4.5,
+                "date": "2025-08-12",
+                "title": "Solid choice for fleet use",
+                "text": "We've equipped half our fleet with these tires. They're holding up well and provide consistent performance. The fuel economy hasn't changed much, which is good.",
+                "verified": true
+              },
+              {
+                "username": "Kevin White",
+                "rating": 4,
+                "date": "2025-08-20",
+                "title": "Decent tire for the price",
+                "text": "These tires do the job. Nothing spectacular but they're reliable and affordable. Good enough for our local delivery routes.",
+                "verified": true
+              }
+            ]
+          },
+          {
             "id": 1156,
             "name": "Roadlux RD550 10R22.5 Drive Tire",
             "price": "$250.00",
@@ -16893,123 +17010,6 @@
               "Manufacturer": "Roadlux",
               "Origin": "Thailand",
               "Overall Diameter": "39.2 inches"
-            },
-            "packagingAndDelivery": {
-              "sellingUnits": "Single item",
-              "deliveryTime": "7-14 days"
-            },
-            "priceSource": "US market reference (B2B average)",
-            "userReviews": [
-              {
-                "username": "Mike Thompson",
-                "rating": 5,
-                "date": "2025-10-15",
-                "title": "Excellent performance and durability",
-                "text": "These tires have exceeded my expectations. Great traction in all weather conditions and the tread wear has been minimal even after 50,000 miles. Highly recommend for long-haul operations.",
-                "verified": true
-              },
-              {
-                "username": "Sarah Johnson",
-                "rating": 5,
-                "date": "2025-09-22",
-                "title": "Best value for the money",
-                "text": "We've been using these tires on our fleet for 6 months now. The fuel efficiency has improved noticeably and they handle well on both highway and city routes. Very satisfied with the purchase.",
-                "verified": true
-              },
-              {
-                "username": "Robert Chen",
-                "rating": 4.5,
-                "date": "2025-08-30",
-                "title": "Solid performance",
-                "text": "Good quality tires at a competitive price. They perform well in wet conditions and the tread pattern provides excellent grip. Only minor issue is they're a bit noisy at high speeds.",
-                "verified": true
-              },
-              {
-                "username": "James Parker",
-                "rating": 4,
-                "date": "2025-09-05",
-                "title": "Good quality tire",
-                "text": "Overall satisfied with these tires. They perform well under normal conditions and the price is reasonable. Good traction and handling for everyday hauling needs.",
-                "verified": true
-              },
-              {
-                "username": "Linda Brown",
-                "rating": 4.5,
-                "date": "2025-08-12",
-                "title": "Solid choice for fleet use",
-                "text": "We've equipped half our fleet with these tires. They're holding up well and provide consistent performance. The fuel economy hasn't changed much, which is good.",
-                "verified": true
-              },
-              {
-                "username": "Kevin White",
-                "rating": 4,
-                "date": "2025-08-20",
-                "title": "Decent tire for the price",
-                "text": "These tires do the job. Nothing spectacular but they're reliable and affordable. Good enough for our local delivery routes.",
-                "verified": true
-              }
-            ]
-          },
-          {
-            "id": 1159,
-            "name": "Roadlux RD550 11R22.5 Drive Tire",
-            "price": "$280.00",
-            "offerPrice": "$134.00",
-            "pricingTiers": [
-              {
-                "minQuantity": 0,
-                "maxQuantity": 49,
-                "pricePerTire": "$160.00"
-              },
-              {
-                "minQuantity": 50,
-                "maxQuantity": 199,
-                "pricePerTire": "$154.00"
-              },
-              {
-                "minQuantity": 200,
-                "maxQuantity": null,
-                "pricePerTire": "$134.00"
-              }
-            ],
-            "customizationOptions": [
-              "Custom sidewall Branding (Min. order: 50 tires)"
-            ],
-            "shipping": "Shipping fee and delivery date to be negotiated. Contact supplier for details.",
-            "description": "Budget all-position drive tire. Offers versatility and value for various applications.",
-            "image": "/assets/truck/Roadlux/Drive/11R22.5.png",
-            "keyAttributes": {
-              "Product Code": "RL-RD550",
-              "Model": "RD550",
-              "Size": "11R22.5",
-              "Ply Rating": 14,
-              "Load Range": "G",
-              "Load Index": "149/146",
-              "Speed Symbol": "L",
-              "Section Width": "11.0 inches",
-              "Tread Depth": "18/32",
-              "Rim Width": "8.25 inches",
-              "Single Max Load/Pressure": "6610lb/105psi",
-              "Dual Max Load/Pressure": "6005lb/105psi",
-              "Static Load Radius": "20.2 inches",
-              "Revs Per Mile": 496,
-              "Weight": "112lb/51kg",
-              "Tire Type": "Tubeless",
-              "Pattern": "Drive",
-              "Fuel Efficiency": "C",
-              "Wet Grip": "B",
-              "Noise Level": "73 dB",
-              "Feature": [
-                "All-Position",
-                "Budget",
-                "Versatile"
-              ],
-              "MOQ": "50 tires",
-              "Packaging": "Individual",
-              "Brand": "Roadlux",
-              "Manufacturer": "Roadlux",
-              "Origin": "Thailand",
-              "Overall Diameter": "41.8 inches"
             },
             "packagingAndDelivery": {
               "sellingUnits": "Single item",
