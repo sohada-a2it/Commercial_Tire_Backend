@@ -26,12 +26,12 @@ const Footer = () => {
   ];
 
   const productCategories = [
-    "Vehicle Parts & Accessories",
-    "Metals & Metal Products",
-    "Dry Food",
-    "Agriculture",
-    "Frozen Fish",
-    "Wood Products",
+    { name: "Vehicle Parts & Accessories", hash: "Vehicle-Parts-and-Accessories" },
+    { name: "Metals & Metal Products", hash: "Metals-and-Metal-Products" },
+    { name: "Dry Food", hash: "Dry-Food" },
+    { name: "Agriculture", hash: "Agriculture" },
+    { name: "Frozen Fish", hash: "Frozen-Fish" },
+    { name: "Wood Products", hash: "Wood-Products" },
   ];
 
   const contactInfo = [
@@ -69,7 +69,7 @@ const Footer = () => {
           <div className="flex items-center mb-6">
 
           <img
-            src="logo.png"
+            src="/logo.png"
             alt="Asian Import and Export"
             className="h-14 mb-0"
           />
@@ -129,10 +129,10 @@ const Footer = () => {
               ? productCategories
               : productCategories.slice(0, 3)
             ).map((category) => (
-              <li key={category}>
-                <Link to="#" className="flex items-center hover:text-amber-300">
+              <li key={category.name}>
+                <Link to={`/#${category.hash}`} className="flex items-center hover:text-amber-300">
                   <span className="w-2 h-2 bg-amber-400 rounded-full mr-3"></span>
-                  {category}
+                  {category.name}
                 </Link>
               </li>
             ))}

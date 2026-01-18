@@ -18,6 +18,23 @@ const ProductCatalog = ({ isHomePage = false }) => {
   const intervalRefs = useRef({});
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Handle hash navigation for scrolling to categories
+  useEffect(() => {
+    if (categories.length === 0) return;
+
+    const hash = location.hash?.replace('#', '');
+    if (hash) {
+      // Small delay to ensure the DOM is fully rendered
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [location.hash, categories]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -269,7 +286,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
           {/* Right Side - Categories Grid */}
           <div className="lg:w-3/4">
             {categories.map((category, categoryIndex) => (
-              <div key={category.id} className="mb-12">
+              <div key={category.id} id={nameToSlug(category.name)} className="mb-12 scroll-mt-20">
                 {/* Category Header */}
                 <div className="bg-gradient-to-r from-teal-500 to-teal-800 rounded-t-lg p-4 shadow-lg">
                   <h2 className="text-2xl font-bold text-white flex items-center">
