@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "@/lib/navigation";
 import ProductSubcategory from "./ProductSubcategory";
 import ProductList from "./ProductList";
@@ -14,6 +14,8 @@ const ProductCatalog = ({ isHomePage = false }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [mobileSlideIndex, setMobileSlideIndex] = useState({});
+  const intervalRefs = useRef({});
 
   const navigate = useNavigate();
 
@@ -39,6 +41,40 @@ const ProductCatalog = ({ isHomePage = false }) => {
 
     fetchCategories();
   }, []);
+
+  // Initialize mobile slide indices and auto-slide
+  useEffect(() => {
+    if (categories.length === 0) return;
+
+    // Initialize slide index for each category
+    const initialIndices = {};
+    categories.forEach((category) => {
+      initialIndices[category.id] = 0;
+    });
+    setMobileSlideIndex(initialIndices);
+
+    // Set up auto-slide for each category
+    categories.forEach((category) => {
+      if (category.subcategories && category.subcategories.length > 1) {
+        intervalRefs.current[category.id] = setInterval(() => {
+          setMobileSlideIndex((prev) => {
+            const currentIndex = prev[category.id] || 0;
+            const nextIndex =
+              (currentIndex + 1) % category.subcategories.length;
+            return { ...prev, [category.id]: nextIndex };
+          });
+        }, 3000);
+      }
+    });
+
+    // Cleanup intervals
+    return () => {
+      Object.values(intervalRefs.current).forEach((interval) =>
+        clearInterval(interval)
+      );
+      intervalRefs.current = {};
+    };
+  }, [categories]);
 
   // Helper function to convert name to URL slug
   const nameToSlug = (name) => {
@@ -244,7 +280,8 @@ const ProductCatalog = ({ isHomePage = false }) => {
 
                 {/* Subcategories Grid */}
                 <div className="bg-white rounded-b-lg shadow-md p-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {/* Desktop Grid View */}
+                  <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {category.subcategories?.map((subcategory) => {
                       // Get the first product image as subcategory representative
                       const representativeImage =
@@ -272,6 +309,172 @@ const ProductCatalog = ({ isHomePage = false }) => {
                         </div>
                       );
                     })}
+                  </div>
+
+                  {/* Mobile Slider View */}
+                  <div className="block sm:hidden relative">
+                    {category.subcategories && category.subcategories.length > 0 && (
+                      <div className="relative overflow-hidden">
+                        {/* Left Arrow */}
+                        {category.subcategories.length > 1 && (
+                          <button
+                            onClick={() => {
+                              setMobileSlideIndex((prev) => {
+                                const currentIndex = prev[category.id] || 0;
+                                const prevIndex =
+                                  currentIndex === 0
+                                    ? category.subcategories.length - 1
+                                    : currentIndex - 1;
+                                return { ...prev, [category.id]: prevIndex };
+                              });
+                              // Restart auto-slide
+                              if (intervalRefs.current[category.id]) {
+                                clearInterval(intervalRefs.current[category.id]);
+                              }
+                              intervalRefs.current[category.id] = setInterval(() => {
+                                setMobileSlideIndex((prev) => {
+                                  const currentIndex = prev[category.id] || 0;
+                                  const nextIndex =
+                                    (currentIndex + 1) % category.subcategories.length;
+                                  return { ...prev, [category.id]: nextIndex };
+                                });
+                              }, 3000);
+                            }}
+                            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white transition-all duration-300"
+                            aria-label="Previous"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 19l-7-7 7-7"
+                              />
+                            </svg>
+                          </button>
+                        )}
+
+                        {/* Right Arrow */}
+                        {category.subcategories.length > 1 && (
+                          <button
+                            onClick={() => {
+                              setMobileSlideIndex((prev) => {
+                                const currentIndex = prev[category.id] || 0;
+                                const nextIndex =
+                                  (currentIndex + 1) % category.subcategories.length;
+                                return { ...prev, [category.id]: nextIndex };
+                              });
+                              // Restart auto-slide
+                              if (intervalRefs.current[category.id]) {
+                                clearInterval(intervalRefs.current[category.id]);
+                              }
+                              intervalRefs.current[category.id] = setInterval(() => {
+                                setMobileSlideIndex((prev) => {
+                                  const currentIndex = prev[category.id] || 0;
+                                  const nextIndex =
+                                    (currentIndex + 1) % category.subcategories.length;
+                                  return { ...prev, [category.id]: nextIndex };
+                                });
+                              }, 3000);
+                            }}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white transition-all duration-300"
+                            aria-label="Next"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5l7 7-7 7"
+                              />
+                            </svg>
+                          </button>
+                        )}
+
+                        <div
+                          className="transition-transform duration-500 ease-in-out"
+                          style={{
+                            transform: `translateX(-${(mobileSlideIndex[category.id] || 0) * 100}%)`
+                          }}
+                        >
+                          <div className="flex">
+                            {category.subcategories.map((subcategory) => {
+                              const representativeImage =
+                                subcategory.products?.[0]?.image ||
+                                "/assets/placeholder.png";
+
+                              return (
+                                <div
+                                  key={subcategory.id}
+                                  className="w-full flex-shrink-0 px-2"
+                                  onClick={() =>
+                                    handleSubcategoryClick(category, subcategory)
+                                  }
+                                >
+                                  <div className="group cursor-pointer bg-gray-50 rounded-lg p-4 hover:shadow-lg transition-all duration-300 border border-gray-200 hover:border-teal-400">
+                                    <div className="aspect-square relative mb-3 overflow-hidden rounded-lg bg-white">
+                                      <img
+                                        src={representativeImage}
+                                        alt={subcategory.name}
+                                        className="w-full h-full object-contain"
+                                      />
+                                    </div>
+                                    <h3 className="text-center font-semibold text-gray-800 group-hover:text-teal-600 transition-colors">
+                                      {subcategory.name}
+                                    </h3>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Indicator Dots */}
+                        {category.subcategories.length > 1 && (
+                          <div className="flex justify-center gap-2 mt-4">
+                            {category.subcategories.map((_, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => {
+                                  setMobileSlideIndex((prev) => ({
+                                    ...prev,
+                                    [category.id]: idx
+                                  }));
+                                  // Restart auto-slide
+                                  if (intervalRefs.current[category.id]) {
+                                    clearInterval(intervalRefs.current[category.id]);
+                                  }
+                                  intervalRefs.current[category.id] = setInterval(() => {
+                                    setMobileSlideIndex((prev) => {
+                                      const currentIndex = prev[category.id] || 0;
+                                      const nextIndex =
+                                        (currentIndex + 1) % category.subcategories.length;
+                                      return { ...prev, [category.id]: nextIndex };
+                                    });
+                                  }, 3000);
+                                }}
+                                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                                  idx === (mobileSlideIndex[category.id] || 0)
+                                    ? "bg-teal-600 w-8"
+                                    : "bg-gray-300"
+                                }`}
+                                aria-label={`Go to ${category.subcategories[idx].name}`}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
