@@ -7,6 +7,7 @@ import ProductList from "@/components/DynamicProductCatalog/ProductList";
 import SearchSuggestion from "@/components/Search/SearchSuggestion.jsx";
 import ClientSideMetadata from "@/components/shared/ClientSideMetadata";
 import CategoryBanner from "@/common/CategoryBanner";
+import TruckTireBanner from "@/components/DynamicProductCatalog/TruckTireBanner";
 
 const SubcategoryPageClient = () => {
   const params = useParams();
@@ -32,6 +33,7 @@ const SubcategoryPageClient = () => {
   const brandDropdownRef = useRef(null);
   const sortDropdownRef = useRef(null);
   const tireTypeDropdownRef = useRef(null);
+  const filterSectionRef = useRef(null); // Ref for scrolling to filter section
 
   // Initialize filters from URL params on mount and when params change
   useEffect(() => {
@@ -227,6 +229,23 @@ const SubcategoryPageClient = () => {
     setShowTireTypeDropdown(!showTireTypeDropdown);
   };
 
+  // Handler for when user clicks a brand from the banner
+  const handleBrandClickFromBanner = (brandName) => {
+    // Set the brand filter
+    setSelectedBrand(brandName);
+    updateURLWithFilters(brandName, sortBy, selectedTireType);
+    
+    // Scroll to the filter section with smooth animation
+    setTimeout(() => {
+      if (filterSectionRef.current) {
+        filterSectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 100);
+  };
+
   // Check if current subcategory is Truck Tires
   const isTruckTires = subcategory?.name?.toLowerCase() === "truck tires";
 
@@ -367,8 +386,13 @@ const SubcategoryPageClient = () => {
           </form>
         </div>
 
+        {/* Truck Tire Banner - Only show for Truck Tires subcategory */}
+        {isTruckTires && (
+          <TruckTireBanner onBrandClick={handleBrandClickFromBanner} />
+        )}
+
         {/* Category Header with Brand Filter and Sort */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div ref={filterSectionRef} className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
               <h1 className="text-3xl font-bold text-teal-800 flex items-center">
