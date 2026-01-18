@@ -30,7 +30,10 @@ const ProductCatalog = ({ isHomePage = false }) => {
       setTimeout(() => {
         const element = document.getElementById(hash);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 300);
         }
       }, 100);
     }
