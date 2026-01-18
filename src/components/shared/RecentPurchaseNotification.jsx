@@ -107,11 +107,11 @@ const RecentPurchaseNotification = ({ products = [] }) => {
           : "-translate-x-full opacity-0"
       }`}
     >
-      <div className="bg-white rounded-lg shadow-2xl max-w-md overflow-hidden border border-gray-200 animate-slide-in">
+      <div className="bg-white rounded-xl shadow-2xl w-[340px] overflow-hidden border border-gray-100 animate-slide-in">
         {/* Header */}
-        <div className="bg-gradient-to-r from-yellow-500 to-orange-600 px-4 py-1 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-teal-500 to-teal-600 px-4 py-1 flex items-center justify-between">
           <span className="text-white text-sm font-semibold">
-            Someone purchased
+            Someone just bought!
           </span>
           <button
             onClick={handleClose}
@@ -123,51 +123,52 @@ const RecentPurchaseNotification = ({ products = [] }) => {
         </div>
 
         {/* Content */}
-        <div className="px-8 py-2">
-          <div className="flex items-start gap-3 mb-0">
+        <div className="px-4 py-1">
+          <div className="flex items-start gap-3 mb-1">
             {/* Product Image */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 border border-gray-200">
               <img
                 src={currentProduct.image}
                 alt={currentProduct.name}
-                className="w-16 h-16 object-contain rounded border border-gray-200"
+                className="w-16 h-16 object-contain"
               />
             </div>
 
             {/* Product Info */}
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-semibold text-gray-800 line-clamp-2 mb-1">
+              <h4 className="text-sm font-bold text-gray-900 line-clamp-2 mb-1.5 leading-tight">
                 {currentProduct.name}
               </h4>
-              <p className="text-xs text-gray-600 mb-2">
-                In {getRandomLocation()}
+              <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+                <span className="inline-block w-1 h-1 bg-green-500 rounded-full"></span>
+                {getRandomLocation()}
               </p>
-              {/* Price */}
-                   {/* Action Buttons */}
-          <div className="flex gap-2">
-            <button
-              onClick={handleSeeDetails}
-              className="flex-1 flex items-center justify-center gap-1  border-b-teal-500 hover:text-red-600 text-teal-600 text-xs font-medium  px-3 rounded transition-colors"
-            >
-              See Details
-            </button>
-            <button
-              onClick={handleAddToCart}
-              className="flex-1 flex items-center justify-center gap-1  border-b-teal-500 hover:text-red-500 text-teal-600 text-xs font-medium px-3 rounded transition-colors"
-            >
-              Add to Cart
-            </button>
-          </div>
+              
+              {/* Action Buttons */}
+              <div className="flex gap-4">
+                <button
+                  onClick={handleSeeDetails}
+                  className="flex items-center gap-1 text-teal-600 hover:text-teal-700 text-xs font-medium transition-colors"
+                >
+                  <Eye className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span>See Details</span>
+                </button>
+                <button
+                  onClick={handleAddToCart}
+                  className="flex items-center gap-1 text-teal-600 hover:text-teal-700 text-xs font-medium transition-colors"
+                >
+                  <ShoppingCart className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span>Add to Cart</span>
+                </button>
+              </div>
             </div>
           </div>
-
-     
         </div>
 
         {/* Footer indicator */}
-        <div className="h-1 bg-gray-200 relative overflow-hidden">
+        <div className="h-1 bg-gray-100 relative overflow-hidden">
           <div 
-            className={`h-full bg-gradient-to-r from-yellow-400 to-orange-500 absolute left-0 top-0 ${
+            className={`h-full bg-gradient-to-r from-yellow-400 to-orange-600 absolute left-0 top-0 shadow-sm ${
               isAnimating ? 'animate-progress' : ''
             }`}
             style={{ width: isAnimating ? '100%' : '0%' }}
@@ -198,7 +199,7 @@ const RecentPurchaseNotification = ({ products = [] }) => {
           animation: slide-in 0.5s ease-out;
         }
         .animate-progress {
-          animation: progress 30s linear forwards;
+          animation: progress 10s linear forwards;
         }
       `}</style>
     </div>
