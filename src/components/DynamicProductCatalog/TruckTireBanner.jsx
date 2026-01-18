@@ -101,7 +101,7 @@ const TruckTireBanner = ({ onBrandClick }) => {
   const visibleBrands = getVisibleBrands();
 
   return (
-    <div className="mb-8 relative">
+    <div className="mb-4 relative">
 
       <div className="relative max-w-6xl mx-auto">
         {/* Navigation arrows */}

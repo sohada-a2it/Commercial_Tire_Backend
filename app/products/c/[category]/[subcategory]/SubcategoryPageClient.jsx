@@ -354,7 +354,7 @@ const SubcategoryPageClient = () => {
                 onFocus={() =>
                   searchQuery.length > 1 && setShowSuggestions(true)
                 }
-                className="w-full px-6 py-4 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
+                className="w-full px-6 py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
               />
               <button
                 type="submit"
@@ -392,7 +392,7 @@ const SubcategoryPageClient = () => {
         )}
 
         {/* Category Header with Brand Filter and Sort */}
-        <div ref={filterSectionRef} className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div ref={filterSectionRef} className="bg-white rounded-lg shadow-md p-6 mb-2 mt-4">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
               <h1 className="text-3xl font-bold text-teal-800 flex items-center">
