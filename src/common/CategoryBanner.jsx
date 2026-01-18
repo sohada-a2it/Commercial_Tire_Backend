@@ -7,7 +7,17 @@ import { useCart } from '../context/CartContext';
 const CategoryBanner = ({ category, products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [showMobileSlider, setShowMobileSlider] = useState(false);
   const { addToCart } = useCart();
+
+  // Show mobile slider after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowMobileSlider(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Get banner info based on category
   const getBannerInfo = () => {
@@ -103,9 +113,9 @@ const CategoryBanner = ({ category, products }) => {
   };
 
   return (
-    <div className="relative w-full h-[400px] lg:h-[450px] overflow-hidden rounded-lg max-w-7xl mx-auto">
+    <div className="relative w-full h-[350px] lg:h-[450px] overflow-visible rounded-lg max-w-7xl mx-auto">
       {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 rounded-lg overflow-hidden">
         <Image
           src={bannerInfo.image}
           alt={category}
@@ -117,48 +127,65 @@ const CategoryBanner = ({ category, products }) => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/10"></div>
       </div>
 
-      {/* Content Overlay */}
-      <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-between py-8">
-        {/* Top Section - Text Content */}
-        <div className="space-y-4 text-white max-w-2xl">
-          <h1 className="text-4xl lg:text-5xl font-bold drop-shadow-lg">
-            {bannerInfo.title}
-          </h1>
-          <p className="text-lg lg:text-xl drop-shadow-md">
-            {bannerInfo.subtitle}
-          </p>
-        </div>
+      {/* Desktop Content Overlay */}
+      <div className="hidden lg:block relative z-10 container mx-auto px-4 h-full">
+        <div className="h-full flex flex-col justify-between py-8">
+          {/* Top Section - Text Content */}
+          <div className="space-y-4 text-white max-w-2xl">
+            <h1 className="text-4xl lg:text-5xl font-bold drop-shadow-lg">
+              {bannerInfo.title}
+            </h1>
+            <p className="text-lg lg:text-xl drop-shadow-md">
+              {bannerInfo.subtitle}
+            </p>
+          </div>
 
-        {/* Bottom Section - Product Slider */}
-        <div className="relative w-full pb-4">
-          <div className="flex items-end justify-center">
-            {/* Product Cards Container */}
-            <div className="relative flex items-end justify-center w-full -mr-10">
-              <div className="flex items-end justify-center gap-2 lg:gap-20">
-                {getVisibleProducts().map((product, idx) => (
-                  <div
-                    key={`${product.id}-${idx}`}
-                    className={`
-                      transition-all duration-500 ease-in-out
-                      ${getCardScale(product.position)}
-                      ${getCardOpacity(product.position)}
-                    `}
-                  >
-                    <ProductCard product={product} isMain={product.position === 0} addToCart={addToCart} />
-                  </div>
-                ))}
+          {/* Bottom Section - Product Slider */}
+          <div className="relative w-full pb-4">
+            <div className="flex items-end justify-center">
+              {/* Product Cards Container */}
+              <div className="relative flex items-end justify-center w-full -mr-10">
+                <div className="flex items-end justify-center gap-2 lg:gap-20">
+                  {getVisibleProducts().map((product, idx) => (
+                    <div
+                      key={`${product.id}-${idx}`}
+                      className={`
+                        transition-all duration-500 ease-in-out
+                        ${getCardScale(product.position)}
+                        ${getCardOpacity(product.position)}
+                      `}
+                    >
+                      <ProductCard product={product} isMain={product.position === 0} addToCart={addToCart} isMobile={false} />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
+
+      {/* Mobile Slider - Shows after 3 seconds */}
+      {showMobileSlider && (
+        <div className="lg:hidden absolute bottom-0 left-0 right-0 z-20 pb-4 px-4 transform translate-y-1/2">
+          <div className="transition-all duration-500 ease-in-out">
+            {displayProducts[currentIndex] && (
+              <ProductCard 
+                product={displayProducts[currentIndex]} 
+                isMain={true} 
+                addToCart={addToCart} 
+                isMobile={true}
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 // Product Card with half-in, half-out image (like the reference image)
-const ProductCard = ({ product, isMain, addToCart }) => {
+const ProductCard = ({ product, isMain, addToCart, isMobile = false }) => {
   const getAverageRating = () => {
     if (!product.userReviews || product.userReviews.length === 0) return 0;
     const sum = product.userReviews.reduce((acc, review) => acc + review.rating, 0);
@@ -173,8 +200,25 @@ const ProductCard = ({ product, isMain, addToCart }) => {
                   product.subcategory?.toLowerCase().includes('truck') ||
                   product.name?.toLowerCase().includes('truck');
 
+  // Responsive sizing
+  const cardSize = isMobile 
+    ? 'h-[180px] w-full max-w-md mx-auto' 
+    : (isMain ? 'h-[200px] w-[310px]' : 'h-[180px] w-[260px]');
+  
+  const imageSize = isMobile
+    ? (isTruck ? 'w-36 h-50 -translate-x-16' : 'w-36 h-full -translate-x-16')
+    : (isMain ? (isTruck ? 'w-44 h-70 -translate-x-24' : 'w-44 h-130 -translate-x-24') : 'w-48 h-130 -translate-x-24');
+  
+  const contentWidth = isMobile 
+    ? 'w-[calc(100%-80px)]'
+    : (isMain ? 'w-[240px]' : 'w-[210px]');
+  
+  const contentPadding = isMobile 
+    ? 'px-3 py-3'
+    : (isMain ? 'px-4 py-4' : 'px-3.5 py-3');
+
   return (
-    <div className={`relative ${isMain ? 'h-[200px] w-[310px]' : 'h-[180px] w-[260px]'}`}>
+    <div className={`relative ${cardSize}`}>
       {/* Product Card Container */}
       <div className="bg-white rounded-[16px] shadow-lg h-full overflow-visible relative">
         {/* Season/Category Badge */}
@@ -182,7 +226,7 @@ const ProductCard = ({ product, isMain, addToCart }) => {
         </div>
 
         {/* Large Image that's half in, half out - ABSOLUTE positioned */}
-        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${isMain ? (isTruck ? 'w-44 h-70 -translate-x-24' : 'w-44 h-130 -translate-x-24') : 'w-48 h-130 -translate-x-24'}`}>
+        <div className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 ${imageSize}`}>
           <img
             src={product.image}
             alt={product.name}
@@ -191,27 +235,27 @@ const ProductCard = ({ product, isMain, addToCart }) => {
         </div>
 
         {/* Right Side - Product Info - Now takes full width */}
-        <div className={`absolute right-0 top-0 bottom-0 ${isMain ? 'w-[240px] px-4 py-4' : 'w-[210px] px-3.5 py-3'} flex flex-col`}>
+        <div className={`absolute right-0 top-0 bottom-0 ${contentWidth} ${contentPadding} flex flex-col`}>
           {/* Brand Name */}
-          <h3 className={`font-bold text-gray-900 ${isMain ? 'text-lg' : 'text-base'} leading-none`}>
+          <h3 className={`font-bold text-gray-900 ${isMobile ? 'text-base' : (isMain ? 'text-lg' : 'text-base')} leading-none`}>
             {product.keyAttributes?.Brand || 'Premium'}
           </h3>
           
           {/* Product Name/Model */}
-          <p className={`${isMain ? 'text-sm mb-2' : 'text-xs mb-1.5'} text-gray-600 leading-tight`}>
+          <p className={`${isMobile ? 'text-xs mb-1.5' : (isMain ? 'text-sm mb-2' : 'text-xs mb-1.5')} text-gray-600 leading-tight line-clamp-1`}>
             {product.keyAttributes?.Model || product.name}
           </p>
 
           {/* Price */}
           <div>
             <div className="flex items-baseline gap-1">
-              <span className={`font-bold text-gray-900 ${isMain ? 'text-3xl' : 'text-2xl'} leading-none`}>
+              <span className={`font-bold text-gray-900 ${isMobile ? 'text-2xl' : (isMain ? 'text-3xl' : 'text-2xl')} leading-none`}>
                 {product.offerPrice || product.price}
               </span>
-              <span className={`${isMain ? 'text-xs' : 'text-[11px]'} text-gray-500`}>per each</span>
+              <span className={`${isMobile ? 'text-[10px]' : (isMain ? 'text-xs' : 'text-[11px]')} text-gray-500`}>per each</span>
             </div>
             {product.offerPrice && (
-              <div className={`${isMain ? 'text-sm' : 'text-xs'} text-gray-400 line-through leading-none`}>
+              <div className={`${isMobile ? 'text-xs' : (isMain ? 'text-sm' : 'text-xs')} text-gray-400 line-through leading-none`}>
                 {product.price}
               </div>
             )}
@@ -224,7 +268,7 @@ const ProductCard = ({ product, isMain, addToCart }) => {
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`${isMain ? 'w-4 h-4' : 'w-3.5 h-3.5'} ${
+                    className={`${isMobile ? 'w-3.5 h-3.5' : (isMain ? 'w-4 h-4' : 'w-3.5 h-3.5')} ${
                       i < Math.floor(rating)
                         ? 'fill-yellow-400 text-yellow-400'
                         : 'fill-gray-200 text-gray-200'
@@ -232,7 +276,7 @@ const ProductCard = ({ product, isMain, addToCart }) => {
                   />
                 ))}
               </div>
-              <span className={`${isMain ? 'text-xs' : 'text-[11px]'} text-gray-600 font-medium`}>
+              <span className={`${isMobile ? 'text-[10px]' : (isMain ? 'text-xs' : 'text-[11px]')} text-gray-600 font-medium`}>
                 {reviewCount} opinions
               </span>
             </div>
@@ -241,13 +285,13 @@ const ProductCard = ({ product, isMain, addToCart }) => {
           {/* Buy Now Button - Pushed to bottom */}
           <button 
             onClick={() => addToCart(product)}
-            className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMain ? 'py-2.5 text-sm' : 'py-2 text-xs'} rounded-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-auto`}
+            className={`w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold ${isMobile ? 'py-2 text-xs' : (isMain ? 'py-2.5 text-sm' : 'py-2 text-xs')} rounded-md shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 mt-auto`}
           >
-            <ShoppingCart className="w-5 h-5 hover:scale-50" /> Add To Cart
+            <ShoppingCart className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} hover:scale-50`} /> Add To Cart
           </button>
         </div>        {/* Sale Badge */}
         {product.offerPrice && (
-          <div className={`absolute ${isMain ? 'top-1 right-3 px-3 py-0.5 text-xs' : 'top-2.5 right-2.5 px-2.5 py-1 text-[8px]'} bg-red-500 text-white font-semibold rounded-md shadow-md z-20`}>
+          <div className={`absolute ${isMobile ? 'top-1 right-2 px-2.5 py-0.5 text-[9px]' : (isMain ? 'top-1 right-3 px-3 py-0.5 text-xs' : 'top-2.5 right-2.5 px-2.5 py-1 text-[8px]')} bg-red-500 text-white font-semibold rounded-md shadow-md z-20`}>
             SALE
           </div>
         )}
