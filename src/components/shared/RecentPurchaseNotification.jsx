@@ -101,64 +101,64 @@ const RecentPurchaseNotification = ({ products = [] }) => {
 
   return (
     <div
-      className={`fixed bottom-4 left-4 z-50 transition-all duration-500 ease-in-out ${
+      className={`fixed bottom-4 left-2 md:left-4 right-4 sm:right-auto sm:w-[340px] z-[45] transition-all duration-500 ease-in-out ${
         isVisible
           ? "translate-x-0 opacity-100"
           : "-translate-x-full opacity-0"
       }`}
     >
-      <div className="bg-white rounded-xl shadow-2xl w-[340px] overflow-hidden border border-gray-100 animate-slide-in">
+      <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 animate-slide-in max-w-[340px] mx-auto sm:mx-0">
         {/* Header */}
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-600 px-4 py-1 flex items-center justify-between">
-          <span className="text-white text-sm font-semibold">
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-600 px-3 sm:px-4 py-2 flex items-center justify-between">
+          <span className="text-white text-xs sm:text-sm font-semibold">
             🎉Someone just purchased!
           </span>
           <button
             onClick={handleClose}
-            className="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
+            className="text-white hover:bg-white/20 rounded-full p-1 transition-colors flex-shrink-0"
             aria-label="Close"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="px-4 py-1">
-          <div className="flex items-start gap-3 mb-1">
+        <div className="px-3 sm:px-4 py-2 sm:py-3">
+          <div className="flex items-start gap-2 sm:gap-3 mb-1">
             {/* Product Image */}
-            <div className="flex-shrink-0 border border-gray-200">
+            <div className="flex-shrink-0 border border-gray-200 rounded p-1">
               <img
                 src={currentProduct.image}
                 alt={currentProduct.name}
-                className="w-16 h-16 object-contain"
+                className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
               />
             </div>
 
             {/* Product Info */}
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-bold text-gray-900 line-clamp-2 mb-1.5 leading-tight">
+              <h4 className="text-xs sm:text-sm font-bold text-gray-900 line-clamp-2 mb-1 sm:mb-1.5 leading-tight">
                 {currentProduct.name}
               </h4>
-              <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+              <p className="text-[10px] sm:text-xs text-gray-500 mb-1.5 sm:mb-2 flex items-center gap-1">
                 <span className="inline-block w-1 h-1 bg-green-500 rounded-full"></span>
                 {getRandomLocation()}
               </p>
               
               {/* Action Buttons */}
-              <div className="flex gap-4">
+              <div className="flex gap-3 sm:gap-4">
                 <button
                   onClick={handleSeeDetails}
-                  className="flex items-center gap-1 text-teal-600 hover:text-orange-500 text-xs font-medium transition-colors"
+                  className="flex items-center gap-1 text-teal-600 hover:text-orange-500 text-[10px] sm:text-xs font-medium transition-colors"
                 >
-                  <Eye className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span>See Details</span>
+                  <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+                  <span className="whitespace-nowrap">See Details</span>
                 </button>
                 <button
                   onClick={handleAddToCart}
-                  className="flex items-center gap-1 text-teal-600 hover:text-orange-500 text-xs font-medium transition-colors"
+                  className="flex items-center gap-1 text-teal-600 hover:text-orange-500 text-[10px] sm:text-xs font-medium transition-colors"
                 >
-                  <ShoppingCart className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span>Add to Cart</span>
+                  <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+                  <span className="whitespace-nowrap">Add to Cart</span>
                 </button>
               </div>
             </div>
