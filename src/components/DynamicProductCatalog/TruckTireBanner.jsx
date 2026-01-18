@@ -177,7 +177,7 @@ const TruckTireBanner = ({ onBrandClick }) => {
         </div>
 
         {/* Indicator dots */}
-        <div className="flex justify-center gap-2 mt-4">
+        <div className="flex justify-center gap-2 mt-2">
           {brands.map((_, idx) => (
             <button
               key={idx}
@@ -186,9 +186,9 @@ const TruckTireBanner = ({ onBrandClick }) => {
                 setCurrentIndex(idx);
                 startAutoSlide();
               }}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              className={`w-2 h-1.5 rounded-full transition-all duration-300 ${
                 idx === currentIndex
-                  ? "bg-teal-600 w-8"
+                  ? "bg-teal-600 w-9"
                   : "bg-gray-300 hover:bg-gray-400"
               }`}
               aria-label={`Go to slide ${idx + 1}`}
