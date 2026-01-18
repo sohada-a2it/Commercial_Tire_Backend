@@ -33,8 +33,8 @@ const RecentPurchaseNotification = ({ products = [] }) => {
           const nextIndex = (index + 1) % products.length;
           setCurrentIndex(nextIndex);
           showNotification(nextIndex);
-        }, 2000); // 3 seconds gap
-      }, 30000); // Show for 30 seconds
+        }, 2000); // 2 seconds gap
+      }, 10000); // Show for 10 seconds
     };
 
     // Show first notification after 3 seconds
@@ -107,9 +107,9 @@ const RecentPurchaseNotification = ({ products = [] }) => {
           : "-translate-x-full opacity-0"
       }`}
     >
-      <div className="bg-white rounded-lg shadow-2xl max-w-sm overflow-hidden border border-gray-200 animate-slide-in">
+      <div className="bg-white rounded-lg shadow-2xl max-w-md overflow-hidden border border-gray-200 animate-slide-in">
         {/* Header */}
-        <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 px-4 py-1 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-yellow-500 to-orange-600 px-4 py-1 flex items-center justify-between">
           <span className="text-white text-sm font-semibold">
             Someone purchased
           </span>
@@ -123,7 +123,7 @@ const RecentPurchaseNotification = ({ products = [] }) => {
         </div>
 
         {/* Content */}
-        <div className="px-6 py-2">
+        <div className="px-8 py-2">
           <div className="flex items-start gap-3 mb-0">
             {/* Product Image */}
             <div className="flex-shrink-0">
@@ -167,7 +167,7 @@ const RecentPurchaseNotification = ({ products = [] }) => {
         {/* Footer indicator */}
         <div className="h-1 bg-gray-200 relative overflow-hidden">
           <div 
-            className={`h-full bg-gradient-to-r from-yellow-400 to-yellow-500 absolute left-0 top-0 ${
+            className={`h-full bg-gradient-to-r from-yellow-400 to-orange-500 absolute left-0 top-0 ${
               isAnimating ? 'animate-progress' : ''
             }`}
             style={{ width: isAnimating ? '100%' : '0%' }}
