@@ -8,6 +8,7 @@ import SearchSuggestion from "@/components/Search/SearchSuggestion.jsx";
 import ClientSideMetadata from "@/components/shared/ClientSideMetadata";
 import CategoryBanner from "@/common/CategoryBanner";
 import TruckTireBanner from "@/components/DynamicProductCatalog/TruckTireBanner";
+import RecentPurchaseNotification from "@/components/shared/RecentPurchaseNotification";
 
 const SubcategoryPageClient = () => {
   const params = useParams();
@@ -572,6 +573,13 @@ const SubcategoryPageClient = () => {
           isHomePage={false}
         />
       </div>
+
+      {/* Recent Purchase Notification - Only show for Truck Tires */}
+      {isTruckTires && subcategory?.products && (
+        <RecentPurchaseNotification 
+          products={subcategory.products.slice(0, 10)} 
+        />
+      )}
     </div>
   );
 };

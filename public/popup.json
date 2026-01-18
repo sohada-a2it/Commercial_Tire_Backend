@@ -1,0 +1,461 @@
+[
+    {
+        "id": 1,
+        "name": "Vehicle Parts and Accessories",
+        "icon": "🚛",
+        "subcategories": [
+            {
+                "id": 101,
+                "name": "Truck Tires",
+                "products": [
+                    {
+                        "id": 1013,
+                        "name": "Double Coin RLB400 11R22.5 Drive Tire",
+                        "price": "$280.00",
+                        "offerPrice": "$134.00",
+                        "description": "Durable drive tire with G load range. Designed for reliable performance in various driving conditions.",
+                        "image": "/assets/truck/Double Coin/Drive/RLB400 11R22.5-1.png",
+                        "keyAttributes": {
+                            "Brand": "Double Coin",
+                            "Model": "RLB400",
+                            "Size": "11R22.5",
+                            "Load Range": "G",
+                            "Pattern": "Drive",
+                            "Feature": [
+                                "Durable",
+                                "G Load Range",
+                                "Reliable"
+                            ]
+                        }
+                    },
+                    {
+                        "id": 1010,
+                        "name": "Double Coin RR202 11.00R22 Drive Tire",
+                        "price": "$280.00",
+                        "offerPrice": "$134.00",
+                        "description": "Versatile drive tire for mixed applications. Suitable for various road conditions and hauling needs.",
+                        "image": "/assets/truck/Double Coin/Drive/RR202 11.00R22-1.png",
+                        "keyAttributes": {
+                            "Brand": "Double Coin",
+                            "Model": "RR202",
+                            "Size": "11.00R22",
+                            "Load Range": "G",
+                            "Pattern": "Drive",
+                            "Feature": [
+                                "Versatile",
+                                "Mixed Applications",
+                                "Durable"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Golf Cart Equipment",
+        "icon": "🏌️",
+        "subcategories": [
+            {
+                "id": 201,
+                "name": "Golf Cart Tires",
+                "products": [
+                    {
+                        "id": 2011,
+                        "name": "Premium Golf Cart Tire Set (18x8.5-8)",
+                        "price": "$189.99",
+                        "offerPrice": "$159.99",
+                        "description": "All-terrain golf cart tires with turf-friendly design for superior performance on course and trails.",
+                        "image": "/assets/golf-cart/tires/carlisle-premium-set.png",
+                        "keyAttributes": {
+                            "Brand": "Carlisle",
+                            "Size": "18x8.5-8",
+                            "Ply Rating": "4-Ply",
+                            "Tread Type": "All-Terrain",
+                            "Feature": [
+                                "Turf-Friendly",
+                                "Weather Resistant",
+                                "Durable"
+                            ]
+                        }
+                    },
+                    {
+                        "id": 2012,
+                        "name": "Street Legal Golf Cart Tire 205/30-12",
+                        "price": "$89.99",
+                        "offerPrice": "$79.99",
+                        "description": "DOT-approved street legal tires for golf carts with enhanced road grip and stability.",
+                        "image": "/assets/golf-cart/tires/street-legal-205.png",
+                        "keyAttributes": {
+                            "Brand": "Kenda",
+                            "Size": "205/30-12",
+                            "DOT Approved": "Yes",
+                            "Speed Rating": "L (75 mph)",
+                            "Feature": [
+                                "Street Legal",
+                                "DOT Approved",
+                                "Enhanced Stability"
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 202,
+                "name": "Golf Cart Batteries",
+                "products": [
+                    {
+                        "id": 2021,
+                        "name": "Golf Cart Lithium Battery 48V 105Ah",
+                        "price": "$899.99",
+                        "offerPrice": "$799.99",
+                        "description": "High-capacity lithium battery with 10-year warranty for extended golf cart range and performance.",
+                        "image": "/assets/golf-cart/batteries/eco-batt-48v.png",
+                        "keyAttributes": {
+                            "Brand": "ECO-BATT",
+                            "Voltage": "48V",
+                            "Capacity": "105Ah",
+                            "Chemistry": "Lithium Iron Phosphate",
+                            "Feature": [
+                                "10-Year Warranty",
+                                "Fast Charging",
+                                "Lightweight"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Wheels & Rims",
+        "icon": "⚙️",
+        "subcategories": [
+            {
+                "id": 301,
+                "name": "Truck Rims",
+                "products": [
+                    {
+                        "id": 3011,
+                        "name": "Fuel Off-Road D666 22x12 Gloss Black",
+                        "price": "$399.99",
+                        "offerPrice": "$349.99",
+                        "description": "Premium gloss black alloy wheels with beveled lip design for trucks and SUVs.",
+                        "image": "/assets/rims/fuel-d666-black.png",
+                        "keyAttributes": {
+                            "Brand": "Fuel",
+                            "Size": "22x12",
+                            "Finish": "Gloss Black",
+                            "Bolt Pattern": "8x170, 8x180",
+                            "Feature": [
+                                "Beveled Lip",
+                                "Load Rated 3500lbs",
+                                "Premium Finish"
+                            ]
+                        }
+                    },
+                    {
+                        "id": 3012,
+                        "name": "American Racing AR172 Baja 17x9",
+                        "price": "$179.99",
+                        "offerPrice": "$159.99",
+                        "description": "Classic baja design steel wheels with matte black finish for traditional truck builds.",
+                        "image": "/assets/rims/american-racing-baja.png",
+                        "keyAttributes": {
+                            "Brand": "American Racing",
+                            "Size": "17x9",
+                            "Material": "Steel",
+                            "Finish": "Matte Black",
+                            "Feature": [
+                                "Classic Baja Design",
+                                "Durable Steel",
+                                "Multi-Fit"
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 302,
+                "name": "Car Rims",
+                "products": [
+                    {
+                        "id": 3021,
+                        "name": "TSW Sebring 20x9 Hyper Silver",
+                        "price": "$329.99",
+                        "offerPrice": "$299.99",
+                        "description": "Elegant hyper silver alloy wheels for luxury cars and SUVs with premium finish.",
+                        "image": "/assets/rims/car/tsw-sebring.png",
+                        "keyAttributes": {
+                            "Brand": "TSW",
+                            "Size": "20x9",
+                            "Finish": "Hyper Silver",
+                            "Bolt Pattern": "5x114.3, 5x120",
+                            "Feature": [
+                                "Flow Formed",
+                                "Lightweight",
+                                "Premium Finish"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Electric Mobility",
+        "icon": "🚲",
+        "subcategories": [
+            {
+                "id": 401,
+                "name": "E-Bike Conversion Kits",
+                "products": [
+                    {
+                        "id": 4011,
+                        "name": "Bafang BBSHD 1000W Mid-Drive Kit",
+                        "price": "$699.99",
+                        "offerPrice": "$649.99",
+                        "description": "High-power 1000W mid-drive conversion kit with torque sensor for mountain bike conversions.",
+                        "image": "/assets/e-bike/kits/bafang-bbshd.png",
+                        "keyAttributes": {
+                            "Brand": "Bafang",
+                            "Power": "1000W",
+                            "Voltage": "48V",
+                            "Drive Type": "Mid-Drive",
+                            "Feature": [
+                                "Torque Sensor",
+                                "LCD Display",
+                                "High Torque"
+                            ]
+                        }
+                    },
+                    {
+                        "id": 4012,
+                        "name": "48V 1500W Rear Hub Motor Kit",
+                        "price": "$299.99",
+                        "offerPrice": "$279.99",
+                        "description": "Powerful rear hub motor kit for quick and easy electric bike conversions.",
+                        "image": "/assets/e-bike/kits/1500w-hub-kit.png",
+                        "keyAttributes": {
+                            "Brand": "Voilamart",
+                            "Power": "1500W",
+                            "Voltage": "48V",
+                            "Drive Type": "Rear Hub",
+                            "Feature": [
+                                "Easy Installation",
+                                "High Speed",
+                                "Powerful"
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 402,
+                "name": "E-Bike Batteries",
+                "products": [
+                    {
+                        "id": 4021,
+                        "name": "Luna Cycle 52V 14Ah Triangle Battery",
+                        "price": "$549.99",
+                        "offerPrice": "$499.99",
+                        "description": "High-capacity triangle battery with Panasonic cells for extended e-bike range.",
+                        "image": "/assets/e-bike/batteries/luna-triangle.png",
+                        "keyAttributes": {
+                            "Brand": "Luna Cycle",
+                            "Voltage": "52V",
+                            "Capacity": "14Ah",
+                            "Cells": "Panasonic",
+                            "Feature": [
+                                "Smart BMS",
+                                "50+ Mile Range",
+                                "2-Year Warranty"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "name": "Recreational Vehicles",
+        "icon": "🏍️",
+        "subcategories": [
+            {
+                "id": 501,
+                "name": "ATV/UTV Tires",
+                "products": [
+                    {
+                        "id": 5011,
+                        "name": "ITP Mud Lite XTR 26x9-12",
+                        "price": "$129.99",
+                        "offerPrice": "$114.99",
+                        "description": "Aggressive mud terrain tires for ATVs with self-cleaning tread design.",
+                        "image": "/assets/atv/tires/itp-mud-lite.png",
+                        "keyAttributes": {
+                            "Brand": "ITP",
+                            "Size": "26x9-12",
+                            "Ply Rating": "6-Ply",
+                            "Tread Type": "Mud Terrain",
+                            "Feature": [
+                                "Self-Cleaning",
+                                "Aggressive Tread",
+                                "Lightweight"
+                            ]
+                        }
+                    },
+                    {
+                        "id": 5012,
+                        "name": "Maxxis Bighorn 2.0 27x9-14",
+                        "price": "$169.99",
+                        "offerPrice": "$149.99",
+                        "description": "All-terrain UTV tires with durable construction for rock crawling and trail use.",
+                        "image": "/assets/atv/tires/maxxis-bighorn.png",
+                        "keyAttributes": {
+                            "Brand": "Maxxis",
+                            "Size": "27x9-14",
+                            "Ply Rating": "8-Ply",
+                            "Tread Type": "All-Terrain",
+                            "Feature": [
+                                "Durable",
+                                "Good Traction",
+                                "Smooth Ride"
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 502,
+                "name": "ATV Accessories",
+                "products": [
+                    {
+                        "id": 5021,
+                        "name": "ATV Winch 4500lb Synthetic Rope",
+                        "price": "$299.99",
+                        "offerPrice": "$269.99",
+                        "description": "Heavy-duty 4500lb capacity winch with synthetic rope for ATV recovery.",
+                        "image": "/assets/atv/accessories/winch-4500lb.png",
+                        "keyAttributes": {
+                            "Brand": "Warn",
+                            "Capacity": "4500lb",
+                            "Rope Type": "Synthetic",
+                            "Remote": "Wireless",
+                            "Feature": [
+                                "Waterproof",
+                                "Thermal Protection",
+                                "Easy Mounting"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "name": "Agricultural Equipment",
+        "icon": "🚜",
+        "subcategories": [
+            {
+                "id": 601,
+                "name": "Tractor Tires",
+                "products": [
+                    {
+                        "id": 6011,
+                        "name": "Firestone Radial All Traction 23° 380/85R34",
+                        "price": "$1,899.99",
+                        "offerPrice": "$1,799.99",
+                        "description": "Premium tractor tires with 23° lug angle for maximum traction in heavy draft work.",
+                        "image": "/assets/ag/tires/firestone-all-traction.png",
+                        "keyAttributes": {
+                            "Brand": "Firestone",
+                            "Size": "380/85R34",
+                            "Lug Angle": "23°",
+                            "Tread": "R-1W",
+                            "Feature": [
+                                "High Traction",
+                                "Long Wear",
+                                "Radial Construction"
+                            ]
+                        }
+                    },
+                    {
+                        "id": 6012,
+                        "name": "BKT Agricultural Flotation 650/65R38",
+                        "price": "$2,199.99",
+                        "offerPrice": "$2,099.99",
+                        "description": "Flotation tires for row crop operations with low ground pressure for soil protection.",
+                        "image": "/assets/ag/tires/bkt-flotation.png",
+                        "keyAttributes": {
+                            "Brand": "BKT",
+                            "Size": "650/65R38",
+                            "Type": "Flotation",
+                            "Ground Pressure": "Low",
+                            "Feature": [
+                                "Soil Protection",
+                                "High Flotation",
+                                "Wide Footprint"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "name": "Industrial Machinery",
+        "icon": "🏭",
+        "subcategories": [
+            {
+                "id": 701,
+                "name": "Loader & Grader Tires",
+                "products": [
+                    {
+                        "id": 7011,
+                        "name": "Michelin X Works D 16.00-25",
+                        "price": "$3,499.99",
+                        "offerPrice": "$3,299.99",
+                        "description": "Heavy-duty loader tires with cut-resistant compound for extreme service conditions.",
+                        "image": "/assets/industrial/tires/michelin-xworks.png",
+                        "keyAttributes": {
+                            "Brand": "Michelin",
+                            "Size": "16.00-25",
+                            "Rating": "E3/L3",
+                            "Service": "Loader/Dozer",
+                            "Feature": [
+                                "Cut-Resistant",
+                                "High Load Capacity",
+                                "Long Service Life"
+                            ]
+                        }
+                    },
+                    {
+                        "id": 7012,
+                        "name": "Bridgestone V-Steel 14.00-24",
+                        "price": "$2,899.99",
+                        "offerPrice": "$2,749.99",
+                        "description": "Steel-belted grader tires with deep tread design for road construction equipment.",
+                        "image": "/assets/industrial/tires/bridgestone-vsteel.png",
+                        "keyAttributes": {
+                            "Brand": "Bridgestone",
+                            "Size": "14.00-24",
+                            "Construction": "Steel-Belted",
+                            "Position": "All-Position",
+                            "Feature": [
+                                "Puncture Resistant",
+                                "Deep Tread",
+                                "Durable"
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]
