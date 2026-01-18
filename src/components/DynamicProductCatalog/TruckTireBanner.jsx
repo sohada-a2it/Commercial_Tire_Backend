@@ -28,6 +28,10 @@ const TruckTireBanner = ({ onBrandClick }) => {
       name: "Michelin",
       image: "/assets/truckbanner/michelin.png",
     },
+    {
+      name: "Roadlux",
+      image: "/assets/truckbanner/roadlux.png",
+    },
   ];
 
   const VISIBLE_CARDS = 3;
