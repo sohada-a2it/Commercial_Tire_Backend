@@ -17,24 +17,29 @@ const RecentPurchaseNotification = ({ products = [] }) => {
     if (!products || products.length === 0) return;
 
     let cycleTimeout;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
     const showNotification = (index) => {
       setCurrentProduct(products[index]);
       setIsVisible(true);
       setIsAnimating(true);
 
-      // Hide after 30 seconds
+      // Hide after 10 seconds on mobile, 10 seconds on desktop
+      const displayTime = isMobile ? 10000 : 10000;
+      
       setTimeout(() => {
         setIsVisible(false);
         setIsAnimating(false);
 
-        // Wait 30 seconds before showing next notification
+        // Wait 15 seconds on mobile, 4 seconds on desktop before showing next notification
+        const gapTime = isMobile ? 15000 : 4000;
+        
         cycleTimeout = setTimeout(() => {
           const nextIndex = (index + 1) % products.length;
           setCurrentIndex(nextIndex);
           showNotification(nextIndex);
-        }, 4000); // 4 seconds gap
-      }, 10000); // Show for 10 seconds
+        }, gapTime);
+      }, displayTime);
     };
 
     // Show first notification after 3 seconds
@@ -101,15 +106,15 @@ const RecentPurchaseNotification = ({ products = [] }) => {
 
   return (
     <div
-      className={`fixed bottom-4 left-2 md:left-4 right-4 sm:right-auto sm:w-[340px] z-[45] transition-all duration-500 ease-in-out ${
+      className={`fixed bottom-4 left-1 md:left-4 right-4 sm:right-auto sm:w-[340px] z-[45] transition-all duration-500 ease-in-out ${
         isVisible
           ? "translate-x-0 opacity-100"
           : "-translate-x-full opacity-0"
       }`}
     >
-      <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 animate-slide-in max-w-[340px] mx-auto sm:mx-0">
+      <div className="bg-white rounded-md shadow-2xl overflow-hidden border border-gray-100 animate-slide-in max-w-[340px] mx-auto sm:mx-0">
         {/* Header */}
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-600 px-3 sm:px-4 py-2 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-600 px-3 sm:px-2 py-1 flex items-center justify-between">
           <span className="text-white text-xs sm:text-sm font-semibold">
             🎉Someone just purchased!
           </span>
