@@ -102,14 +102,14 @@ const Banner = () => {
             </div>
 
             {/* Call to Action Buttons */}
-            <div className="flex flex-row justify-center gap-4 md:gap-5">
+            <div className="flex flex-row justify-center gap-3 md:gap-5">
               <Link
                 to="/products"
-                className="relative overflow-hidden group bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-semibold py-3 px-8 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex-1 md:flex-initial"
+                className="relative overflow-hidden group bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-semibold py-3 px-4 sm:px-8 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex-1 md:flex-initial"
               >
-                <span className="relative z-10 flex items-center justify-center">
+                <span className="relative z-10 flex items-center justify-center whitespace-nowrap text-sm sm:text-base">
                   <svg
-                    className="w-5 h-5 sm:w-6 sm:h-6 mr-2"
+                    className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 mr-1.5 sm:mr-2 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -122,36 +122,33 @@ const Banner = () => {
                       d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
                     ></path>
                   </svg>
-                  Explore Products
+                  <span className="hidden xs:inline">Explore Products</span>
+                  <span className="xs:hidden">Products</span>
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-700 to-teal-900 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
 
               <Link
                 to="/contact"
-                className="relative overflow-hidden group bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex-1 md:flex-initial"
+                className="relative overflow-hidden group bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 px-4 sm:px-8 rounded-xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex-1 md:flex-initial"
               >
-                <span className="relative z-10 flex items-center justify-center">
+                <span className="relative z-10 flex items-center justify-center whitespace-nowrap text-sm sm:text-base">
                   <svg
-                    className="w-5 h-5 sm:w-6 sm:h-6 mr-2"
+                    className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 mr-1.5 sm:mr-2 flex-shrink-0"
                     viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M2 5L12 12L22 5M2 19H22V8L12 15L2 8V19Z"
-                      fill="currentColor"
-                      stroke="currentColor"
-                      strokeWidth="1"
-                      strokeLinejoin="bevel" 
-                    />
-                    <line 
-                      x1="2" y1="5" x2="12" y2="12" 
-                      stroke="currentColor" 
-                      strokeWidth="0.8"
-                      strokeDasharray="1,1" 
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
                   </svg>
-                  Contact Us
+                  <span className="hidden xs:inline">Contact Us</span>
+                  <span className="xs:hidden">Contact</span>
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-amber-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>

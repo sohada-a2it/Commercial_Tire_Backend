@@ -717,7 +717,7 @@ const ProductDetails = () => {
                     Description
                   </h3>
                   <p className="text-gray-700 text-sm">{product.description}</p>
-                  <span className="text-xs text-red-500 font-semibold -mt-6"> *DOT, ECE Certified </span>
+                  <span className="text-sm text-red-500 font-bold -mt-6"> *DOT, ECE Certified </span>
 
                   {/* Conditional Shipping Text */}
                   <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg mb-2">
