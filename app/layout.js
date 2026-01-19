@@ -6,6 +6,7 @@ import FloatingWhatsApp from "@/components/shared/FloatingWhatsApp";
 import FloatingCartButton from "@/components/Cart/FloatingCartButton";
 import CartSidebar from "@/components/Cart/CartSidebar";
 import { CartProvider } from "@/context/CartContext";
+import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import "./globals.css";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import {
@@ -96,22 +97,22 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* GitHub Pages SPA redirect script */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(l) {
-                if (l.search[1] === '/' ) {
-                  var decoded = l.search.slice(1).split('&').map(function(s) { 
-                    return s.replace(/~and~/g, '&')
-                  }).join('?');
-                  window.history.replaceState(null, null,
-                      l.pathname.slice(0, -1) + decoded + l.hash
-                  );
-                }
-              }(window.location))
-            `,
-          }}
+        {/* Preconnect to external domains */}
+        <link rel="preconnect" href="https://www.clarity.ms" />
+        <link rel="dns-prefetch" href="https://www.clarity.ms" />
+        
+        {/* Preload critical assets */}
+        <link 
+          rel="preload" 
+          href="/assets/banner-bg.webp" 
+          as="image"
+          type="image/webp"
+        />
+        <link 
+          rel="preload" 
+          href="/1.webp" 
+          as="image"
+          type="image/webp"
         />
         {/* Structured Data */}
         <script
@@ -139,27 +140,29 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <CartProvider>
-          <ScrollToTop />
-          <Toaster position="top-center" reverseOrder={false} />
-          <Navbar />
-          <Suspense
-            fallback={
-              <div className="flex justify-center items-center min-h-screen">
-                <div className="loading loading-spinner loading-lg"></div>
-              </div>
-            }
-          >
-            <main>{children}</main>
-          </Suspense>
-          <Footer />
-          <FloatingWhatsApp
-            phoneNumber="14379003996"
-            message="Hello! How can I help you?"
-          />
-          <FloatingCartButton />
-          <CartSidebar />
-        </CartProvider>
+        <ErrorBoundary>
+          <CartProvider>
+            <ScrollToTop />
+            <Toaster position="top-center" reverseOrder={false} />
+            <Navbar />
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center min-h-screen">
+                  <div className="loading loading-spinner loading-lg"></div>
+                </div>
+              }
+            >
+              <main>{children}</main>
+            </Suspense>
+            <Footer />
+            <FloatingWhatsApp
+              phoneNumber="14379003996"
+              message="Hello! How can I help you?"
+            />
+            <FloatingCartButton />
+            <CartSidebar />
+          </CartProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

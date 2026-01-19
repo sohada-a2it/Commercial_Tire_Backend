@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Link } from "@/lib/navigation";
+import Image from "next/image";
 
 const Banner = () => {
   const [displayText, setDisplayText] = useState("");
@@ -11,8 +12,11 @@ const Banner = () => {
   const fullText =
     "Asian Import & Export Co., LTD is a manufacturer and wholesaler serving NC, SC, TN, and VA. With competitive pricing, quality products, strong inventory, and reliable delivery, we build lasting customer relationships.";
 
-  // Typing animation effect
+  // Typing animation effect - optimized to prevent hydration errors
   useEffect(() => {
+    // Start animation only on client side
+    if (typeof window === 'undefined') return;
+
     if (currentIndex < fullText.length) {
       const timer = setTimeout(() => {
         setDisplayText(fullText.substring(0, currentIndex + 1));
@@ -32,15 +36,19 @@ const Banner = () => {
 
   return (
     <div className="relative w-full min-h-[450px] sm:max-h-[600px] md:max-h-[650px] lg:max-h-[650px] overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      {/* Background Image - Optimized */}
+      <Image
+        src="/assets/banner-bg.webp"
+        alt="Asian Import Export Banner"
+        fill
+        priority
+        quality={85}
+        sizes="100vw"
+        className="object-cover"
         style={{
-          backgroundImage: "url('/assets/banner-bg.jpg')",
-          backgroundColor: "rgba(0, 0, 0, 0.4)",
-          backgroundBlendMode: "overlay",
+          filter: 'brightness(0.7)'
         }}
-      ></div>
+      />
 
       {/* Content */}
       <div className="max-w-7xl mx-auto">

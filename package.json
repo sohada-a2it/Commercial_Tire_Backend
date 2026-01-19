@@ -7,9 +7,11 @@
     "dev": "next dev",
     "prebuild": "node scripts/generate-sitemap.js",
     "build": "next build",
+    "postbuild": "node scripts/optimize-images.js",
     "start": "next start",
     "lint": "next lint",
-    "generate-sitemap": "node scripts/generate-sitemap.js"
+    "generate-sitemap": "node scripts/generate-sitemap.js",
+    "optimize-images": "node scripts/optimize-images.js"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
@@ -26,6 +28,7 @@
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
     "react-spinners": "^0.17.0",
+    "sharp": "^0.33.5",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {

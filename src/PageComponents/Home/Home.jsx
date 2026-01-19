@@ -1,10 +1,21 @@
 import React from "react";
+import dynamic from "next/dynamic";
 import Banner from "../../components/Home/Banner";
 import ProductCatalog from "../../components/DynamicProductCatalog/ProductCatalog";
-import CompanyStats from "../../components/Home/CompanyStats";
-import OfferBanner from "../../components/Home/OfferBanner";
-import ServicesSection from "../../components/Home/ServicesSection";
-import WhyChooseUs from "../../components/Home/WhyChooseUs";
+
+// Lazy load below-the-fold components
+const CompanyStats = dynamic(() => import("../../components/Home/CompanyStats"), {
+  loading: () => <div className="h-64 bg-gray-100 animate-pulse" />
+});
+const OfferBanner = dynamic(() => import("../../components/Home/OfferBanner"), {
+  loading: () => <div className="h-48 bg-gray-100 animate-pulse" />
+});
+const ServicesSection = dynamic(() => import("../../components/Home/ServicesSection"), {
+  loading: () => <div className="h-96 bg-gray-100 animate-pulse" />
+});
+const WhyChooseUs = dynamic(() => import("../../components/Home/WhyChooseUs"), {
+  loading: () => <div className="h-96 bg-gray-100 animate-pulse" />
+});
 
 const Home = () => {
   return (

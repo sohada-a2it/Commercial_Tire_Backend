@@ -3,8 +3,8 @@ const nextConfig = {
   // Enable static export for production deployment
   output: "export",
 
-  // Disable trailing slashes for consistent routing
-  trailingSlash: false,
+  // Enable trailing slashes for static hosting compatibility
+  trailingSlash: true,
 
   // Image optimization configuration
   images: {
@@ -31,8 +31,23 @@ const nextConfig = {
   // Experimental features for better performance
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: ["lucide-react", "react-icons"],
+    optimizePackageImports: ["lucide-react", "react-icons", "framer-motion"],
   },
+
+  // Compress output
+  compress: true,
+
+  // Optimize production builds
+  swcMinify: true,
+
+  // Reduce bundle size
+  reactStrictMode: true,
+
+  // Disable powered by header
+  poweredByHeader: false,
+
+  // Generate standalone output for better static hosting
+  distDir: '.next',
 
   // Note: async headers() and redirects() are not supported with output: 'export'
   // These would need to be configured on your hosting platform (e.g., Netlify, Vercel, etc.)

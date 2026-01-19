@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 const ProductSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -10,19 +10,19 @@ const ProductSlider = () => {
   // Slider data - images and text content
   const slides = [
     {
-      image: "/1.png",
+      image: "/1.webp",
     },
     {
-      image: "/2.png",
+      image: "/2.webp",
     },
     {
-      image: "/3.png",
+      image: "/3.webp",
     },
     {
-      image: "/4.png",
+      image: "/4.webp",
     },
     {
-      image: "/5.png",
+      image: "/5.webp",
     },
   ];
 
@@ -49,23 +49,20 @@ const ProductSlider = () => {
     >
       {/* Background Image Container */}
       <div className="relative w-full">
-        <AnimatePresence mode="wait">
-          <motion.div
+        {/* Only render current slide for better performance */}
+        <div className="relative w-full">
+          {/* Full Background Image with fade animation */}
+          <Image
             key={currentSlide}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="relative w-full"
-          >
-            {/* Full Background Image */}
-            <img
-              src={slides[currentSlide].image}
-              alt={`Slide ${currentSlide + 1}`}
-              className="w-full h-auto object-contain max-h-[600px]"
-            />
-          </motion.div>
-        </AnimatePresence>
+            src={slides[currentSlide].image}
+            alt={`Slide ${currentSlide + 1}`}
+            width={1200}
+            height={600}
+            priority={currentSlide === 0}
+            quality={85}
+            className="w-full h-auto object-contain max-h-[600px] animate-fadeIn"
+          />
+        </div>
       </div>
 
       {/* Bottom Section - Navigation Dots */}
@@ -86,19 +83,11 @@ const ProductSlider = () => {
         </div>
       </div>
 
-      {/* Auto-Play Indicator */}
+      {/* Auto-Play Indicator - CSS animation */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 overflow-hidden">
-        <motion.div
+        <div
           key={currentSlide}
-          initial={{ width: 0 }}
-          animate={{
-            width: "100%",
-            transition: {
-              duration: 5,
-              ease: "linear",
-            },
-          }}
-          className="h-full bg-teal-400"
+          className="h-full bg-teal-400 animate-progressBar"
         />
       </div>
     </div>

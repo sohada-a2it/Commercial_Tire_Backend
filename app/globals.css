@@ -2,6 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fade in animation for slider */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Progress bar animation */
+@keyframes progressBar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-progressBar {
+  animation: progressBar 5s linear forwards;
+}
+
+/* Old progress animation (kept for compatibility) */
+@keyframes progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-progress {
+  animation: progress 5s linear forwards;
+}
+
 /* Glow animation for countdown */
 @keyframes pulse-glow {
   0%, 100% {
