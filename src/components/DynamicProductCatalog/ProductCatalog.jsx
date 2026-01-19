@@ -6,6 +6,7 @@ import ProductSubcategory from "./ProductSubcategory";
 import ProductList from "./ProductList";
 import SearchSuggestion from "../Search/SearchSuggestion.jsx";
 import ProductSlider from "./ProductSlider";
+import { ProductSliderSkeleton, ProductListSkeleton, CategoryCardSkeleton } from "../shared/SkeletonLoader";
 
 const ProductCatalog = ({ isHomePage = false }) => {
   const [categories, setCategories] = useState([]);
@@ -163,10 +164,25 @@ const ProductCatalog = ({ isHomePage = false }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto"></div>
-          <p className="mt-4 text-teal-800">Loading products...</p>
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4">
+          {/* Slider Skeleton */}
+          <ProductSliderSkeleton />
+          
+          {/* Search bar skeleton */}
+          <div className="max-w-3xl mx-auto my-8">
+            <div className="h-12 bg-gray-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Categories skeleton */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+            {[...Array(8)].map((_, i) => (
+              <CategoryCardSkeleton key={i} />
+            ))}
+          </div>
+
+          {/* Products skeleton */}
+          <ProductListSkeleton count={6} />
         </div>
       </div>
     );

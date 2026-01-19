@@ -7,6 +7,7 @@ import FloatingCartButton from "@/components/Cart/FloatingCartButton";
 import CartSidebar from "@/components/Cart/CartSidebar";
 import { CartProvider } from "@/context/CartContext";
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
+import { PageSkeleton } from "@/components/shared/SkeletonLoader";
 import "./globals.css";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import {
@@ -145,13 +146,7 @@ export default function RootLayout({ children }) {
             <ScrollToTop />
             <Toaster position="top-center" reverseOrder={false} />
             <Navbar />
-            <Suspense
-              fallback={
-                <div className="flex justify-center items-center min-h-screen">
-                  <div className="loading loading-spinner loading-lg"></div>
-                </div>
-              }
-            >
+            <Suspense fallback={<PageSkeleton />}>
               <main>{children}</main>
             </Suspense>
             <Footer />
