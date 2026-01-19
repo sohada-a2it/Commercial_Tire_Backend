@@ -10,7 +10,7 @@ const WebsiteLogo = () => {
           <div className="flex items-center mb-6">
 
           <img
-            src="logo.png"
+            src="/logo.png"
             alt="Asian Import and Export"
             className="h-16 mb-0"
           />
