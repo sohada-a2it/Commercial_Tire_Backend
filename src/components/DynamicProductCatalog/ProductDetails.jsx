@@ -717,7 +717,15 @@ const ProductDetails = () => {
                     Description
                   </h3>
                   <p className="text-gray-700 text-sm">{product.description}</p>
-                  <span className="text-sm text-red-500 font-bold -mt-6"> *DOT, ECE Certified </span>
+                  <span className="text-sm text-red-500 font-bold -mt-6">
+                    {product.categoryName === "Vehicle Parts and Accessories" && " *DOT, ECE Certified"}
+                    {product.categoryName === "Frozen Fish" && " *ISO Certified"}
+                    {product.categoryName === "Dry Food" && " *ISO Certified"}
+                    {product.categoryName === "Agriculture" && " *ISO Certified"}
+                    {product.categoryName === "Metals and Metal Products" && " *ISO 9001 Certified"}
+                    {product.categoryName === "Wood Products" && " *FSC & EPA Certified"}
+                    {!["Vehicle Parts and Accessories", "Frozen Fish", "Dry Food", "Agriculture", "Metals and Metal Products", "Wood Products"].includes(product.categoryName) && " *Quality Certified"}
+                  </span>
 
                   {/* Conditional Shipping Text */}
                   <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg mb-2">
