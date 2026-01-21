@@ -6,6 +6,7 @@ import ProductSubcategory from "./ProductSubcategory";
 import ProductList from "./ProductList";
 import SearchSuggestion from "../Search/SearchSuggestion.jsx";
 import ProductSlider from "./ProductSlider";
+import dataService from "@/services/dataService";
 import { ProductSliderSkeleton, ProductListSkeleton, CategoryCardSkeleton } from "../shared/SkeletonLoader";
 
 const ProductCatalog = ({ isHomePage = false }) => {
@@ -44,13 +45,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/categories.json");
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await dataService.getCategories();
         setCategories(data);
       } catch (err) {
         console.error("Error fetching categories:", err);

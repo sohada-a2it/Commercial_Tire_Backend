@@ -6,6 +6,7 @@ import FloatingWhatsApp from "@/components/shared/FloatingWhatsApp";
 import FloatingCartButton from "@/components/Cart/FloatingCartButton";
 import CartSidebar from "@/components/Cart/CartSidebar";
 import { CartProvider } from "@/context/CartContext";
+import { DataProvider } from "@/context/DataContext";
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import { PageSkeleton } from "@/components/shared/SkeletonLoader";
 import "./globals.css";
@@ -142,21 +143,23 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ErrorBoundary>
-          <CartProvider>
-            <ScrollToTop />
-            <Toaster position="top-center" reverseOrder={false} />
-            <Navbar />
-            <Suspense fallback={<PageSkeleton />}>
-              <main>{children}</main>
-            </Suspense>
-            <Footer />
-            <FloatingWhatsApp
-              phoneNumber="14379003996"
-              message="Hello! How can I help you?"
-            />
-            <FloatingCartButton />
-            <CartSidebar />
-          </CartProvider>
+          <DataProvider>
+            <CartProvider>
+              <ScrollToTop />
+              <Toaster position="top-center" reverseOrder={false} />
+              <Navbar />
+              <Suspense fallback={<PageSkeleton />}>
+                <main>{children}</main>
+              </Suspense>
+              <Footer />
+              <FloatingWhatsApp
+                phoneNumber="14379003996"
+                message="Hello! How can I help you?"
+              />
+              <FloatingCartButton />
+              <CartSidebar />
+            </CartProvider>
+          </DataProvider>
         </ErrorBoundary>
       </body>
     </html>

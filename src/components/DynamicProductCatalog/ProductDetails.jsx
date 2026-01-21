@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import dataService from "@/services/dataService";
 import ContainerLoadingCapacity from "./ContainerLoadingCapacity";
 import {
   generateProductSchema,
@@ -309,66 +310,44 @@ const ProductDetails = () => {
     // Scroll to top when product changes
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // Always load fresh product data based on the current ID
-    fetch("/categories.json")
-      .then((res) => res.json())
-      .then((data) => {
-        // Find the product and its category/subcategory info
-        let foundProduct = null;
-        let foundCategory = null;
-        let foundSubcategory = null;
-
-        data.forEach((cat) => {
-          cat.subcategories?.forEach((sub) => {
-            const product = sub.products?.find(
-              (p) => String(p.id) === String(id)
-            );
-            if (product) {
-              foundProduct = {
-                ...product,
-                categoryName: cat.name,
-                subcategoryName: sub.name,
-              };
-              foundCategory = { name: cat.name, icon: cat.icon };
-              foundSubcategory = { name: sub.name };
-            }
+    // Use dataService to get product data
+    const loadProductData = async () => {
+      try {
+        // Get product by ID
+        const foundProduct = await dataService.getProductById(id);
+        
+        if (foundProduct) {
+          setProduct(foundProduct);
+          setSelectedImage(foundProduct.image || null);
+          setCategoryInfo({ 
+            name: foundProduct.categoryName, 
+            icon: foundProduct.categoryIcon 
           });
-        });
+          setSubcategoryInfo({ name: foundProduct.subcategoryName });
 
-        // Flatten products for recommendations
-        const allProducts = data.flatMap(
-          (cat) =>
-            cat.subcategories?.flatMap((sub) =>
-              (sub.products || []).map((product) => ({
-                ...product,
-                categoryName: cat.name,
-                subcategoryName: sub.name,
-              }))
-            ) || []
-        );
+          // Check if product is a tyre
+          const tyreCheck =
+            foundProduct.keyAttributes?.["Tire Type"] !== undefined ||
+            foundProduct.keyAttributes?.["Pattern"] !== undefined ||
+            foundProduct.name?.toLowerCase().includes("tire") ||
+            foundProduct.name?.toLowerCase().includes("tyre");
+          setIsTyre(tyreCheck);
 
-        // Update product state
-        setProduct(foundProduct || null);
-        setSelectedImage(foundProduct?.image || null);
-        setCategoryInfo(foundCategory);
-        setSubcategoryInfo(foundSubcategory);
-
-        // Check if product is a tyre
-        const tyreCheck =
-          foundProduct?.keyAttributes?.["Tire Type"] !== undefined ||
-          foundProduct?.keyAttributes?.["Pattern"] !== undefined ||
-          foundProduct?.name?.toLowerCase().includes("tire") ||
-          foundProduct?.name?.toLowerCase().includes("tyre");
-        setIsTyre(tyreCheck);
-
-        // Store all products for recommendations
-        setAllProducts(allProducts);
+          // Get all products for recommendations
+          const allProducts = await dataService.getAllProducts();
+          setAllProducts(allProducts);
+        } else {
+          setProduct(null);
+        }
+        
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error loading categories.json:", err);
+      } catch (err) {
+        console.error("Error loading product data:", err);
         setLoading(false);
-      });
+      }
+    };
+
+    loadProductData();
   }, [id]); // Only depend on id
 
   // Generate recommendations when product data is available

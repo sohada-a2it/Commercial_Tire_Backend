@@ -5,6 +5,7 @@ import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useLocation, useNavigate } from "@/lib/navigation";
 import ProductList from "../DynamicProductCatalog/ProductList";
 import SearchSuggestion from "./SearchSuggestion.jsx";
+import dataService from "@/services/dataService";
 
 const SearchResultsContent = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -72,8 +73,7 @@ const SearchResultsContent = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("/categories.json");
-        const data = await response.json();
+        const data = await dataService.getCategories();
         setCategories(data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -85,19 +85,7 @@ const SearchResultsContent = () => {
   const performSearch = async (query) => {
     try {
       setLoading(true);
-      const response = await fetch("/categories.json");
-      const categories = await response.json();
-
-      // Flatten all products from all categories and subcategories
-      const allProducts = categories.flatMap((category) =>
-        (category.subcategories || []).flatMap((subcategory) =>
-          (subcategory.products || []).map((product) => ({
-            ...product,
-            category: category.name,
-            subcategory: subcategory.name,
-          }))
-        )
-      );
+      const allProducts = await dataService.getAllProducts();
 
       // Simple search algorithm - you can enhance this as needed
       const results = allProducts.filter((product) => {
