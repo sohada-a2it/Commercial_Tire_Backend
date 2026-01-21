@@ -10,27 +10,27 @@ const TruckTireBanner = ({ onBrandClick }) => {
   const brands = [
     {
       name: "Bridgestone",
-      image: "/assets/truckbanner/bridgestone.png",
+      image: "/assets/truckbanner/bridgestone.webp",
     },
     {
       name: "Double Coin",
-      image: "/assets/truckbanner/doublecoin.png",
+      image: "/assets/truckbanner/doublecoin.webp",
     },
     {
       name: "Firestone",
-      image: "/assets/truckbanner/firestone.png",
+      image: "/assets/truckbanner/firestone.webp",
     },
     {
       name: "Goodyear",
-      image: "/assets/truckbanner/goodyear.png",
+      image: "/assets/truckbanner/goodyear.webp",
     },
     {
       name: "Michelin",
-      image: "/assets/truckbanner/michelin.png",
+      image: "/assets/truckbanner/michelin.webp",
     },
     {
       name: "Roadlux",
-      image: "/assets/truckbanner/roadlux.png",
+      image: "/assets/truckbanner/roadlux.webp",
     },
   ];
 

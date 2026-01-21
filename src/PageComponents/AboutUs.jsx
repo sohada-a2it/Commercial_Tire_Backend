@@ -95,8 +95,8 @@ export default function AboutUs() {
                 <div className="lg:w-2/5">
                   <div className="relative group">
                     <img
-                      src="/assets/certificate.png"
-                      alt="certificate"
+                      src="/assets/certificate.webp"
+                      alt="Certification"
                       className="rounded-2xl shadow-lg w-full object-cover transform group-hover:scale-105 transition"
                     />
                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-amber-500/20 to-transparent opacity-0 group-hover:opacity-100 transition" />
@@ -165,7 +165,7 @@ export default function AboutUs() {
                   
                   <div className="relative">
                     <Image
-                      src="/assets/trand.png"
+                      src="/assets/trand.webp"
                       alt="Trade Trends Chart"
                       width={1200}
                       height={600}
@@ -303,7 +303,7 @@ export default function AboutUs() {
               <div className="flex flex-col items-center text-center">
                 <div className="relative w-48 h-48 mb-6 rounded-2xl overflow-hidden border-4 border-amber-500/30 group">
                   <img 
-                    src="/assets/leader.png" 
+                    src="/assets/leader.webp" 
                     alt="Sewkumar Singh - Managing Director"
                     className="w-full h-full object-cover transform group-hover:scale-110 transition duration-500"
                   />

@@ -6,7 +6,7 @@
         "name": "Double Coin RR202 10.00R20 Drive Tire",
         "price": "$250.00",
         "offerPrice": "$134.00",
-        "image": "/assets/truck/Double Coin/Drive/RR202 10.00R20p-1.png",
+        "image": "/assets/truck/Double Coin/Drive/RR202 10.00R20p-1.webp",
         "rating": "4.5",
         "brand": "Double Coin"
       },
@@ -15,7 +15,7 @@
         "name": "Firestone FD694 10R22.5 Drive Tire",
         "price": "$250.00",
         "offerPrice": "$134.00",
-        "image": "/assets/truck/Firestone/Drive/FD694 10R22.5-1.png",
+        "image": "/assets/truck/Firestone/Drive/FD694 10R22.5-1.webp",
         "rating": "4.5",
         "brand": "Firestone"
       },
@@ -24,7 +24,7 @@
         "name": "Goodyear Endurance RSA HD 11R22.5 Drive Tire",
         "price": "$280.00",
         "offerPrice": "$128.00",
-        "image": "/assets/truck/Goodyear/Drive/11R22.5.png",
+        "image": "/assets/truck/Goodyear/Drive/11R22.5.webp",
         "rating": "4.5",
         "brand": "Goodyear"
       },
@@ -33,7 +33,7 @@
         "name": "Bridgestone M771 11R22.5 Drive Tire",
         "price": "$320.00",
         "offerPrice": "$175.00",
-        "image": "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -1.png",
+        "image": "/assets/truck/Bridgestone/Drive/11r22.5 Drive M771 M726ELA L320  -1.webp",
         "rating": "4.8",
         "brand": "Bridgestone"
       },
@@ -42,7 +42,7 @@
         "name": "Michelin X Multi T 11R22.5 Trailer Tire",
         "price": "$280.00",
         "offerPrice": "$128.00",
-        "image": "/assets/truck/Michelin/Trailer_Tire/11R22.5.png",
+        "image": "/assets/truck/Michelin/Trailer_Tire/11R22.5.webp",
         "rating": "4.5",
         "brand": "Michelin"
       },
@@ -51,7 +51,7 @@
         "name": "Roadlux RD550 10R22.5 Drive Tire",
         "price": "$250.00",
         "offerPrice": "$134.00",
-        "image": "/assets/truck/Roadlux/Drive/10 R22.5.png",
+        "image": "/assets/truck/Roadlux/Drive/10 R22.5.webp",
         "rating": "4.5",
         "brand": "Roadlux"
       },
@@ -60,7 +60,7 @@
         "name": "Double Coin RR202 10.00R20 Steer Tire",
         "price": "$250.00",
         "offerPrice": "$134.00",
-        "image": "/assets/truck/Double Coin/Steer/RR202 10.00R20-1.png",
+        "image": "/assets/truck/Double Coin/Steer/RR202 10.00R20-1.webp",
         "rating": "4.8",
         "brand": "Double Coin"
       },
@@ -69,7 +69,7 @@
         "name": "Firestone FD694 11R22.5 Drive Tire",
         "price": "$280.00",
         "offerPrice": "$134.00",
-        "image": "/assets/truck/Firestone/Drive/FD694 11R22.5-1.png",
+        "image": "/assets/truck/Firestone/Drive/FD694 11R22.5-1.webp",
         "rating": "4.5",
         "brand": "Firestone"
       },
@@ -78,7 +78,7 @@
         "name": "Goodyear G390 LHS 10R22.5 Steer Tire",
         "price": "$250.00",
         "offerPrice": "$125.00",
-        "image": "/assets/truck/Goodyear/Steer/10 R22.5.png",
+        "image": "/assets/truck/Goodyear/Steer/10 R22.5.webp",
         "rating": "4.5",
         "brand": "Goodyear"
       },
@@ -87,7 +87,7 @@
         "name": "Bridgestone M760 11R22.5 Drive Tire",
         "price": "$310.00",
         "offerPrice": "$170.00",
-        "image": "/assets/truck/Bridgestone/Drive/11r22.5 Drive M760 -2.png",
+        "image": "/assets/truck/Bridgestone/Drive/11r22.5 Drive M760 -2.webp",
         "rating": "4.7",
         "brand": "Bridgestone"
       }
@@ -98,7 +98,7 @@
         "name": "2-Seater High Speed Golf Cart",
         "price": "$3600.00",
         "offerPrice": "$3,454.00",
-        "image": "/assets/Vehicle/Golf/two_seater.png",
+        "image": "/assets/Vehicle/Golf/two_seater.webp",
         "rating": null,
         "brand": "Custom"
       },
@@ -107,7 +107,7 @@
         "name": "4-Seater High Speed Golf Cart",
         "price": "$3,800.00",
         "offerPrice": "$3,599.00",
-        "image": "/assets/Vehicle/Golf/four_seater.png",
+        "image": "/assets/Vehicle/Golf/four_seater.webp",
         "rating": null,
         "brand": "Custom"
       },
@@ -116,7 +116,7 @@
         "name": "6-Seater High Speed Golf Cart",
         "price": "$6,500.00",
         "offerPrice": "$5,200.00",
-        "image": "/assets/Vehicle/Golf/six_seater.png",
+        "image": "/assets/Vehicle/Golf/six_seater.webp",
         "rating": null,
         "brand": "Custom"
       }
@@ -127,7 +127,7 @@
         "name": "Alloy Rims",
         "price": "$100.00",
         "offerPrice": "$66.00",
-        "image": "/assets/Vehicle/rim/alloy_rims.png",
+        "image": "/assets/Vehicle/rim/alloy_rims.webp",
         "rating": null,
         "brand": "Custom"
       },
@@ -136,7 +136,7 @@
         "name": "Steel Rims",
         "price": "$12.00",
         "offerPrice": "$7.90",
-        "image": "/assets/Vehicle/rim/steel.png",
+        "image": "/assets/Vehicle/rim/steel.webp",
         "rating": null,
         "brand": "YAOLILAI"
       }
@@ -147,7 +147,7 @@
         "name": "Mountain E-Bike",
         "price": "$450.00",
         "offerPrice": "$389.00",
-        "image": "/assets/Vehicle/bikes/mountain_ebike.png",
+        "image": "/assets/Vehicle/bikes/mountain_ebike.webp",
         "rating": null,
         "brand": "Xiaole"
       },
@@ -156,7 +156,7 @@
         "name": "City E-Bike",
         "price": "$320.00",
         "offerPrice": "$274.98",
-        "image": "/assets/Vehicle/bikes/city.png",
+        "image": "/assets/Vehicle/bikes/city.webp",
         "rating": null,
         "brand": "MOTOVELO"
       }
@@ -169,7 +169,7 @@
         "name": "Premium Quality Frozen Eel Fish",
         "price": "$2,500.00",
         "offerPrice": "$1,800.00",
-        "image": "/assets/fish/eel/eel1.png",
+        "image": "/assets/fish/eel/eel1.webp",
         "rating": null
       },
       {
@@ -177,7 +177,7 @@
         "name": "Wholesale Fresh Live Eel Fish (Conger Pike)",
         "price": "$3,000.00",
         "offerPrice": "$2,500.00",
-        "image": "/assets/fish/eel/eel2.png",
+        "image": "/assets/fish/eel/eel2.webp",
         "rating": null
       },
       {
@@ -185,7 +185,7 @@
         "name": "Wholesale Frozen Freshwater Eel (Unagi, Conger Pike)",
         "price": "$2,800.00",
         "offerPrice": "$2,000.00",
-        "image": "/assets/fish/eel/eel3.png",
+        "image": "/assets/fish/eel/eel3.webp",
         "rating": null
       }
     ],
@@ -195,7 +195,7 @@
         "name": "Frozen Mud Crab (Wholesale Premium Quality)",
         "price": "$7,000.00",
         "offerPrice": "$6,500.00",
-        "image": "/assets/fish/crab/crab.png",
+        "image": "/assets/fish/crab/crab.webp",
         "rating": null
       },
       {
@@ -203,7 +203,7 @@
         "name": "Frozen Sea & Mud Crab (Premium Quality Wholesale)",
         "price": "$9,500.00",
         "offerPrice": "$9,000.00",
-        "image": "/assets/fish/crab/crab2.png",
+        "image": "/assets/fish/crab/crab2.webp",
         "rating": null
       },
       {
@@ -211,7 +211,7 @@
         "name": "Premium Quality Hot Sale Live Mud Crabs",
         "price": "$10,000.00",
         "offerPrice": "$9,000.00",
-        "image": "/assets/fish/crab/crab3.png",
+        "image": "/assets/fish/crab/crab3.webp",
         "rating": null
       }
     ],
@@ -221,7 +221,7 @@
         "name": "Premium Frozen Shrimp (Various Sizes)",
         "price": "$11,000.00",
         "offerPrice": "$10,000.00",
-        "image": "/assets/fish/shrimp/shrimp.png",
+        "image": "/assets/fish/shrimp/shrimp.webp",
         "rating": null
       },
       {
@@ -229,7 +229,7 @@
         "name": "Frozen Shrimp (Medium Sizes)",
         "price": "$6,000.00",
         "offerPrice": "$5,800.00",
-        "image": "/assets/fish/shrimp/shrimp2.png",
+        "image": "/assets/fish/shrimp/shrimp2.webp",
         "rating": null
       }
     ],
@@ -239,7 +239,7 @@
         "name": "Whole Tilapia",
         "price": "$2,500.00",
         "offerPrice": "$2,000.00",
-        "image": "/assets/fish/tilapia/tilapia.png",
+        "image": "/assets/fish/tilapia/tilapia.webp",
         "rating": null
       },
       {
@@ -247,7 +247,7 @@
         "name": "Frozen Tilapia",
         "price": "$2,500.00",
         "offerPrice": "$2,000.00",
-        "image": "/assets/fish/tilapia/tilapia2.png",
+        "image": "/assets/fish/tilapia/tilapia2.webp",
         "rating": null
       },
       {
@@ -255,7 +255,7 @@
         "name": "High Quality Frozen Tilapia (Gutted & Scaled)",
         "price": "$2,800.00",
         "offerPrice": "$2,200.00",
-        "image": "/assets/fish/tilapia/tilapia3.png",
+        "image": "/assets/fish/tilapia/tilapia3.webp",
         "rating": null
       }
     ]
@@ -267,7 +267,7 @@
         "name": "High Purity Copper Wire Scrap (99.99%)",
         "price": "$4,500.00",
         "offerPrice": "$4,300.00",
-        "image": "/assets/Metals/Copper/copper1.png",
+        "image": "/assets/Metals/Copper/copper1.webp",
         "rating": null,
         "brand": "Custom"
       },
@@ -276,7 +276,7 @@
         "name": "Aluminum Copper Scrap Block Power",
         "price": "$4,500.00",
         "offerPrice": "$4,300.00",
-        "image": "/assets/Metals/Copper/copper2.jpeg",
+        "image": "/assets/Metals/Copper/copper2.webp",
         "rating": null,
         "brand": "Custom"
       }
@@ -286,7 +286,7 @@
         "id": 1190,
         "name": "Grade A Cathode Copper",
         "price": "$4700.00",
-        "image": "/assets/Metals/cathode/cathode1.png",
+        "image": "/assets/Metals/cathode/cathode1.webp",
         "rating": null
       }
     ],
@@ -295,7 +295,7 @@
         "id": 1191,
         "name": "High Quality Carbon Steel Sheet",
         "price": "$2700.00",
-        "image": "/assets/Metals/aluminum/aluminum1.png",
+        "image": "/assets/Metals/aluminum/aluminum1.webp",
         "rating": null
       }
     ]
@@ -306,7 +306,7 @@
         "id": 1192,
         "name": "Basmati Rice",
         "price": "$1200.00",
-        "image": "/assets/dryFruit/rice/basmati.png",
+        "image": "/assets/dryFruit/rice/basmati.webp",
         "rating": null,
         "brand": "Custom"
       },
@@ -314,7 +314,7 @@
         "id": 1193,
         "name": "Jasmine Rice",
         "price": "$530.00",
-        "image": "/assets/dryFruit/rice/jasmine.png",
+        "image": "/assets/dryFruit/rice/jasmine.webp",
         "rating": null,
         "brand": "Custom"
       }
@@ -324,7 +324,7 @@
         "id": 1194,
         "name": "White Refined Sugar",
         "price": "$380.00",
-        "image": "/assets/dryFruit/sugar/sugar1.png",
+        "image": "/assets/dryFruit/sugar/sugar1.webp",
         "rating": null,
         "brand": "Custom"
       },
@@ -332,7 +332,7 @@
         "id": 1195,
         "name": "Brown Sugar",
         "price": "$365.00",
-        "image": "/assets/dryFruit/sugar/sugar2.png",
+        "image": "/assets/dryFruit/sugar/sugar2.webp",
         "rating": null,
         "brand": "Custom"
       }
@@ -342,7 +342,7 @@
         "id": 1196,
         "name": "Roasted Cashew Nuts",
         "price": "$4400.00",
-        "image": "/assets/dryFruit/nuts/cashew_roasted.png",
+        "image": "/assets/dryFruit/nuts/cashew_roasted.webp",
         "rating": null,
         "brand": "Custom"
       },
@@ -350,7 +350,7 @@
         "id": 1197,
         "name": "Roasted Almond Nuts",
         "price": "$2400.00",
-        "image": "/assets/dryFruit/nuts/almond_roasted.png",
+        "image": "/assets/dryFruit/nuts/almond_roasted.webp",
         "rating": null,
         "brand": "Custom"
       }
@@ -362,7 +362,7 @@
         "id": 1198,
         "name": "Red Potatoes",
         "price": "$340.00",
-        "image": "/assets/agriculture/potato/redPotato.png",
+        "image": "/assets/agriculture/potato/redPotato.webp",
         "rating": null,
         "brand": "Custom"
       },
@@ -370,7 +370,7 @@
         "id": 1199,
         "name": "Russet Potatoes",
         "price": "$340 / Ton",
-        "image": "/assets/agriculture/potato/potato2.png",
+        "image": "/assets/agriculture/potato/potato2.webp",
         "rating": null,
         "brand": "Custom"
       }
@@ -380,7 +380,7 @@
         "id": 1200,
         "name": "Fresh Onions Wholesale",
         "price": "$440 / Ton",
-        "image": "/assets/agriculture/onion/yellowOnion.png",
+        "image": "/assets/agriculture/onion/yellowOnion.webp",
         "rating": null,
         "brand": "Custom"
       },
@@ -388,7 +388,7 @@
         "id": 1201,
         "name": "Red Onions",
         "price": "$440 / Ton",
-        "image": "/assets/agriculture/onion/onion2.png",
+        "image": "/assets/agriculture/onion/onion2.webp",
         "rating": null,
         "brand": "Sinofarm"
       }
@@ -401,7 +401,7 @@
         "name": "Standard Wood Pellets",
         "price": "$220.00",
         "offerPrice": "$180.00",
-        "image": "/assets/wood/standard.png",
+        "image": "/assets/wood/standard.webp",
         "rating": null
       },
       {
@@ -409,7 +409,7 @@
         "name": "Premium Wood Pellets",
         "price": "$220.00",
         "offerPrice": "$180.00",
-        "image": "/assets/wood/premium.png",
+        "image": "/assets/wood/premium.webp",
         "rating": null
       }
     ]

@@ -24,23 +24,23 @@ const CategoryBanner = ({ category, products }) => {
     const bannerData = {
       'Vehicle Parts and Accessories': {
         bgColor: 'from-blue-100 to-blue-50',
-        image: '/assets/category_banner/vehicle-banner.png'
+        image: '/assets/category_banner/vehicle-banner.webp'
       },
       'Frozen Fish': {
         bgColor: 'from-cyan-100 to-cyan-50',
-        image: '/assets/category_banner/fish-banner.jpg'
+        image: '/assets/category_banner/fish-banner.webp'
       },
       'Metals and Metal Products': {
         bgColor: 'from-gray-100 to-gray-50',
-        image: '/assets/category_banner/metal-banner.png'
+        image: '/assets/category_banner/metal-banner.webp'
       },
       'Dry Food': {
         bgColor: 'from-amber-100 to-amber-50',
-        image: '/assets/category_banner/food-banner.png'
+        image: '/assets/category_banner/food-banner.webp'
       },
       'Agriculture': {
         bgColor: 'from-green-100 to-green-50',
-        image: '/assets/category_banner/agriculture-banner.png'
+        image: '/assets/category_banner/agriculture-banner.webp'
       }
     };
     return bannerData[category] || bannerData['Vehicle Parts and Accessories'];
