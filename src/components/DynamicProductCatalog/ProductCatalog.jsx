@@ -79,7 +79,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
               (currentIndex + 1) % category.subcategories.length;
             return { ...prev, [category.id]: nextIndex };
           });
-        }, 2000);
+        }, 6000);
       }
     });
 
@@ -369,7 +369,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
                                     (currentIndex + 1) % category.subcategories.length;
                                   return { ...prev, [category.id]: nextIndex };
                                 });
-                              }, 3000);
+                              }, 6000);
                             }}
                             className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white transition-all duration-300"
                             aria-label="Previous"
@@ -411,7 +411,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
                                     (currentIndex + 1) % category.subcategories.length;
                                   return { ...prev, [category.id]: nextIndex };
                                 });
-                              }, 3000);
+                              }, 6000);
                             }}
                             className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white transition-all duration-300"
                             aria-label="Next"
@@ -492,7 +492,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
                                         (currentIndex + 1) % category.subcategories.length;
                                       return { ...prev, [category.id]: nextIndex };
                                     });
-                                  }, 3000);
+                                  }, 6000);
                                 }}
                                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
                                   idx === (mobileSlideIndex[category.id] || 0)
