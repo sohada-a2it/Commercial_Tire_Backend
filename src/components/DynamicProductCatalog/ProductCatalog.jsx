@@ -79,7 +79,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
               (currentIndex + 1) % category.subcategories.length;
             return { ...prev, [category.id]: nextIndex };
           });
-        }, 5000);
+        }, 2000);
       }
     });
 
