@@ -57,6 +57,7 @@ const QuantityInput = ({ itemId, quantity, updateQuantity }) => {
 };
 
 const CartSidebar = () => {
+  
   const {
     cart,
     isCartOpen,

@@ -8,6 +8,7 @@ import Sidebar from "./Sidebar";
 import Image from "next/image";
 
 const DashboardLayout = ({ children }) => {
+  
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, userProfile, logout } = useAuth();
   const router = useRouter();

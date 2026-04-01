@@ -2,8 +2,12 @@
 
 import { useCart } from '@/context/CartContext';
 import { ShoppingBag } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 const FloatingCartButton = () => {
+    const pathname = usePathname();
+
+    if (pathname.startsWith("/dashboard")) return null;
   const { getCartItemCount, getCartTotal, toggleCart } = useCart();
   const itemCount = getCartItemCount();
   const total = getCartTotal();

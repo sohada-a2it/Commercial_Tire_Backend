@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Link } from "@/lib/navigation";
+import { Link, usePathname } from "@/lib/navigation";
 import {
   FaFacebookF,
   FaInstagram,
@@ -14,6 +14,8 @@ import {
 } from "react-icons/fa";
 
 const Footer = () => {
+  const pathname = usePathname();
+  if (pathname.startsWith("/dashboard")) return null;
   const [showMoreLinks, setShowMoreLinks] = useState(false);
   const [showMoreProducts, setShowMoreProducts] = useState(false);
 

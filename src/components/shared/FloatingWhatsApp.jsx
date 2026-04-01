@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 // FloatingWhatsApp component to display a WhatsApp chat button
@@ -15,6 +16,9 @@ const FloatingWhatsApp = ({
     message
   )}`;
 
+    const pathname = usePathname();
+
+    if (pathname.startsWith("/dashboard")) return null;
   const styleTag = `
     @keyframes gentleFloat {
       0%, 100% { transform: translateY(0); }

@@ -3,13 +3,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
 import { ShoppingBag, User, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
-import { Link, useNavigate, useLocation } from "@/lib/navigation";
+import { Link, useNavigate, useLocation, usePathname } from "@/lib/navigation";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import AuthModal from "@/components/Auth/AuthModal";
 
 const Navbar = () => {
+  const pathname = usePathname();
+
+    if (pathname.startsWith("/dashboard")) return null;
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
