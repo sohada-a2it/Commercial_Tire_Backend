@@ -23,6 +23,7 @@ const Footer = () => {
     { label: "Contact", to: "/contact" },
     { label: "About Us", to: "/aboutUs" },
     { label: "Shipping & Delivery", to: "/shipping" },
+    { label: "Return Policy", to: "/returns" },
     { label: "Privacy Policy", to: "/privacy" },
   ];
 
