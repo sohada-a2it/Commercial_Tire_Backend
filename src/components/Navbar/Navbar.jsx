@@ -2,18 +2,24 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, User, LogOut, ChevronDown } from "lucide-react";
 import { Link, useNavigate, useLocation } from "@/lib/navigation";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import AuthModal from "@/components/Auth/AuthModal";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { getCartItemCount, toggleCart } = useCart();
+  const { user, userProfile, logout } = useAuth();
   const productsDropdownRef = useRef(null);
+  const profileDropdownRef = useRef(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -29,16 +35,24 @@ const Navbar = () => {
       if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target)) {
         setIsProductsOpen(false);
       }
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
     };
 
-    if (isProductsOpen) {
+    if (isProductsOpen || isProfileOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isProductsOpen]);
+  }, [isProductsOpen, isProfileOpen]);
+
+  const handleLogout = async () => {
+    await logout();
+    setIsProfileOpen(false);
+  };
 
   // Product categories
   const productCategories = [
@@ -302,7 +316,63 @@ const Navbar = () => {
         </div>
 
         {/* Right side text */}
-        <div className="hidden lg:flex items-center space-x-2">
+        <div className="hidden lg:flex items-center space-x-4">
+          {/* Profile/Login Section */}
+          {user ? (
+            <div className="relative" ref={profileDropdownRef}>
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center gap-2 text-white hover:text-amber-300 transition-colors"
+              >
+                <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center overflow-hidden border-2 border-white/30">
+                  {user.photoURL ? (
+                    <Image
+                      src={user.photoURL}
+                      alt="Profile"
+                      width={32}
+                      height={32}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-5 h-5" />
+                  )}
+                </div>
+                <span className="text-sm font-medium max-w-[100px] truncate">
+                  {userProfile?.fullName || user.displayName || "User"}
+                </span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isProfileOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <div className="px-4 py-2 border-b border-gray-100">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {userProfile?.fullName || user.displayName}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => setAuthModalOpen(true)}
+              className="flex items-center gap-2 text-white hover:text-amber-300 transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-teal-500/50 flex items-center justify-center border-2 border-white/30">
+                <User className="w-5 h-5" />
+              </div>
+              <span className="text-sm font-medium">Sign In</span>
+            </button>
+          )}
+
           <div className="text-white text-sm border-l border-teal-500 pl-4">
             <div className="font-medium">Import & Export Experts</div>
             <div className="text-teal-200 text-xs">Since 2017</div>
@@ -389,10 +459,64 @@ const Navbar = () => {
               >
                 Contact
               </Link>
+
+              {/* Mobile Profile/Login */}
+              {user ? (
+                <div className="border-t border-teal-700 mt-2 pt-2">
+                  <div className="flex items-center gap-3 px-4 py-2 text-white">
+                    <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center overflow-hidden">
+                      {user.photoURL ? (
+                        <Image
+                          src={user.photoURL}
+                          alt="Profile"
+                          width={32}
+                          height={32}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <User className="w-5 h-5" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {userProfile?.fullName || user.displayName}
+                      </p>
+                      <p className="text-xs text-teal-200 truncate">{user.email}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-red-300 hover:bg-teal-700 transition-colors rounded-md"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setAuthModalOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 px-4 py-3 text-white hover:bg-teal-700 rounded-md transition-colors"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="font-medium">Sign In / Register</span>
+                </button>
+              )}
             </div>
           </div>
         </>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </nav>
   );
 };

@@ -21,10 +21,13 @@ export const config = {
   },
 
   // Email Settings
+  // email: {
+  //   backendUrl:
+  //     process.env.NEXT_PUBLIC_BACKEND_URL ||
+  //     "https://asian-import-export-co-backend.vercel.app",
+  // },
   email: {
-    backendUrl:
-      process.env.NEXT_PUBLIC_BACKEND_URL ||
-      "https://asian-import-export-co-backend.vercel.app",
+    backendUrl:"http://localhost:5000"
   },
 
   // Site Information

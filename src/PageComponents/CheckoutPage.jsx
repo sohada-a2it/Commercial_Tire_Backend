@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ShoppingCart, CreditCard, Building2, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import AuthModal from "@/components/Auth/AuthModal";
 
 const CheckoutPage = () => {
   const router = useRouter();
   const { cart, getCartTotal, clearCart, calculateItemPrice } = useCart();
+  const { user, userProfile } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -60,6 +64,12 @@ const CheckoutPage = () => {
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
+
+    // Check if user is logged in
+    if (!user) {
+      setAuthModalOpen(true);
+      return;
+    }
 
     if (!validateForm()) return;
 
@@ -385,6 +395,16 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        redirectAfterAuth={() => {
+          // After successful auth, the form can be submitted
+          toast.success("You are now logged in. Please click Place Order again.");
+        }}
+      />
     </div>
   );
 };
