@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import WebsiteLogo from "../components/shared/WebsiteLogo";
 import { useNavigate } from "@/lib/navigation";
 import { FaArrowLeft } from "react-icons/fa";
+import { config } from "@/config/site";
 
 const ContactPage = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const ContactPage = () => {
 
     try {
       const response = await fetch(
-        "https://asian-import-export-co-backend.vercel.app/api/send-email",
+        `${config.email.backendUrl}/api/send-email`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

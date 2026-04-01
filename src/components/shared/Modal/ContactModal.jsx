@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { config } from "@/config/site";
 
 const ContactModal = ({ isOpen, onClose, tyreModel, moq }) => {
   // Parse MOQ to get the minimum quantity value and unit
@@ -65,7 +66,7 @@ const ContactModal = ({ isOpen, onClose, tyreModel, moq }) => {
 
     try {
       const response = await fetch(
-        "https://asian-import-export-co-backend.vercel.app/api/send-email",
+        `${config.email.backendUrl}/api/send-email`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -8,6 +8,7 @@ import Image from "next/image";
 import { ShoppingCart, CreditCard, Building2, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import AuthModal from "@/components/Auth/AuthModal";
+import { config } from "@/config/site";
 
 const CheckoutPage = () => {
   const router = useRouter();
@@ -93,7 +94,7 @@ const CheckoutPage = () => {
 
       // Send to backend
       const response = await fetch(
-        "http://localhost:5000/api/send-invoice",
+        `${config.email.backendUrl}/api/send-invoice`,
         {
           method: "POST",
           headers: {

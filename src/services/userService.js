@@ -5,7 +5,7 @@ import { config } from "@/config/site";
  */
 export const getAllUsers = async () => {
   try {
-    const url = `${config.email.backendUrl}/api/users/all`;
+    const url = `${config.email.backendUrl}/api/users`;
     console.log("Fetching users from:", url);
     
     const response = await fetch(url, {

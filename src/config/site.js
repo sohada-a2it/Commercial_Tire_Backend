@@ -22,8 +22,9 @@ export const config = {
 
   // Email Settings
   email: {
-    backendUrl:
-      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001",
+    backendUrl: (
+      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"
+    ).replace(/\/+$/, ""),
   },
 
   // Site Information
