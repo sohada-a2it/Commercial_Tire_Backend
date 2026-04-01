@@ -93,7 +93,7 @@ const CheckoutPage = () => {
 
       // Send to backend
       const response = await fetch(
-        "https://asian-import-export-co-backend.vercel.app/api/send-invoice",
+        "http://localhost:5000/api/send-invoice",
         {
           method: "POST",
           headers: {
@@ -111,7 +111,7 @@ const CheckoutPage = () => {
 
       toast.success("Order placed successfully! Invoice sent to your email.");
       clearCart();
-      router.push("/order-success");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Order error:", error);
       toast.error("Failed to place order. Please try again.");

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
-import { ShoppingBag, User, LogOut, ChevronDown } from "lucide-react";
+import { ShoppingBag, User, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
 import { Link, useNavigate, useLocation } from "@/lib/navigation";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
@@ -351,6 +351,16 @@ const Navbar = () => {
                     </p>
                     <p className="text-xs text-gray-500 truncate">{user.email}</p>
                   </div>
+                  <button
+                    onClick={() => {
+                      navigate("/dashboard");
+                      setIsProfileOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-teal-600 hover:bg-teal-50 transition-colors"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                  </button>
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
