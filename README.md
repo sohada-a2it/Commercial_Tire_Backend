@@ -193,7 +193,7 @@ NEXT_PUBLIC_SITE_URL=https://asianimportexport.com
 # NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_service_id
 # NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_template_id
 # NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
-# customer give order and then in the dashboard/my-inquiries/ there they can see the full order history(the product name,title,address,queantity,price,discount,phone,email,name,payment method,additional note etc) and the status will be in progress. after that 
+# here in the dashboard/inquiries/ there no need the       "quoted","quote_accepted","invoice_created","closed" those things. the process will be so easy that from the checkout/ page by filling all the information then click on the Send Inquary then the inquary will be save in the dashboard/my-inquiries/ and dashboard/inquiries/. then in customer inquary page the status will be in process, the admin will talk with the customer and then send invoice. ad the invoice will go to the customer email also in my invoice page customer can download the invoice pdf too. remember in the dashboard/my-inquiries/ customer can see a to z full order history(the product name,title,address,queantity,price,discount,phone,email,name,payment method,additional note etc) also admin can see same. and for invoice admin can see full also can edit a to z ,add new product and give the payment that like the total price is 500 and customer give 500 then when admin fill then it will be full payment in invoice, if customer pay 400 and admin fill 400 then another status. 
 
 
 
