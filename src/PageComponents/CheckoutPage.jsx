@@ -378,7 +378,7 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              {/* Place Order Button */}
+              {/* Send Inquiry Button */}
               <button
                 onClick={handlePlaceOrder}
                 disabled={loading}
@@ -390,12 +390,12 @@ const CheckoutPage = () => {
                     Processing...
                   </>
                 ) : (
-                  "Place Order"
+                  "Send Inquiry"
                 )}
               </button>
 
               <p className="text-xs text-gray-500 text-center mt-4">
-                By placing your order, you agree to our terms and conditions.
+                By sending your inquiry, you agree to our terms and conditions.
               </p>
             </div>
           </div>
