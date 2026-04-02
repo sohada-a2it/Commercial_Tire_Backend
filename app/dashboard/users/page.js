@@ -2,7 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
-import { getAllUsers } from "@/services/userService";
+import { deleteUser, getAllUsers } from "@/services/userService";
+import { useAuth } from "@/context/AuthContext";
+import { normalizeRole } from "@/config/dashboardRoutes";
 import { 
   Users as UsersIcon, 
   Search, 
@@ -15,6 +17,8 @@ import {
 import toast from "react-hot-toast";
 
 export default function UsersPage() {
+  const { userProfile } = useAuth();
+  const role = normalizeRole(userProfile?.role);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,13 +28,18 @@ export default function UsersPage() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [role]);
 
   const fetchUsers = async () => {
+    if (role !== "admin") {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     const result = await getAllUsers();
     if (result.success) {
-      setUsers(result.users);
+      setUsers((result.users || []).filter((user) => normalizeRole(user.role) === "customer"));
       if (result.users.length === 0) {
         toast.error("No users found in database");
       } else {
@@ -42,6 +51,21 @@ export default function UsersPage() {
       setUsers([]);
     }
     setLoading(false);
+  };
+
+  const handleDeleteCustomer = async (firebaseUid) => {
+    if (!confirm("Delete this customer permanently?")) {
+      return;
+    }
+
+    const result = await deleteUser(firebaseUid);
+    if (!result.success) {
+      toast.error(result.message || "Failed to delete customer");
+      return;
+    }
+
+    toast.success("Customer deleted");
+    setUsers((prev) => prev.filter((item) => item.firebaseUid !== firebaseUid));
   };
 
   // Filter users based on search term and business type
@@ -81,6 +105,12 @@ export default function UsersPage() {
 
   return (
     <DashboardLayout>
+      {role !== "admin" ? (
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h1 className="text-2xl font-bold text-gray-800">Access Denied</h1>
+          <p className="text-gray-600 mt-2">Only admins can access customer management.</p>
+        </div>
+      ) : (
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex items-center justify-between">
@@ -175,7 +205,7 @@ export default function UsersPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentUsers.map((user) => (
-                    <tr key={user._id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-bold">
@@ -239,6 +269,7 @@ export default function UsersPage() {
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
+                            onClick={() => handleDeleteCustomer(user.firebaseUid)}
                             className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete User"
                           >
@@ -294,6 +325,7 @@ export default function UsersPage() {
           )}
         </div>
       </div>
+      )}
     </DashboardLayout>
   );
 }

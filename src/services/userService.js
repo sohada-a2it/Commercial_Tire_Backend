@@ -1,4 +1,13 @@
 import { config } from "@/config/site";
+import { auth } from "@/config/firebase";
+
+const buildAuthHeaders = async () => {
+  const token = await auth.currentUser?.getIdToken();
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+};
 
 /**
  * Fetch all users from the backend
@@ -7,12 +16,11 @@ export const getAllUsers = async () => {
   try {
     const url = `${config.email.backendUrl}/api/users`;
     console.log("Fetching users from:", url);
+    const headers = await buildAuthHeaders();
     
     const response = await fetch(url, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
     });
 
     console.log("Response status:", response.status);
@@ -68,13 +76,12 @@ export const getUserByUid = async (firebaseUid) => {
  */
 export const updateUser = async (firebaseUid, userData) => {
   try {
+    const headers = await buildAuthHeaders();
     const response = await fetch(
       `${config.email.backendUrl}/api/users/profile/${firebaseUid}`,
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify(userData),
       }
     );
@@ -96,13 +103,12 @@ export const updateUser = async (firebaseUid, userData) => {
  */
 export const deleteUser = async (firebaseUid) => {
   try {
+    const headers = await buildAuthHeaders();
     const response = await fetch(
-      `${config.email.backendUrl}/api/users/${firebaseUid}`,
+      `${config.email.backendUrl}/api/users/customers/${firebaseUid}`,
       {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
       }
     );
 
@@ -114,6 +120,100 @@ export const deleteUser = async (firebaseUid) => {
     return { success: true, message: data.message };
   } catch (error) {
     console.error("Error deleting user:", error);
+    return { success: false, message: error.message };
+  }
+};
+
+export const getAuthorizedPersons = async () => {
+  try {
+    const headers = await buildAuthHeaders();
+    const response = await fetch(
+      `${config.email.backendUrl}/api/users/authorized-persons`,
+      {
+        method: "GET",
+        headers,
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to fetch authorized persons");
+    }
+
+    return { success: true, users: data.users || [] };
+  } catch (error) {
+    return { success: false, message: error.message, users: [] };
+  }
+};
+
+export const createAuthorizedPerson = async (payload) => {
+  try {
+    const headers = await buildAuthHeaders();
+    const response = await fetch(
+      `${config.email.backendUrl}/api/users/authorized-persons`,
+      {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to create authorized person");
+    }
+
+    return { success: true, user: data.user, message: data.message };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+};
+
+export const updateAuthorizedPerson = async (firebaseUid, payload) => {
+  try {
+    const headers = await buildAuthHeaders();
+    const response = await fetch(
+      `${config.email.backendUrl}/api/users/authorized-persons/${firebaseUid}`,
+      {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(payload),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to update authorized person");
+    }
+
+    return { success: true, user: data.user, message: data.message };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+};
+
+export const deleteAuthorizedPerson = async (firebaseUid) => {
+  try {
+    const headers = await buildAuthHeaders();
+    const response = await fetch(
+      `${config.email.backendUrl}/api/users/authorized-persons/${firebaseUid}`,
+      {
+        method: "DELETE",
+        headers,
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete authorized person");
+    }
+
+    return { success: true, message: data.message };
+  } catch (error) {
     return { success: false, message: error.message };
   }
 };

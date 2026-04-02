@@ -2,47 +2,15 @@
 
 import React from "react";
 import { usePathname } from "next/navigation";
-import { Link } from "@/lib/navigation";
-import { 
-  LayoutDashboard, 
-  Users, 
-  Package, 
-  ShoppingCart, 
-  Settings,
-  Menu,
-  X
-} from "lucide-react";
+import Link from "next/link";
+import { X } from "lucide-react";
+import { normalizeRole, sidebarRoutesByRole } from "@/config/dashboardRoutes";
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
+const Sidebar = ({ isOpen, toggleSidebar, role }) => {
   const pathname = usePathname();
-
-  const menuItems = [
-    {
-      icon: LayoutDashboard,
-      label: "Dashboard",
-      href: "/dashboard",
-    },
-    {
-      icon: Users,
-      label: "Users",
-      href: "/dashboard/users",
-    },
-    {
-      icon: Package,
-      label: "Products",
-      href: "/dashboard/products",
-    },
-    {
-      icon: ShoppingCart,
-      label: "Orders",
-      href: "/dashboard/orders",
-    },
-    {
-      icon: Settings,
-      label: "Settings",
-      href: "/dashboard/settings",
-    },
-  ];
+  const normalizedRole = normalizeRole(role);
+  const menuItems =
+    sidebarRoutesByRole[normalizedRole] || sidebarRoutesByRole.customer;
 
   const isActive = (href) => {
     if (href === "/dashboard") {

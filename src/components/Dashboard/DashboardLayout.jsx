@@ -2,16 +2,19 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, Bell, User, LogOut, HomeIcon } from "lucide-react";
 import Sidebar from "./Sidebar";
 import Image from "next/image";
+import { canAccessDashboardPath, normalizeRole } from "@/config/dashboardRoutes";
 
 const DashboardLayout = ({ children }) => {
   
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, userProfile, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const role = normalizeRole(userProfile?.role);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -29,6 +32,16 @@ const DashboardLayout = ({ children }) => {
     }
   }, [user, router]);
 
+  React.useEffect(() => {
+    if (!user || !pathname) {
+      return;
+    }
+
+    if (!canAccessDashboardPath(role, pathname)) {
+      router.replace("/dashboard");
+    }
+  }, [pathname, role, router, user]);
+
   if (!user) {
     return null; // or a loading spinner
   }
@@ -36,7 +49,7 @@ const DashboardLayout = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
-      <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} role={role} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -84,7 +97,7 @@ const DashboardLayout = ({ children }) => {
                     {userProfile?.fullName || user.displayName || "User"}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {userProfile?.role || "Admin"}
+                    {role}
                   </p>
                 </div>
               </div>
