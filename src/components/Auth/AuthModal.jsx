@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { X, Mail, Lock, User, Building2, Phone, Globe, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { normalizeRole } from "@/config/dashboardRoutes";
 import toast from "react-hot-toast";
 
 // Countries list for dropdown
@@ -19,6 +21,7 @@ const countries = [
 ];
 
 const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -43,6 +46,18 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
     confirmPassword: "",
   });
 
+  const handlePostAuthRedirect = (result) => {
+    if (redirectAfterAuth) {
+      redirectAfterAuth(result);
+      return;
+    }
+
+    const role = normalizeRole(result?.profile?.role);
+    if (role === "admin" || role === "moderator") {
+      router.push("/dashboard");
+    }
+  };
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!loginData.email || !loginData.password) {
@@ -57,7 +72,7 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
     if (result.success) {
       toast.success("Logged in successfully!");
       onClose();
-      if (redirectAfterAuth) redirectAfterAuth();
+      handlePostAuthRedirect(result);
     } else {
       toast.error(result.message || "Login failed");
     }
@@ -102,7 +117,7 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
     if (result.success) {
       toast.success("Account created successfully!");
       onClose();
-      if (redirectAfterAuth) redirectAfterAuth();
+      handlePostAuthRedirect(result);
     } else {
       toast.error(result.message || "Registration failed");
     }
@@ -116,7 +131,7 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
     if (result.success) {
       toast.success("Signed in with Google!");
       onClose();
-      if (redirectAfterAuth) redirectAfterAuth();
+      handlePostAuthRedirect(result);
     } else {
       toast.error(result.message || "Google sign-in failed");
     }

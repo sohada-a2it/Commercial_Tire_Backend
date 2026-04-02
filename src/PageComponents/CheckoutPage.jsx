@@ -9,6 +9,7 @@ import { ShoppingCart, CreditCard, Building2, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import AuthModal from "@/components/Auth/AuthModal";
 import { config } from "@/config/site";
+import { normalizeRole } from "@/config/dashboardRoutes";
 
 const CheckoutPage = () => {
   const router = useRouter();
@@ -69,6 +70,13 @@ const CheckoutPage = () => {
     // Check if user is logged in
     if (!user) {
       setAuthModalOpen(true);
+      return;
+    }
+
+    const currentRole = normalizeRole(userProfile?.role);
+    if (currentRole !== "customer") {
+      toast.error("Only customer account can place an order.");
+      router.push("/dashboard");
       return;
     }
 
@@ -401,9 +409,16 @@ const CheckoutPage = () => {
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        redirectAfterAuth={() => {
-          // After successful auth, the form can be submitted
-          toast.success("You are now logged in. Please click Place Order again.");
+        redirectAfterAuth={(authResult) => {
+          const loggedRole = normalizeRole(authResult?.profile?.role || "customer");
+
+          if (loggedRole === "admin" || loggedRole === "moderator") {
+            toast.error("Admin/Moderator cannot place order. Redirecting to dashboard.");
+            router.push("/dashboard");
+            return;
+          }
+
+          toast.success("You are now logged in as customer. Please click Place Order again.");
         }}
       />
     </div>

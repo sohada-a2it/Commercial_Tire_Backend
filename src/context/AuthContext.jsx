@@ -116,10 +116,10 @@ export const AuthProvider = ({ children }) => {
       );
       
       // Fetch profile from MongoDB
-      await fetchUserProfile(userCredential.user.uid);
+      const profile = await fetchUserProfile(userCredential.user.uid);
       clearAuthorizedSession();
 
-      return { success: true, user: userCredential.user };
+      return { success: true, user: userCredential.user, profile };
     } catch (error) {
       try {
         const response = await fetch(
@@ -153,7 +153,7 @@ export const AuthProvider = ({ children }) => {
         setUser(session.user);
         setUserProfile(session.profile);
 
-        return { success: true, user: session.user };
+        return { success: true, user: session.user, profile: session.profile };
       } catch (fallbackError) {
         console.error("Sign in error:", error);
         return { success: false, message: fallbackError.message || error.message };
