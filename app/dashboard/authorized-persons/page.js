@@ -10,7 +10,7 @@ import {
 } from "@/services/userService";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { Loader2, Trash2, UserCog } from "lucide-react";
+import { Eye, EyeOff, Loader2, Trash2, UserCog } from "lucide-react";
 import toast from "react-hot-toast";
 
 const defaultForm = {
@@ -29,6 +29,7 @@ export default function AuthorizedPersonsPage() {
   const [editUserId, setEditUserId] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const isAdmin = useMemo(() => role === "admin", [role]);
 
@@ -58,6 +59,7 @@ export default function AuthorizedPersonsPage() {
   const resetForm = () => {
     setFormData(defaultForm);
     setEditUserId("");
+    setShowPassword(false);
   };
 
   const handleSubmit = async (event) => {
@@ -99,7 +101,8 @@ export default function AuthorizedPersonsPage() {
   };
 
   const handleEdit = (selectedUser) => {
-    setEditUserId(selectedUser.firebaseUid);
+    setEditUserId(selectedUser.firebaseUid || selectedUser.id);
+    setShowPassword(false);
     setFormData({
       fullName: selectedUser.fullName,
       email: selectedUser.email,
@@ -108,12 +111,12 @@ export default function AuthorizedPersonsPage() {
     });
   };
 
-  const handleDelete = async (firebaseUid) => {
+  const handleDelete = async (identifier) => {
     if (!confirm("Delete this authorized person?")) {
       return;
     }
 
-    const result = await deleteAuthorizedPerson(firebaseUid);
+    const result = await deleteAuthorizedPerson(identifier);
     if (!result.success) {
       toast.error(result.message || "Failed to delete authorized person");
       return;
@@ -151,27 +154,37 @@ export default function AuthorizedPersonsPage() {
                 type="text"
                 value={formData.fullName}
                 onChange={(event) => setFormData((prev) => ({ ...prev, fullName: event.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full px-4 py-2 border border-cyan-300 rounded-lg bg-cyan-100/20 text-gray-900 placeholder:text-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                 placeholder="Full name"
               />
               <input
                 type="email"
                 value={formData.email}
                 onChange={(event) => setFormData((prev) => ({ ...prev, email: event.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full px-4 py-2 border border-cyan-300 rounded-lg bg-cyan-100/20 text-gray-900 placeholder:text-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
                 placeholder="Email"
               />
-              <input
-                type="password"
-                value={formData.password}
-                onChange={(event) => setFormData((prev) => ({ ...prev, password: event.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                placeholder={editUserId ? "New password (optional)" : "Password"}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={(event) => setFormData((prev) => ({ ...prev, password: event.target.value }))}
+                  className="w-full px-4 py-2 pr-12 border border-cyan-300 rounded-lg bg-cyan-100/20 text-gray-900 placeholder:text-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                  placeholder={editUserId ? "New password (optional)" : "Password"}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-cyan-700 hover:text-cyan-900"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
               <select
                 value={formData.role}
                 onChange={(event) => setFormData((prev) => ({ ...prev, role: event.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full px-4 py-2 border border-cyan-300 rounded-lg bg-cyan-100/20 text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
               >
                 <option value="admin">Admin</option>
                 <option value="moderator">Moderator</option>
@@ -235,7 +248,7 @@ export default function AuthorizedPersonsPage() {
                               Edit
                             </button>
                             <button
-                              onClick={() => handleDelete(account.firebaseUid)}
+                              onClick={() => handleDelete(account.firebaseUid || account.id)}
                               className="p-2 rounded bg-red-50 text-red-700 hover:bg-red-100"
                               title="Delete"
                             >
