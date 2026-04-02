@@ -38,6 +38,7 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
     email: "",
     whatsappNumber: "",
     country: "",
+    businessType: "",
     password: "",
     confirmPassword: "",
   });
@@ -67,7 +68,7 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
     
     // Validation
     if (!registerData.fullName || !registerData.email || !registerData.whatsappNumber || 
-        !registerData.country || !registerData.password || !registerData.confirmPassword) {
+        !registerData.country || !registerData.businessType || !registerData.password || !registerData.confirmPassword) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -94,6 +95,7 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
       companyName: registerData.companyName,
       whatsappNumber: registerData.whatsappNumber,
       country: registerData.country,
+      businessType: registerData.businessType,
     });
     setLoading(false);
 
@@ -318,6 +320,28 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
                         {country}
                       </option>
                     ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* business type  */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Business Type *
+                </label>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <select
+                    value={registerData.businessType}
+                    onChange={(e) => setRegisterData({ ...registerData, businessType: e.target.value })}
+                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900 appearance-none"
+                    required
+                  >
+                    <option value="">Select business type</option>
+                    <option value="Wholeseller">Wholeseller</option>
+                    <option value="Retailer">Retailer</option>
+                    <option value="REGULAR USER">REGULAR USER</option>
+                    <option value="OTHER">Other</option>
                   </select>
                 </div>
               </div>

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { Menu, Bell, User, LogOut } from "lucide-react";
+import { Menu, Bell, User, LogOut, HomeIcon } from "lucide-react";
 import Sidebar from "./Sidebar";
 import Image from "next/image";
 
@@ -88,6 +88,15 @@ const DashboardLayout = ({ children }) => {
                   </p>
                 </div>
               </div>
+
+              {/* Home Button */}
+              <button
+                onClick={() => router.push("/")}
+                className="text-gray-600 hover:text-teal-600 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                title="Home"
+              >
+                <HomeIcon className="w-5 h-5" />
+              </button>
 
               {/* Logout Button */}
               <button

@@ -90,6 +90,7 @@ export const AuthProvider = ({ children }) => {
         companyName: userData.companyName,
         whatsappNumber: userData.whatsappNumber,
         country: userData.country,
+          businessType: userData.businessType,
         provider: "email",
       });
 
@@ -131,6 +132,7 @@ export const AuthProvider = ({ children }) => {
         email: user.email,
         fullName: user.displayName || user.email.split("@")[0],
         photoURL: user.photoURL,
+          businessType: "REGULAR USER",
         provider: "google",
       });
 
