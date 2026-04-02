@@ -37,13 +37,16 @@ export default function UsersPage() {
     }
 
     setLoading(true);
-    const result = await getAllUsers();
+    const result = await getAllUsers({ limit: 200, role: "customer" });
     if (result.success) {
-      setUsers((result.users || []).filter((user) => normalizeRole(user.role) === "customer"));
+      const customerUsers = (result.users || [])
+        .filter((user) => normalizeRole(user.role) === "customer")
+        .sort((a, b) => (a.fullName || "").localeCompare(b.fullName || "", undefined, { sensitivity: "base" }));
+      setUsers(customerUsers);
       if (result.users.length === 0) {
         toast.error("No users found in database");
       } else {
-        toast.success(`Loaded ${result.users.length} users`);
+        toast.success(`Loaded ${customerUsers.length} customers`);
       }
     } else {
       console.error("Failed to fetch users:", result.message);
@@ -117,10 +120,10 @@ export default function UsersPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
               <UsersIcon className="w-8 h-8 text-teal-600" />
-              All Customers
+              Customer A-Z
             </h1>
             <p className="text-gray-600 mt-1">
-              View and manage all customer accounts
+              View and manage all customer accounts in alphabetical order
             </p>
           </div>
           <div className="bg-teal-600 text-white px-6 py-3 rounded-lg shadow-md">

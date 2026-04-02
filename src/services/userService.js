@@ -12,9 +12,19 @@ const buildAuthHeaders = async () => {
 /**
  * Fetch all users from the backend
  */
-export const getAllUsers = async () => {
+export const getAllUsers = async (filters = {}) => {
   try {
-    const url = `${config.email.backendUrl}/api/users`;
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        params.append(key, String(value));
+      }
+    });
+
+    const queryString = params.toString();
+    const url = `${config.email.backendUrl}/api/users${
+      queryString ? `?${queryString}` : ""
+    }`;
     console.log("Fetching users from:", url);
     const headers = await buildAuthHeaders();
     
