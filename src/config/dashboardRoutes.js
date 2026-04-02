@@ -33,7 +33,6 @@ export const sidebarRoutesByRole = {
     { icon: Newspaper, label: "Blog Management", href: "/dashboard/blogs" },
     { icon: ClipboardList, label: "My Inquiries", href: "/dashboard/my-inquiries" },
     { icon: FileText, label: "My Invoices", href: "/dashboard/my-invoices" },
-    { icon: Settings, label: "Settings", href: "/dashboard/settings" },
   ],
   moderator: [
     { icon: LayoutDashboard, label: "Moderator Dashboard", href: "/dashboard" },
@@ -41,7 +40,6 @@ export const sidebarRoutesByRole = {
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
     { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Newspaper, label: "Blog Management", href: "/dashboard/blogs" },
-    { icon: Settings, label: "Settings", href: "/dashboard/settings" },
   ],
   customer: [
     { icon: LayoutDashboard, label: "Customer Dashboard", href: "/dashboard" },
