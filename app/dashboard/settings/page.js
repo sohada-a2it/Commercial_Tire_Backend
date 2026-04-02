@@ -541,72 +541,75 @@ export default function DashboardSettingsPage() {
                 <p className="text-gray-600 mt-2">Keep your account secure by using a strong password</p>
               </div>
 
-              <form onSubmit={handleSubmitPassword} className="space-y-7 max-w-md">
-                {/* Current Password */}
-                <div>
-                  <label className="block text-sm font-bold text-gray-800 mb-3">
-                    Current Password <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showCurrentPassword ? "text" : "password"}
-                      name="currentPassword"
-                      value={passwordData.currentPassword}
-                      onChange={handlePasswordChange}
-                      className="w-full px-5 py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-300 bg-white hover:border-teal-300 text-gray-800 font-medium placeholder-gray-400 pr-12"
-                      placeholder="Enter current password"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                      className="absolute right-4 top-3.5 text-gray-500 hover:text-teal-600 transition-colors"
-                    >
-                      {showCurrentPassword ? (
-                        <EyeOff className="w-5 h-5" />
-                      ) : (
-                        <Eye className="w-5 h-5" />
-                      )}
-                    </button>
+              <form onSubmit={handleSubmitPassword} className="space-y-7">
+                {/* Grid: Current Password and New Password */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+                  {/* Current Password */}
+                  <div>
+                    <label className="block text-sm font-bold text-gray-800 mb-3">
+                      Current Password <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showCurrentPassword ? "text" : "password"}
+                        name="currentPassword"
+                        value={passwordData.currentPassword}
+                        onChange={handlePasswordChange}
+                        className="w-full px-5 py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-300 bg-white hover:border-teal-300 text-gray-800 font-medium placeholder-gray-400 pr-12"
+                        placeholder="Enter current password"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                        className="absolute right-4 top-3.5 text-gray-500 hover:text-teal-600 transition-colors"
+                      >
+                        {showCurrentPassword ? (
+                          <EyeOff className="w-5 h-5" />
+                        ) : (
+                          <Eye className="w-5 h-5" />
+                        )}
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                {/* New Password */}
-                <div>
-                  <label className="block text-sm font-bold text-gray-800 mb-3">
-                    New Password <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showNewPassword ? "text" : "password"}
-                      name="newPassword"
-                      value={passwordData.newPassword}
-                      onChange={handlePasswordChange}
-                      className="w-full px-5 py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-300 bg-white hover:border-teal-300 text-gray-800 font-medium placeholder-gray-400 pr-12"
-                      placeholder="Enter new password"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-4 top-3.5 text-gray-500 hover:text-teal-600 transition-colors"
-                    >
-                      {showNewPassword ? (
-                        <EyeOff className="w-5 h-5" />
-                      ) : (
-                        <Eye className="w-5 h-5" />
-                      )}
-                    </button>
+                  {/* New Password */}
+                  <div>
+                    <label className="block text-sm font-bold text-gray-800 mb-3">
+                      New Password <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showNewPassword ? "text" : "password"}
+                        name="newPassword"
+                        value={passwordData.newPassword}
+                        onChange={handlePasswordChange}
+                        className="w-full px-5 py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-300 bg-white hover:border-teal-300 text-gray-800 font-medium placeholder-gray-400 pr-12"
+                        placeholder="Enter new password"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute right-4 top-3.5 text-gray-500 hover:text-teal-600 transition-colors"
+                      >
+                        {showNewPassword ? (
+                          <EyeOff className="w-5 h-5" />
+                        ) : (
+                          <Eye className="w-5 h-5" />
+                        )}
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-2 font-medium">At least 6 characters</p>
                   </div>
-                  <p className="text-xs text-gray-600 mt-2 font-medium">At least 6 characters</p>
                 </div>
 
                 {/* Confirm Password */}
-                <div>
+                <div className="md:col-span-1">
                   <label className="block text-sm font-bold text-gray-800 mb-3">
                     Confirm Password <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative">
+                  <div className="relative max-w-md">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       name="confirmPassword"
@@ -644,7 +647,7 @@ export default function DashboardSettingsPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3.5 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 mt-10 shadow-lg hover:shadow-xl transform hover:scale-105"
+                  className="w-full md:w-auto bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3.5 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 mt-10 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   {loading ? (
                     <>
