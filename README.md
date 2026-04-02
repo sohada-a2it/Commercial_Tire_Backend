@@ -193,4 +193,10 @@ NEXT_PUBLIC_SITE_URL=https://asianimportexport.com
 # NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_service_id
 # NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_template_id
 # NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key
-now listen to me very carefully, i want that when customer place order then it will go to the dashabord inquary and then admin will talk to the customer through email or whatsapp then after talk mark that as quoted and then customer accept the quote and then admin will create invoice and through talk previously they also may confirm the payment so when creting invoice then admin can add product edit everything also give the payment amount that customer give then generate the invoice then it will go to the  invoice page of admin . there will show the invoice list .also customer can see their invoice too. i mean this is mine idea that how the inquary and invoice system go on. now follow your own and do all of the activities that need for e commerce system after place order in inquary and invoice system
+# customer give order and then in the dashboard/my-inquiries/ there they can see the full order history(the product name,title,address,queantity,price,discount,phone,email,name,payment method,additional note etc) and the status will be in progress. after that 
+
+
+
+
+
+

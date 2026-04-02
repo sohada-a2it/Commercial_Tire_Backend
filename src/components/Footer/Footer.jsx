@@ -11,7 +11,10 @@ import {
   FaPhone,
   FaEnvelope,
   FaMapMarkerAlt,
+  FaVoicemail,
+  FaWhatsapp,
 } from "react-icons/fa";
+import { MdOutlineMarkEmailRead } from "react-icons/md";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -45,11 +48,16 @@ const Footer = () => {
     },
     {
       icon: <FaPhone className="text-amber-400" />,
+      text: "+6621055786",
+      link: "tel:+6621055786",
+    },
+    {
+      icon: <FaWhatsapp className="text-amber-400" />,
       text: "+14379003996",
       link: "tel:+14379003996",
     },
     {
-      icon: <FaEnvelope className="text-amber-400" />,
+      icon: <MdOutlineMarkEmailRead className="text-amber-400" />,
       text: "info@asianimportexport.com",
       link: "mailto:info@asianimportexport.com",
     },
@@ -82,9 +90,29 @@ const Footer = () => {
           </div>
 
           <div className="space-y-3">
-            {contactInfo.map((item, index) => (
-              <div key={index} className="flex items-center">
+            {[contactInfo[0]].map((item, index) => (
+              <div key={`contact-top-${index}`} className="flex items-center">
                 <span className="mr-3 text-lg">{item.icon}</span>
+                <a href={item.link} className="hover:text-amber-300">
+                  {item.text}
+                </a>
+              </div>
+            ))}
+
+            <div className="flex flex-wrap items-center gap-10">
+              {contactInfo.slice(1, 3).map((item, index) => (
+                <div key={`contact-phone-${index}`} className="flex items-center">
+                  <span className="mr-1 text-lg">{item.icon}</span>
+                  <a href={item.link} className="hover:text-amber-300">
+                    {item.text}
+                  </a>
+                </div>
+              ))}
+            </div>
+
+            {contactInfo.slice(3).map((item, index) => (
+              <div key={`contact-bottom-${index}`} className="flex items-center">
+                <span className="mr-1 text-lg">{item.icon}</span>
                 <a href={item.link} className="hover:text-amber-300">
                   {item.text}
                 </a>

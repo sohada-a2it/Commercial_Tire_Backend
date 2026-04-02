@@ -14,7 +14,6 @@ import Link from "next/link";
 
 const STATUS_OPTIONS = [
   "new",
-  "contacted",
   "quoted",
   "quote_accepted",
   "invoice_created",
