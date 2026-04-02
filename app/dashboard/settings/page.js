@@ -14,6 +14,7 @@ import {
   Lock,
   User as UserIcon,
   MapPin,
+  X,
 } from "lucide-react";
 import { config } from "@/config/site";
 import {
@@ -27,8 +28,7 @@ export default function DashboardSettingsPage() {
   const { userProfile, updateUserProfile, user } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [toasts, setToasts] = useState([]);
   const [activeTab, setActiveTab] = useState("profile");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -81,13 +81,21 @@ export default function DashboardSettingsPage() {
     }
   }, [userProfile, router]);
 
+  const showToast = (type, message) => {
+    const id = `${Date.now()}-${Math.random()}`;
+    setToasts((prev) => [...prev, { id, type, message }]);
+  };
+
+  const closeToast = (id) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    setErrorMessage("");
   };
 
   const handleAddressChange = (e) => {
@@ -99,7 +107,6 @@ export default function DashboardSettingsPage() {
         [name]: value,
       },
     }));
-    setErrorMessage("");
   };
 
   const handlePasswordChange = (e) => {
@@ -108,26 +115,22 @@ export default function DashboardSettingsPage() {
       ...prev,
       [name]: value,
     }));
-    setErrorMessage("");
   };
 
   const handleSubmitProfile = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setSuccessMessage("");
-    setErrorMessage("");
 
     try {
       const result = await updateUserProfile(formData);
       if (result.success) {
-        setSuccessMessage("Profile updated successfully!");
-        setTimeout(() => setSuccessMessage(""), 3000);
+        showToast("success", "Profile updated successfully!");
       } else {
-        setErrorMessage(result.message || "Failed to update profile");
+        showToast("error", result.message || "Failed to update profile");
       }
     } catch (error) {
       console.error("Update profile error:", error);
-      setErrorMessage("An error occurred while updating your profile");
+      showToast("error", "An error occurred while updating your profile");
     } finally {
       setLoading(false);
     }
@@ -136,37 +139,35 @@ export default function DashboardSettingsPage() {
   const handleSubmitPassword = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setSuccessMessage("");
-    setErrorMessage("");
 
     // Validation
     if (!passwordData.currentPassword) {
-      setErrorMessage("Current password is required");
+      showToast("error", "Current password is required");
       setLoading(false);
       return;
     }
 
     if (!passwordData.newPassword) {
-      setErrorMessage("New password is required");
+      showToast("error", "New password is required");
       setLoading(false);
       return;
     }
 
     if (passwordData.newPassword.length < 6) {
-      setErrorMessage("New password must be at least 6 characters");
+      showToast("error", "New password must be at least 6 characters");
       setLoading(false);
       return;
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setErrorMessage("New passwords do not match");
+      showToast("error", "New passwords do not match");
       setLoading(false);
       return;
     }
 
     try {
       if (!auth.currentUser) {
-        setErrorMessage("User not authenticated");
+        showToast("error", "User not authenticated");
         setLoading(false);
         return;
       }
@@ -177,22 +178,20 @@ export default function DashboardSettingsPage() {
       // Update password
       await updatePassword(auth.currentUser, passwordData.newPassword);
 
-      setSuccessMessage("Password changed successfully!");
+      showToast("success", "Password changed successfully!");
       setPasswordData({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
-
-      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Password change error:", error);
       if (error.code === "auth/wrong-password") {
-        setErrorMessage("Current password is incorrect");
+        showToast("error", "Current password is incorrect");
       } else if (error.code === "auth/weak-password") {
-        setErrorMessage("New password is too weak");
+        showToast("error", "New password is too weak");
       } else {
-        setErrorMessage(error.message || "Failed to change password");
+        showToast("error", error.message || "Failed to change password");
       }
     } finally {
       setLoading(false);
@@ -214,6 +213,48 @@ export default function DashboardSettingsPage() {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto">
+        {/* Toast Notifications */}
+        <div className="fixed top-6 right-6 z-[100] space-y-3 w-[92vw] max-w-sm">
+          {toasts.map((toast) => {
+            const isSuccess = toast.type === "success";
+            return (
+              <div
+                key={toast.id}
+                className={`rounded-xl border shadow-xl p-4 flex items-start gap-3 backdrop-blur-sm ${
+                  isSuccess
+                    ? "bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-300"
+                    : "bg-gradient-to-r from-rose-50 to-red-50 border-rose-300"
+                }`}
+              >
+                {isSuccess ? (
+                  <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                ) : (
+                  <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                )}
+                <p
+                  className={`text-sm font-semibold leading-6 flex-1 ${
+                    isSuccess ? "text-emerald-800" : "text-rose-800"
+                  }`}
+                >
+                  {toast.message}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => closeToast(toast.id)}
+                  className={`rounded-md p-1 transition-colors ${
+                    isSuccess
+                      ? "text-emerald-700 hover:bg-emerald-100"
+                      : "text-rose-700 hover:bg-rose-100"
+                  }`}
+                  aria-label="Close notification"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
@@ -233,21 +274,6 @@ export default function DashboardSettingsPage() {
                 and country to complete your profile.
               </p>
             </div>
-          </div>
-        )}
-
-        {/* Messages */}
-        {successMessage && (
-          <div className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-5 rounded-xl flex gap-3 shadow-sm">
-            <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" />
-            <p className="text-green-700 font-semibold text-lg">{successMessage}</p>
-          </div>
-        )}
-
-        {errorMessage && (
-          <div className="mb-6 bg-gradient-to-r from-red-50 to-pink-50 border-l-4 border-red-500 p-5 rounded-xl flex gap-3 shadow-sm">
-            <AlertCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-red-700 font-semibold text-lg">{errorMessage}</p>
           </div>
         )}
 
