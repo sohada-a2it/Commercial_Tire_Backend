@@ -12,6 +12,11 @@ import {
   updateProfile,
 } from "@/config/firebase";
 import { config } from "@/config/site";
+import {
+  clearAuthorizedSession,
+  getAuthorizedSession,
+  saveAuthorizedSession,
+} from "@/lib/sessionAuth";
 
 const AuthContext = createContext({});
 
@@ -112,11 +117,47 @@ export const AuthProvider = ({ children }) => {
       
       // Fetch profile from MongoDB
       await fetchUserProfile(userCredential.user.uid);
+      clearAuthorizedSession();
 
       return { success: true, user: userCredential.user };
     } catch (error) {
-      console.error("Sign in error:", error);
-      return { success: false, message: error.message };
+      try {
+        const response = await fetch(
+          `${config.email.backendUrl}/api/users/authorized-login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          }
+        );
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Invalid credentials");
+        }
+
+        const session = {
+          token: data.token,
+          user: {
+            uid: data.user.firebaseUid || data.user.id,
+            email: data.user.email,
+            displayName: data.user.fullName,
+            isAuthorizedDbUser: true,
+          },
+          profile: data.user,
+        };
+
+        saveAuthorizedSession(session);
+        setUser(session.user);
+        setUserProfile(session.profile);
+
+        return { success: true, user: session.user };
+      } catch (fallbackError) {
+        console.error("Sign in error:", error);
+        return { success: false, message: fallbackError.message || error.message };
+      }
     }
   };
 
@@ -146,7 +187,10 @@ export const AuthProvider = ({ children }) => {
   // Logout
   const logout = async () => {
     try {
-      await signOut(auth);
+      if (auth.currentUser) {
+        await signOut(auth);
+      }
+      clearAuthorizedSession();
       setUser(null);
       setUserProfile(null);
       return { success: true };
@@ -192,11 +236,18 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
+        clearAuthorizedSession();
         setUser(firebaseUser);
         await fetchUserProfile(firebaseUser.uid);
       } else {
-        setUser(null);
-        setUserProfile(null);
+        const authorizedSession = getAuthorizedSession();
+        if (authorizedSession?.token && authorizedSession?.user && authorizedSession?.profile) {
+          setUser(authorizedSession.user);
+          setUserProfile(authorizedSession.profile);
+        } else {
+          setUser(null);
+          setUserProfile(null);
+        }
       }
       setLoading(false);
     });

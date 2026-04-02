@@ -1,8 +1,11 @@
 import { config } from "@/config/site";
 import { auth } from "@/config/firebase";
+import { getAuthorizedSession } from "@/lib/sessionAuth";
 
 const buildAuthHeaders = async () => {
-  const token = await auth.currentUser?.getIdToken();
+  const firebaseToken = await auth.currentUser?.getIdToken();
+  const authorizedSessionToken = getAuthorizedSession()?.token;
+  const token = firebaseToken || authorizedSessionToken;
   return {
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
