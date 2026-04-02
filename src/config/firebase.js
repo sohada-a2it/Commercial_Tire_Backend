@@ -8,6 +8,8 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  updatePassword,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 // Your web app's Firebase configuration
@@ -38,6 +40,8 @@ export {
   signOut,
   onAuthStateChanged,
   updateProfile,
+  updatePassword,
+  sendPasswordResetEmail,
 };
 
 export default app;
