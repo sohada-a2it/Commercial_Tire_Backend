@@ -8,8 +8,8 @@ import Image from "next/image";
 import { ShoppingCart, CreditCard, Building2, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import AuthModal from "@/components/Auth/AuthModal";
-import { config } from "@/config/site";
 import { normalizeRole } from "@/config/dashboardRoutes";
+import { placeOrderInquiry } from "@/services/orderFlowService";
 
 const CheckoutPage = () => {
   const router = useRouter();
@@ -90,37 +90,34 @@ const CheckoutPage = () => {
     setLoading(true);
 
     try {
-      // Prepare order data
+      const normalizedItems = cart.map((item) => {
+        const quantity = Number(item.quantity || 1);
+        const lineTotal = Number(calculateItemPrice(item) || 0);
+        const unitPrice = quantity > 0 ? lineTotal / quantity : 0;
+
+        return {
+          id: item.id,
+          productId: item.id,
+          name: item.name,
+          image: item.image,
+          quantity,
+          unitPrice,
+          lineTotal,
+        };
+      });
+
+      // Create persisted inquiry that staff can process in dashboard.
       const orderData = {
         customer: formData,
-        items: cart,
-        subtotal: getCartTotal(),
-        total: getCartTotal(), // Add shipping/tax if needed
-        orderDate: new Date().toISOString(),
+        items: normalizedItems,
         paymentMethod: formData.paymentMethod,
       };
 
-      // Send to backend
-      const response = await fetch(
-        `${config.email.backendUrl}/api/send-invoice`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(orderData),
-        }
-      );
+      await placeOrderInquiry(orderData);
 
-      if (!response.ok) {
-        throw new Error("Failed to send invoice");
-      }
-
-      const result = await response.json();
-
-      toast.success("Order placed successfully! Invoice sent to your email.");
+      toast.success("Order placed! Your inquiry has been sent to admin for quotation.");
       clearCart();
-      router.push("/dashboard");
+      router.push("/dashboard/my-inquiries");
     } catch (error) {
       console.error("Order error:", error);
       toast.error("Failed to place order. Please try again.");

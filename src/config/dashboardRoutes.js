@@ -23,15 +23,12 @@ export const sidebarRoutesByRole = {
   admin: [
     { icon: LayoutDashboard, label: "Admin Dashboard", href: "/dashboard" },
     { icon: Users, label: "Customer A-Z", href: "/dashboard/users" },
-    { icon: ClipboardList, label: "My Inquiries", href: "/dashboard/my-inquiries" },
     { icon: Receipt, label: "Create New Invoice", href: "/dashboard/create-invoice" },
     { icon: UserCog, label: "Authorized Persons", href: "/dashboard/authorized-persons" },
     { icon: UserPlus, label: "Create New Customer", href: "/dashboard/new-customer" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
     { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
-    { icon: ClipboardList, label: "My Inquiries", href: "/dashboard/my-inquiries" },
-    { icon: FileText, label: "My Invoices", href: "/dashboard/my-invoices" },
   ],
   moderator: [
     { icon: LayoutDashboard, label: "Moderator Dashboard", href: "/dashboard" },
