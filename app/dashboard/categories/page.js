@@ -37,6 +37,7 @@ export default function CategoriesPage() {
   const { userProfile } = useAuth();
   const role = normalizeRole(userProfile?.role);
   const isStaff = useMemo(() => ["admin", "moderator"].includes(role), [role]);
+  const isAdmin = useMemo(() => role === "admin", [role]);
 
   const [categories, setCategories] = useState([]);
   const [selectedId, setSelectedId] = useState("");
@@ -45,6 +46,7 @@ export default function CategoriesPage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState("");
+  const [filterIsActive, setFilterIsActive] = useState("all");
   const [sortBy, setSortBy] = useState("main-asc");
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
@@ -62,6 +64,7 @@ export default function CategoriesPage() {
       page: targetPage,
       limit: PAGE_SIZE,
       search: debouncedSearch,
+      isActive: filterIsActive === "all" ? "" : filterIsActive,
       sort: sortBy,
     });
     if (!result.success) {
@@ -77,7 +80,7 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     if (isStaff) loadCategories(page);
-  }, [isStaff, page, debouncedSearch, sortBy]);
+  }, [isStaff, page, debouncedSearch, sortBy, filterIsActive]);
 
   useEffect(() => {
     const selected = categories.find((item) => String(item.id) === String(selectedId));
@@ -183,16 +186,20 @@ export default function CategoriesPage() {
     try {
       const payload = {
         ...editor,
-        subcategories: (editor.subcategories || []).map((subcategory, index) => ({
-          ...subcategory,
-          id: Number(subcategory.id || index + 1),
-          displayOrder: Number(subcategory.displayOrder || index),
-          isActive: subcategory.isActive !== false,
-          image: {
-            url: String(subcategory.image?.url || "").trim(),
-            publicId: String(subcategory.image?.publicId || "").trim(),
-          },
-        })),
+        subcategories: (editor.subcategories || [])
+          .map((subcategory, index) => ({
+            ...subcategory,
+            id: Number(subcategory.id || index + 1),
+            name: String(subcategory.name || "").trim(),
+            slug: String(subcategory.slug || "").trim(),
+            displayOrder: Number(subcategory.displayOrder || index),
+            isActive: subcategory.isActive !== false,
+            image: {
+              url: String(subcategory.image?.url || "").trim(),
+              publicId: String(subcategory.image?.publicId || "").trim(),
+            },
+          }))
+          .filter((subcategory) => subcategory.name),
       };
 
       const result = await saveCategory(payload, selectedId || editor.id);
@@ -206,8 +213,8 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleDelete = async () => {
-    const target = categories.find((item) => String(item.id) === String(selectedId));
+  const handleDelete = async (categoryId = selectedId) => {
+    const target = categories.find((item) => String(item.id) === String(categoryId));
     if (!target) {
       toast.error("Select a category to delete");
       return;
@@ -222,7 +229,9 @@ export default function CategoriesPage() {
     }
 
     toast.success("Category deleted");
-    handleNew();
+    if (String(selectedId) === String(target.id)) {
+      handleNew();
+    }
     await loadCategories();
   };
 
@@ -258,12 +267,19 @@ export default function CategoriesPage() {
                 placeholder="Search by main or subcategory"
                 className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
               />
-              <select value={sortBy} onChange={(event) => { setSortBy(event.target.value); setPage(1); }} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
-                <option value="main-asc">Sort: Main category A-Z</option>
-                <option value="main-desc">Sort: Main category Z-A</option>
-                <option value="sub-asc">Sort: Subcategory count low-high</option>
-                <option value="sub-desc">Sort: Subcategory count high-low</option>
-              </select>
+              <div className="grid gap-3 md:grid-cols-2">
+                <select value={filterIsActive} onChange={(event) => { setFilterIsActive(event.target.value); setPage(1); }} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
+                  <option value="all">All status</option>
+                  <option value="true">Active only</option>
+                  <option value="false">Inactive only</option>
+                </select>
+                <select value={sortBy} onChange={(event) => { setSortBy(event.target.value); setPage(1); }} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
+                  <option value="main-asc">Sort: Main category A-Z</option>
+                  <option value="main-desc">Sort: Main category Z-A</option>
+                  <option value="sub-asc">Sort: Subcategory count low-high</option>
+                  <option value="sub-desc">Sort: Subcategory count high-low</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -280,19 +296,38 @@ export default function CategoriesPage() {
                   filteredCategories.map((category) => {
                     const active = String(category.id) === String(selectedId);
                     return (
-                      <button
+                      <div
                         key={category.id}
-                        onClick={() => handleSelect(category)}
-                        className={`w-full rounded-xl border p-4 text-left transition ${active ? "border-teal-500 bg-teal-50" : "border-gray-200 bg-white hover:border-teal-300"}`}
+                        className={`w-full rounded-xl border p-4 transition ${active ? "border-teal-500 bg-teal-50" : "border-gray-200 bg-white hover:border-teal-300"}`}
                       >
-                        <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start justify-between gap-3 cursor-pointer" onClick={() => handleSelect(category)}>
                           <div>
                             <div className="text-lg font-semibold text-gray-900">{category.icon || "•"} {category.name}</div>
                             <div className="text-sm text-gray-700">{category.subcategories?.length || 0} subcategories</div>
+                            <div className="text-xs text-gray-600 mt-1">Status: {category.isActive ? "Active" : "Inactive"}</div>
                           </div>
                           <div className="text-xs rounded-full bg-gray-100 px-2 py-1 text-gray-700">{category.slug}</div>
                         </div>
-                      </button>
+
+                        <div className="mt-3 flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleSelect(category)}
+                            className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50"
+                          >
+                            Edit
+                          </button>
+                          {isAdmin ? (
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(category.id)}
+                              className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs text-red-700 hover:bg-red-50"
+                            >
+                              Delete
+                            </button>
+                          ) : null}
+                        </div>
+                      </div>
                     );
                   })
                 )}
@@ -327,9 +362,11 @@ export default function CategoriesPage() {
                   <h2 className="text-xl font-semibold text-gray-900">Category form</h2>
                   <p className="text-sm text-gray-700">Edit the category title, icon, and subcategories in plain fields.</p>
                 </div>
-                <button onClick={handleDelete} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-red-700 hover:bg-red-50">
-                  <Trash2 className="w-4 h-4" /> Delete
-                </button>
+                {isAdmin ? (
+                  <button onClick={handleDelete} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-red-700 hover:bg-red-50">
+                    <Trash2 className="w-4 h-4" /> Delete
+                  </button>
+                ) : null}
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
