@@ -151,7 +151,7 @@ export default function ProductsPage() {
         </div>
 
         <section className="space-y-4 rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
-          <div className="flex flex-nowrap items-center gap-3 overflow-x-auto pb-1">
+          <div className="flex flex-nowrap items-center gap-3 overflow-x-auto ">
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -198,7 +198,7 @@ export default function ProductsPage() {
             </select>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between -mt-5 -mb-5">
             <div className="text-sm text-gray-700">
               Total: <strong>{pagination.total || 0}</strong>
             </div>
