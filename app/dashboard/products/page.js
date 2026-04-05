@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
@@ -10,8 +10,18 @@ import { ImagePlus, Loader2, Pencil, Plus, RefreshCw, Trash2 } from "lucide-reac
 import toast from "react-hot-toast";
 
 const VEHICLE_CATEGORY_NAME = "Vehicle Parts and Accessories";
+const PAGE_SIZE = 20;
 
-const normalizeText = (value) => String(value || "").trim().toLowerCase();
+const useDebouncedValue = (value, delay = 300) => {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  return debounced;
+};
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -28,91 +38,67 @@ export default function ProductsPage() {
   const [filterPattern, setFilterPattern] = useState("all");
   const [filterBrand, setFilterBrand] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
+  const [filterOptions, setFilterOptions] = useState({ categories: [], subcategories: [], brands: [], patterns: [] });
   const [loading, setLoading] = useState(true);
+
+  const didInitialLoad = useRef(false);
+  const searchDebounced = useDebouncedValue(search, 300);
 
   const isVehicleCategorySelected = filterCategory === VEHICLE_CATEGORY_NAME;
 
-  const loadData = async () => {
+  useEffect(() => {
+    setPage(1);
+  }, [searchDebounced, filterCategory, filterSubcategory, filterPattern, filterBrand, sortBy]);
+
+  const loadData = async (targetPage = page) => {
     setLoading(true);
-    const result = await fetchProducts();
+
+    const result = await fetchProducts({
+      page: targetPage,
+      limit: PAGE_SIZE,
+      sort: sortBy,
+      search: searchDebounced,
+      category: filterCategory === "all" ? "" : filterCategory,
+      subcategory: filterSubcategory === "all" ? "" : filterSubcategory,
+      pattern: isVehicleCategorySelected && filterPattern !== "all" ? filterPattern : "",
+      brand: filterBrand === "all" ? "" : filterBrand,
+    });
+
     if (result.success) {
       setProducts(result.products || []);
+      setPagination(result.pagination || { page: targetPage, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
+      setFilterOptions(result.filters || { categories: [], subcategories: [], brands: [], patterns: [] });
     } else {
       toast.error(result.message || "Failed to load products");
     }
+
     setLoading(false);
   };
 
   useEffect(() => {
-    if (isStaff) loadData();
+    if (!isStaff) return;
+    if (didInitialLoad.current) return;
+    didInitialLoad.current = true;
+    loadData(1);
   }, [isStaff]);
 
   useEffect(() => {
-    if (!isVehicleCategorySelected) {
+    if (!isStaff || !didInitialLoad.current) return;
+    loadData(page);
+  }, [isStaff, page, searchDebounced, filterCategory, filterSubcategory, filterPattern, filterBrand, sortBy]);
+
+  useEffect(() => {
+    if (!isVehicleCategorySelected && filterPattern !== "all") {
       setFilterPattern("all");
     }
-  }, [isVehicleCategorySelected]);
+  }, [isVehicleCategorySelected, filterPattern]);
 
-  const categoryOptions = useMemo(
-    () => ["all", ...Array.from(new Set(products.map((product) => String(product.categoryName || "").trim()).filter(Boolean)))],
-    [products]
-  );
-
-  const subcategoryOptions = useMemo(() => {
-    const scoped =
-      filterCategory === "all"
-        ? products
-        : products.filter((product) => normalizeText(product.categoryName) === normalizeText(filterCategory));
-
-    return ["all", ...Array.from(new Set(scoped.map((product) => String(product.subcategoryName || "").trim()).filter(Boolean)))];
-  }, [products, filterCategory]);
-
-  const patternOptions = useMemo(() => {
-    const scoped = products.filter((product) => normalizeText(product.categoryName) === normalizeText(VEHICLE_CATEGORY_NAME));
-    return ["all", ...Array.from(new Set(scoped.map((product) => String(product.pattern || "").trim()).filter(Boolean)))];
-  }, [products]);
-
-  const brandOptions = useMemo(
-    () => ["all", ...Array.from(new Set(products.map((product) => String(product.brand || "").trim()).filter(Boolean)))],
-    [products]
-  );
-
-  const filteredProducts = useMemo(() => {
-    const query = normalizeText(search);
-    const next = products.filter((product) => {
-      const matchesSearch =
-        !query ||
-        normalizeText(product.name).includes(query) ||
-        normalizeText(product.categoryName).includes(query) ||
-        normalizeText(product.subcategoryName).includes(query) ||
-        normalizeText(product.slug).includes(query) ||
-        normalizeText(product.brand).includes(query) ||
-        normalizeText(product.pattern).includes(query);
-
-      const matchesCategory = filterCategory === "all" || normalizeText(product.categoryName) === normalizeText(filterCategory);
-      const matchesSubcategory = filterSubcategory === "all" || normalizeText(product.subcategoryName) === normalizeText(filterSubcategory);
-      const matchesPattern =
-        !isVehicleCategorySelected || filterPattern === "all" || normalizeText(product.pattern) === normalizeText(filterPattern);
-      const matchesBrand = filterBrand === "all" || normalizeText(product.brand) === normalizeText(filterBrand);
-
-      return matchesSearch && matchesCategory && matchesSubcategory && matchesPattern && matchesBrand;
-    });
-
-    const sorted = [...next];
-    if (sortBy === "name-asc") {
-      sorted.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
-    } else if (sortBy === "name-desc") {
-      sorted.sort((a, b) => String(b.name || "").localeCompare(String(a.name || "")));
-    } else if (sortBy === "brand-asc") {
-      sorted.sort((a, b) => String(a.brand || "").localeCompare(String(b.brand || "")));
-    } else if (sortBy === "brand-desc") {
-      sorted.sort((a, b) => String(b.brand || "").localeCompare(String(a.brand || "")));
-    } else {
-      sorted.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
-    }
-
-    return sorted;
-  }, [products, search, filterCategory, filterSubcategory, filterPattern, filterBrand, sortBy, isVehicleCategorySelected]);
+  const categoryOptions = useMemo(() => ["all", ...(filterOptions.categories || [])], [filterOptions.categories]);
+  const subcategoryOptions = useMemo(() => ["all", ...(filterOptions.subcategories || [])], [filterOptions.subcategories]);
+  const brandOptions = useMemo(() => ["all", ...(filterOptions.brands || [])], [filterOptions.brands]);
+  const patternOptions = useMemo(() => ["all", ...(filterOptions.patterns || [])], [filterOptions.patterns]);
 
   const handleDelete = async (productId) => {
     const target = products.find((item) => String(item.id) === String(productId));
@@ -130,8 +116,10 @@ export default function ProductsPage() {
     }
 
     toast.success("Product deleted");
-    await loadData();
+    await loadData(page);
   };
+
+  const visibleColSpan = isVehicleCategorySelected ? 6 : 5;
 
   if (!isStaff) {
     return (
@@ -150,13 +138,13 @@ export default function ProductsPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
-            <p className="text-gray-700 mt-1">Search, sort, and manage products from one list view.</p>
+            <p className="text-gray-700 mt-1">Fast server-side sorting, filtering, and paging (20 per page).</p>
           </div>
           <div className="flex flex-wrap gap-3">
             <button onClick={() => router.push("/dashboard/products/create")} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
               <Plus className="w-4 h-4" /> Add New Product
             </button>
-            <button onClick={loadData} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
+            <button onClick={() => loadData(page)} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
               <RefreshCw className="w-4 h-4" /> Refresh
             </button>
           </div>
@@ -202,7 +190,10 @@ export default function ProductsPage() {
             </select>
           </div>
 
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-700">
+              Total: <strong>{pagination.total || 0}</strong>
+            </div>
             <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
               <option value="newest">Sort: Newest</option>
               <option value="name-asc">Sort: Name A-Z</option>
@@ -226,11 +217,11 @@ export default function ProductsPage() {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td className="px-4 py-10 text-center text-teal-600" colSpan={isVehicleCategorySelected ? 6 : 5}><Loader2 className="mx-auto h-5 w-5 animate-spin" /></td></tr>
-                ) : filteredProducts.length === 0 ? (
-                  <tr><td className="px-4 py-8 text-center text-gray-700" colSpan={isVehicleCategorySelected ? 6 : 5}>No products found.</td></tr>
+                  <tr><td className="px-4 py-10 text-center text-teal-600" colSpan={visibleColSpan}><Loader2 className="mx-auto h-5 w-5 animate-spin" /></td></tr>
+                ) : products.length === 0 ? (
+                  <tr><td className="px-4 py-8 text-center text-gray-700" colSpan={visibleColSpan}>No products found.</td></tr>
                 ) : (
-                  filteredProducts.map((product) => {
+                  products.map((product) => {
                     const active = String(product.id) === String(selectedId);
                     return (
                       <tr key={product.id} className={active ? "bg-teal-50" : "bg-white"}>
@@ -273,6 +264,30 @@ export default function ProductsPage() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          <div className="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3">
+            <div className="text-sm text-gray-700">
+              Page <strong>{pagination.page || 1}</strong> of <strong>{pagination.totalPages || 1}</strong>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                disabled={!pagination.hasPrevPage || loading}
+                onClick={() => setPage((current) => Math.max(1, current - 1))}
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                disabled={!pagination.hasNextPage || loading}
+                onClick={() => setPage((current) => current + 1)}
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </section>
       </div>

@@ -23,9 +23,30 @@ const parseResponse = async (response) => {
 
 export const fetchCategories = async () => {
   const headers = await buildAuthHeaders();
-  const response = await fetch(`${config.email.backendUrl}/api/catalog/categories`, { headers });
+  const response = await fetch(`${config.email.backendUrl}/api/catalog/categories`, { headers, cache: "no-store" });
   const data = await parseResponse(response);
   return { success: true, categories: data.categories || [] };
+};
+
+export const fetchCategoriesPaginated = async (filters = {}) => {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      params.append(key, String(value));
+    }
+  });
+
+  const headers = await buildAuthHeaders();
+  const response = await fetch(
+    `${config.email.backendUrl}/api/catalog/categories${params.toString() ? `?${params.toString()}` : ""}`,
+    { headers, cache: "no-store" }
+  );
+  const data = await parseResponse(response);
+  return {
+    success: true,
+    categories: data.categories || [],
+    pagination: data.pagination || { page: 1, limit: Number(filters.limit || 20), total: (data.categories || []).length, totalPages: 1, hasNextPage: false, hasPrevPage: false },
+  };
 };
 
 export const saveCategory = async (payload, categoryId) => {
@@ -78,15 +99,20 @@ export const fetchProducts = async (filters = {}) => {
   const headers = await buildAuthHeaders();
   const response = await fetch(
     `${config.email.backendUrl}/api/catalog/products${params.toString() ? `?${params.toString()}` : ""}`,
-    { headers }
+    { headers, cache: "no-store" }
   );
   const data = await parseResponse(response);
-  return { success: true, products: data.products || [] };
+  return {
+    success: true,
+    products: data.products || [],
+    pagination: data.pagination || { page: 1, limit: Number(filters.limit || 20), total: (data.products || []).length, totalPages: 1, hasNextPage: false, hasPrevPage: false },
+    filters: data.filters || { categories: [], subcategories: [], brands: [], patterns: [] },
+  };
 };
 
 export const fetchProduct = async (productId) => {
   const headers = await buildAuthHeaders();
-  const response = await fetch(`${config.email.backendUrl}/api/catalog/products/${productId}`, { headers });
+  const response = await fetch(`${config.email.backendUrl}/api/catalog/products/${productId}`, { headers, cache: "no-store" });
   const data = await parseResponse(response);
   return { success: true, product: data.product };
 };

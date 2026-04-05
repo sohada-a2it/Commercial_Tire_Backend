@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { deleteCategory, fetchCategories, saveCategory, uploadMedia } from "@/services/catalogService";
+import { deleteCategory, fetchCategoriesPaginated, saveCategory, uploadMedia } from "@/services/catalogService";
 import { Loader2, Plus, RefreshCw, Save, Trash2, Upload } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -31,6 +31,7 @@ const categoryTemplate = {
 };
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
+const PAGE_SIZE = 20;
 
 export default function CategoriesPage() {
   const { userProfile } = useAuth();
@@ -45,10 +46,24 @@ export default function CategoriesPage() {
   const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("main-asc");
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const loadCategories = async () => {
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const loadCategories = async (targetPage = page) => {
     setLoading(true);
-    const result = await fetchCategories();
+    const result = await fetchCategoriesPaginated({
+      paginate: true,
+      page: targetPage,
+      limit: PAGE_SIZE,
+      search: debouncedSearch,
+      sort: sortBy,
+    });
     if (!result.success) {
       toast.error(result.message || "Failed to load categories");
       setLoading(false);
@@ -56,12 +71,13 @@ export default function CategoriesPage() {
     }
 
     setCategories(result.categories || []);
+    setPagination(result.pagination || { page: targetPage, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
     setLoading(false);
   };
 
   useEffect(() => {
-    if (isStaff) loadCategories();
-  }, [isStaff]);
+    if (isStaff) loadCategories(page);
+  }, [isStaff, page, debouncedSearch, sortBy]);
 
   useEffect(() => {
     const selected = categories.find((item) => String(item.id) === String(selectedId));
@@ -74,28 +90,7 @@ export default function CategoriesPage() {
     }
   }, [categories, selectedId]);
 
-  const filteredCategories = useMemo(() => {
-    const query = search.toLowerCase().trim();
-    const next = categories.filter((category) => {
-      const matchesMain = category.name?.toLowerCase().includes(query);
-      const matchesSlug = category.slug?.toLowerCase().includes(query);
-      const matchesSub = (category.subcategories || []).some((sub) => sub.name?.toLowerCase().includes(query));
-      return !query || matchesMain || matchesSlug || matchesSub;
-    });
-
-    const sorted = [...next];
-    if (sortBy === "main-desc") {
-      sorted.sort((a, b) => String(b.name || "").localeCompare(String(a.name || "")));
-    } else if (sortBy === "sub-asc") {
-      sorted.sort((a, b) => Number((a.subcategories || []).length) - Number((b.subcategories || []).length));
-    } else if (sortBy === "sub-desc") {
-      sorted.sort((a, b) => Number((b.subcategories || []).length) - Number((a.subcategories || []).length));
-    } else {
-      sorted.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
-    }
-
-    return sorted;
-  }, [categories, search, sortBy]);
+  const filteredCategories = useMemo(() => categories, [categories]);
 
   const handleSelect = (category) => {
     setSelectedId(String(category.id));
@@ -259,11 +254,11 @@ export default function CategoriesPage() {
             <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_260px]">
               <input
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
+                onChange={(event) => { setSearch(event.target.value); setPage(1); }}
                 placeholder="Search by main or subcategory"
                 className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
               />
-              <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
+              <select value={sortBy} onChange={(event) => { setSortBy(event.target.value); setPage(1); }} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
                 <option value="main-asc">Sort: Main category A-Z</option>
                 <option value="main-desc">Sort: Main category Z-A</option>
                 <option value="sub-asc">Sort: Subcategory count low-high</option>
@@ -301,6 +296,28 @@ export default function CategoriesPage() {
                     );
                   })
                 )}
+              </div>
+
+              <div className="flex items-center justify-between rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-700">
+                <span>Page {pagination.page || 1} / {pagination.totalPages || 1}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={!pagination.hasPrevPage || loading}
+                    onClick={() => setPage((current) => Math.max(1, current - 1))}
+                    className="rounded-lg border border-gray-300 px-2 py-1 hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Prev
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!pagination.hasNextPage || loading}
+                    onClick={() => setPage((current) => current + 1)}
+                    className="rounded-lg border border-gray-300 px-2 py-1 hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             </aside>
 
