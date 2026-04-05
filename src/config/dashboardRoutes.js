@@ -22,19 +22,20 @@ export const normalizeRole = (role) => {
 export const sidebarRoutesByRole = {
   admin: [
     { icon: LayoutDashboard, label: "Admin Dashboard", href: "/dashboard" },
-    { icon: Users, label: "Customer A-Z", href: "/dashboard/users" },
     { icon: Receipt, label: "Create New Invoice", href: "/dashboard/create-invoice" },
-    { icon: UserCog, label: "Authorized Persons", href: "/dashboard/authorized-persons" },
     { icon: UserPlus, label: "Create New Customer", href: "/dashboard/new-customer" },
+    { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
-    { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
+    { icon: Users, label: "Customer A-Z", href: "/dashboard/users" },
+        { icon: UserCog, label: "Authorized Persons", href: "/dashboard/authorized-persons" },
+
   ],
   moderator: [
     { icon: LayoutDashboard, label: "Moderator Dashboard", href: "/dashboard" },
+    { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
-    { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
   ],
   customer: [
     { icon: LayoutDashboard, label: "Customer Dashboard", href: "/dashboard" },
