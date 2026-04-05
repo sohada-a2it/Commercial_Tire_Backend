@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { deleteCategory, fetchCategories, importCatalog, saveCategory } from "@/services/catalogService";
-import { Download, Loader2, Plus, RefreshCw, Save, Trash2 } from "lucide-react";
+import { deleteCategory, fetchCategories, importCatalog, saveCategory, uploadMedia } from "@/services/catalogService";
+import { Download, Loader2, Plus, RefreshCw, Save, Trash2, Upload } from "lucide-react";
 import toast from "react-hot-toast";
 
 const createSubcategory = (index = 0) => ({
@@ -15,6 +15,7 @@ const createSubcategory = (index = 0) => ({
   description: "",
   displayOrder: index,
   isActive: true,
+  image: { url: "", publicId: "" },
 });
 
 const categoryTemplate = {
@@ -42,6 +43,7 @@ export default function CategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState("");
 
   const loadCategories = async () => {
@@ -107,6 +109,52 @@ export default function CategoriesPage() {
     });
   };
 
+  const handleCategoryImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const result = await uploadMedia(file, { relatedType: "category-image" });
+      const media = result.media;
+      setEditor((current) => ({
+        ...current,
+        image: {
+          ...(current.image || {}),
+          url: media.optimizedUrl || media.url,
+          publicId: media.publicId,
+        },
+      }));
+      toast.success("Category image uploaded");
+    } catch (error) {
+      toast.error(error.message || "Category image upload failed");
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  const handleSubcategoryImageUpload = async (index, event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const result = await uploadMedia(file, { relatedType: "subcategory-image" });
+      const media = result.media;
+      updateSubcategory(index, "image", {
+        url: media.optimizedUrl || media.url,
+        publicId: media.publicId,
+      });
+      toast.success("Subcategory image uploaded");
+    } catch (error) {
+      toast.error(error.message || "Subcategory image upload failed");
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  };
+
   const addSubcategory = () => {
     setEditor((current) => ({
       ...current,
@@ -131,6 +179,10 @@ export default function CategoriesPage() {
           id: Number(subcategory.id || index + 1),
           displayOrder: Number(subcategory.displayOrder || index),
           isActive: subcategory.isActive !== false,
+          image: {
+            url: String(subcategory.image?.url || "").trim(),
+            publicId: String(subcategory.image?.publicId || "").trim(),
+          },
         })),
       };
 
@@ -285,10 +337,14 @@ export default function CategoriesPage() {
                   <span className="font-medium text-gray-700">Image URL</span>
                   <input value={editor.image?.url || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), url: event.target.value } }))} placeholder="https://res.cloudinary.com/.../image/upload/..." className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                 </label>
-                <label className="space-y-2 text-sm">
-                  <span className="font-medium text-gray-700">Cloudinary public id</span>
-                  <input value={editor.image?.publicId || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), publicId: event.target.value } }))} placeholder="asian-import-export/catalog/category-name" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                </label>
+                <div className="space-y-2 text-sm">
+                  <span className="font-medium text-gray-700">Upload category image</span>
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 hover:bg-gray-50">
+                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Upload image
+                    <input type="file" accept="image/*" onChange={handleCategoryImageUpload} className="hidden" />
+                  </label>
+                  {editor.image?.publicId ? <p className="text-xs text-gray-600">Public id: {editor.image.publicId}</p> : null}
+                </div>
               </div>
 
               <div className="space-y-3">
@@ -332,6 +388,27 @@ export default function CategoriesPage() {
                           <input type="checkbox" checked={subcategory.isActive !== false} onChange={(event) => updateSubcategory(index, "isActive", event.target.checked)} />
                           Active
                         </label>
+                        <div className="space-y-2 text-sm lg:col-span-3">
+                          <span className="font-medium text-gray-700">Subcategory image</span>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50">
+                              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Upload image
+                              <input type="file" accept="image/*" onChange={(event) => handleSubcategoryImageUpload(index, event)} className="hidden" />
+                            </label>
+                            {subcategory.image?.url ? (
+                              <button
+                                type="button"
+                                onClick={() => updateSubcategory(index, "image", { url: "", publicId: "" })}
+                                className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50"
+                              >
+                                Remove image
+                              </button>
+                            ) : null}
+                          </div>
+                          {subcategory.image?.url ? (
+                            <img src={subcategory.image.url} alt={subcategory.name || `subcategory-${index + 1}`} className="h-24 w-24 rounded-lg border border-gray-200 object-cover" />
+                          ) : null}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -341,10 +418,10 @@ export default function CategoriesPage() {
               <div className="flex items-center justify-end gap-3">
                 <button
                   onClick={handleSave}
-                  disabled={saving}
+                  disabled={saving || uploading}
                   className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-white hover:bg-black disabled:opacity-70"
                 >
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save category
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {uploading ? "Uploading..." : "Save category"}
                 </button>
               </div>
             </section>

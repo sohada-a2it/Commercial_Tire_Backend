@@ -5,7 +5,7 @@ import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
 import { deleteProduct, fetchCategories, fetchProducts, saveProduct, uploadMedia } from "@/services/catalogService";
-import { ImagePlus, Loader2, Plus, RefreshCw, Save, Trash2, Upload } from "lucide-react";
+import { ImagePlus, Loader2, Pencil, Plus, RefreshCw, Save, Trash2, Upload } from "lucide-react";
 import toast from "react-hot-toast";
 
 const createPricingTier = (index = 0) => ({
@@ -56,6 +56,7 @@ const productTemplate = {
   metadata: {},
   mainCategory: "",
   subCategory: "",
+  pattern: "",
 };
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -75,6 +76,7 @@ export default function ProductsPage() {
   const { userProfile } = useAuth();
   const role = normalizeRole(userProfile?.role);
   const isStaff = useMemo(() => ["admin", "moderator"].includes(role), [role]);
+  const isAdmin = useMemo(() => role === "admin", [role]);
 
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -84,6 +86,12 @@ export default function ProductsPage() {
   const [editor, setEditor] = useState(clone(productTemplate));
   const [keyAttributes, setKeyAttributes] = useState([createAttribute()]);
   const [search, setSearch] = useState("");
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [filterSubcategory, setFilterSubcategory] = useState("all");
+  const [filterPattern, setFilterPattern] = useState("all");
+  const [filterBrand, setFilterBrand] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -112,6 +120,7 @@ export default function ProductsPage() {
   useEffect(() => {
     const selected = products.find((item) => String(item.id) === String(selectedId));
     if (selected) {
+      setIsFormOpen(true);
       setEditor({
         ...clone(productTemplate),
         ...selected,
@@ -133,15 +142,57 @@ export default function ProductsPage() {
     }
   }, [products, selectedId]);
 
-  const filteredProducts = products.filter((product) => {
-    const query = search.toLowerCase();
-    return (
-      product.name?.toLowerCase().includes(query) ||
-      product.categoryName?.toLowerCase().includes(query) ||
-      product.subcategoryName?.toLowerCase().includes(query) ||
-      product.slug?.toLowerCase().includes(query)
-    );
-  });
+  const categoryOptions = useMemo(
+    () => ["all", ...Array.from(new Set(products.map((product) => product.categoryName).filter(Boolean)))],
+    [products]
+  );
+
+  const subcategoryOptions = useMemo(() => {
+    const scoped = filterCategory === "all" ? products : products.filter((product) => product.categoryName === filterCategory);
+    return ["all", ...Array.from(new Set(scoped.map((product) => product.subcategoryName).filter(Boolean)))];
+  }, [products, filterCategory]);
+
+  const patternOptions = useMemo(
+    () => ["all", ...Array.from(new Set(products.map((product) => product.pattern).filter(Boolean)))],
+    [products]
+  );
+
+  const brandOptions = useMemo(
+    () => ["all", ...Array.from(new Set(products.map((product) => product.brand).filter(Boolean)))],
+    [products]
+  );
+
+  const filteredProducts = useMemo(() => {
+    const query = search.toLowerCase().trim();
+    const next = products.filter((product) => {
+      const matchesSearch =
+        !query ||
+        product.name?.toLowerCase().includes(query) ||
+        product.categoryName?.toLowerCase().includes(query) ||
+        product.subcategoryName?.toLowerCase().includes(query) ||
+        product.slug?.toLowerCase().includes(query) ||
+        product.brand?.toLowerCase().includes(query) ||
+        product.pattern?.toLowerCase().includes(query);
+
+      const matchesCategory = filterCategory === "all" || product.categoryName === filterCategory;
+      const matchesSubcategory = filterSubcategory === "all" || product.subcategoryName === filterSubcategory;
+      const matchesPattern = filterPattern === "all" || product.pattern === filterPattern;
+      const matchesBrand = filterBrand === "all" || product.brand === filterBrand;
+
+      return matchesSearch && matchesCategory && matchesSubcategory && matchesPattern && matchesBrand;
+    });
+
+    const sorted = [...next];
+    if (sortBy === "name-asc") {
+      sorted.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+    } else if (sortBy === "name-desc") {
+      sorted.sort((a, b) => String(b.name || "").localeCompare(String(a.name || "")));
+    } else {
+      sorted.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+    }
+
+    return sorted;
+  }, [products, search, filterCategory, filterSubcategory, filterPattern, filterBrand, sortBy]);
 
   const handleNew = () => {
     const nextCategory = categories[0];
@@ -160,14 +211,17 @@ export default function ProductsPage() {
       subcategoryId: nextSubcategory?.id || "",
       subcategoryName: nextSubcategory?.name || "",
       subcategorySlug: nextSubcategory?.slug || "",
+      pattern: "",
     });
     setKeyAttributes([createAttribute()]);
+    setIsFormOpen(true);
   };
 
   const handleSelect = (product) => {
     setSelectedId(String(product.id));
     setCategoryId(String(product.category || ""));
     setSubcategoryId(String(product.subcategoryId || ""));
+    setIsFormOpen(true);
   };
 
   const updateField = (field, value) => {
@@ -234,6 +288,7 @@ export default function ProductsPage() {
       subcategoryId: subcategoryId ? Number(subcategoryId) : Number(editor.subcategoryId || 0),
       subcategoryName: selectedSubcategory?.name || editor.subcategoryName || "",
       subcategorySlug: selectedSubcategory?.slug || editor.subcategorySlug || "",
+      pattern: String(editor.pattern || "").trim(),
       pricingTiers: cleanPricingTiers,
       customizationOptions: cleanStringArray(editor.customizationOptions || []),
       images: cleanImages(editor.images || []),
@@ -256,6 +311,9 @@ export default function ProductsPage() {
     setSaving(true);
     try {
       const payload = buildPayload();
+      if (payload.pattern && !payload.keyAttributes?.Pattern) {
+        payload.keyAttributes = { ...(payload.keyAttributes || {}), Pattern: payload.pattern };
+      }
       const result = await saveProduct(payload, selectedId || editor.id);
       toast.success(selectedId ? "Product updated" : "Product created");
       setSelectedId(String(result.product?.id || payload.id || ""));
@@ -267,8 +325,8 @@ export default function ProductsPage() {
     }
   };
 
-  const handleDelete = async () => {
-    const target = products.find((item) => String(item.id) === String(selectedId));
+  const handleDelete = async (productId) => {
+    const target = products.find((item) => String(item.id) === String(productId));
     if (!target) {
       toast.error("Select a product to delete");
       return;
@@ -283,7 +341,10 @@ export default function ProductsPage() {
     }
 
     toast.success("Product deleted");
-    handleNew();
+    if (String(selectedId) === String(productId)) {
+      setSelectedId("");
+      setIsFormOpen(false);
+    }
     await loadData();
   };
 
@@ -359,7 +420,7 @@ export default function ProductsPage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <button onClick={handleNew} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
-              <Plus className="w-4 h-4" /> New
+              <Plus className="w-4 h-4" /> Add New Product
             </button>
             <button onClick={loadData} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
               <RefreshCw className="w-4 h-4" /> Refresh
@@ -376,6 +437,34 @@ export default function ProductsPage() {
               className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
             />
 
+            <div className="grid gap-3">
+              <select value={filterCategory} onChange={(event) => { setFilterCategory(event.target.value); setFilterSubcategory("all"); }} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+                {categoryOptions.map((value) => (
+                  <option key={value} value={value}>{value === "all" ? "All categories" : value}</option>
+                ))}
+              </select>
+              <select value={filterSubcategory} onChange={(event) => setFilterSubcategory(event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+                {subcategoryOptions.map((value) => (
+                  <option key={value} value={value}>{value === "all" ? "All subcategories" : value}</option>
+                ))}
+              </select>
+              <select value={filterPattern} onChange={(event) => setFilterPattern(event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+                {patternOptions.map((value) => (
+                  <option key={value} value={value}>{value === "all" ? "All patterns" : value}</option>
+                ))}
+              </select>
+              <select value={filterBrand} onChange={(event) => setFilterBrand(event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+                {brandOptions.map((value) => (
+                  <option key={value} value={value}>{value === "all" ? "All brands" : value}</option>
+                ))}
+              </select>
+              <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+                <option value="newest">Sort: Newest</option>
+                <option value="name-asc">Sort: Name A-Z</option>
+                <option value="name-desc">Sort: Name Z-A</option>
+              </select>
+            </div>
+
             <div className="max-h-[70vh] space-y-3 overflow-y-auto pr-1">
               {loading ? (
                 <div className="flex items-center justify-center py-10 text-teal-600">
@@ -387,9 +476,8 @@ export default function ProductsPage() {
                 filteredProducts.map((product) => {
                   const active = String(product.id) === String(selectedId);
                   return (
-                    <button
+                    <div
                       key={product.id}
-                      onClick={() => handleSelect(product)}
                       className={`w-full rounded-xl border p-4 text-left transition ${active ? "border-teal-500 bg-teal-50" : "border-gray-200 bg-white hover:border-teal-300"}`}
                     >
                       <div className="flex items-start gap-3">
@@ -405,25 +493,35 @@ export default function ProductsPage() {
                         <div className="min-w-0">
                           <div className="truncate text-sm font-semibold text-gray-900">{product.name}</div>
                           <div className="text-xs text-gray-700">{product.categoryName} · {product.subcategoryName}</div>
+                          {product.pattern ? <div className="text-xs text-gray-700">Pattern: {product.pattern}</div> : null}
                           <div className="mt-1 inline-flex rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700">{product.price}</div>
                         </div>
                       </div>
-                    </button>
+                      <div className="mt-3 flex items-center justify-end gap-2">
+                        <button onClick={() => handleSelect(product)} className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50">
+                          <Pencil className="w-3.5 h-3.5" /> Edit
+                        </button>
+                        {isAdmin ? (
+                          <button onClick={() => handleDelete(product.id)} className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs text-red-700 hover:bg-red-50">
+                            <Trash2 className="w-3.5 h-3.5" /> Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
                   );
                 })
               )}
             </div>
           </aside>
 
+          {isFormOpen ? (
           <section className="space-y-6 rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">Product form</h2>
                 <p className="text-sm text-gray-700">Build product records with clear fields, repeatable arrays, and Cloudinary uploads.</p>
               </div>
-              <button onClick={handleDelete} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-red-700 hover:bg-red-50">
-                <Trash2 className="w-4 h-4" /> Delete
-              </button>
+              <button onClick={() => setIsFormOpen(false)} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50">Close form</button>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
@@ -490,10 +588,6 @@ export default function ProductsPage() {
                     <Upload className="w-4 h-4 text-gray-700" /> Hero image
                     <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" />
                   </label>
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-700 hover:bg-gray-50">
-                    <Upload className="w-4 h-4 text-gray-700" /> Gallery
-                    <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
-                  </label>
                 </div>
               </div>
             </div>
@@ -523,6 +617,10 @@ export default function ProductsPage() {
                 <span className="font-medium text-gray-700">Offer price</span>
                 <input value={editor.offerPrice || ""} onChange={(event) => updateField("offerPrice", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
               </label>
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Pattern (optional)</span>
+                <input value={editor.pattern || ""} onChange={(event) => updateField("pattern", event.target.value)} placeholder="Drive, Steer, Trailer" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
               <label className="space-y-2 text-sm md:col-span-2">
                 <span className="font-medium text-gray-700">Description</span>
                 <textarea value={editor.description || ""} onChange={(event) => updateField("description", event.target.value)} rows={4} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
@@ -546,7 +644,13 @@ export default function ProductsPage() {
                   <h3 className="text-lg font-semibold text-gray-900">Gallery images</h3>
                   <p className="text-sm text-gray-700">Upload to Cloudinary or edit the image URLs directly.</p>
                 </div>
-                  <button onClick={() => addArrayItem("images", createImage)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add image</button>
+                <div className="flex flex-wrap gap-2">
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    <Upload className="w-4 h-4" /> Upload images
+                    <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
+                  </label>
+                  <button onClick={() => addArrayItem("images", createImage)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add image row</button>
+                </div>
               </div>
               <div className="space-y-3">
                 {(editor.images || []).map((image, index) => (
@@ -560,10 +664,7 @@ export default function ProductsPage() {
                         <span className="font-medium text-gray-700">Alt text</span>
                         <input value={image.alt || ""} onChange={(event) => updateArrayField("images", index, { ...image, alt: event.target.value })} placeholder={`Gallery image ${index + 1}`} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                       </label>
-                      <label className="space-y-2 text-sm md:col-span-2">
-                        <span className="font-medium text-gray-700">Cloudinary public id</span>
-                        <input value={image.publicId || ""} onChange={(event) => updateArrayField("images", index, { ...image, publicId: event.target.value })} placeholder="asian-import-export/catalog/product-name" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                      </label>
+                      {image.publicId ? <p className="md:col-span-2 text-xs text-gray-600">Public id: {image.publicId}</p> : <div className="md:col-span-2" />}
                       <div className="flex items-end justify-end md:col-span-1">
                         <button onClick={() => removeArrayItem("images", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
                       </div>
@@ -752,6 +853,14 @@ export default function ProductsPage() {
               </button>
             </div>
           </section>
+          ) : (
+            <section className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+              <div className="text-center text-gray-700">
+                <p className="text-lg font-semibold text-gray-900">No form opened</p>
+                <p className="mt-2">Click <strong>Add New Product</strong> or use <strong>Edit</strong> on a product card.</p>
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </DashboardLayout>
