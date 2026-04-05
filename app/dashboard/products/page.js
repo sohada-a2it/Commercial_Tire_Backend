@@ -532,11 +532,11 @@ export default function ProductsPage() {
             <div className="grid gap-4 md:grid-cols-2">
               <label className="space-y-2 text-sm">
                 <span className="font-medium text-gray-700">Hero image URL</span>
-                <input value={editor.image?.url || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), url: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                <input value={editor.image?.url || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), url: event.target.value } }))} placeholder="https://res.cloudinary.com/.../image/upload/..." className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
               </label>
               <label className="space-y-2 text-sm">
                 <span className="font-medium text-gray-700">Hero alt text</span>
-                <input value={editor.image?.alt || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), alt: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                <input value={editor.image?.alt || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), alt: event.target.value } }))} placeholder="Product hero image" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
               </label>
             </div>
 
@@ -554,15 +554,15 @@ export default function ProductsPage() {
                     <div className="grid gap-3 md:grid-cols-3">
                       <label className="space-y-2 text-sm md:col-span-2">
                         <span className="font-medium text-gray-700">Image URL</span>
-                        <input value={image.url || ""} onChange={(event) => updateArrayField("images", index, { ...image, url: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                        <input value={image.url || ""} onChange={(event) => updateArrayField("images", index, { ...image, url: event.target.value })} placeholder="https://res.cloudinary.com/.../image/upload/..." className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                       </label>
                       <label className="space-y-2 text-sm">
                         <span className="font-medium text-gray-700">Alt text</span>
-                        <input value={image.alt || ""} onChange={(event) => updateArrayField("images", index, { ...image, alt: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                        <input value={image.alt || ""} onChange={(event) => updateArrayField("images", index, { ...image, alt: event.target.value })} placeholder={`Gallery image ${index + 1}`} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                       </label>
                       <label className="space-y-2 text-sm md:col-span-2">
                         <span className="font-medium text-gray-700">Cloudinary public id</span>
-                        <input value={image.publicId || ""} onChange={(event) => updateArrayField("images", index, { ...image, publicId: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                        <input value={image.publicId || ""} onChange={(event) => updateArrayField("images", index, { ...image, publicId: event.target.value })} placeholder="asian-import-export/catalog/product-name" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                       </label>
                       <div className="flex items-end justify-end md:col-span-1">
                         <button onClick={() => removeArrayItem("images", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
