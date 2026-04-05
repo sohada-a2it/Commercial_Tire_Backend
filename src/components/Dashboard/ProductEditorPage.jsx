@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { fetchCategories, fetchProduct, saveProduct, uploadMedia } from "@/services/catalogService";
+import { fetchCategories, fetchMedia, fetchProduct, saveProduct, uploadMedia } from "@/services/catalogService";
 import { ArrowLeft, Loader2, Save, Upload } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -91,6 +91,10 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [galleryUrlInput, setGalleryUrlInput] = useState("");
+  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [mediaSearch, setMediaSearch] = useState("");
+  const [mediaLoading, setMediaLoading] = useState(false);
+  const [mediaItems, setMediaItems] = useState([]);
 
   const selectedCategory = categories.find((item) => String(item.id) === String(categoryId));
   const subcategories = selectedCategory?.subcategories || [];
@@ -250,6 +254,53 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
       ],
     }));
     setGalleryUrlInput("");
+  };
+
+  const openMediaPicker = async () => {
+    setMediaSearch("");
+    setMediaLoading(true);
+    setMediaPickerOpen(true);
+    try {
+      const result = await fetchMedia({});
+      setMediaItems(result.media || []);
+    } catch (error) {
+      toast.error(error.message || "Failed to load media");
+      setMediaItems([]);
+    } finally {
+      setMediaLoading(false);
+    }
+  };
+
+  const searchMedia = async (value) => {
+    setMediaSearch(value);
+    setMediaLoading(true);
+    try {
+      const result = await fetchMedia({ search: value });
+      setMediaItems(result.media || []);
+    } catch (error) {
+      toast.error(error.message || "Failed to filter media");
+      setMediaItems([]);
+    } finally {
+      setMediaLoading(false);
+    }
+  };
+
+  const selectMediaForGallery = (media) => {
+    if (!media) return;
+
+    setEditor((current) => ({
+      ...current,
+      images: [
+        ...(current.images || []),
+        {
+          url: media.optimizedUrl || media.url,
+          publicId: media.publicId || "",
+          alt: `${current.name || "Product"} ${(current.images || []).length + 1}`,
+        },
+      ],
+    }));
+    setMediaPickerOpen(false);
+    toast.success("Image selected from Cloudinary media");
   };
 
   const buildPayload = () => {
@@ -486,6 +537,13 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
                 <Upload className="w-4 h-4" /> Upload images
                 <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
               </label>
+              <button
+                type="button"
+                onClick={openMediaPicker}
+                className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Select from Cloudinary Media
+              </button>
             </div>
             <div className="flex gap-2">
               <input value={galleryUrlInput} onChange={(event) => setGalleryUrlInput(event.target.value)} placeholder="Paste image URL and click Add URL" className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
@@ -703,6 +761,52 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
             </button>
           </div>
         </section>
+
+        {mediaPickerOpen ? (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+            <div className="w-full max-w-4xl rounded-2xl bg-white p-4 shadow-xl">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <h3 className="text-lg font-semibold text-gray-900">Select from Cloudinary Media</h3>
+                <button
+                  type="button"
+                  onClick={() => setMediaPickerOpen(false)}
+                  className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  Close
+                </button>
+              </div>
+              <input
+                value={mediaSearch}
+                onChange={(event) => searchMedia(event.target.value)}
+                placeholder="Search by filename, public id, or folder"
+                className="mb-4 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
+              />
+              {mediaLoading ? (
+                <div className="py-10 text-center text-teal-600"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></div>
+              ) : mediaItems.length === 0 ? (
+                <p className="py-8 text-center text-gray-600">No media found.</p>
+              ) : (
+                <div className="grid max-h-[60vh] grid-cols-2 gap-3 overflow-y-auto md:grid-cols-4">
+                  {mediaItems.map((media) => (
+                    <button
+                      key={media.publicId || media._id || media.url}
+                      type="button"
+                      onClick={() => selectMediaForGallery(media)}
+                      className="rounded-xl border border-gray-200 p-2 text-left hover:border-teal-400 hover:bg-teal-50"
+                    >
+                      <img
+                        src={media.optimizedUrl || media.url}
+                        alt={media.originalFilename || media.publicId || "media"}
+                        className="h-28 w-full rounded-lg object-cover"
+                      />
+                      <p className="mt-2 truncate text-xs text-gray-700">{media.originalFilename || media.publicId}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : null}
       </div>
     </DashboardLayout>
   );

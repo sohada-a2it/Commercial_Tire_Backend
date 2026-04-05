@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { deleteCategory, fetchCategoriesPaginated, saveCategory, uploadMedia } from "@/services/catalogService";
+import { deleteCategory, fetchCategoriesPaginated, fetchMedia, saveCategory, uploadMedia } from "@/services/catalogService";
 import { Loader2, Plus, RefreshCw, Save, Trash2, Upload } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -45,6 +45,11 @@ export default function CategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [mediaLoading, setMediaLoading] = useState(false);
+  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
+  const [mediaSearch, setMediaSearch] = useState("");
+  const [mediaItems, setMediaItems] = useState([]);
+  const [mediaTarget, setMediaTarget] = useState({ type: "category", index: -1 });
   const [search, setSearch] = useState("");
   const [filterIsActive, setFilterIsActive] = useState("all");
   const [sortBy, setSortBy] = useState("main-asc");
@@ -179,6 +184,61 @@ export default function CategoriesPage() {
       ...current,
       subcategories: (current.subcategories || []).filter((_item, itemIndex) => itemIndex !== index),
     }));
+  };
+
+  const openMediaPicker = async (target) => {
+    setMediaTarget(target);
+    setMediaSearch("");
+    setMediaLoading(true);
+    setMediaPickerOpen(true);
+    try {
+      const result = await fetchMedia({});
+      setMediaItems(result.media || []);
+    } catch (error) {
+      toast.error(error.message || "Failed to load media");
+      setMediaItems([]);
+    } finally {
+      setMediaLoading(false);
+    }
+  };
+
+  const searchMedia = async (value) => {
+    setMediaSearch(value);
+    setMediaLoading(true);
+    try {
+      const result = await fetchMedia({ search: value });
+      setMediaItems(result.media || []);
+    } catch (error) {
+      toast.error(error.message || "Failed to filter media");
+      setMediaItems([]);
+    } finally {
+      setMediaLoading(false);
+    }
+  };
+
+  const applyMediaSelection = (media) => {
+    if (!media) return;
+
+    if (mediaTarget.type === "subcategory" && mediaTarget.index >= 0) {
+      updateSubcategory(mediaTarget.index, "image", {
+        url: media.optimizedUrl || media.url,
+        publicId: media.publicId || "",
+      });
+      setMediaPickerOpen(false);
+      toast.success("Subcategory image selected from Cloudinary media");
+      return;
+    }
+
+    setEditor((current) => ({
+      ...current,
+      image: {
+        ...(current.image || {}),
+        url: media.optimizedUrl || media.url,
+        publicId: media.publicId || "",
+      },
+    }));
+    setMediaPickerOpen(false);
+    toast.success("Category image selected from Cloudinary media");
   };
 
   const handleSave = async () => {
@@ -400,10 +460,19 @@ export default function CategoriesPage() {
                 </label>
                 <div className="space-y-2 text-sm">
                   <span className="font-medium text-gray-700">Upload category image</span>
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 hover:bg-gray-50">
-                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Upload image
-                    <input type="file" accept="image/*" onChange={handleCategoryImageUpload} className="hidden" />
-                  </label>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 hover:bg-gray-50">
+                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Upload image
+                      <input type="file" accept="image/*" onChange={handleCategoryImageUpload} className="hidden" />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => openMediaPicker({ type: "category", index: -1 })}
+                      className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 hover:bg-gray-50"
+                    >
+                      Select from Cloudinary Media
+                    </button>
+                  </div>
                   {editor.image?.publicId ? <p className="text-xs text-gray-600">Public id: {editor.image.publicId}</p> : null}
                 </div>
               </div>
@@ -456,6 +525,13 @@ export default function CategoriesPage() {
                               {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Upload image
                               <input type="file" accept="image/*" onChange={(event) => handleSubcategoryImageUpload(index, event)} className="hidden" />
                             </label>
+                            <button
+                              type="button"
+                              onClick={() => openMediaPicker({ type: "subcategory", index })}
+                              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            >
+                              Select from Cloudinary Media
+                            </button>
                             {subcategory.image?.url ? (
                               <button
                                 type="button"
@@ -487,6 +563,52 @@ export default function CategoriesPage() {
               </div>
             </section>
           </div>
+
+          {mediaPickerOpen ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+              <div className="w-full max-w-4xl rounded-2xl bg-white p-4 shadow-xl">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h3 className="text-lg font-semibold text-gray-900">Select from Cloudinary Media</h3>
+                  <button
+                    type="button"
+                    onClick={() => setMediaPickerOpen(false)}
+                    className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Close
+                  </button>
+                </div>
+                <input
+                  value={mediaSearch}
+                  onChange={(event) => searchMedia(event.target.value)}
+                  placeholder="Search by filename, public id, or folder"
+                  className="mb-4 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
+                />
+                {mediaLoading ? (
+                  <div className="py-10 text-center text-teal-600"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></div>
+                ) : mediaItems.length === 0 ? (
+                  <p className="py-8 text-center text-gray-600">No media found.</p>
+                ) : (
+                  <div className="grid max-h-[60vh] grid-cols-2 gap-3 overflow-y-auto md:grid-cols-4">
+                    {mediaItems.map((media) => (
+                      <button
+                        key={media.publicId || media._id || media.url}
+                        type="button"
+                        onClick={() => applyMediaSelection(media)}
+                        className="rounded-xl border border-gray-200 p-2 text-left hover:border-teal-400 hover:bg-teal-50"
+                      >
+                        <img
+                          src={media.optimizedUrl || media.url}
+                          alt={media.originalFilename || media.publicId || "media"}
+                          className="h-28 w-full rounded-lg object-cover"
+                        />
+                        <p className="mt-2 truncate text-xs text-gray-700">{media.originalFilename || media.publicId}</p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
         </div>
       )}
     </DashboardLayout>
