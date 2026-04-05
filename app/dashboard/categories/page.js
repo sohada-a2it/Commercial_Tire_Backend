@@ -283,11 +283,11 @@ export default function CategoriesPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-2 text-sm">
                   <span className="font-medium text-gray-700">Image URL</span>
-                  <input value={editor.image?.url || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), url: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                  <input value={editor.image?.url || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), url: event.target.value } }))} placeholder="https://res.cloudinary.com/.../image/upload/..." className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                 </label>
                 <label className="space-y-2 text-sm">
                   <span className="font-medium text-gray-700">Cloudinary public id</span>
-                  <input value={editor.image?.publicId || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), publicId: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                  <input value={editor.image?.publicId || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), publicId: event.target.value } }))} placeholder="asian-import-export/catalog/category-name" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                 </label>
               </div>
 
