@@ -8,6 +8,29 @@ import { createInvoice, getAllInquiries } from "@/services/orderFlowService";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 
+const EMPTY_CUSTOMER = {
+  name: "",
+  email: "",
+  phone: "",
+  companyName: "",
+  address: "",
+  city: "",
+  state: "",
+  zipCode: "",
+  notes: "",
+  paymentMethod: "bank",
+};
+
+const EMPTY_ITEM = {
+  productId: "",
+  name: "",
+  title: "",
+  quantity: 1,
+  unitPrice: 0,
+  discount: 0,
+  image: "",
+};
+
 export default function CreateInvoicePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -20,6 +43,7 @@ export default function CreateInvoicePage() {
   const [selectedInquiryId, setSelectedInquiryId] = useState("");
   const [notes, setNotes] = useState("");
   const [paidAmount, setPaidAmount] = useState(0);
+  const [customerDraft, setCustomerDraft] = useState(EMPTY_CUSTOMER);
   const [editableItems, setEditableItems] = useState([]);
 
   useEffect(() => {
@@ -32,9 +56,7 @@ export default function CreateInvoicePage() {
       try {
         setLoading(true);
         const data = await getAllInquiries();
-        const ready = (data.inquiries || []).filter(
-          (inquiry) => inquiry.status === "quote_accepted" && !inquiry.linkedInvoice
-        );
+        const ready = (data.inquiries || []).filter((inquiry) => !inquiry.linkedInvoice);
         setInquiries(ready);
 
         const defaultId = requestedInquiryId && ready.some((i) => i.id === requestedInquiryId)
@@ -59,16 +81,32 @@ export default function CreateInvoicePage() {
   useEffect(() => {
     if (!selectedInquiry) {
       setEditableItems([]);
+      setCustomerDraft(EMPTY_CUSTOMER);
       setPaidAmount(0);
       return;
     }
+
+    setCustomerDraft({
+      name: selectedInquiry.customer?.name || "",
+      email: selectedInquiry.customer?.email || "",
+      phone: selectedInquiry.customer?.phone || "",
+      companyName: selectedInquiry.customer?.companyName || "",
+      address: selectedInquiry.customer?.address || "",
+      city: selectedInquiry.customer?.city || "",
+      state: selectedInquiry.customer?.state || "",
+      zipCode: selectedInquiry.customer?.zipCode || "",
+      notes: selectedInquiry.customer?.notes || "",
+      paymentMethod: selectedInquiry.paymentMethod || "bank",
+    });
 
     setEditableItems(
       (selectedInquiry.items || []).map((item) => ({
         productId: item.productId || "",
         name: item.name,
+        title: item.title || item.name || "",
         quantity: Number(item.quantity || 0),
         unitPrice: Number(item.unitPrice || 0),
+        discount: Number(item.discount || 0),
         image: item.image || "",
       }))
     );
@@ -79,7 +117,12 @@ export default function CreateInvoicePage() {
   const total = useMemo(
     () =>
       editableItems.reduce(
-        (sum, item) => sum + Number(item.quantity || 0) * Number(item.unitPrice || 0),
+        (sum, item) =>
+          sum +
+          Math.max(
+            Number(item.quantity || 0) * Number(item.unitPrice || 0) - Number(item.discount || 0),
+            0
+          ),
         0
       ),
     [editableItems]
@@ -91,11 +134,23 @@ export default function CreateInvoicePage() {
         itemIndex === index
           ? {
               ...item,
-              [key]: key === "quantity" || key === "unitPrice" ? Number(value || 0) : value,
+              [key]: ["quantity", "unitPrice", "discount"].includes(key) ? Number(value || 0) : value,
             }
           : item
       )
     );
+  };
+
+  const addItem = () => {
+    setEditableItems((prev) => [...prev, { ...EMPTY_ITEM }]);
+  };
+
+  const removeItem = (index) => {
+    setEditableItems((prev) => prev.filter((_, itemIndex) => itemIndex !== index));
+  };
+
+  const updateCustomer = (key, value) => {
+    setCustomerDraft((prev) => ({ ...prev, [key]: value }));
   };
 
   const onGenerateInvoice = async () => {
@@ -109,15 +164,24 @@ export default function CreateInvoicePage() {
       return;
     }
 
+    const requiredCustomerFields = ["name", "email", "phone", "address", "city", "state", "zipCode"];
+    for (const field of requiredCustomerFields) {
+      if (!String(customerDraft[field] || "").trim()) {
+        toast.error(`Please fill customer ${field}`);
+        return;
+      }
+    }
+
     try {
       setSaving(true);
       await createInvoice({
         inquiryId: selectedInquiry.id,
         items: editableItems,
+        customer: customerDraft,
         paidAmount: Number(paidAmount || 0),
         notes,
       });
-      toast.success("Invoice created successfully");
+      toast.success("Invoice created and sent to customer email");
       router.push("/dashboard/my-invoices");
     } catch (error) {
       toast.error(error.message || "Failed to create invoice");
@@ -134,9 +198,9 @@ export default function CreateInvoicePage() {
         {!isAdmin ? (
           <p className="text-gray-600 mt-2">Only admin can create invoices.</p>
         ) : loading ? (
-          <p className="text-gray-600 mt-4">Loading accepted inquiries...</p>
+          <p className="text-gray-600 mt-4">Loading inquiries...</p>
         ) : inquiries.length === 0 ? (
-          <p className="text-gray-600 mt-4">No quote-accepted inquiries available for invoicing.</p>
+          <p className="text-gray-600 mt-4">No pending inquiries available for invoicing.</p>
         ) : (
           <div className="mt-6 space-y-6">
             <div>
@@ -159,15 +223,109 @@ export default function CreateInvoicePage() {
                 <div className="p-4 rounded-md bg-gray-50 border">
                   <p className="font-medium text-gray-900">Customer: {selectedInquiry.customer?.name}</p>
                   <p className="text-gray-600">{selectedInquiry.customer?.email}</p>
-                  <p className="text-gray-600">Quote: ${Number(selectedInquiry.quote?.amount || 0).toFixed(2)}</p>
+                  <p className="text-gray-600">Inquiry Total: ${Number(selectedInquiry.total || 0).toFixed(2)}</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                    <input
+                      value={customerDraft.name}
+                      onChange={(e) => updateCustomer("name", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      value={customerDraft.email}
+                      onChange={(e) => updateCustomer("email", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input
+                      value={customerDraft.phone}
+                      onChange={(e) => updateCustomer("phone", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                    <input
+                      value={customerDraft.companyName}
+                      onChange={(e) => updateCustomer("companyName", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <input
+                      value={customerDraft.address}
+                      onChange={(e) => updateCustomer("address", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                    <input
+                      value={customerDraft.city}
+                      onChange={(e) => updateCustomer("city", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                    <input
+                      value={customerDraft.state}
+                      onChange={(e) => updateCustomer("state", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Zip Code</label>
+                    <input
+                      value={customerDraft.zipCode}
+                      onChange={(e) => updateCustomer("zipCode", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                    <select
+                      value={customerDraft.paymentMethod}
+                      onChange={(e) => updateCustomer("paymentMethod", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    >
+                      <option value="bank">Bank Transfer</option>
+                      <option value="credit-card">Credit Card</option>
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Customer Additional Note</label>
+                    <textarea
+                      rows={3}
+                      value={customerDraft.notes}
+                      onChange={(e) => updateCustomer("notes", e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-3">
                   {editableItems.map((item, index) => (
-                    <div key={`${item.productId}-${index}`} className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div key={`${item.productId || "item"}-${index}`} className="grid grid-cols-1 md:grid-cols-7 gap-3">
                       <input
                         value={item.name}
                         onChange={(e) => updateItem(index, "name", e.target.value)}
+                        placeholder="Product Name"
+                        className="px-3 py-2 border rounded-md bg-white text-gray-900"
+                      />
+                      <input
+                        value={item.title || ""}
+                        onChange={(e) => updateItem(index, "title", e.target.value)}
+                        placeholder="Title"
                         className="px-3 py-2 border rounded-md bg-white text-gray-900"
                       />
                       <input
@@ -175,6 +333,7 @@ export default function CreateInvoicePage() {
                         min="1"
                         value={item.quantity}
                         onChange={(e) => updateItem(index, "quantity", e.target.value)}
+                        placeholder="Qty"
                         className="px-3 py-2 border rounded-md bg-white text-gray-900"
                       />
                       <input
@@ -182,13 +341,41 @@ export default function CreateInvoicePage() {
                         min="0"
                         value={item.unitPrice}
                         onChange={(e) => updateItem(index, "unitPrice", e.target.value)}
+                        placeholder="Unit Price"
+                        className="px-3 py-2 border rounded-md bg-white text-gray-900"
+                      />
+                      <input
+                        type="number"
+                        min="0"
+                        value={item.discount || 0}
+                        onChange={(e) => updateItem(index, "discount", e.target.value)}
+                        placeholder="Discount"
                         className="px-3 py-2 border rounded-md bg-white text-gray-900"
                       />
                       <div className="px-3 py-2 border rounded-md bg-gray-100 text-gray-900">
-                        ${(Number(item.quantity || 0) * Number(item.unitPrice || 0)).toFixed(2)}
+                        ${
+                          Math.max(
+                            Number(item.quantity || 0) * Number(item.unitPrice || 0) - Number(item.discount || 0),
+                            0
+                          ).toFixed(2)
+                        }
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(index)}
+                        className="px-3 py-2 rounded-md bg-rose-100 text-rose-700 hover:bg-rose-200"
+                      >
+                        Remove
+                      </button>
                     </div>
                   ))}
+                  <button
+                    type="button"
+                    onClick={addItem}
+                    className="px-4 py-2 rounded-md bg-blue-100 text-blue-700 hover:bg-blue-200"
+                  >
+                    Add New Product
+                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

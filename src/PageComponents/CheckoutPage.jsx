@@ -29,6 +29,19 @@ const CheckoutPage = () => {
     paymentMethod: "credit-card",
   });
 
+  const parseNumber = (value) => {
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    if (typeof value === "string") {
+      const parsed = Number(value.replace(/[^0-9.-]/g, ""));
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    return 0;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -94,14 +107,19 @@ const CheckoutPage = () => {
         const quantity = Number(item.quantity || 1);
         const lineTotal = Number(calculateItemPrice(item) || 0);
         const unitPrice = quantity > 0 ? lineTotal / quantity : 0;
+        const regularUnitPrice = parseNumber(item.price);
+        const grossLineTotal = regularUnitPrice > 0 ? regularUnitPrice * quantity : lineTotal;
+        const discount = Math.max(grossLineTotal - lineTotal, 0);
 
         return {
           id: item.id,
           productId: item.id,
           name: item.name,
+          title: item.title || item.name,
           image: item.image,
           quantity,
           unitPrice,
+          discount,
           lineTotal,
         };
       });
@@ -115,7 +133,7 @@ const CheckoutPage = () => {
 
       await placeOrderInquiry(orderData);
 
-      toast.success("Order placed! Your inquiry has been sent to admin for quotation.");
+      toast.success("Inquiry sent successfully. Admin will contact you and send invoice.");
       clearCart();
       router.push("/dashboard/my-inquiries");
     } catch (error) {

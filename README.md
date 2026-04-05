@@ -199,4 +199,4 @@ NEXT_PUBLIC_SITE_URL=https://asianimportexport.com
 
 
 
-
+see my product json . my i want to make dashboard management system. the dataset will be like the json i mean the main category will be created and each main category will have sub category too. and the product create and edit model will be like the json formated . the json that have in public/categories.json all will be in the dataset. and the images will be in the cloudinary. when upload cloudinary the image size make less so that performance optimized. in the dashabord of admin/moderator sidebar create a path media there show all of the images have in the cloudinary . there i9mages can be delete or upload new image too and that edit will be happen in cloudinary and other file too. at first take those json to db and cloudinary then crate product,category model,form everything so that whenever i want i can manage product,category from dashabord also can update those too.

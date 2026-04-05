@@ -59,19 +59,6 @@ export const updateInquiryStatus = async (inquiryId, payload) => {
   });
 };
 
-export const markInquiryQuoted = async (inquiryId, payload) => {
-  return apiRequest(`/api/inquiries/${inquiryId}/quote`, {
-    method: "PATCH",
-    body: JSON.stringify(payload),
-  });
-};
-
-export const acceptInquiryQuote = async (inquiryId) => {
-  return apiRequest(`/api/inquiries/${inquiryId}/accept-quote`, {
-    method: "PATCH",
-  });
-};
-
 export const createInvoice = async (payload) => {
   return apiRequest("/api/invoices", {
     method: "POST",
@@ -85,4 +72,25 @@ export const getMyInvoices = async () => {
 
 export const getAllInvoices = async () => {
   return apiRequest("/api/invoices", { method: "GET" });
+};
+
+export const downloadInvoicePdf = async (invoiceId) => {
+  const headers = await buildAuthHeaders();
+  const response = await fetch(`${config.email.backendUrl}/api/invoices/${invoiceId}/pdf`, {
+    method: "GET",
+    headers,
+  });
+
+  if (!response.ok) {
+    let message = `Request failed (${response.status})`;
+    try {
+      const data = await response.json();
+      message = data.message || message;
+    } catch (_error) {
+      // Ignore JSON parsing error for non-JSON response bodies.
+    }
+    throw new Error(message);
+  }
+
+  return response.blob();
 };
