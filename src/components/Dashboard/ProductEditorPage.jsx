@@ -493,7 +493,7 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
             </div>
             <div className="space-y-3">
               {(editor.images || []).map((image, index) => (
-                <div key={`${image.publicId || image.url || index}-${index}`} className="rounded-2xl border border-gray-200 p-4">
+                <div key={`image-${index}`} className="rounded-2xl border border-gray-200 p-4">
                   <div className="flex flex-col gap-3 md:flex-row md:items-start">
                     <img src={image.url || ""} alt={image.alt || `Image ${index + 1}`} className="h-28 w-28 rounded-lg border border-gray-200 object-cover" />
                     <div className="min-w-0 flex-1 space-y-2">
@@ -534,7 +534,7 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
             </div>
             <div className="space-y-3">
               {(editor.pricingTiers || []).map((tier, index) => (
-                <div key={`${index}-${tier.pricePerTire || "tier"}`} className="rounded-2xl border border-gray-200 p-4">
+                <div key={`tier-${index}`} className="rounded-2xl border border-gray-200 p-4">
                   <div className="grid gap-3 md:grid-cols-4">
                     <label className="space-y-2 text-sm">
                       <span className="font-medium text-gray-700">Min qty</span>
@@ -572,7 +572,7 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
               </div>
               <div className="space-y-3">
                 {(editor.customizationOptions || []).map((option, index) => (
-                  <div key={`${option || "option"}-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
+                  <div key={`option-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
                     <input value={option || ""} onChange={(event) => updateArrayField("customizationOptions", index, event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Custom engraving, private label, etc." />
                     <button onClick={() => removeArrayItem("customizationOptions", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
                   </div>
@@ -590,7 +590,7 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
               </div>
               <div className="space-y-3">
                 {(editor.tags || []).map((tag, index) => (
-                  <div key={`${tag || "tag"}-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
+                  <div key={`tag-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
                     <input value={tag || ""} onChange={(event) => updateArrayField("tags", index, event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Industrial, export, heavy-duty" />
                     <button onClick={() => removeArrayItem("tags", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
                   </div>
@@ -609,7 +609,7 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
             </div>
             <div className="space-y-3">
               {keyAttributes.map((attribute, index) => (
-                <div key={`${attribute.key || "attribute"}-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
+                <div key={`attribute-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
                   <input value={attribute.key || ""} onChange={(event) => updateKeyAttribute(index, "key", event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Material" />
                   <input value={attribute.value || ""} onChange={(event) => updateKeyAttribute(index, "value", event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Stainless steel" />
                   <button onClick={() => handleKeyAttributeRemove(index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
@@ -643,7 +643,7 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
             </div>
             <div className="space-y-3">
               {(editor.userReviews || []).map((review, index) => (
-                <div key={`${review.username || "review"}-${index}`} className="rounded-2xl border border-gray-200 p-4">
+                <div key={`review-${index}`} className="rounded-2xl border border-gray-200 p-4">
                   <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                     <label className="space-y-2 text-sm">
                       <span className="font-medium text-gray-700">Name</span>
