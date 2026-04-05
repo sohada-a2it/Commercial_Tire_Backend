@@ -84,6 +84,13 @@ export const fetchProducts = async (filters = {}) => {
   return { success: true, products: data.products || [] };
 };
 
+export const fetchProduct = async (productId) => {
+  const headers = await buildAuthHeaders();
+  const response = await fetch(`${config.email.backendUrl}/api/catalog/products/${productId}`, { headers });
+  const data = await parseResponse(response);
+  return { success: true, product: data.product };
+};
+
 export const saveProduct = async (payload, productId) => {
   const headers = await buildAuthHeaders();
   const response = await fetch(

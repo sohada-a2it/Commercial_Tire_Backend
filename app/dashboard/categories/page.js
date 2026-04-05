@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { deleteCategory, fetchCategories, importCatalog, saveCategory, uploadMedia } from "@/services/catalogService";
-import { Download, Loader2, Plus, RefreshCw, Save, Trash2, Upload } from "lucide-react";
+import { deleteCategory, fetchCategories, saveCategory, uploadMedia } from "@/services/catalogService";
+import { Loader2, Plus, RefreshCw, Save, Trash2, Upload } from "lucide-react";
 import toast from "react-hot-toast";
 
 const createSubcategory = (index = 0) => ({
@@ -42,9 +42,9 @@ export default function CategoriesPage() {
   const [editor, setEditor] = useState(clone(categoryTemplate));
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [syncing, setSyncing] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("main-asc");
 
   const loadCategories = async () => {
     setLoading(true);
@@ -74,14 +74,28 @@ export default function CategoriesPage() {
     }
   }, [categories, selectedId]);
 
-  const filteredCategories = categories.filter((category) => {
-    const query = search.toLowerCase();
-    return (
-      category.name?.toLowerCase().includes(query) ||
-      category.slug?.toLowerCase().includes(query) ||
-      category.icon?.toLowerCase().includes(query)
-    );
-  });
+  const filteredCategories = useMemo(() => {
+    const query = search.toLowerCase().trim();
+    const next = categories.filter((category) => {
+      const matchesMain = category.name?.toLowerCase().includes(query);
+      const matchesSlug = category.slug?.toLowerCase().includes(query);
+      const matchesSub = (category.subcategories || []).some((sub) => sub.name?.toLowerCase().includes(query));
+      return !query || matchesMain || matchesSlug || matchesSub;
+    });
+
+    const sorted = [...next];
+    if (sortBy === "main-desc") {
+      sorted.sort((a, b) => String(b.name || "").localeCompare(String(a.name || "")));
+    } else if (sortBy === "sub-asc") {
+      sorted.sort((a, b) => Number((a.subcategories || []).length) - Number((b.subcategories || []).length));
+    } else if (sortBy === "sub-desc") {
+      sorted.sort((a, b) => Number((b.subcategories || []).length) - Number((a.subcategories || []).length));
+    } else {
+      sorted.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+    }
+
+    return sorted;
+  }, [categories, search, sortBy]);
 
   const handleSelect = (category) => {
     setSelectedId(String(category.id));
@@ -217,20 +231,6 @@ export default function CategoriesPage() {
     await loadCategories();
   };
 
-  const handleImport = async () => {
-    setSyncing(true);
-    const result = await importCatalog();
-    if (!result.success) {
-      toast.error(result.message || "Import failed");
-      setSyncing(false);
-      return;
-    }
-
-    toast.success(`Imported ${result.categoryCount} categories and ${result.productCount} products`);
-    await loadCategories();
-    setSyncing(false);
-  };
-
   return (
     <DashboardLayout>
       {!isStaff ? (
@@ -247,26 +247,33 @@ export default function CategoriesPage() {
             </div>
             <div className="flex flex-wrap gap-3">
               <button onClick={handleNew} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
-                <Plus className="w-4 h-4" /> New
+                <Plus className="w-4 h-4" /> Add Category
               </button>
               <button onClick={loadCategories} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
                 <RefreshCw className="w-4 h-4" /> Refresh
               </button>
-              <button onClick={handleImport} disabled={syncing} className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-white hover:bg-teal-700 disabled:opacity-70">
-                {syncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} Import JSON
-              </button>
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+            <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_260px]">
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search by main or subcategory"
+                className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
+              />
+              <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
+                <option value="main-asc">Sort: Main category A-Z</option>
+                <option value="main-desc">Sort: Main category Z-A</option>
+                <option value="sub-asc">Sort: Subcategory count low-high</option>
+                <option value="sub-desc">Sort: Subcategory count high-low</option>
+              </select>
             </div>
           </div>
 
           <div className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
             <aside className="space-y-4 rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
-              <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search categories"
-                className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
-              />
-
               <div className="max-h-[70vh] space-y-3 overflow-y-auto pr-1">
                 {loading ? (
                   <div className="flex items-center justify-center py-10 text-teal-600">
