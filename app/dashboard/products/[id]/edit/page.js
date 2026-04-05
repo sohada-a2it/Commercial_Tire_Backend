@@ -28,6 +28,7 @@ export async function generateStaticParams() {
   }
 }
 
-export default function EditProductPage({ params }) {
-  return <ProductEditorPage mode="edit" productId={params?.id || ""} />;
+export default async function EditProductPage({ params }) {
+  const resolvedParams = await params;
+  return <ProductEditorPage mode="edit" productId={resolvedParams?.id || ""} />;
 }

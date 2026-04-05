@@ -99,6 +99,8 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
 
   const applyProductToEditor = (selected) => {
     const mergedImages = [selected.image, ...(selected.images || [])].filter((item) => item?.url || item?.publicId);
+    const packagingAndDelivery = selected.packagingAndDelivery || { packaging: "", delivery: "" };
+    const normalizedDelivery = String(packagingAndDelivery.delivery || packagingAndDelivery.deliveryTime || "").trim();
     setEditor({
       ...clone(productTemplate),
       ...selected,
@@ -107,7 +109,11 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
       images: mergedImages.length ? mergedImages : [],
       userReviews: Array.isArray(selected.userReviews) && selected.userReviews.length ? selected.userReviews : [createReview(0)],
       tags: Array.isArray(selected.tags) && selected.tags.length ? selected.tags : [""],
-      packagingAndDelivery: selected.packagingAndDelivery || { packaging: "", delivery: "" },
+      packagingAndDelivery: {
+        ...packagingAndDelivery,
+        delivery: normalizedDelivery,
+        deliveryTime: normalizedDelivery,
+      },
     });
 
     setKeyAttributes(
@@ -274,6 +280,13 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
 
     const payloadPattern = showPatternField ? String(editor.pattern || "").trim() : "";
 
+    const packagingAndDelivery = { ...(editor.packagingAndDelivery || {}) };
+    const deliveryText = String(packagingAndDelivery.delivery || packagingAndDelivery.deliveryTime || "").trim();
+    if (deliveryText) {
+      packagingAndDelivery.delivery = deliveryText;
+      packagingAndDelivery.deliveryTime = deliveryText;
+    }
+
     return {
       ...editor,
       category: categoryId || editor.category || "",
@@ -298,7 +311,7 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
         accumulator[key] = String(item.value ?? "").trim();
         return accumulator;
       }, {}),
-      packagingAndDelivery: editor.packagingAndDelivery || {},
+      packagingAndDelivery,
       isFeatured: Boolean(editor.isFeatured),
       isActive: editor.isActive !== false,
     };
@@ -314,9 +327,8 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
       const result = await saveProduct(payload, isEditMode ? productId : "");
       toast.success(isEditMode ? "Product updated" : "Product created");
 
-      if (!isEditMode && result.product?.id) {
-        const routeId = result.product?.sourceId || result.product?.id;
-        router.push(`/dashboard/products/${routeId}/edit`);
+      if (!isEditMode) {
+        router.push("/dashboard/products");
       }
     } catch (error) {
       toast.error(error.message || "Failed to save product");
@@ -457,6 +469,10 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
             <label className="space-y-2 text-sm md:col-span-2">
               <span className="font-medium text-gray-700">Description</span>
               <textarea value={editor.description || ""} onChange={(event) => updateField("description", event.target.value)} rows={4} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+            </label>
+            <label className="space-y-2 text-sm md:col-span-2">
+              <span className="font-medium text-gray-700">Shipping</span>
+              <textarea value={editor.shipping || ""} onChange={(event) => updateField("shipping", event.target.value)} rows={3} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
             </label>
           </div>
 
@@ -609,7 +625,7 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
             </label>
             <label className="space-y-2 text-sm">
               <span className="font-medium text-gray-700">Delivery</span>
-              <input value={editor.packagingAndDelivery?.delivery || ""} onChange={(event) => setEditor((current) => ({ ...current, packagingAndDelivery: { ...(current.packagingAndDelivery || {}), delivery: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              <input value={editor.packagingAndDelivery?.delivery || editor.packagingAndDelivery?.deliveryTime || ""} onChange={(event) => setEditor((current) => ({ ...current, packagingAndDelivery: { ...(current.packagingAndDelivery || {}), delivery: event.target.value, deliveryTime: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
             </label>
             <label className="space-y-2 text-sm md:col-span-2">
               <span className="font-medium text-gray-700">Price source</span>

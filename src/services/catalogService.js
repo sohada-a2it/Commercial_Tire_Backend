@@ -111,9 +111,18 @@ export const fetchProducts = async (filters = {}) => {
 };
 
 export const fetchProduct = async (productId) => {
+  if (!productId) {
+    throw new Error("Product id is required for edit view");
+  }
+
   const headers = await buildAuthHeaders();
   const response = await fetch(`${config.email.backendUrl}/api/catalog/products/${productId}`, { headers, cache: "no-store" });
   const data = await parseResponse(response);
+
+  if (!data?.product || Array.isArray(data.product)) {
+    throw new Error("Invalid product response for edit view");
+  }
+
   return { success: true, product: data.product };
 };
 

@@ -248,7 +248,7 @@ export default function ProductsPage() {
                               onClick={() => {
                                 setSelectedId(String(product.id));
                                 const routeId = product.sourceId || product.id;
-                                router.push(`/dashboard/products/${routeId}/edit`);
+                                router.push(`/dashboard/products/edit?productId=${routeId}`);
                               }}
                               className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50"
                             >
