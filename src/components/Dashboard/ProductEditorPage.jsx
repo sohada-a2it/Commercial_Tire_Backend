@@ -327,7 +327,7 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
       const result = await saveProduct(payload, isEditMode ? productId : "");
       toast.success(isEditMode ? "Product updated" : "Product created");
 
-      if (!isEditMode) {
+      if (result?.product?.id || isEditMode) {
         router.push("/dashboard/products");
       }
     } catch (error) {
