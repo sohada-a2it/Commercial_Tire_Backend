@@ -1,13 +1,758 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
+import { useAuth } from "@/context/AuthContext";
+import { normalizeRole } from "@/config/dashboardRoutes";
+import { deleteProduct, fetchCategories, fetchProducts, saveProduct, uploadMedia } from "@/services/catalogService";
+import { ImagePlus, Loader2, Plus, RefreshCw, Save, Trash2, Upload } from "lucide-react";
+import toast from "react-hot-toast";
+
+const createPricingTier = (index = 0) => ({
+  minQuantity: index === 0 ? 0 : 1,
+  maxQuantity: "",
+  pricePerTire: "",
+  note: "",
+});
+
+const createReview = (index = 0) => ({
+  username: "",
+  location: "",
+  rating: 5,
+  date: "",
+  title: "",
+  text: "",
+  verified: index === 0,
+});
+
+const createImage = (index = 0) => ({
+  url: "",
+  publicId: "",
+  alt: `Image ${index + 1}`,
+});
+
+const createAttribute = () => ({ key: "", value: "" });
+
+const productTemplate = {
+  name: "New Product",
+  slug: "new-product",
+  sku: "",
+  brand: "",
+  price: "$0.00",
+  offerPrice: "$0.00",
+  pricingTiers: [createPricingTier(0)],
+  customizationOptions: [""],
+  shipping: "",
+  description: "",
+  image: { url: "", publicId: "", alt: "" },
+  images: [createImage(0)],
+  keyAttributes: {},
+  packagingAndDelivery: { packaging: "", delivery: "" },
+  priceSource: "",
+  userReviews: [createReview(0)],
+  tags: [""],
+  isFeatured: false,
+  isActive: true,
+  metadata: {},
+  mainCategory: "",
+  subCategory: "",
+};
+
+const clone = (value) => JSON.parse(JSON.stringify(value));
+
+const cleanStringArray = (items = []) => items.map((item) => String(item).trim()).filter(Boolean);
+
+const cleanImages = (images = []) =>
+  images
+    .map((image, index) => ({
+      url: String(image?.url || "").trim(),
+      publicId: String(image?.publicId || "").trim(),
+      alt: String(image?.alt || `Image ${index + 1}`).trim(),
+    }))
+    .filter((image) => image.url || image.publicId);
 
 export default function ProductsPage() {
+  const { userProfile } = useAuth();
+  const role = normalizeRole(userProfile?.role);
+  const isStaff = useMemo(() => ["admin", "moderator"].includes(role), [role]);
+
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [selectedId, setSelectedId] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [subcategoryId, setSubcategoryId] = useState("");
+  const [editor, setEditor] = useState(clone(productTemplate));
+  const [keyAttributes, setKeyAttributes] = useState([createAttribute()]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const loadData = async () => {
+    setLoading(true);
+    const [categoryResult, productResult] = await Promise.all([fetchCategories(), fetchProducts()]);
+
+    if (categoryResult.success) setCategories(categoryResult.categories || []);
+    else toast.error(categoryResult.message || "Failed to load categories");
+
+    if (productResult.success) setProducts(productResult.products || []);
+    else toast.error(productResult.message || "Failed to load products");
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (isStaff) loadData();
+  }, [isStaff]);
+
+  const selectedCategory = categories.find((item) => String(item.id) === String(categoryId));
+  const subcategories = selectedCategory?.subcategories || [];
+  const selectedSubcategory = subcategories.find((item) => String(item.id) === String(subcategoryId));
+
+  useEffect(() => {
+    const selected = products.find((item) => String(item.id) === String(selectedId));
+    if (selected) {
+      setEditor({
+        ...clone(productTemplate),
+        ...selected,
+        pricingTiers: Array.isArray(selected.pricingTiers) && selected.pricingTiers.length ? selected.pricingTiers : [createPricingTier(0)],
+        customizationOptions: Array.isArray(selected.customizationOptions) && selected.customizationOptions.length ? selected.customizationOptions : [""],
+        images: Array.isArray(selected.images) && selected.images.length ? selected.images : [createImage(0)],
+        userReviews: Array.isArray(selected.userReviews) && selected.userReviews.length ? selected.userReviews : [createReview(0)],
+        tags: Array.isArray(selected.tags) && selected.tags.length ? selected.tags : [""],
+        packagingAndDelivery: selected.packagingAndDelivery || { packaging: "", delivery: "" },
+      });
+
+      setKeyAttributes(
+        selected.keyAttributes && typeof selected.keyAttributes === "object"
+          ? Object.entries(selected.keyAttributes).map(([key, value]) => ({ key, value: String(value ?? "") }))
+          : [createAttribute()]
+      );
+      setCategoryId(String(selected.category || ""));
+      setSubcategoryId(String(selected.subcategoryId || ""));
+    }
+  }, [products, selectedId]);
+
+  const filteredProducts = products.filter((product) => {
+    const query = search.toLowerCase();
+    return (
+      product.name?.toLowerCase().includes(query) ||
+      product.categoryName?.toLowerCase().includes(query) ||
+      product.subcategoryName?.toLowerCase().includes(query) ||
+      product.slug?.toLowerCase().includes(query)
+    );
+  });
+
+  const handleNew = () => {
+    const nextCategory = categories[0];
+    const nextSubcategory = nextCategory?.subcategories?.[0];
+
+    setSelectedId("");
+    setCategoryId(nextCategory?.id ? String(nextCategory.id) : "");
+    setSubcategoryId(nextSubcategory?.id ? String(nextSubcategory.id) : "");
+    setEditor({
+      ...clone(productTemplate),
+      mainCategory: nextCategory?.name || "",
+      subCategory: nextSubcategory?.name || "",
+      category: nextCategory?.id || "",
+      categoryName: nextCategory?.name || "",
+      categoryIcon: nextCategory?.icon || "",
+      subcategoryId: nextSubcategory?.id || "",
+      subcategoryName: nextSubcategory?.name || "",
+      subcategorySlug: nextSubcategory?.slug || "",
+    });
+    setKeyAttributes([createAttribute()]);
+  };
+
+  const handleSelect = (product) => {
+    setSelectedId(String(product.id));
+    setCategoryId(String(product.category || ""));
+    setSubcategoryId(String(product.subcategoryId || ""));
+  };
+
+  const updateField = (field, value) => {
+    setEditor((current) => ({ ...current, [field]: value }));
+  };
+
+  const updateArrayField = (field, index, value) => {
+    setEditor((current) => {
+      const items = [...(current[field] || [])];
+      items[index] = value;
+      return { ...current, [field]: items };
+    });
+  };
+
+  const addArrayItem = (field, factory) => {
+    setEditor((current) => ({ ...current, [field]: [...(current[field] || []), factory((current[field] || []).length)] }));
+  };
+
+  const removeArrayItem = (field, index) => {
+    setEditor((current) => ({ ...current, [field]: (current[field] || []).filter((_item, itemIndex) => itemIndex !== index) }));
+  };
+
+  const updateKeyAttribute = (index, field, value) => {
+    setKeyAttributes((current) => {
+      const items = [...current];
+      items[index] = { ...(items[index] || createAttribute()), [field]: value };
+      return items;
+    });
+  };
+
+  const handleKeyAttributeAdd = () => setKeyAttributes((current) => [...current, createAttribute()]);
+
+  const handleKeyAttributeRemove = (index) => setKeyAttributes((current) => current.filter((_item, itemIndex) => itemIndex !== index));
+
+  const buildPayload = () => {
+    const cleanPricingTiers = (editor.pricingTiers || [])
+      .map((tier) => ({
+        minQuantity: tier.minQuantity === "" ? 0 : Number(tier.minQuantity ?? 0),
+        maxQuantity: tier.maxQuantity === "" ? null : Number(tier.maxQuantity),
+        pricePerTire: String(tier.pricePerTire || "").trim(),
+        note: String(tier.note || "").trim(),
+      }))
+      .filter((tier) => tier.pricePerTire || tier.note || tier.minQuantity || tier.maxQuantity !== null);
+
+    const cleanReviews = (editor.userReviews || [])
+      .map((review) => ({
+        username: String(review.username || "").trim(),
+        location: String(review.location || "").trim(),
+        rating: Number(review.rating || 0),
+        date: String(review.date || "").trim(),
+        title: String(review.title || "").trim(),
+        text: String(review.text || "").trim(),
+        verified: Boolean(review.verified),
+      }))
+      .filter((review) => review.username || review.text || review.title);
+
+    return {
+      ...editor,
+      category: categoryId || editor.category || "",
+      mainCategory: selectedCategory?.name || editor.mainCategory || "",
+      subCategory: selectedSubcategory?.name || editor.subCategory || "",
+      categoryName: selectedCategory?.name || editor.categoryName || "",
+      categoryIcon: selectedCategory?.icon || editor.categoryIcon || "",
+      subcategoryId: subcategoryId ? Number(subcategoryId) : Number(editor.subcategoryId || 0),
+      subcategoryName: selectedSubcategory?.name || editor.subcategoryName || "",
+      subcategorySlug: selectedSubcategory?.slug || editor.subcategorySlug || "",
+      pricingTiers: cleanPricingTiers,
+      customizationOptions: cleanStringArray(editor.customizationOptions || []),
+      images: cleanImages(editor.images || []),
+      tags: cleanStringArray(editor.tags || []),
+      userReviews: cleanReviews,
+      keyAttributes: keyAttributes.reduce((accumulator, item) => {
+        const key = String(item.key || "").trim();
+        if (!key) return accumulator;
+        accumulator[key] = String(item.value ?? "").trim();
+        return accumulator;
+      }, {}),
+      packagingAndDelivery: editor.packagingAndDelivery || {},
+      image: editor.image || { url: "", publicId: "", alt: "" },
+      isFeatured: Boolean(editor.isFeatured),
+      isActive: editor.isActive !== false,
+    };
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const payload = buildPayload();
+      const result = await saveProduct(payload, selectedId || editor.id);
+      toast.success(selectedId ? "Product updated" : "Product created");
+      setSelectedId(String(result.product?.id || payload.id || ""));
+      await loadData();
+    } catch (error) {
+      toast.error(error.message || "Failed to save product");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    const target = products.find((item) => String(item.id) === String(selectedId));
+    if (!target) {
+      toast.error("Select a product to delete");
+      return;
+    }
+
+    if (!confirm(`Delete ${target.name}?`)) return;
+
+    const result = await deleteProduct(target.id);
+    if (!result.success) {
+      toast.error(result.message || "Failed to delete product");
+      return;
+    }
+
+    toast.success("Product deleted");
+    handleNew();
+    await loadData();
+  };
+
+  const handleHeroUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const result = await uploadMedia(file, { relatedType: "product-image" });
+      const media = result.media;
+      setEditor((current) => ({
+        ...current,
+        image: { url: media.optimizedUrl || media.url, publicId: media.publicId, alt: current.name || file.name },
+      }));
+      toast.success("Hero image uploaded to Cloudinary");
+    } catch (error) {
+      toast.error(error.message || "Image upload failed");
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  const handleGalleryUpload = async (event) => {
+    const files = Array.from(event.target.files || []);
+    if (!files.length) return;
+
+    setUploading(true);
+    try {
+      const uploads = await Promise.all(files.map((file) => uploadMedia(file, { relatedType: "product-gallery" })));
+      setEditor((current) => ({
+        ...current,
+        images: [
+          ...(current.images || []),
+          ...uploads.map((result, index) => {
+            const media = result.media;
+            return {
+              url: media.optimizedUrl || media.url,
+              publicId: media.publicId,
+              alt: `${current.name || "Product"} ${index + 1}`,
+            };
+          }),
+        ],
+      }));
+      toast.success("Gallery images uploaded to Cloudinary");
+    } catch (error) {
+      toast.error(error.message || "Gallery upload failed");
+    } finally {
+      setUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  if (!isStaff) {
+    return (
+      <DashboardLayout>
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h1 className="text-2xl font-bold text-gray-800">Access denied</h1>
+          <p className="text-gray-600 mt-2">Staff access is required to manage products.</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold text-gray-800">Product Management</h1>
-        <p className="text-gray-600 mt-2">Moderator product management controls will appear here.</p>
+      <div className="space-y-6 [&_input]:bg-white [&_input]:text-gray-900 [&_input]:placeholder:text-gray-400 [&_input]:border-gray-200 [&_textarea]:bg-white [&_textarea]:text-gray-900 [&_textarea]:placeholder:text-gray-400 [&_textarea]:border-gray-200 [&_select]:bg-white [&_select]:text-gray-900 [&_select]:border-gray-200">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
+            <p className="text-gray-600 mt-1">Edit products with structured fields instead of raw JSON.</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button onClick={handleNew} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
+              <Plus className="w-4 h-4" /> New
+            </button>
+            <button onClick={loadData} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
+              <RefreshCw className="w-4 h-4" /> Refresh
+            </button>
+          </div>
+        </div>
+
+        <div className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
+          <aside className="space-y-4 rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search products"
+              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
+            />
+
+            <div className="max-h-[70vh] space-y-3 overflow-y-auto pr-1">
+              {loading ? (
+                <div className="flex items-center justify-center py-10 text-teal-600">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                </div>
+              ) : filteredProducts.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center text-gray-500">No products found.</div>
+              ) : (
+                filteredProducts.map((product) => {
+                  const active = String(product.id) === String(selectedId);
+                  return (
+                    <button
+                      key={product.id}
+                      onClick={() => handleSelect(product)}
+                      className={`w-full rounded-xl border p-4 text-left transition ${active ? "border-teal-500 bg-teal-50" : "border-gray-200 bg-white hover:border-teal-300"}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="h-14 w-14 overflow-hidden rounded-lg bg-gray-100 flex-shrink-0">
+                          {product.image?.url ? (
+                            <img src={product.image.url} alt={product.name} className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center text-gray-400">
+                              <ImagePlus className="w-5 h-5" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="truncate text-sm font-semibold text-gray-900">{product.name}</div>
+                          <div className="text-xs text-gray-500">{product.categoryName} · {product.subcategoryName}</div>
+                          <div className="mt-1 inline-flex rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">{product.price}</div>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          </aside>
+
+          <section className="space-y-6 rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">Product form</h2>
+                <p className="text-sm text-gray-500">Build product records with clear fields, repeatable arrays, and Cloudinary uploads.</p>
+              </div>
+              <button onClick={handleDelete} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-red-700 hover:bg-red-50">
+                <Trash2 className="w-4 h-4" /> Delete
+              </button>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Category</span>
+                <select
+                  value={categoryId}
+                  onChange={(event) => {
+                    const nextCategoryId = event.target.value;
+                    const nextCategory = categories.find((item) => String(item.id) === String(nextCategoryId));
+                    const nextSubcategory = nextCategory?.subcategories?.[0];
+                    setCategoryId(nextCategoryId);
+                    setSubcategoryId(nextSubcategory?.id ? String(nextSubcategory.id) : "");
+                    setEditor((current) => ({
+                      ...current,
+                      category: nextCategoryId,
+                      mainCategory: nextCategory?.name || "",
+                      categoryName: nextCategory?.name || "",
+                      categoryIcon: nextCategory?.icon || "",
+                      subCategory: nextSubcategory?.name || "",
+                      subcategoryId: nextSubcategory?.id || "",
+                      subcategoryName: nextSubcategory?.name || "",
+                      subcategorySlug: nextSubcategory?.slug || "",
+                    }));
+                  }}
+                  className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
+                >
+                  <option value="">Select category</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>{category.name}</option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Subcategory</span>
+                <select
+                  value={subcategoryId}
+                  onChange={(event) => {
+                    const nextSubcategoryId = event.target.value;
+                    const nextSubcategory = subcategories.find((item) => String(item.id) === String(nextSubcategoryId));
+                    setSubcategoryId(nextSubcategoryId);
+                    setEditor((current) => ({
+                      ...current,
+                      subCategory: nextSubcategory?.name || "",
+                      subcategoryId: nextSubcategoryId,
+                      subcategoryName: nextSubcategory?.name || "",
+                      subcategorySlug: nextSubcategory?.slug || "",
+                    }));
+                  }}
+                  className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
+                >
+                  <option value="">Select subcategory</option>
+                  {subcategories.map((subcategory) => (
+                    <option key={subcategory.id} value={subcategory.id}>{subcategory.name}</option>
+                  ))}
+                </select>
+              </label>
+
+              <div className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Cloudinary</span>
+                <div className="flex flex-wrap gap-2">
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 hover:bg-gray-50">
+                    <Upload className="w-4 h-4" /> Hero image
+                    <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" />
+                  </label>
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 hover:bg-gray-50">
+                    <Upload className="w-4 h-4" /> Gallery
+                    <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="space-y-2 text-sm md:col-span-2">
+                <span className="font-medium text-gray-700">Product name</span>
+                <input value={editor.name || ""} onChange={(event) => updateField("name", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Slug</span>
+                <input value={editor.slug || ""} onChange={(event) => updateField("slug", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">SKU</span>
+                <input value={editor.sku || ""} onChange={(event) => updateField("sku", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Brand</span>
+                <input value={editor.brand || ""} onChange={(event) => updateField("brand", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Price</span>
+                <input value={editor.price || ""} onChange={(event) => updateField("price", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Offer price</span>
+                <input value={editor.offerPrice || ""} onChange={(event) => updateField("offerPrice", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+              <label className="space-y-2 text-sm md:col-span-2">
+                <span className="font-medium text-gray-700">Description</span>
+                <textarea value={editor.description || ""} onChange={(event) => updateField("description", event.target.value)} rows={4} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Hero image URL</span>
+                <input value={editor.image?.url || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), url: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Hero alt text</span>
+                <input value={editor.image?.alt || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), alt: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Gallery images</h3>
+                  <p className="text-sm text-gray-500">Upload to Cloudinary or edit the image URLs directly.</p>
+                </div>
+                <button onClick={() => addArrayItem("images", createImage)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add image</button>
+              </div>
+              <div className="space-y-3">
+                {(editor.images || []).map((image, index) => (
+                  <div key={`${image.publicId || image.url || index}-${index}`} className="rounded-2xl border border-gray-200 p-4">
+                    <div className="grid gap-3 md:grid-cols-3">
+                      <label className="space-y-2 text-sm md:col-span-2">
+                        <span className="font-medium text-gray-700">Image URL</span>
+                        <input value={image.url || ""} onChange={(event) => updateArrayField("images", index, { ...image, url: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm">
+                        <span className="font-medium text-gray-700">Alt text</span>
+                        <input value={image.alt || ""} onChange={(event) => updateArrayField("images", index, { ...image, alt: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm md:col-span-2">
+                        <span className="font-medium text-gray-700">Cloudinary public id</span>
+                        <input value={image.publicId || ""} onChange={(event) => updateArrayField("images", index, { ...image, publicId: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <div className="flex items-end justify-end md:col-span-1">
+                        <button onClick={() => removeArrayItem("images", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Pricing tiers</h3>
+                  <p className="text-sm text-gray-500">Add quantity-based prices for bulk buyers.</p>
+                </div>
+                <button onClick={() => addArrayItem("pricingTiers", createPricingTier)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add tier</button>
+              </div>
+              <div className="space-y-3">
+                {(editor.pricingTiers || []).map((tier, index) => (
+                  <div key={`${index}-${tier.pricePerTire || "tier"}`} className="rounded-2xl border border-gray-200 p-4">
+                    <div className="grid gap-3 md:grid-cols-4">
+                      <label className="space-y-2 text-sm">
+                        <span className="font-medium text-gray-700">Min qty</span>
+                        <input type="number" value={tier.minQuantity ?? ""} onChange={(event) => updateArrayField("pricingTiers", index, { ...tier, minQuantity: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm">
+                        <span className="font-medium text-gray-700">Max qty</span>
+                        <input type="number" value={tier.maxQuantity ?? ""} onChange={(event) => updateArrayField("pricingTiers", index, { ...tier, maxQuantity: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm">
+                        <span className="font-medium text-gray-700">Price per tire</span>
+                        <input value={tier.pricePerTire || ""} onChange={(event) => updateArrayField("pricingTiers", index, { ...tier, pricePerTire: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm">
+                        <span className="font-medium text-gray-700">Note</span>
+                        <input value={tier.note || ""} onChange={(event) => updateArrayField("pricingTiers", index, { ...tier, note: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                    </div>
+                    <div className="mt-3 flex justify-end">
+                      <button onClick={() => removeArrayItem("pricingTiers", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove tier</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Customization options</h3>
+                    <p className="text-sm text-gray-500">List the available custom choices.</p>
+                  </div>
+                  <button onClick={() => addArrayItem("customizationOptions", () => "")} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add option</button>
+                </div>
+                <div className="space-y-3">
+                  {(editor.customizationOptions || []).map((option, index) => (
+                    <div key={`${option || "option"}-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
+                      <input value={option || ""} onChange={(event) => updateArrayField("customizationOptions", index, event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Custom engraving, private label, etc." />
+                      <button onClick={() => removeArrayItem("customizationOptions", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Tags</h3>
+                    <p className="text-sm text-gray-500">Short labels used for search and filtering.</p>
+                  </div>
+                  <button onClick={() => addArrayItem("tags", () => "")} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add tag</button>
+                </div>
+                <div className="space-y-3">
+                  {(editor.tags || []).map((tag, index) => (
+                    <div key={`${tag || "tag"}-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
+                      <input value={tag || ""} onChange={(event) => updateArrayField("tags", index, event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Industrial, export, heavy-duty" />
+                      <button onClick={() => removeArrayItem("tags", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Key attributes</h3>
+                  <p className="text-sm text-gray-500">Use simple key/value pairs instead of raw objects.</p>
+                </div>
+                <button onClick={handleKeyAttributeAdd} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add attribute</button>
+              </div>
+              <div className="space-y-3">
+                {keyAttributes.map((attribute, index) => (
+                  <div key={`${attribute.key || "attribute"}-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
+                    <input value={attribute.key || ""} onChange={(event) => updateKeyAttribute(index, "key", event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Material" />
+                    <input value={attribute.value || ""} onChange={(event) => updateKeyAttribute(index, "value", event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Stainless steel" />
+                    <button onClick={() => handleKeyAttributeRemove(index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Packaging</span>
+                <input value={editor.packagingAndDelivery?.packaging || ""} onChange={(event) => setEditor((current) => ({ ...current, packagingAndDelivery: { ...(current.packagingAndDelivery || {}), packaging: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+              <label className="space-y-2 text-sm">
+                <span className="font-medium text-gray-700">Delivery</span>
+                <input value={editor.packagingAndDelivery?.delivery || ""} onChange={(event) => setEditor((current) => ({ ...current, packagingAndDelivery: { ...(current.packagingAndDelivery || {}), delivery: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+              <label className="space-y-2 text-sm md:col-span-2">
+                <span className="font-medium text-gray-700">Price source</span>
+                <input value={editor.priceSource || ""} onChange={(event) => updateField("priceSource", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">User reviews</h3>
+                  <p className="text-sm text-gray-500">Capture review cards from the source catalog.</p>
+                </div>
+                <button onClick={() => addArrayItem("userReviews", createReview)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add review</button>
+              </div>
+              <div className="space-y-3">
+                {(editor.userReviews || []).map((review, index) => (
+                  <div key={`${review.username || "review"}-${index}`} className="rounded-2xl border border-gray-200 p-4">
+                    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                      <label className="space-y-2 text-sm">
+                        <span className="font-medium text-gray-700">Name</span>
+                        <input value={review.username || ""} onChange={(event) => updateArrayField("userReviews", index, { ...review, username: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm">
+                        <span className="font-medium text-gray-700">Location</span>
+                        <input value={review.location || ""} onChange={(event) => updateArrayField("userReviews", index, { ...review, location: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm">
+                        <span className="font-medium text-gray-700">Rating</span>
+                        <input type="number" min="0" max="5" step="0.1" value={review.rating ?? 0} onChange={(event) => updateArrayField("userReviews", index, { ...review, rating: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm">
+                        <span className="font-medium text-gray-700">Date</span>
+                        <input value={review.date || ""} onChange={(event) => updateArrayField("userReviews", index, { ...review, date: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm md:col-span-2 lg:col-span-2">
+                        <span className="font-medium text-gray-700">Title</span>
+                        <input value={review.title || ""} onChange={(event) => updateArrayField("userReviews", index, { ...review, title: event.target.value })} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-2 text-sm md:col-span-2 lg:col-span-3">
+                        <span className="font-medium text-gray-700">Review text</span>
+                        <textarea value={review.text || ""} onChange={(event) => updateArrayField("userReviews", index, { ...review, text: event.target.value })} rows={3} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700">
+                        <input type="checkbox" checked={Boolean(review.verified)} onChange={(event) => updateArrayField("userReviews", index, { ...review, verified: event.target.checked })} />
+                        Verified buyer
+                      </label>
+                      <div className="flex items-end justify-end">
+                        <button onClick={() => removeArrayItem("userReviews", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700">
+                <input type="checkbox" checked={Boolean(editor.isFeatured)} onChange={(event) => updateField("isFeatured", event.target.checked)} />
+                Featured product
+              </label>
+              <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700">
+                <input type="checkbox" checked={editor.isActive !== false} onChange={(event) => updateField("isActive", event.target.checked)} />
+                Active
+              </label>
+            </div>
+
+            <div className="flex items-center justify-end">
+              <button
+                onClick={handleSave}
+                disabled={saving || uploading}
+                className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-white hover:bg-black disabled:opacity-70"
+              >
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {uploading ? "Uploading..." : "Save product"}
+              </button>
+            </div>
+          </section>
+        </div>
       </div>
     </DashboardLayout>
   );

@@ -10,6 +10,7 @@ import {
   UserPlus,
   Shapes,
   Newspaper,
+  Images,
 } from "lucide-react";
 
 export const normalizeRole = (role) => {
@@ -27,6 +28,7 @@ export const sidebarRoutesByRole = {
     { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
+    { icon: Images, label: "Media Library", href: "/dashboard/media" },
     { icon: Users, label: "Customer A-Z", href: "/dashboard/users" },
         { icon: UserCog, label: "Authorized Persons", href: "/dashboard/authorized-persons" },
 
@@ -36,6 +38,7 @@ export const sidebarRoutesByRole = {
     { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
+    { icon: Images, label: "Media Library", href: "/dashboard/media" },
   ],
   customer: [
     { icon: LayoutDashboard, label: "Customer Dashboard", href: "/dashboard" },
@@ -51,6 +54,7 @@ export const roleAllowedRoutePrefixes = {
     "/dashboard",
     "/dashboard/categories",
     "/dashboard/products",
+    "/dashboard/media",
     "/dashboard/inquiries",
     "/dashboard/blogs",
     "/dashboard/settings",
@@ -80,6 +84,7 @@ const disallowedRootChildrenByRole = {
     "/dashboard/create-invoice",
     "/dashboard/categories",
     "/dashboard/products",
+    "/dashboard/media",
     "/dashboard/inquiries",
     "/dashboard/blogs",
   ],
