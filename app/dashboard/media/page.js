@@ -76,7 +76,7 @@ export default function MediaPage() {
       <DashboardLayout>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold text-gray-800">Access denied</h1>
-          <p className="text-gray-600 mt-2">Staff access is required to manage media.</p>
+          <p className="text-gray-700 mt-2">Staff access is required to manage media.</p>
         </div>
       </DashboardLayout>
     );
@@ -88,7 +88,7 @@ export default function MediaPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Media Library</h1>
-            <p className="text-gray-600 mt-1">Upload and remove Cloudinary assets used across the catalog.</p>
+            <p className="text-gray-700 mt-1">Upload and remove Cloudinary assets used across the catalog.</p>
           </div>
           <div className="flex flex-wrap gap-3">
             <button onClick={loadMedia} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
@@ -109,7 +109,7 @@ export default function MediaPage() {
               placeholder="Search by file name or public id"
               className="w-full md:max-w-md rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
             />
-            <div className="text-sm text-gray-500">{media.length} asset{media.length === 1 ? "" : "s"}</div>
+            <div className="text-sm text-gray-700">{media.length} asset{media.length === 1 ? "" : "s"}</div>
           </div>
 
           {loading ? (
@@ -117,8 +117,8 @@ export default function MediaPage() {
               <Loader2 className="w-8 h-8 animate-spin" />
             </div>
           ) : media.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-500">
-              <ImagePlus className="mx-auto mb-3 w-8 h-8 text-gray-400" />
+            <div className="rounded-2xl border border-dashed border-gray-300 p-10 text-center text-gray-700">
+              <ImagePlus className="mx-auto mb-3 w-8 h-8 text-gray-600" />
               No media assets found.
             </div>
           ) : (
@@ -131,9 +131,9 @@ export default function MediaPage() {
                   <div className="space-y-3 p-4">
                     <div>
                       <h3 className="truncate font-semibold text-gray-900">{asset.originalFilename || asset.publicId}</h3>
-                      <p className="truncate text-xs text-gray-500">{asset.publicId}</p>
+                      <p className="truncate text-xs text-gray-700">{asset.publicId}</p>
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-700">
                       <p>{Math.round((asset.bytes || 0) / 1024)} KB</p>
                       <p>{asset.width || 0} x {asset.height || 0}</p>
                     </div>

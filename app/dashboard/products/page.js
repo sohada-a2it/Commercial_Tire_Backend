@@ -343,7 +343,7 @@ export default function ProductsPage() {
       <DashboardLayout>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold text-gray-800">Access denied</h1>
-          <p className="text-gray-600 mt-2">Staff access is required to manage products.</p>
+          <p className="text-gray-700 mt-2">Staff access is required to manage products.</p>
         </div>
       </DashboardLayout>
     );
@@ -355,7 +355,7 @@ export default function ProductsPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Product Management</h1>
-            <p className="text-gray-600 mt-1">Edit products with structured fields instead of raw JSON.</p>
+            <p className="text-gray-700 mt-1">Edit products with structured fields instead of raw JSON.</p>
           </div>
           <div className="flex flex-wrap gap-3">
             <button onClick={handleNew} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
@@ -382,7 +382,7 @@ export default function ProductsPage() {
                   <Loader2 className="w-6 h-6 animate-spin" />
                 </div>
               ) : filteredProducts.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center text-gray-500">No products found.</div>
+                <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center text-gray-700">No products found.</div>
               ) : (
                 filteredProducts.map((product) => {
                   const active = String(product.id) === String(selectedId);
@@ -397,15 +397,15 @@ export default function ProductsPage() {
                           {product.image?.url ? (
                             <img src={product.image.url} alt={product.name} className="h-full w-full object-cover" />
                           ) : (
-                            <div className="flex h-full w-full items-center justify-center text-gray-400">
+                            <div className="flex h-full w-full items-center justify-center text-gray-600">
                               <ImagePlus className="w-5 h-5" />
                             </div>
                           )}
                         </div>
                         <div className="min-w-0">
                           <div className="truncate text-sm font-semibold text-gray-900">{product.name}</div>
-                          <div className="text-xs text-gray-500">{product.categoryName} · {product.subcategoryName}</div>
-                          <div className="mt-1 inline-flex rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">{product.price}</div>
+                          <div className="text-xs text-gray-700">{product.categoryName} · {product.subcategoryName}</div>
+                          <div className="mt-1 inline-flex rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700">{product.price}</div>
                         </div>
                       </div>
                     </button>
@@ -419,7 +419,7 @@ export default function ProductsPage() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">Product form</h2>
-                <p className="text-sm text-gray-500">Build product records with clear fields, repeatable arrays, and Cloudinary uploads.</p>
+                <p className="text-sm text-gray-700">Build product records with clear fields, repeatable arrays, and Cloudinary uploads.</p>
               </div>
               <button onClick={handleDelete} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-red-700 hover:bg-red-50">
                 <Trash2 className="w-4 h-4" /> Delete
@@ -486,12 +486,12 @@ export default function ProductsPage() {
               <div className="space-y-2 text-sm">
                 <span className="font-medium text-gray-700">Cloudinary</span>
                 <div className="flex flex-wrap gap-2">
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 hover:bg-gray-50">
-                    <Upload className="w-4 h-4" /> Hero image
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-700 hover:bg-gray-50">
+                    <Upload className="w-4 h-4 text-gray-700" /> Hero image
                     <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" />
                   </label>
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 hover:bg-gray-50">
-                    <Upload className="w-4 h-4" /> Gallery
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-700 hover:bg-gray-50">
+                    <Upload className="w-4 h-4 text-gray-700" /> Gallery
                     <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" />
                   </label>
                 </div>
@@ -544,9 +544,9 @@ export default function ProductsPage() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">Gallery images</h3>
-                  <p className="text-sm text-gray-500">Upload to Cloudinary or edit the image URLs directly.</p>
+                  <p className="text-sm text-gray-700">Upload to Cloudinary or edit the image URLs directly.</p>
                 </div>
-                <button onClick={() => addArrayItem("images", createImage)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add image</button>
+                  <button onClick={() => addArrayItem("images", createImage)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add image</button>
               </div>
               <div className="space-y-3">
                 {(editor.images || []).map((image, index) => (
@@ -577,9 +577,9 @@ export default function ProductsPage() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">Pricing tiers</h3>
-                  <p className="text-sm text-gray-500">Add quantity-based prices for bulk buyers.</p>
+                  <p className="text-sm text-gray-700">Add quantity-based prices for bulk buyers.</p>
                 </div>
-                <button onClick={() => addArrayItem("pricingTiers", createPricingTier)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add tier</button>
+                <button onClick={() => addArrayItem("pricingTiers", createPricingTier)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add tier</button>
               </div>
               <div className="space-y-3">
                 {(editor.pricingTiers || []).map((tier, index) => (
@@ -615,9 +615,9 @@ export default function ProductsPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Customization options</h3>
-                    <p className="text-sm text-gray-500">List the available custom choices.</p>
+                    <p className="text-sm text-gray-700">List the available custom choices.</p>
                   </div>
-                  <button onClick={() => addArrayItem("customizationOptions", () => "")} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add option</button>
+                  <button onClick={() => addArrayItem("customizationOptions", () => "")} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add option</button>
                 </div>
                 <div className="space-y-3">
                   {(editor.customizationOptions || []).map((option, index) => (
@@ -633,9 +633,9 @@ export default function ProductsPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Tags</h3>
-                    <p className="text-sm text-gray-500">Short labels used for search and filtering.</p>
+                    <p className="text-sm text-gray-700">Short labels used for search and filtering.</p>
                   </div>
-                  <button onClick={() => addArrayItem("tags", () => "")} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add tag</button>
+                  <button onClick={() => addArrayItem("tags", () => "")} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add tag</button>
                 </div>
                 <div className="space-y-3">
                   {(editor.tags || []).map((tag, index) => (
@@ -652,9 +652,9 @@ export default function ProductsPage() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">Key attributes</h3>
-                  <p className="text-sm text-gray-500">Use simple key/value pairs instead of raw objects.</p>
+                  <p className="text-sm text-gray-700">Use simple key/value pairs instead of raw objects.</p>
                 </div>
-                <button onClick={handleKeyAttributeAdd} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add attribute</button>
+                <button onClick={handleKeyAttributeAdd} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add attribute</button>
               </div>
               <div className="space-y-3">
                 {keyAttributes.map((attribute, index) => (
@@ -686,9 +686,9 @@ export default function ProductsPage() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">User reviews</h3>
-                  <p className="text-sm text-gray-500">Capture review cards from the source catalog.</p>
+                  <p className="text-sm text-gray-700">Capture review cards from the source catalog.</p>
                 </div>
-                <button onClick={() => addArrayItem("userReviews", createReview)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add review</button>
+                <button onClick={() => addArrayItem("userReviews", createReview)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add review</button>
               </div>
               <div className="space-y-3">
                 {(editor.userReviews || []).map((review, index) => (

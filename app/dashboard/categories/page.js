@@ -184,14 +184,14 @@ export default function CategoriesPage() {
       {!isStaff ? (
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold text-gray-800">Access denied</h1>
-          <p className="text-gray-600 mt-2">Staff access is required to manage catalog data.</p>
+          <p className="text-gray-700 mt-2">Staff access is required to manage catalog data.</p>
         </div>
       ) : (
         <div className="space-y-6 [&_input]:bg-white [&_input]:text-gray-900 [&_input]:placeholder:text-gray-400 [&_input]:border-gray-200 [&_textarea]:bg-white [&_textarea]:text-gray-900 [&_textarea]:placeholder:text-gray-400 [&_textarea]:border-gray-200 [&_select]:bg-white [&_select]:text-gray-900 [&_select]:border-gray-200">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Category Management</h1>
-              <p className="text-gray-600 mt-1">Use the form to manage main categories and subcategories without editing raw JSON.</p>
+              <p className="text-gray-700 mt-1">Use the form to manage main categories and subcategories without editing raw JSON.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <button onClick={handleNew} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
@@ -221,7 +221,7 @@ export default function CategoriesPage() {
                     <Loader2 className="w-6 h-6 animate-spin" />
                   </div>
                 ) : filteredCategories.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center text-gray-500">No categories found.</div>
+                  <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center text-gray-700">No categories found.</div>
                 ) : (
                   filteredCategories.map((category) => {
                     const active = String(category.id) === String(selectedId);
@@ -234,9 +234,9 @@ export default function CategoriesPage() {
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <div className="text-lg font-semibold text-gray-900">{category.icon || "•"} {category.name}</div>
-                            <div className="text-sm text-gray-500">{category.subcategories?.length || 0} subcategories</div>
+                            <div className="text-sm text-gray-700">{category.subcategories?.length || 0} subcategories</div>
                           </div>
-                          <div className="text-xs rounded-full bg-gray-100 px-2 py-1 text-gray-600">{category.slug}</div>
+                          <div className="text-xs rounded-full bg-gray-100 px-2 py-1 text-gray-700">{category.slug}</div>
                         </div>
                       </button>
                     );
@@ -249,7 +249,7 @@ export default function CategoriesPage() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">Category form</h2>
-                  <p className="text-sm text-gray-500">Edit the category title, icon, and subcategories in plain fields.</p>
+                  <p className="text-sm text-gray-700">Edit the category title, icon, and subcategories in plain fields.</p>
                 </div>
                 <button onClick={handleDelete} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-red-700 hover:bg-red-50">
                   <Trash2 className="w-4 h-4" /> Delete
@@ -295,9 +295,9 @@ export default function CategoriesPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Subcategories</h3>
-                    <p className="text-sm text-gray-500">Each main category can contain multiple subcategories.</p>
+                    <p className="text-sm text-gray-700">Each main category can contain multiple subcategories.</p>
                   </div>
-                  <button onClick={addSubcategory} className="rounded-lg border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">Add subcategory</button>
+                  <button onClick={addSubcategory} className="rounded-lg border text-gray-900 border-teal-200 bg-teal-50 px-4 py-2 text-sm hover:bg-teal-200">Add subcategory</button>
                 </div>
 
                 <div className="space-y-4">
