@@ -315,7 +315,8 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
       toast.success(isEditMode ? "Product updated" : "Product created");
 
       if (!isEditMode && result.product?.id) {
-        router.push(`/dashboard/products/${result.product.id}/edit`);
+        const routeId = result.product?.sourceId || result.product?.id;
+        router.push(`/dashboard/products/${routeId}/edit`);
       }
     } catch (error) {
       toast.error(error.message || "Failed to save product");

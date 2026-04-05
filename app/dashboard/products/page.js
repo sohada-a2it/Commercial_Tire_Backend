@@ -151,12 +151,12 @@ export default function ProductsPage() {
         </div>
 
         <section className="space-y-4 rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
+          <div className="flex flex-nowrap items-center gap-3 overflow-x-auto pb-1">
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search products"
-              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 md:col-span-2 xl:col-span-2"
+              className="w-[280px] min-w-[280px] rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
             />
             <select
               value={filterCategory}
@@ -165,28 +165,36 @@ export default function ProductsPage() {
                 setFilterSubcategory("all");
                 setFilterPattern("all");
               }}
-              className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500"
+              className="w-[220px] min-w-[220px] rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500"
             >
               {categoryOptions.map((value) => (
                 <option key={value} value={value}>{value === "all" ? "All categories" : value}</option>
               ))}
             </select>
-            <select value={filterSubcategory} onChange={(event) => setFilterSubcategory(event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+            <select value={filterSubcategory} onChange={(event) => setFilterSubcategory(event.target.value)} className="w-[220px] min-w-[220px] rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
               {subcategoryOptions.map((value) => (
                 <option key={value} value={value}>{value === "all" ? "All subcategories" : value}</option>
               ))}
             </select>
             {isVehicleCategorySelected ? (
-              <select value={filterPattern} onChange={(event) => setFilterPattern(event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+              <select value={filterPattern} onChange={(event) => setFilterPattern(event.target.value)} className="w-[220px] min-w-[220px] rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
                 {patternOptions.map((value) => (
                   <option key={value} value={value}>{value === "all" ? "All patterns" : value}</option>
                 ))}
               </select>
             ) : null}
-            <select value={filterBrand} onChange={(event) => setFilterBrand(event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+            <select value={filterBrand} onChange={(event) => setFilterBrand(event.target.value)} className="w-[220px] min-w-[220px] rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
               {brandOptions.map((value) => (
                 <option key={value} value={value}>{value === "all" ? "All brands" : value}</option>
               ))}
+            </select>
+
+            <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="w-[200px] min-w-[200px] rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+              <option value="newest">Sort: Newest</option>
+              <option value="name-asc">Sort: Name A-Z</option>
+              <option value="name-desc">Sort: Name Z-A</option>
+              <option value="brand-asc">Sort: Brand A-Z</option>
+              <option value="brand-desc">Sort: Brand Z-A</option>
             </select>
           </div>
 
@@ -194,13 +202,7 @@ export default function ProductsPage() {
             <div className="text-sm text-gray-700">
               Total: <strong>{pagination.total || 0}</strong>
             </div>
-            <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
-              <option value="newest">Sort: Newest</option>
-              <option value="name-asc">Sort: Name A-Z</option>
-              <option value="name-desc">Sort: Name Z-A</option>
-              <option value="brand-asc">Sort: Brand A-Z</option>
-              <option value="brand-desc">Sort: Brand Z-A</option>
-            </select>
+            <div className="text-sm text-gray-700">20 products per page</div>
           </div>
 
           <div className="max-h-[58vh] overflow-auto rounded-xl border border-gray-200">
@@ -245,7 +247,8 @@ export default function ProductsPage() {
                             <button
                               onClick={() => {
                                 setSelectedId(String(product.id));
-                                router.push(`/dashboard/products/${product.id}/edit`);
+                                const routeId = product.sourceId || product.id;
+                                router.push(`/dashboard/products/${routeId}/edit`);
                               }}
                               className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50"
                             >
