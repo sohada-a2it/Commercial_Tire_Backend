@@ -232,10 +232,19 @@ export default function InquiriesPage() {
                       <button type="button" onClick={() => setActiveInquiry(inquiry)} className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800">
                         <Eye className="h-4 w-4" /> View
                       </button>
-                      {isAdmin && !inquiry.linkedInvoice ? (
-                        <Link href={`/dashboard/create-invoice?inquiryId=${inquiry.id}`} className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-700">
-                          Create invoice <ChevronRight className="h-4 w-4" />
-                        </Link>
+                      {isAdmin ? (
+                        inquiry.linkedInvoice ? (
+                          <Link
+                            href={`/dashboard/invoices`}
+                            className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-700"
+                          >
+                            Invoice Created
+                          </Link>
+                        ) : (
+                          <Link href={`/dashboard/create-invoice?inquiryId=${inquiry.id}`} className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-700">
+                            Create invoice <ChevronRight className="h-4 w-4" />
+                          </Link>
+                        )
                       ) : null}
                       {isAdmin ? (
                         <button
@@ -336,10 +345,20 @@ export default function InquiriesPage() {
                     <div className="rounded-3xl bg-slate-950 p-5 text-white">
                       <p className="text-sm uppercase tracking-[0.25em] text-slate-300">Actions</p>
                       <div className="mt-4 flex flex-col gap-3">
-                        {isAdmin && !activeInquiry.linkedInvoice ? (
-                          <Link href={`/dashboard/create-invoice?inquiryId=${activeInquiry.id}`} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-700">
-                            Create invoice <ChevronRight className="h-4 w-4" />
-                          </Link>
+                        {isAdmin ? (
+                          activeInquiry.linkedInvoice ? (
+                            <button
+                              type="button"
+                              disabled
+                              className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm font-medium text-emerald-200"
+                            >
+                              Invoice Created
+                            </button>
+                          ) : (
+                            <Link href={`/dashboard/create-invoice?inquiryId=${activeInquiry.id}`} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-medium text-white hover:bg-emerald-700">
+                              Create invoice <ChevronRight className="h-4 w-4" />
+                            </Link>
+                          )
                         ) : null}
                         {isAdmin ? (
                           <button
