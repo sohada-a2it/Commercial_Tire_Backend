@@ -1169,6 +1169,7 @@ export default function CreateInvoicePage() {
                       </label>
                       <label className="block text-sm font-medium text-slate-700">
                         Bank details
+
                         <textarea
                           rows={3}
                           value={invoiceMeta.bankDetails}
