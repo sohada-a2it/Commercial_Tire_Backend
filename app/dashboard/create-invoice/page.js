@@ -28,11 +28,13 @@ const EMPTY_ITEM = {
   productId: "",
   name: "",
   title: "",
+  brand: "",
+  pattern: "",
   categoryName: "",
   ply: "",
+  pricingTiers: [],
   quantity: 1,
   unitPrice: 0,
-  discount: 0,
   image: "",
 };
 
@@ -112,6 +114,47 @@ const getProductUnitPrice = (product) => {
     if (parsed > 0) return parsed;
   }
   return 0;
+};
+
+const normalizePricingTiers = (tiers = []) => {
+  if (!Array.isArray(tiers)) return [];
+
+  return tiers
+    .map((tier) => {
+      const minQuantity = Math.max(Math.floor(toSafeNumber(tier?.minQuantity)), 0);
+      const maxQuantity = Math.max(Math.floor(toSafeNumber(tier?.maxQuantity)), 0);
+      const unitPrice = toSafeNumber(tier?.pricePerTire ?? tier?.price);
+
+      return {
+        minQuantity,
+        maxQuantity,
+        unitPrice,
+      };
+    })
+    .filter((tier) => tier.unitPrice > 0)
+    .sort((a, b) => a.minQuantity - b.minQuantity);
+};
+
+const resolveTierUnitPrice = ({ quantity, pricingTiers = [], fallbackPrice = 0 }) => {
+  const qty = Math.max(Math.floor(toSafeNumber(quantity)), 0);
+  const fallback = toSafeNumber(fallbackPrice);
+
+  if (!Array.isArray(pricingTiers) || pricingTiers.length === 0 || qty <= 0) {
+    return fallback;
+  }
+
+  const matchingTier = pricingTiers.find((tier) => {
+    const min = Math.max(Math.floor(toSafeNumber(tier.minQuantity)), 0);
+    const max = Math.max(Math.floor(toSafeNumber(tier.maxQuantity)), 0);
+
+    if (max > 0) {
+      return qty >= min && qty <= max;
+    }
+
+    return qty >= min;
+  });
+
+  return matchingTier ? toSafeNumber(matchingTier.unitPrice) : fallback;
 };
 
 const formatCurrency = (value) => `$${toSafeNumber(value).toFixed(2)}`;
@@ -225,7 +268,7 @@ export default function CreateInvoicePage() {
   const productSubtotal = useMemo(
     () =>
       editableItems.reduce(
-        (sum, item) => sum + Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0) - Number(item.discount || 0), 0),
+        (sum, item) => sum + Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0), 0),
         0
       ),
     [editableItems]
@@ -292,11 +335,13 @@ export default function CreateInvoicePage() {
       productId: item.productId || "",
       name: item.name,
       title: item.title || item.name || "",
+      brand: item.brand || "",
+      pattern: item.pattern || "",
       categoryName: item.categoryName || "",
       ply: item.ply || "",
+      pricingTiers: [],
       quantity: normalizePositiveInteger(item.quantity || 1),
       unitPrice: toSafeNumber(item.unitPrice || 0),
-      discount: toSafeNumber(item.discount || 0),
       image: item.image || "",
     }));
 
@@ -305,7 +350,7 @@ export default function CreateInvoicePage() {
     const enrichItemsFromCatalog = async () => {
       const enrichedItems = await Promise.all(
         baseItems.map(async (item) => {
-          if (!item.productId || item.categoryName) {
+          if (!item.productId) {
             return item;
           }
 
@@ -314,10 +359,23 @@ export default function CreateInvoicePage() {
             const product = data?.product;
             if (!product) return item;
 
+            const productTiers = normalizePricingTiers(product.pricingTiers || []);
+            const fallbackUnitPrice = getProductUnitPrice(product) || item.unitPrice;
+            const quantity = item.quantity;
+            const computedUnitPrice = resolveTierUnitPrice({
+              quantity,
+              pricingTiers: productTiers,
+              fallbackPrice: fallbackUnitPrice,
+            });
+
             return {
               ...item,
+              brand: product.brand || item.brand || "",
+              pattern: product.pattern || item.pattern || "",
               categoryName: product.categoryName || product.mainCategory || item.categoryName || "",
               ply: item.ply || String(product?.keyAttributes?.ply || ""),
+              pricingTiers: productTiers,
+              unitPrice: computedUnitPrice > 0 ? computedUnitPrice : item.unitPrice,
             };
           } catch {
             return item;
@@ -377,14 +435,29 @@ export default function CreateInvoicePage() {
     setEditableItems((prev) =>
       prev.map((item, itemIndex) =>
         itemIndex === index
-          ? {
-              ...item,
-              [key]: key === "quantity"
-                ? normalizePositiveInteger(value)
-                : ["unitPrice", "discount"].includes(key)
+          ? (() => {
+              if (key === "quantity") {
+                const normalizedQty = normalizePositiveInteger(value);
+                const autoUnitPrice = resolveTierUnitPrice({
+                  quantity: normalizedQty,
+                  pricingTiers: item.pricingTiers,
+                  fallbackPrice: item.unitPrice,
+                });
+
+                return {
+                  ...item,
+                  quantity: normalizedQty,
+                  unitPrice: autoUnitPrice,
+                };
+              }
+
+              return {
+                ...item,
+                [key]: ["unitPrice"].includes(key)
                   ? normalizeNonNegativeNumber(value)
                   : value,
-            }
+              };
+            })()
           : item
       )
     );
@@ -393,7 +466,12 @@ export default function CreateInvoicePage() {
   const addProduct = (product) => {
     if (!product) return;
 
-    const unitPrice = getProductUnitPrice(product);
+    const productTiers = normalizePricingTiers(product.pricingTiers || []);
+    const unitPrice = resolveTierUnitPrice({
+      quantity: 1,
+      pricingTiers: productTiers,
+      fallbackPrice: getProductUnitPrice(product),
+    });
     const image = getProductImage(product);
 
     setEditableItems((prev) => {
@@ -402,7 +480,16 @@ export default function CreateInvoicePage() {
       if (existingIndex >= 0) {
         return prev.map((item, index) =>
           index === existingIndex
-            ? { ...item, quantity: Number(item.quantity || 0) + 1 }
+            ? (() => {
+                const nextQuantity = Number(item.quantity || 0) + 1;
+                const nextUnitPrice = resolveTierUnitPrice({
+                  quantity: nextQuantity,
+                  pricingTiers: item.pricingTiers,
+                  fallbackPrice: item.unitPrice,
+                });
+
+                return { ...item, quantity: nextQuantity, unitPrice: nextUnitPrice };
+              })()
             : item
         );
       }
@@ -413,11 +500,13 @@ export default function CreateInvoicePage() {
           productId: String(product.id),
           name: product.name || "Product",
           title: product.name || product.title || "",
+          brand: product.brand || "",
+          pattern: product.pattern || "",
           categoryName: product.categoryName || product.mainCategory || "",
           ply: String(product?.keyAttributes?.ply || ""),
+          pricingTiers: productTiers,
           quantity: 1,
           unitPrice,
-          discount: 0,
           image,
         },
       ];
@@ -524,7 +613,18 @@ export default function CreateInvoicePage() {
       await createInvoice({
         inquiryId: selectedInquiry.id,
         invoiceNumber: invoiceNumber.trim(),
-        items: editableItems,
+        items: editableItems.map((item) => ({
+          productId: item.productId,
+          name: item.name,
+          title: item.title,
+          brand: item.brand,
+          pattern: item.pattern,
+          ply: item.ply,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          image: item.image,
+          discount: 0,
+        })),
         customer: {
           ...customerDraft,
           paymentMethod: customerDraft.paymentMethod || "bank",
@@ -746,7 +846,7 @@ export default function CreateInvoicePage() {
                       <div className="flex items-center justify-between gap-3">
                         <div>
                           <h3 className="text-lg font-semibold text-slate-900">Invoice products</h3>
-                          <p className="text-sm text-slate-600">Edit quantities, prices, and discounts for each selected product.</p>
+                          <p className="text-sm text-slate-600">Edit quantities and prices for each selected product.</p>
                         </div>
                         <button
                           type="button"
@@ -778,7 +878,7 @@ export default function CreateInvoicePage() {
                                     <p className="truncate font-semibold text-slate-900">{item.title || item.name || "Invoice item"}</p>
                                     <p className="text-sm text-slate-600">{item.name || "Use the add products panel."}</p>
                                     <p className="mt-1 text-sm font-medium text-slate-900">
-                                      {formatCurrency(Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0) - Number(item.discount || 0), 0))}
+                                      {formatCurrency(Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0), 0))}
                                     </p>
                                   </div>
                                 </div>
@@ -797,6 +897,22 @@ export default function CreateInvoicePage() {
                                     <input
                                       value={item.title || ""}
                                       onChange={(event) => updateItem(index, "title", event.target.value)}
+                                      className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                    />
+                                  </label>
+                                  <label className="space-y-1 text-sm">
+                                    <span className="font-medium text-slate-700">Brand</span>
+                                    <input
+                                      value={item.brand || ""}
+                                      onChange={(event) => updateItem(index, "brand", event.target.value)}
+                                      className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                    />
+                                  </label>
+                                  <label className="space-y-1 text-sm">
+                                    <span className="font-medium text-slate-700">Pattern</span>
+                                    <input
+                                      value={item.pattern || ""}
+                                      onChange={(event) => updateItem(index, "pattern", event.target.value)}
                                       className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
                                     />
                                   </label>
@@ -831,16 +947,6 @@ export default function CreateInvoicePage() {
                                       className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
                                     />
                                   </label>
-                                  <label className="space-y-1 text-sm">
-                                    <span className="font-medium text-slate-700">Discount</span>
-                                    <input
-                                      type="number"
-                                      min="0"
-                                      value={displayNumericValue(item.discount)}
-                                      onChange={(event) => updateItem(index, "discount", event.target.value)}
-                                      className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
-                                    />
-                                  </label>
                                   <label className="space-y-1 text-sm md:col-span-2">
                                     <span className="font-medium text-slate-700">Item image</span>
                                     <input
@@ -851,7 +957,7 @@ export default function CreateInvoicePage() {
                                     />
                                   </label>
                                   <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 md:col-span-2">
-                                    Line total: {formatCurrency(Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0) - Number(item.discount || 0), 0))}
+                                    Line total: {formatCurrency(Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0), 0))}
                                   </div>
                                   <button
                                     type="button"
