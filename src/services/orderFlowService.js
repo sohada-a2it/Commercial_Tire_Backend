@@ -80,6 +80,12 @@ export const getAllInvoices = async () => {
   return apiRequest("/api/invoices", { method: "GET" });
 };
 
+export const deleteInvoice = async (invoiceId) => {
+  return apiRequest(`/api/invoices/${invoiceId}`, {
+    method: "DELETE",
+  });
+};
+
 export const downloadInvoicePdf = async (invoiceId) => {
   const headers = await buildAuthHeaders();
   const response = await fetch(`${config.email.backendUrl}/api/invoices/${invoiceId}/pdf`, {

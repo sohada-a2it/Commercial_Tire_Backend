@@ -24,6 +24,7 @@ export const sidebarRoutesByRole = {
   admin: [
     { icon: LayoutDashboard, label: "Admin Dashboard", href: "/dashboard" },
     { icon: Receipt, label: "Create New Invoice", href: "/dashboard/create-invoice" },
+    { icon: FileText, label: "Invoices", href: "/dashboard/invoices" },
     { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },

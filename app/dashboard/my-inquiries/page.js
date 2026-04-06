@@ -76,7 +76,9 @@ export default function MyInquiriesPage() {
     const values = inquiries
       .map((inquiry) => new Date(inquiry.createdAt).getFullYear())
       .filter((year) => Number.isFinite(year));
-    return [...new Set(values)].sort((a, b) => b - a);
+    const uniqueYears = [...new Set(values)].sort((a, b) => b - a);
+    const currentYear = new Date().getFullYear();
+    return uniqueYears.includes(currentYear) ? uniqueYears : [currentYear, ...uniqueYears];
   }, [inquiries]);
 
   const filteredInquiries = useMemo(() => {
@@ -130,50 +132,63 @@ export default function MyInquiriesPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div>
+        <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-xl">
               <h2 className="text-lg font-semibold text-slate-900">Filter by time</h2>
-              <p className="text-sm text-slate-600">Switch between all inquiries, a specific year, or a month.</p>
+              <p className="text-sm text-slate-600">Choose all inquiries, a specific year, or a month to narrow the list.</p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <select
-                value={timeFilter}
-                onChange={(event) => setTimeFilter(event.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
-              >
-                <option value="all">All</option>
-                <option value="year">Year</option>
-                <option value="month">Month</option>
-              </select>
-
-              {(timeFilter === "year" || timeFilter === "month") && (
+            <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[520px]">
+              <label className="space-y-1 text-sm">
+                <span className="block font-medium text-slate-600">Range</span>
                 <select
-                  value={selectedYear}
-                  onChange={(event) => setSelectedYear(event.target.value)}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
+                  value={timeFilter}
+                  onChange={(event) => setTimeFilter(event.target.value)}
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-teal-500"
                 >
-                  {(availableYears.length ? availableYears : [new Date().getFullYear()]).map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
+                  <option value="all">All</option>
+                  <option value="year">Year</option>
+                  <option value="month">Month</option>
                 </select>
+              </label>
+
+              {(timeFilter === "year" || timeFilter === "month") ? (
+                <label className="space-y-1 text-sm">
+                  <span className="block font-medium text-slate-600">Year</span>
+                  <select
+                    value={selectedYear}
+                    onChange={(event) => setSelectedYear(event.target.value)}
+                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-teal-500"
+                  >
+                    {availableYears.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <div className="hidden sm:block" />
               )}
 
-              {timeFilter === "month" && (
-                <select
-                  value={selectedMonth}
-                  onChange={(event) => setSelectedMonth(event.target.value)}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500"
-                >
-                  {monthOptions.map((month) => (
-                    <option key={month.value} value={month.value}>
-                      {month.label}
-                    </option>
-                  ))}
-                </select>
+              {timeFilter === "month" ? (
+                <label className="space-y-1 text-sm">
+                  <span className="block font-medium text-slate-600">Month</span>
+                  <select
+                    value={selectedMonth}
+                    onChange={(event) => setSelectedMonth(event.target.value)}
+                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-teal-500"
+                  >
+                    {monthOptions.map((month) => (
+                      <option key={month.value} value={month.value}>
+                        {month.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <div className="hidden sm:block" />
               )}
             </div>
           </div>
