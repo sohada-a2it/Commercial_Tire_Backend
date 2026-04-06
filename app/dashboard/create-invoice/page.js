@@ -5,7 +5,7 @@ import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
 import { createInvoice, getAllInquiries } from "@/services/orderFlowService";
-import { fetchProducts } from "@/services/catalogService";
+import { fetchProduct, fetchProducts } from "@/services/catalogService";
 import { Calculator, Loader2, PackagePlus, Plus, Search, Sparkles, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -255,6 +255,8 @@ export default function CreateInvoicePage() {
   );
 
   useEffect(() => {
+    let cancelled = false;
+
     if (!selectedInquiry) {
       setEditableItems([]);
       setCustomerDraft(EMPTY_CUSTOMER);
@@ -286,19 +288,49 @@ export default function CreateInvoicePage() {
 
     setInvoiceNumber(draftInvoiceNumber);
 
-    setEditableItems(
-      (selectedInquiry.items || []).map((item) => ({
-        productId: item.productId || "",
-        name: item.name,
-        title: item.title || item.name || "",
-        categoryName: item.categoryName || "",
-        ply: item.ply || "",
-        quantity: normalizePositiveInteger(item.quantity || 1),
-        unitPrice: toSafeNumber(item.unitPrice || 0),
-        discount: toSafeNumber(item.discount || 0),
-        image: item.image || "",
-      }))
-    );
+    const baseItems = (selectedInquiry.items || []).map((item) => ({
+      productId: item.productId || "",
+      name: item.name,
+      title: item.title || item.name || "",
+      categoryName: item.categoryName || "",
+      ply: item.ply || "",
+      quantity: normalizePositiveInteger(item.quantity || 1),
+      unitPrice: toSafeNumber(item.unitPrice || 0),
+      discount: toSafeNumber(item.discount || 0),
+      image: item.image || "",
+    }));
+
+    setEditableItems(baseItems);
+
+    const enrichItemsFromCatalog = async () => {
+      const enrichedItems = await Promise.all(
+        baseItems.map(async (item) => {
+          if (!item.productId || item.categoryName) {
+            return item;
+          }
+
+          try {
+            const data = await fetchProduct(item.productId);
+            const product = data?.product;
+            if (!product) return item;
+
+            return {
+              ...item,
+              categoryName: product.categoryName || product.mainCategory || item.categoryName || "",
+              ply: item.ply || String(product?.keyAttributes?.ply || ""),
+            };
+          } catch {
+            return item;
+          }
+        })
+      );
+
+      if (!cancelled) {
+        setEditableItems(enrichedItems);
+      }
+    };
+
+    enrichItemsFromCatalog();
     setPaidAmount(Number(selectedInquiry.payment?.paidAmount || 0));
     setVatRate(0);
     setDiscountRate(0);
@@ -316,6 +348,9 @@ export default function CreateInvoicePage() {
     }));
     setTermsAndConditions("");
     setAdditionalMessages("");
+    return () => {
+      cancelled = true;
+    };
   }, [selectedInquiry]);
 
   useEffect(() => {
