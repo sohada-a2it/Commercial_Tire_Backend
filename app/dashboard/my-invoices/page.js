@@ -5,7 +5,7 @@ import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
 import { downloadInvoicePdf, getAllInvoices, getMyInvoices } from "@/services/orderFlowService";
-import { CalendarDays, Download, FileText, Filter, Layers3, Package, ReceiptText } from "lucide-react";
+import { Download, Eye, FileText, Filter, Package, ReceiptText, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const paymentStatusLabel = {
@@ -54,6 +54,7 @@ export default function MyInvoicesPage() {
   const [invoices, setInvoices] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [activeInvoice, setActiveInvoice] = useState(null);
 
   const handleDownloadPdf = async (invoice) => {
     try {
@@ -109,6 +110,8 @@ export default function MyInvoicesPage() {
     () => filteredInvoices.reduce((sum, invoice) => sum + Number(invoice.balanceDue || 0), 0),
     [filteredInvoices]
   );
+
+  const activeInvoiceItems = activeInvoice?.items || [];
 
   return (
     <DashboardLayout>
@@ -175,104 +178,59 @@ export default function MyInvoicesPage() {
         ) : (
           <div className="grid gap-4">
             {filteredInvoices.map((invoice) => {
-              const previewItems = (invoice.items || []).slice(0, 3);
               const normalizedStatus = invoice.normalizedStatus;
 
               return (
                 <article key={invoice.id} className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
-                  <div className="flex flex-col gap-4 border-b border-slate-100 p-5 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="space-y-2">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <div>
-                          <p className="text-sm uppercase tracking-[0.25em] text-slate-500">Invoice</p>
-                          <h3 className="text-xl font-semibold text-slate-900">{invoice.invoiceNumber}</h3>
-                        </div>
-                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${paymentStatusStyles[normalizedStatus] || "bg-slate-100 text-slate-700"}`}>
-                          {paymentStatusLabel[normalizedStatus] || normalizedStatus}
-                        </span>
-                      </div>
-                      <p className="flex items-center gap-2 text-sm text-slate-600">
-                        <CalendarDays className="h-4 w-4" />
-                        {new Date(invoice.issuedAt || invoice.createdAt).toLocaleString()}
-                      </p>
-                      <p className="text-sm text-slate-600">Inquiry: {invoice.inquiryId}</p>
-                      <p className="text-sm text-slate-600">Payment method: {invoice.customer?.paymentMethod || "bank"}</p>
+                  <div className="grid gap-3 bg-slate-50 p-5 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.9fr_1.3fr_0.8fr_0.9fr_0.8fr_0.8fr_auto] lg:items-center">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Invoice ID</p>
+                      <p className="mt-1 text-sm font-semibold text-slate-900 break-all">{invoice.invoiceNumber}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Customer</p>
+                      <p className="mt-1 text-sm font-semibold text-slate-900">{invoice.customer?.name || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Email</p>
+                      <p className="mt-1 text-sm text-slate-700 break-all">{invoice.customer?.email || "Not provided"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Price</p>
+                      <p className="mt-1 text-sm font-semibold text-slate-900">{formatCurrency(invoice.total)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Date</p>
+                      <p className="mt-1 text-sm text-slate-700">{new Date(invoice.issuedAt || invoice.createdAt).toLocaleDateString()}</p>
                     </div>
 
-                    <div className="flex items-center gap-3 self-start rounded-2xl bg-slate-50 px-4 py-3">
-                      <div>
-                        <p className="text-xs uppercase tracking-[0.25em] text-slate-500">Total</p>
-                        <p className="text-lg font-semibold text-slate-900">{formatCurrency(invoice.total)}</p>
-                      </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Method</p>
+                      <p className="mt-1 text-sm text-slate-700 capitalize">{String(invoice.customer?.paymentMethod || "bank").replace("-", " ")}</p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Status</p>
+                      <span className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${paymentStatusStyles[normalizedStatus] || "bg-slate-100 text-slate-700"}`}>
+                        {paymentStatusLabel[normalizedStatus] || normalizedStatus}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap justify-start gap-2 lg:justify-end">
                       <button
+                        type="button"
+                        onClick={() => setActiveInvoice(invoice)}
+                        className="inline-flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-700"
+                      >
+                        <Eye className="h-4 w-4" /> View
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => handleDownloadPdf(invoice)}
                         className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800"
                       >
                         <Download className="h-4 w-4" /> PDF
                       </button>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-5 p-5 lg:grid-cols-[1.35fr_1fr]">
-                    <div>
-                      <div className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        <Layers3 className="h-4 w-4" /> Items
-                      </div>
-                      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                        {previewItems.map((item, index) => {
-                          const imageUrl = getImageUrl(item.image);
-
-                          return (
-                            <div key={`${item.productId || "item"}-${index}`} className="flex gap-3 rounded-2xl border border-slate-200 p-3">
-                              <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
-                                {imageUrl ? (
-                                  <img src={imageUrl} alt={item.title || item.name} className="h-full w-full object-cover" />
-                                ) : (
-                                  <div className="flex h-full w-full items-center justify-center text-slate-400">
-                                    <Package className="h-5 w-5" />
-                                  </div>
-                                )}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="truncate text-sm font-semibold text-slate-900">{item.title || item.name}</p>
-                                <p className="text-xs text-slate-600">Qty {Number(item.quantity || 0)}</p>
-                                <p className="text-xs text-slate-600">{formatCurrency(item.lineTotal)}</p>
-                              </div>
-                            </div>
-                          );
-                        })}
-                        {previewItems.length === 0 ? (
-                          <div className="rounded-2xl border border-dashed border-slate-200 p-4 text-sm text-slate-500">No item preview.</div>
-                        ) : null}
-                      </div>
-                    </div>
-
-                    <div className="flex gap-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
-                      {isStaff ? (
-                        <div>
-                          <span className="text-slate-500">Customer</span>
-                          <p className="font-medium text-slate-900">{invoice.customer?.name}</p>
-                          <p>{invoice.customer?.email}</p>
-                        </div>
-                      ) : null}
-                      <div>
-                        <span className="text-slate-500">Paid</span>
-                        <p className="font-medium text-slate-900">{formatCurrency(invoice.paidAmount)}</p>
-                      </div>
-                      <div>
-                        <span className="text-slate-500">Balance due</span>
-                        <p className="font-medium text-slate-900">{formatCurrency(invoice.balanceDue)}</p>
-                      </div>
-                      <div>
-                        <span className="text-slate-500">Product subtotal</span>
-                        <p className="font-medium text-slate-900">{formatCurrency(invoice.productSubtotal || invoice.subtotal)}</p>
-                      </div>
-                      {invoice.notes ? (
-                        <div>
-                          <span className="text-slate-500">Notes</span>
-                          <p className="font-medium text-slate-900">{invoice.notes}</p>
-                        </div>
-                      ) : null}
                     </div>
                   </div>
                 </article>
@@ -285,6 +243,147 @@ export default function MyInvoicesPage() {
           <div className="rounded-2xl bg-white p-4 text-sm text-slate-600 shadow-sm ring-1 ring-slate-200">
             <FileText className="mr-2 inline-block h-4 w-4 text-teal-600" />
             PDFs are generated from the same invoice record, so customers and staff see the same totals.
+          </div>
+        ) : null}
+
+        {activeInvoice ? (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+            <div className="max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-[28px] bg-white shadow-2xl">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-5">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.25em] text-teal-600">Invoice detail</p>
+                  <h2 className="mt-1 text-2xl font-semibold text-slate-900">{activeInvoice.invoiceNumber}</h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveInvoice(null)}
+                  className="rounded-full bg-slate-100 p-2 text-slate-600 hover:bg-slate-200"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="max-h-[calc(92vh-88px)] overflow-y-auto px-6 py-6">
+                <div className="grid gap-6 lg:grid-cols-[1.05fr_1fr]">
+                  <section className="space-y-5">
+                    <div className="rounded-3xl bg-slate-50 p-5">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${paymentStatusStyles[activeInvoice.normalizedStatus] || "bg-slate-100 text-slate-700"}`}>
+                          {paymentStatusLabel[activeInvoice.normalizedStatus] || activeInvoice.normalizedStatus}
+                        </span>
+                        <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+                          {new Date(activeInvoice.issuedAt || activeInvoice.createdAt).toLocaleString()}
+                        </span>
+                        <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+                          {formatCurrency(activeInvoice.total)}
+                        </span>
+                      </div>
+
+                      <div className="mt-4 grid gap-4 md:grid-cols-2">
+                        <div className="rounded-2xl bg-white p-4 shadow-sm">
+                          <p className="text-sm font-semibold text-slate-900">Customer details</p>
+                          <div className="mt-3 space-y-1 text-sm text-slate-600">
+                            <p>{activeInvoice.customer?.name}</p>
+                            <p>{activeInvoice.customer?.email}</p>
+                            <p>{activeInvoice.customer?.phone}</p>
+                            <p>{activeInvoice.customer?.address}</p>
+                            <p>
+                              {activeInvoice.customer?.city}, {activeInvoice.customer?.state} {activeInvoice.customer?.zipCode}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl bg-white p-4 shadow-sm">
+                          <p className="text-sm font-semibold text-slate-900">Payment summary</p>
+                          <div className="mt-3 space-y-1 text-sm text-slate-600">
+                            <p>Payment method: {activeInvoice.customer?.paymentMethod || "bank"}</p>
+                            <p>Product subtotal: {formatCurrency(activeInvoice.productSubtotal || activeInvoice.subtotal)}</p>
+                            <p>Paid: {formatCurrency(activeInvoice.paidAmount)}</p>
+                            <p>Balance due: {formatCurrency(activeInvoice.balanceDue)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {activeInvoiceItems.length > 0 ? (
+                      <div className="grid gap-3">
+                        {activeInvoiceItems.map((item, index) => {
+                          const imageUrl = getImageUrl(item.image);
+
+                          return (
+                            <div key={`${item.productId || "item"}-${index}`} className="flex gap-4 rounded-3xl border border-slate-200 p-4">
+                              <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+                                {imageUrl ? (
+                                  <img src={imageUrl} alt={item.title || item.name} className="h-full w-full object-cover" />
+                                ) : (
+                                  <div className="flex h-full w-full items-center justify-center text-slate-400">
+                                    <Package className="h-5 w-5" />
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex flex-wrap items-start justify-between gap-2">
+                                  <div>
+                                    <p className="font-semibold text-slate-900">{item.title || item.name}</p>
+                                    <p className="text-sm text-slate-600">{item.name}</p>
+                                  </div>
+                                  <p className="font-semibold text-slate-900">{formatCurrency(item.lineTotal)}</p>
+                                </div>
+
+                                <div className="mt-3 grid gap-2 text-sm text-slate-600 sm:grid-cols-4">
+                                  <p>Qty: {Number(item.quantity || 0)}</p>
+                                  <p>Unit: {formatCurrency(item.unitPrice)}</p>
+                                  <p>Discount: {formatCurrency(item.discount)}</p>
+                                  <p className="sm:text-right">Line total: {formatCurrency(item.lineTotal)}</p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : null}
+                  </section>
+
+                  <aside className="space-y-5">
+                    <div className="rounded-3xl bg-slate-950 p-5 text-white">
+                      <p className="text-sm uppercase tracking-[0.25em] text-slate-300">Quick actions</p>
+                      <div className="mt-4 flex flex-col gap-3">
+                        <button
+                          type="button"
+                          onClick={() => handleDownloadPdf(activeInvoice)}
+                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-medium text-slate-900 hover:bg-slate-100"
+                        >
+                          <Download className="h-4 w-4" /> Download PDF
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActiveInvoice(null)}
+                          className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white hover:bg-white/15"
+                        >
+                          Close detail
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="rounded-3xl border border-slate-200 p-5">
+                      <p className="text-sm font-semibold text-slate-900">Notes</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {activeInvoice.notes || activeInvoice.additionalMessages || activeInvoice.termsAndConditions || "No invoice notes added."}
+                      </p>
+                    </div>
+
+                    <div className="rounded-3xl border border-slate-200 p-5">
+                      <p className="text-sm font-semibold text-slate-900">Reference</p>
+                      <div className="mt-2 space-y-1 text-sm text-slate-600">
+                        <p>Inquiry: {activeInvoice.inquiryId}</p>
+                        <p>Invoice number: {activeInvoice.invoiceNumber}</p>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+            </div>
           </div>
         ) : null}
       </div>
