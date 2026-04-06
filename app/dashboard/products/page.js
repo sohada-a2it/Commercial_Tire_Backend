@@ -40,7 +40,7 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState("newest");
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
-  const [filterOptions, setFilterOptions] = useState({ categories: [], subcategories: [], brands: [], patterns: [] });
+  const [filterOptions, setFilterOptions] = useState({ categories: [], subcategories: [], categoryMap: {}, brands: [], patterns: [] });
   const [loading, setLoading] = useState(true);
 
   const didInitialLoad = useRef(false);
@@ -69,7 +69,7 @@ export default function ProductsPage() {
     if (result.success) {
       setProducts(result.products || []);
       setPagination(result.pagination || { page: targetPage, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
-      setFilterOptions(result.filters || { categories: [], subcategories: [], brands: [], patterns: [] });
+      setFilterOptions(result.filters || { categories: [], subcategories: [], categoryMap: {}, brands: [], patterns: [] });
     } else {
       toast.error(result.message || "Failed to load products");
     }
@@ -96,7 +96,17 @@ export default function ProductsPage() {
   }, [isVehicleCategorySelected, filterPattern]);
 
   const categoryOptions = useMemo(() => ["all", ...(filterOptions.categories || [])], [filterOptions.categories]);
-  const subcategoryOptions = useMemo(() => ["all", ...(filterOptions.subcategories || [])], [filterOptions.subcategories]);
+  
+  // Filter subcategories based on selected category
+  const subcategoryOptions = useMemo(() => {
+    if (filterCategory === "all") {
+      return ["all"]; // No subcategories when no category is selected
+    }
+    const categoryMap = filterOptions.categoryMap || {};
+    const subcats = categoryMap[filterCategory] || [];
+    return ["all", ...subcats];
+  }, [filterCategory, filterOptions.categoryMap]);
+  
   const brandOptions = useMemo(() => ["all", ...(filterOptions.brands || [])], [filterOptions.brands]);
   const patternOptions = useMemo(() => ["all", ...(filterOptions.patterns || [])], [filterOptions.patterns]);
 
@@ -171,7 +181,12 @@ export default function ProductsPage() {
                 <option key={value} value={value}>{value === "all" ? "All categories" : value}</option>
               ))}
             </select>
-            <select value={filterSubcategory} onChange={(event) => setFilterSubcategory(event.target.value)} className="w-[220px] min-w-[220px] rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500">
+            <select 
+              value={filterSubcategory} 
+              onChange={(event) => setFilterSubcategory(event.target.value)} 
+              disabled={filterCategory === "all"}
+              className={`w-[220px] min-w-[220px] rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:border-teal-500 ${filterCategory === "all" ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
               {subcategoryOptions.map((value) => (
                 <option key={value} value={value}>{value === "all" ? "All subcategories" : value}</option>
               ))}

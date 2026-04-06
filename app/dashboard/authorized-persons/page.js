@@ -77,6 +77,13 @@ export default function AuthorizedPersonsPage() {
 
     setSaving(true);
 
+    // const categoryManagement = {
+    //   admin:true,
+    //   moderator:true,
+    //   logging:true,
+      
+    // }
+
     const payload = {
       fullName: formData.fullName,
       email: formData.email,

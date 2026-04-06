@@ -295,6 +295,8 @@ export default function CategoriesPage() {
     await loadCategories();
   };
 
+  
+
   return (
     <DashboardLayout>
       {!isStaff ? (
