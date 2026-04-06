@@ -30,6 +30,7 @@ const EMPTY_ITEM = {
   title: "",
   brand: "",
   pattern: "",
+  size: "",
   categoryName: "",
   ply: "",
   pricingTiers: [],
@@ -107,6 +108,7 @@ const getProductUnitPrice = (product) => {
     product?.pricing?.offerPrice,
     product?.pricing?.price,
     product?.pricingTiers?.[0]?.pricePerTire,
+    product?.pricingTiers?.[0]?.pricePerTon,
     product?.pricingTiers?.[0]?.price,
   ];
   for (const candidate of candidates) {
@@ -123,16 +125,28 @@ const normalizePricingTiers = (tiers = []) => {
     .map((tier) => {
       const minQuantity = Math.max(Math.floor(toSafeNumber(tier?.minQuantity)), 0);
       const maxQuantity = Math.max(Math.floor(toSafeNumber(tier?.maxQuantity)), 0);
-      const unitPrice = toSafeNumber(tier?.pricePerTire ?? tier?.price);
+      const unitPrice = toSafeNumber(tier?.pricePerTire ?? tier?.pricePerTon ?? tier?.price);
+      const size = String(tier?.size || "").trim();
 
       return {
         minQuantity,
         maxQuantity,
         unitPrice,
+        size,
       };
     })
     .filter((tier) => tier.unitPrice > 0)
     .sort((a, b) => a.minQuantity - b.minQuantity);
+};
+
+const getSizeOptionsFromTiers = (pricingTiers = []) => {
+  if (!Array.isArray(pricingTiers)) return [];
+
+  return [...new Set(
+    pricingTiers
+      .map((tier) => String(tier?.size || "").trim())
+      .filter(Boolean)
+  )];
 };
 
 const resolveTierUnitPrice = ({ quantity, pricingTiers = [], fallbackPrice = 0 }) => {
@@ -155,6 +169,22 @@ const resolveTierUnitPrice = ({ quantity, pricingTiers = [], fallbackPrice = 0 }
   });
 
   return matchingTier ? toSafeNumber(matchingTier.unitPrice) : fallback;
+};
+
+const resolveItemUnitPrice = ({ quantity, pricingTiers = [], fallbackPrice = 0, selectedSize = "" }) => {
+  const normalizedSize = String(selectedSize || "").trim().toLowerCase();
+
+  if (Array.isArray(pricingTiers) && pricingTiers.length > 0 && normalizedSize) {
+    const matchingSizeTier = pricingTiers.find(
+      (tier) => String(tier?.size || "").trim().toLowerCase() === normalizedSize
+    );
+
+    if (matchingSizeTier?.unitPrice > 0) {
+      return toSafeNumber(matchingSizeTier.unitPrice);
+    }
+  }
+
+  return resolveTierUnitPrice({ quantity, pricingTiers, fallbackPrice });
 };
 
 const formatCurrency = (value) => `$${toSafeNumber(value).toFixed(2)}`;
@@ -337,6 +367,7 @@ export default function CreateInvoicePage() {
       title: item.title || item.name || "",
       brand: item.brand || "",
       pattern: item.pattern || "",
+      size: item.size || "",
       categoryName: item.categoryName || "",
       ply: item.ply || "",
       pricingTiers: [],
@@ -360,18 +391,23 @@ export default function CreateInvoicePage() {
             if (!product) return item;
 
             const productTiers = normalizePricingTiers(product.pricingTiers || []);
+            const sizeOptions = getSizeOptionsFromTiers(productTiers);
+            const fallbackSize = String(product?.keyAttributes?.Size || product?.keyAttributes?.size || "").trim();
+            const selectedSize = item.size || sizeOptions[0] || fallbackSize;
             const fallbackUnitPrice = getProductUnitPrice(product) || item.unitPrice;
             const quantity = item.quantity;
-            const computedUnitPrice = resolveTierUnitPrice({
+            const computedUnitPrice = resolveItemUnitPrice({
               quantity,
               pricingTiers: productTiers,
               fallbackPrice: fallbackUnitPrice,
+              selectedSize,
             });
 
             return {
               ...item,
               brand: product.brand || item.brand || "",
               pattern: product.pattern || item.pattern || "",
+              size: selectedSize,
               categoryName: product.categoryName || product.mainCategory || item.categoryName || "",
               ply: item.ply || String(product?.keyAttributes?.ply || ""),
               pricingTiers: productTiers,
@@ -438,15 +474,32 @@ export default function CreateInvoicePage() {
           ? (() => {
               if (key === "quantity") {
                 const normalizedQty = normalizePositiveInteger(value);
-                const autoUnitPrice = resolveTierUnitPrice({
+                const autoUnitPrice = resolveItemUnitPrice({
                   quantity: normalizedQty,
                   pricingTiers: item.pricingTiers,
                   fallbackPrice: item.unitPrice,
+                  selectedSize: item.size,
                 });
 
                 return {
                   ...item,
                   quantity: normalizedQty,
+                  unitPrice: autoUnitPrice,
+                };
+              }
+
+              if (key === "size") {
+                const nextSize = String(value || "");
+                const autoUnitPrice = resolveItemUnitPrice({
+                  quantity: item.quantity,
+                  pricingTiers: item.pricingTiers,
+                  fallbackPrice: item.unitPrice,
+                  selectedSize: nextSize,
+                });
+
+                return {
+                  ...item,
+                  size: nextSize,
                   unitPrice: autoUnitPrice,
                 };
               }
@@ -467,10 +520,13 @@ export default function CreateInvoicePage() {
     if (!product) return;
 
     const productTiers = normalizePricingTiers(product.pricingTiers || []);
-    const unitPrice = resolveTierUnitPrice({
+    const sizeOptions = getSizeOptionsFromTiers(productTiers);
+    const defaultSize = sizeOptions[0] || String(product?.keyAttributes?.Size || product?.keyAttributes?.size || "").trim();
+    const unitPrice = resolveItemUnitPrice({
       quantity: 1,
       pricingTiers: productTiers,
       fallbackPrice: getProductUnitPrice(product),
+      selectedSize: defaultSize,
     });
     const image = getProductImage(product);
 
@@ -482,10 +538,11 @@ export default function CreateInvoicePage() {
           index === existingIndex
             ? (() => {
                 const nextQuantity = Number(item.quantity || 0) + 1;
-                const nextUnitPrice = resolveTierUnitPrice({
+                const nextUnitPrice = resolveItemUnitPrice({
                   quantity: nextQuantity,
                   pricingTiers: item.pricingTiers,
                   fallbackPrice: item.unitPrice,
+                  selectedSize: item.size,
                 });
 
                 return { ...item, quantity: nextQuantity, unitPrice: nextUnitPrice };
@@ -502,6 +559,7 @@ export default function CreateInvoicePage() {
           title: product.name || product.title || "",
           brand: product.brand || "",
           pattern: product.pattern || "",
+          size: defaultSize,
           categoryName: product.categoryName || product.mainCategory || "",
           ply: String(product?.keyAttributes?.ply || ""),
           pricingTiers: productTiers,
@@ -619,6 +677,7 @@ export default function CreateInvoicePage() {
           title: item.title,
           brand: item.brand,
           pattern: item.pattern,
+          size: item.size,
           ply: item.ply,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
@@ -860,6 +919,7 @@ export default function CreateInvoicePage() {
                       <div className="mt-4 flex-1 space-y-4 overflow-y-auto pr-1">
                         {editableItems.map((item, index) => {
                           const imageUrl = item.image || "";
+                          const sizeOptions = getSizeOptionsFromTiers(item.pricingTiers);
 
                           return (
                             <div key={`${item.productId || "item"}-${index}`} className="rounded-2xl border border-slate-200 p-4">
@@ -915,6 +975,28 @@ export default function CreateInvoicePage() {
                                       onChange={(event) => updateItem(index, "pattern", event.target.value)}
                                       className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
                                     />
+                                  </label>
+                                  <label className="space-y-1 text-sm">
+                                    <span className="font-medium text-slate-700">Size</span>
+                                    {sizeOptions.length > 0 ? (
+                                      <select
+                                        value={item.size || ""}
+                                        onChange={(event) => updateItem(index, "size", event.target.value)}
+                                        className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                      >
+                                        <option value="">Select size</option>
+                                        {sizeOptions.map((sizeOption) => (
+                                          <option key={sizeOption} value={sizeOption}>{sizeOption}</option>
+                                        ))}
+                                      </select>
+                                    ) : (
+                                      <input
+                                        value={item.size || ""}
+                                        onChange={(event) => updateItem(index, "size", event.target.value)}
+                                        placeholder="Ex: 26/30"
+                                        className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                      />
+                                    )}
                                   </label>
                                   <label className="space-y-1 text-sm">
                                     <span className="font-medium text-slate-700">Qty</span>
