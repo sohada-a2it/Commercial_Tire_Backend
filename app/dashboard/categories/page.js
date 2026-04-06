@@ -307,7 +307,7 @@ export default function CategoriesPage() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Category Management</h1>
-              <p className="text-gray-700 mt-1">Use the form to manage main categories and subcategories without editing raw JSON.</p>
+              <p className="text-gray-700 mt-1">Use the form to manage main categories and subcategories.</p>
             </div>
             <div className="flex flex-wrap gap-3">
               <button onClick={handleNew} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
