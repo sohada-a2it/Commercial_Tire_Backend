@@ -197,24 +197,38 @@ export default function InquiriesPage() {
         ) : (
           <div className="grid gap-4">
             {filteredInquiries.map((inquiry) => {
-              const previewItems = (inquiry.items || []).slice(0, 3);
-
               return (
                 <article key={inquiry.id} className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200">
-                  <div className="flex flex-col gap-4 border-b border-slate-100 p-5 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="space-y-2">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="text-xl font-semibold text-slate-900">{inquiry.inquiryNumber}</h3>
-                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[inquiry.status] || "bg-slate-100 text-slate-700"}`}>{formatStatus(inquiry.status)}</span>
-                        {inquiry.linkedInvoice ? (
-                          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Invoice sent</span>
-                        ) : null}
-                      </div>
-                      <p className="flex items-center gap-2 text-sm text-slate-600"><CalendarDays className="h-4 w-4" />{new Date(inquiry.createdAt).toLocaleString()}</p>
-                      <p className="text-sm text-slate-600">Payment method: {inquiry.paymentMethod || "bank"}</p>
+                  <div className="grid gap-3 bg-slate-50 p-5 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.9fr_1.3fr_0.8fr_0.9fr_0.8fr_0.8fr_auto] lg:items-center">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Inquiry ID</p>
+                      <p className="mt-1 text-sm font-semibold text-slate-900 break-all">{inquiry.inquiryNumber}</p>
                     </div>
-
-                    <div className="flex flex-wrap gap-2 self-start">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Customer</p>
+                      <p className="mt-1 text-sm font-semibold text-slate-900">{inquiry.customer?.name || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Email</p>
+                      <p className="mt-1 text-sm text-slate-700 break-all">{inquiry.customer?.email || "Not provided"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Price</p>
+                      <p className="mt-1 text-sm font-semibold text-slate-900">{formatCurrency(inquiry.total)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Date</p>
+                      <p className="mt-1 text-sm text-slate-700">{new Date(inquiry.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Method</p>
+                      <p className="mt-1 text-sm text-slate-700 capitalize">{String(inquiry.paymentMethod || "bank").replace("-", " ")}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Status</p>
+                      <span className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusStyles[inquiry.status] || "bg-slate-100 text-slate-700"}`}>{formatStatus(inquiry.status)}</span>
+                    </div>
+                    <div className="flex flex-wrap justify-start gap-2 lg:justify-end">
                       <button type="button" onClick={() => setActiveInquiry(inquiry)} className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800">
                         <Eye className="h-4 w-4" /> View
                       </button>
@@ -233,48 +247,6 @@ export default function InquiriesPage() {
                           <Trash2 className="h-4 w-4" /> Delete
                         </button>
                       ) : null}
-                    </div>
-                  </div>
-
-                  <div className="grid gap-5 p-5 lg:grid-cols-[1.35fr_1fr]">
-                    <div className="space-y-4">
-                      <div>
-                        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Products</p>
-                        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                          {previewItems.map((item, index) => {
-                            const imageUrl = getImageUrl(item.image);
-
-                            return (
-                              <div key={`${item.productId || "item"}-${index}`} className="flex gap-3 rounded-2xl border border-slate-200 p-3">
-                                <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
-                                  {imageUrl ? <img src={imageUrl} alt={item.title || item.name} className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-slate-400"><Package className="h-5 w-5" /></div>}
-                                </div>
-                                <div className="min-w-0">
-                                  <p className="truncate text-sm font-semibold text-slate-900">{item.title || item.name}</p>
-                                  <p className="text-xs text-slate-600">Qty {Number(item.quantity || 0)}</p>
-                                  <p className="text-xs text-slate-600">{formatCurrency(item.lineTotal)}</p>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
-                      <div>
-                        <span className="text-slate-500">Customer</span>
-                        <p className="font-medium text-slate-900">{inquiry.customer?.name}</p>
-                        <p>{inquiry.customer?.email}</p>
-                      </div>
-                      <div>
-                        <span className="text-slate-500">Total</span>
-                        <p className="font-medium text-slate-900">{formatCurrency(inquiry.total)}</p>
-                      </div>
-                      <div>
-                        <span className="text-slate-500">Items</span>
-                        <p className="font-medium text-slate-900">{inquiry.items?.length || 0}</p>
-                      </div>
                     </div>
                   </div>
                 </article>
