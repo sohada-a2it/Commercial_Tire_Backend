@@ -241,7 +241,7 @@ export default function AdminInvoicesPage() {
                     </div>
 
                     <div>
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Status</p>
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Paid</p>
                       <span className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${paymentStatusStyles[normalizedStatus] || "bg-slate-100 text-slate-700"}`}>
                         {paymentStatusLabel[normalizedStatus] || normalizedStatus}
                       </span>
