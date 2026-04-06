@@ -698,7 +698,7 @@ export default function CreateInvoicePage() {
         currency: selectedInquiry.currency || "USD",
       });
       toast.success("Invoice created and sent to customer email");
-      router.push("/dashboard/my-invoices");
+      router.push("/dashboard/invoices");
     } catch (error) {
       toast.error(error.message || "Failed to create invoice");
     } finally {
