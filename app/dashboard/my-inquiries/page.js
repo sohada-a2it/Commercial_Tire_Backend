@@ -73,13 +73,22 @@ export default function MyInquiriesPage() {
   }, []);
 
   const availableYears = useMemo(() => {
-    const values = inquiries
-      .map((inquiry) => new Date(inquiry.createdAt).getFullYear())
-      .filter((year) => Number.isFinite(year));
-    const uniqueYears = [...new Set(values)].sort((a, b) => b - a);
     const currentYear = new Date().getFullYear();
-    return uniqueYears.includes(currentYear) ? uniqueYears : [currentYear, ...uniqueYears];
-  }, [inquiries]);
+    const minYear = 2000;
+    const years = [];
+
+    for (let year = currentYear; year >= minYear; year -= 1) {
+      years.push(year);
+    }
+
+    return years;
+  }, []);
+
+  useEffect(() => {
+    if (availableYears.length > 0 && !availableYears.includes(Number(selectedYear))) {
+      setSelectedYear(String(availableYears[0]));
+    }
+  }, [availableYears, selectedYear]);
 
   const filteredInquiries = useMemo(() => {
     const list = [...inquiries].sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt));
