@@ -78,11 +78,22 @@ export default function InquiriesPage() {
   }, [isStaff]);
 
   const availableYears = useMemo(() => {
-    const values = inquiries
-      .map((inquiry) => new Date(inquiry.createdAt).getFullYear())
-      .filter((year) => Number.isFinite(year));
-    return [...new Set(values)].sort((a, b) => b - a);
-  }, [inquiries]);
+    const currentYear = new Date().getFullYear();
+    const minYear = 2000;
+    const years = [];
+
+    for (let year = currentYear; year >= minYear; year -= 1) {
+      years.push(year);
+    }
+
+    return years;
+  }, []);
+
+  useEffect(() => {
+    if (availableYears.length > 0 && !availableYears.includes(Number(selectedYear))) {
+      setSelectedYear(String(availableYears[0]));
+    }
+  }, [availableYears, selectedYear]);
 
   const filteredInquiries = useMemo(() => {
     const list = [...inquiries].sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt));
@@ -174,7 +185,7 @@ export default function InquiriesPage() {
               </select>
               {(timeFilter === "year" || timeFilter === "month") ? (
                 <select value={selectedYear} onChange={(event) => setSelectedYear(event.target.value)} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-teal-500">
-                  {(availableYears.length ? availableYears : [new Date().getFullYear()]).map((year) => (
+                  {availableYears.map((year) => (
                     <option key={year} value={year}>{year}</option>
                   ))}
                 </select>
