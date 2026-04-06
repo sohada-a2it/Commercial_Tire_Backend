@@ -55,7 +55,43 @@ const BASE_PAYMENT_METHODS = [
   { value: "custom", label: "Custom Method" },
 ];
 
-const formatCurrency = (value) => `$${Number(value || 0).toFixed(2)}`;
+const toSafeNumber = (value) => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : 0;
+};
+
+const normalizeNonNegativeNumber = (value) => {
+  const raw = String(value ?? "").trim();
+  if (!raw) return 0;
+
+  const cleaned = raw.replace(/[^0-9.]/g, "");
+  if (!cleaned) return 0;
+
+  const [integerPart = "", decimalPart] = cleaned.split(".");
+  const normalizedInteger = integerPart.replace(/^0+(?=\d)/, "") || "0";
+  const normalized = decimalPart !== undefined ? `${normalizedInteger}.${decimalPart}` : normalizedInteger;
+
+  return toSafeNumber(normalized);
+};
+
+const normalizePositiveInteger = (value) => {
+  const raw = String(value ?? "").trim();
+  const cleaned = raw.replace(/[^0-9]/g, "").replace(/^0+(?=\d)/, "");
+  const numeric = Number(cleaned || 0);
+  if (!Number.isFinite(numeric) || numeric <= 0) return 1;
+  return numeric;
+};
+
+const getProductUnitPrice = (product) => {
+  const candidates = [product?.offerPrice, product?.price, product?.unitPrice, product?.basePrice, product?.mrp];
+  for (const candidate of candidates) {
+    const parsed = toSafeNumber(candidate);
+    if (parsed > 0) return parsed;
+  }
+  return 0;
+};
+
+const formatCurrency = (value) => `$${toSafeNumber(value).toFixed(2)}`;
 
 const roundCurrency = (value) => Math.round((Number(value || 0) + Number.EPSILON) * 100) / 100;
 
@@ -116,8 +152,6 @@ export default function CreateInvoicePage() {
   const [customerDraft, setCustomerDraft] = useState(EMPTY_CUSTOMER);
   const [invoiceMeta, setInvoiceMeta] = useState(EMPTY_INVOICE_META);
   const [editableItems, setEditableItems] = useState([]);
-  const [invoiceNotes, setInvoiceNotes] = useState("");
-  const [extraNotes, setExtraNotes] = useState("");
   const [termsAndConditions, setTermsAndConditions] = useState("");
   const [additionalMessages, setAdditionalMessages] = useState("");
   const debouncedSearch = useDebouncedValue(productSearch, 300);
@@ -173,9 +207,11 @@ export default function CreateInvoicePage() {
     [productSubtotal, vatAmount, discountAmount, shippingCost]
   );
   const balanceDue = useMemo(() => Math.max(subtotal - Number(paidAmount || 0), 0), [subtotal, paidAmount]);
+  const extraPaidAmount = useMemo(() => Math.max(Number(paidAmount || 0) - subtotal, 0), [paidAmount, subtotal]);
   const paymentStatus = useMemo(() => {
     if (paidAmount <= 0) return "unpaid";
-    if (paidAmount >= subtotal) return "full";
+    if (paidAmount > subtotal) return "overpaid";
+    if (paidAmount === subtotal) return "full";
     return "partial";
   }, [paidAmount, subtotal]);
   const selectedPaymentMethod = customerDraft.paymentMethod || "bank";
@@ -194,8 +230,6 @@ export default function CreateInvoicePage() {
       setDiscountRate(0);
       setShippingCost(0);
       setInvoiceMeta(EMPTY_INVOICE_META);
-      setInvoiceNotes("");
-      setExtraNotes("");
       setTermsAndConditions("");
       setAdditionalMessages("");
       return;
@@ -244,8 +278,6 @@ export default function CreateInvoicePage() {
       incoterms: prev.incoterms,
       bankDetails: prev.bankDetails,
     }));
-    setInvoiceNotes("");
-    setExtraNotes("");
     setTermsAndConditions("");
     setAdditionalMessages("");
   }, [selectedInquiry]);
@@ -276,7 +308,11 @@ export default function CreateInvoicePage() {
         itemIndex === index
           ? {
               ...item,
-              [key]: ["quantity", "unitPrice", "discount"].includes(key) ? Number(value || 0) : value,
+              [key]: key === "quantity"
+                ? normalizePositiveInteger(value)
+                : ["unitPrice", "discount"].includes(key)
+                  ? normalizeNonNegativeNumber(value)
+                  : value,
             }
           : item
       )
@@ -286,7 +322,7 @@ export default function CreateInvoicePage() {
   const addProduct = (product) => {
     if (!product) return;
 
-    const unitPrice = Number(product.offerPrice || product.price || 0);
+    const unitPrice = getProductUnitPrice(product);
     const image = getProductImage(product);
 
     setEditableItems((prev) => {
@@ -325,6 +361,16 @@ export default function CreateInvoicePage() {
 
   const updateInvoiceMeta = (key, value) => {
     setInvoiceMeta((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const uploadItemImage = (index, file) => {
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      updateItem(index, "image", typeof reader.result === "string" ? reader.result : "");
+    };
+    reader.readAsDataURL(file);
   };
 
   const addCustomPaymentMethod = () => {
@@ -382,7 +428,7 @@ export default function CreateInvoicePage() {
     try {
       setSaving(true);
       const structuredMeta = serializeInvoiceMetaToNotes(invoiceMeta);
-      const composedNotes = [structuredMeta, invoiceNotes].filter((part) => String(part || "").trim()).join("\n\n");
+      const composedNotes = structuredMeta;
       const composedTerms = [termsAndConditions, invoiceMeta.bankDetails ? `Bank Details: ${invoiceMeta.bankDetails}` : ""]
         .filter((part) => String(part || "").trim())
         .join("\n\n");
@@ -406,7 +452,6 @@ export default function CreateInvoicePage() {
         discountRate: Number(discountRate || 0),
         shippingCost: Number(shippingCost || 0),
         notes: composedNotes,
-        extraNotes,
         termsAndConditions: composedTerms,
         additionalMessages: composedAdditional,
         currency: selectedInquiry.currency || "USD",
@@ -501,13 +546,15 @@ export default function CreateInvoicePage() {
                           </label>
                           <label className="space-y-1 text-sm">
                             <span className="font-medium text-slate-700">Validity date </span>
-                            <input
-                              type="date"
-                              value={invoiceMeta.validityDate}
-                              onChange={(event) => updateInvoiceMeta("validityDate", event.target.value)}
-                              className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
-                              
-                            />
+                            <div className="relative">
+                              <input
+                                type="date"
+                                value={invoiceMeta.validityDate}
+                                onChange={(event) => updateInvoiceMeta("validityDate", event.target.value)}
+                                className="w-full rounded-xl border border-slate-200 px-3 py-2.5 pr-10 text-slate-900 outline-none focus:border-teal-500"
+                              />
+                              <FaCalendar className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                            </div>
                           </label>
                         </div>
                       </div>
@@ -593,166 +640,179 @@ export default function CreateInvoicePage() {
                     </div>
                   </div>
 
-                  <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-                    <h3 className="text-lg font-semibold text-slate-900">Add products</h3>
-                    <label className="mt-3 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 focus-within:border-teal-500">
-                      <Search className="h-4 w-4 text-slate-400" />
-                      <input
-                        value={productSearch}
-                        onChange={(event) => setProductSearch(event.target.value)}
-                        placeholder="Search existing products"
-                        className="w-full bg-transparent text-sm text-slate-900 outline-none"
-                      />
-                    </label>
-
-                    <div className="mt-3 max-h-[18rem] space-y-3 overflow-y-auto rounded-2xl border border-slate-200 p-3">
-                      {productLoading ? (
-                        <div className="flex items-center justify-center py-6 text-teal-600">
-                          <Loader2 className="h-5 w-5 animate-spin" />
+                  <div className="grid gap-6 xl:grid-cols-2">
+                    <div className="space-y-4 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <h3 className="text-lg font-semibold text-slate-900">Invoice products</h3>
+                          <p className="text-sm text-slate-600">Edit quantities, prices, and discounts for each selected product.</p>
                         </div>
-                      ) : productResults.length === 0 ? (
-                        <p className="py-6 text-center text-sm text-slate-500">No products found.</p>
-                      ) : (
-                        productResults.map((product) => {
-                          const imageUrl = getProductImage(product);
+                        <button
+                          type="button"
+                          onClick={() => setEditableItems((prev) => [...prev, { ...EMPTY_ITEM }])}
+                          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                        >
+                          <PackagePlus className="h-4 w-4" /> Add new item
+                        </button>
+                      </div>
+
+                      <div className="space-y-4">
+                        {editableItems.map((item, index) => {
+                          const imageUrl = item.image || "";
 
                           return (
-                            <div key={product.id} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3">
-                              <div className="h-14 w-14 overflow-hidden rounded-xl bg-slate-100">
-                                {imageUrl ? (
-                                  <img src={imageUrl} alt={product.name} className="h-full w-full object-cover" />
-                                ) : (
-                                  <div className="flex h-full w-full items-center justify-center text-slate-400">
-                                    <PackagePlus className="h-4 w-4" />
+                            <div key={`${item.productId || "item"}-${index}`} className="rounded-2xl border border-slate-200 p-4">
+                              <div className="flex flex-col gap-4 xl:flex-row xl:items-start">
+                                <div className="flex gap-4 xl:w-[260px]">
+                                  <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+                                    {imageUrl ? (
+                                      <img src={imageUrl} alt={item.title || item.name} className="h-full w-full object-cover" />
+                                    ) : (
+                                      <div className="flex h-full w-full items-center justify-center text-slate-400">
+                                        <PackagePlus className="h-5 w-5" />
+                                      </div>
+                                    )}
                                   </div>
-                                )}
+                                  <div className="min-w-0">
+                                    <p className="truncate font-semibold text-slate-900">{item.title || item.name || "Invoice item"}</p>
+                                    <p className="text-sm text-slate-600">{item.name || "Use the add products panel."}</p>
+                                    <p className="mt-1 text-sm font-medium text-slate-900">
+                                      {formatCurrency(Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0) - Number(item.discount || 0), 0))}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div className="grid flex-1 gap-3 md:grid-cols-4">
+                                  <label className="space-y-1 text-sm">
+                                    <span className="font-medium text-slate-700">Product name</span>
+                                    <input
+                                      value={item.name}
+                                      onChange={(event) => updateItem(index, "name", event.target.value)}
+                                      className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                    />
+                                  </label>
+                                  <label className="space-y-1 text-sm">
+                                    <span className="font-medium text-slate-700">Title</span>
+                                    <input
+                                      value={item.title || ""}
+                                      onChange={(event) => updateItem(index, "title", event.target.value)}
+                                      className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                    />
+                                  </label>
+                                  <label className="space-y-1 text-sm">
+                                    <span className="font-medium text-slate-700">Qty</span>
+                                    <input
+                                      type="number"
+                                      min="1"
+                                      value={item.quantity}
+                                      onChange={(event) => updateItem(index, "quantity", event.target.value)}
+                                      className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                    />
+                                  </label>
+                                  <label className="space-y-1 text-sm">
+                                    <span className="font-medium text-slate-700">Unit price</span>
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      value={item.unitPrice}
+                                      onChange={(event) => updateItem(index, "unitPrice", event.target.value)}
+                                      className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                    />
+                                  </label>
+                                  <label className="space-y-1 text-sm">
+                                    <span className="font-medium text-slate-700">Discount</span>
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      value={item.discount || 0}
+                                      onChange={(event) => updateItem(index, "discount", event.target.value)}
+                                      className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                    />
+                                  </label>
+                                  <label className="space-y-1 text-sm md:col-span-2">
+                                    <span className="font-medium text-slate-700">Item image</span>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      onChange={(event) => uploadItemImage(index, event.target.files?.[0])}
+                                      className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white"
+                                    />
+                                  </label>
+                                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 md:col-span-2">
+                                    Line total: {formatCurrency(Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0) - Number(item.discount || 0), 0))}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeItem(index)}
+                                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm font-medium text-rose-700 hover:bg-rose-100"
+                                  >
+                                    <Trash2 className="h-4 w-4" /> Remove
+                                  </button>
+                                </div>
                               </div>
-                              <div className="min-w-0 flex-1">
-                                <p className="truncate font-medium text-slate-900">{product.name}</p>
-                                <p className="text-xs text-slate-600">{product.categoryName || "Catalog product"}</p>
-                                <p className="text-xs text-slate-600">Price: {formatCurrency(product.offerPrice || product.price)}</p>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => addProduct(product)}
-                                className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-3 py-2 text-xs font-medium text-white hover:bg-slate-800"
-                              >
-                                <Plus className="h-3.5 w-3.5" /> Add
-                              </button>
                             </div>
                           );
-                        })
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-4 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <h3 className="text-lg font-semibold text-slate-900">Invoice products</h3>
-                        <p className="text-sm text-slate-600">Edit quantities, prices, and discounts for each selected product.</p>
+                        })}
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => setEditableItems((prev) => [...prev, { ...EMPTY_ITEM }])}
-                        className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
-                      >
-                        <PackagePlus className="h-4 w-4" /> Add new item 
-                      </button>
                     </div>
 
-                    <div className="space-y-4">
-                      {editableItems.map((item, index) => {
-                        const imageUrl = item.image || "";
+                    <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                      <h3 className="text-lg font-semibold text-slate-900">Add products</h3>
+                      <label className="mt-3 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 focus-within:border-teal-500">
+                        <Search className="h-4 w-4 text-slate-400" />
+                        <input
+                          value={productSearch}
+                          onChange={(event) => setProductSearch(event.target.value)}
+                          placeholder="Search existing products"
+                          className="w-full bg-transparent text-sm text-slate-900 outline-none"
+                        />
+                      </label>
 
-                        return (
-                          <div key={`${item.productId || "item"}-${index}`} className="rounded-2xl border border-slate-200 p-4">
-                            <div className="flex flex-col gap-4 xl:flex-row xl:items-start">
-                              <div className="flex gap-4 xl:w-[260px]">
-                                <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+                      <div className="mt-3 max-h-[28rem] space-y-3 overflow-y-auto rounded-2xl border border-slate-200 p-3">
+                        {productLoading ? (
+                          <div className="flex items-center justify-center py-6 text-teal-600">
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                          </div>
+                        ) : productResults.length === 0 ? (
+                          <p className="py-6 text-center text-sm text-slate-500">No products found.</p>
+                        ) : (
+                          productResults.map((product) => {
+                            const imageUrl = getProductImage(product);
+                            const unitPrice = getProductUnitPrice(product);
+
+                            return (
+                              <div key={product.id} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3">
+                                <div className="h-14 w-14 overflow-hidden rounded-xl bg-slate-100">
                                   {imageUrl ? (
-                                    <img src={imageUrl} alt={item.title || item.name} className="h-full w-full object-cover" />
+                                    <img src={imageUrl} alt={product.name} className="h-full w-full object-cover" />
                                   ) : (
                                     <div className="flex h-full w-full items-center justify-center text-slate-400">
-                                      <PackagePlus className="h-5 w-5" />
+                                      <PackagePlus className="h-4 w-4" />
                                     </div>
                                   )}
                                 </div>
-                                <div className="min-w-0">
-                                  <p className="truncate font-semibold text-slate-900">{item.title || item.name || "Invoice item"}</p>
-                                  <p className="text-sm text-slate-600">{item.name || "Use the search panel to add a product."}</p>
-                                  <p className="mt-1 text-sm font-medium text-slate-900">
-                                    {formatCurrency(Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0) - Number(item.discount || 0), 0))}
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div className="grid flex-1 gap-3 md:grid-cols-4">
-                                <label className="space-y-1 text-sm">
-                                  <span className="font-medium text-slate-700">Product name</span>
-                                  <input
-                                    value={item.name}
-                                    onChange={(event) => updateItem(index, "name", event.target.value)}
-                                    className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
-                                  />
-                                </label>
-                                <label className="space-y-1 text-sm">
-                                  <span className="font-medium text-slate-700">Title</span>
-                                  <input
-                                    value={item.title || ""}
-                                    onChange={(event) => updateItem(index, "title", event.target.value)}
-                                    className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
-                                  />
-                                </label>
-                                <label className="space-y-1 text-sm">
-                                  <span className="font-medium text-slate-700">Qty</span>
-                                  <input
-                                    type="number"
-                                    min="1"
-                                    value={item.quantity}
-                                    onChange={(event) => updateItem(index, "quantity", event.target.value)}
-                                    className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
-                                  />
-                                </label>
-                                <label className="space-y-1 text-sm">
-                                  <span className="font-medium text-slate-700">Unit price</span>
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    value={item.unitPrice}
-                                    onChange={(event) => updateItem(index, "unitPrice", event.target.value)}
-                                    className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
-                                  />
-                                </label>
-                                <label className="space-y-1 text-sm">
-                                  <span className="font-medium text-slate-700">Discount</span>
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    value={item.discount || 0}
-                                    onChange={(event) => updateItem(index, "discount", event.target.value)}
-                                    className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
-                                  />
-                                </label>
-                                <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900">
-                                  Line total: {formatCurrency(Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0) - Number(item.discount || 0), 0))}
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate font-medium text-slate-900">{product.name}</p>
+                                  <p className="text-xs text-slate-600">{product.categoryName || "Catalog product"}</p>
+                                  <p className="text-xs text-slate-600">Price: {formatCurrency(unitPrice)}</p>
                                 </div>
                                 <button
                                   type="button"
-                                  onClick={() => removeItem(index)}
-                                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm font-medium text-rose-700 hover:bg-rose-100"
+                                  onClick={() => addProduct(product)}
+                                  className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-3 py-2 text-xs font-medium text-white hover:bg-slate-800"
                                 >
-                                  <Trash2 className="h-4 w-4" /> Remove
+                                  <Plus className="h-3.5 w-3.5" /> Add
                                 </button>
                               </div>
-                            </div>
-                          </div>
-                        );
-                      })}
+                            );
+                          })
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                  <div className="grid gap-6 xl:grid-cols-2">
+                    <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                     <div className="flex items-center gap-2 text-slate-900">
                       <Calculator className="h-5 w-5 text-teal-600" />
                       <h3 className="text-lg font-semibold">Calculation</h3>
@@ -769,7 +829,7 @@ export default function CreateInvoicePage() {
                           type="number"
                           min="0"
                           value={vatRate}
-                          onChange={(event) => setVatRate(Number(event.target.value || 0))}
+                          onChange={(event) => setVatRate(normalizeNonNegativeNumber(event.target.value))}
                           className="w-28 rounded-lg border border-slate-200 px-3 py-2 text-right text-slate-900 outline-none focus:border-teal-500"
                         />
                       </label>
@@ -783,7 +843,7 @@ export default function CreateInvoicePage() {
                           type="number"
                           min="0"
                           value={discountRate}
-                          onChange={(event) => setDiscountRate(Number(event.target.value || 0))}
+                          onChange={(event) => setDiscountRate(normalizeNonNegativeNumber(event.target.value))}
                           className="w-28 rounded-lg border border-slate-200 px-3 py-2 text-right text-slate-900 outline-none focus:border-teal-500"
                         />
                       </label>
@@ -797,7 +857,7 @@ export default function CreateInvoicePage() {
                           type="number"
                           min="0"
                           value={shippingCost}
-                          onChange={(event) => setShippingCost(Number(event.target.value || 0))}
+                          onChange={(event) => setShippingCost(normalizeNonNegativeNumber(event.target.value))}
                           className="w-32 rounded-lg border border-slate-200 px-3 py-2 text-right text-slate-900 outline-none focus:border-teal-500"
                         />
                       </label>
@@ -806,9 +866,9 @@ export default function CreateInvoicePage() {
                         <span className="text-xl font-semibold">{formatCurrency(subtotal)}</span>
                       </div>
                     </div>
-                  </div>
+                    </div>
 
-                  <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                     <h3 className="text-lg font-semibold text-slate-900">Payment details</h3>
                     <div className="mt-4 space-y-3 text-sm text-slate-700">
                       <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
@@ -821,7 +881,7 @@ export default function CreateInvoicePage() {
                           type="number"
                           min="0"
                           value={paidAmount}
-                          onChange={(event) => setPaidAmount(Number(event.target.value || 0))}
+                          onChange={(event) => setPaidAmount(normalizeNonNegativeNumber(event.target.value))}
                           className="w-32 rounded-lg border border-slate-200 px-3 py-2 text-right text-slate-900 outline-none focus:border-teal-500"
                         />
                       </label>
@@ -833,6 +893,12 @@ export default function CreateInvoicePage() {
                         <span>Status</span>
                         <span className="rounded-full bg-slate-950 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white">{paymentStatus}</span>
                       </div>
+                      {paymentStatus === "overpaid" ? (
+                        <div className="flex items-center justify-between rounded-xl bg-emerald-50 px-4 py-3 text-emerald-900">
+                          <span>Extra paid</span>
+                          <span className="font-semibold">{formatCurrency(extraPaidAmount)}</span>
+                        </div>
+                      ) : null}
                     </div>
 
                     <div className="mt-5 space-y-2">
@@ -864,6 +930,7 @@ export default function CreateInvoicePage() {
                           <Plus className="h-4 w-4" /> Add
                         </button>
                       </div>
+                    </div>
                     </div>
                   </div>
                 </>
@@ -901,24 +968,6 @@ export default function CreateInvoicePage() {
                           rows={3}
                           value={customerDraft.notes}
                           onChange={(event) => updateCustomer("notes", event.target.value)}
-                          className="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-teal-500"
-                        />
-                      </label>
-                      <label className="block text-sm font-medium text-slate-700">
-                        Internal notes
-                        <textarea
-                          rows={3}
-                          value={invoiceNotes}
-                          onChange={(event) => setInvoiceNotes(event.target.value)}
-                          className="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-teal-500"
-                        />
-                      </label>
-                      <label className="block text-sm font-medium text-slate-700">
-                        Extra notes
-                        <textarea
-                          rows={3}
-                          value={extraNotes}
-                          onChange={(event) => setExtraNotes(event.target.value)}
                           className="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-teal-500"
                         />
                       </label>
