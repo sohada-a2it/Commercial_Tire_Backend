@@ -113,6 +113,11 @@ const getProductUnitPrice = (product) => {
 
 const formatCurrency = (value) => `$${toSafeNumber(value).toFixed(2)}`;
 
+const displayNumericValue = (value) => {
+  const numeric = toSafeNumber(value);
+  return numeric === 0 ? "" : String(numeric);
+};
+
 const roundCurrency = (value) => Math.round((Number(value || 0) + Number.EPSILON) * 100) / 100;
 
 const getProductImage = (product) => product?.image?.url || product?.image || product?.thumbnail || "";
@@ -277,9 +282,9 @@ export default function CreateInvoicePage() {
         productId: item.productId || "",
         name: item.name,
         title: item.title || item.name || "",
-        quantity: Number(item.quantity || 0),
-        unitPrice: Number(item.unitPrice || 0),
-        discount: Number(item.discount || 0),
+        quantity: normalizePositiveInteger(item.quantity || 1),
+        unitPrice: toSafeNumber(item.unitPrice || 0),
+        discount: toSafeNumber(item.discount || 0),
         image: item.image || "",
       }))
     );
@@ -377,6 +382,10 @@ export default function CreateInvoicePage() {
 
   const updateCustomer = (key, value) => {
     setCustomerDraft((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleNumericInputChange = (setter) => (event) => {
+    setter(normalizeNonNegativeNumber(event.target.value));
   };
 
   const updateInvoiceMeta = (key, value) => {
@@ -724,7 +733,7 @@ export default function CreateInvoicePage() {
                                     <input
                                       type="number"
                                       min="1"
-                                      value={item.quantity}
+                                      value={displayNumericValue(item.quantity)}
                                       onChange={(event) => updateItem(index, "quantity", event.target.value)}
                                       className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
                                     />
@@ -734,7 +743,7 @@ export default function CreateInvoicePage() {
                                     <input
                                       type="number"
                                       min="0"
-                                      value={item.unitPrice}
+                                      value={displayNumericValue(item.unitPrice)}
                                       onChange={(event) => updateItem(index, "unitPrice", event.target.value)}
                                       className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
                                     />
@@ -744,7 +753,7 @@ export default function CreateInvoicePage() {
                                     <input
                                       type="number"
                                       min="0"
-                                      value={item.discount || 0}
+                                      value={displayNumericValue(item.discount)}
                                       onChange={(event) => updateItem(index, "discount", event.target.value)}
                                       className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
                                     />
@@ -848,8 +857,8 @@ export default function CreateInvoicePage() {
                         <input
                           type="number"
                           min="0"
-                          value={vatRate}
-                          onChange={(event) => setVatRate(normalizeNonNegativeNumber(event.target.value))}
+                          value={displayNumericValue(vatRate)}
+                          onChange={handleNumericInputChange(setVatRate)}
                           className="w-28 rounded-lg border border-slate-200 px-3 py-2 text-right text-slate-900 outline-none focus:border-teal-500"
                         />
                       </label>
@@ -862,8 +871,8 @@ export default function CreateInvoicePage() {
                         <input
                           type="number"
                           min="0"
-                          value={discountRate}
-                          onChange={(event) => setDiscountRate(normalizeNonNegativeNumber(event.target.value))}
+                          value={displayNumericValue(discountRate)}
+                          onChange={handleNumericInputChange(setDiscountRate)}
                           className="w-28 rounded-lg border border-slate-200 px-3 py-2 text-right text-slate-900 outline-none focus:border-teal-500"
                         />
                       </label>
@@ -876,8 +885,8 @@ export default function CreateInvoicePage() {
                         <input
                           type="number"
                           min="0"
-                          value={shippingCost}
-                          onChange={(event) => setShippingCost(normalizeNonNegativeNumber(event.target.value))}
+                          value={displayNumericValue(shippingCost)}
+                          onChange={handleNumericInputChange(setShippingCost)}
                           className="w-32 rounded-lg border border-slate-200 px-3 py-2 text-right text-slate-900 outline-none focus:border-teal-500"
                         />
                       </label>
@@ -900,8 +909,8 @@ export default function CreateInvoicePage() {
                         <input
                           type="number"
                           min="0"
-                          value={paidAmount}
-                          onChange={(event) => setPaidAmount(normalizeNonNegativeNumber(event.target.value))}
+                          value={displayNumericValue(paidAmount)}
+                          onChange={handleNumericInputChange(setPaidAmount)}
                           className="w-32 rounded-lg border border-slate-200 px-3 py-2 text-right text-slate-900 outline-none focus:border-teal-500"
                         />
                       </label>
