@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
@@ -179,6 +179,7 @@ export default function CreateInvoicePage() {
   const [editableItems, setEditableItems] = useState([]);
   const [termsAndConditions, setTermsAndConditions] = useState("");
   const [additionalMessages, setAdditionalMessages] = useState("");
+  const validityDateRef = useRef(null);
   const debouncedSearch = useDebouncedValue(productSearch, 300);
 
   useEffect(() => {
@@ -577,12 +578,31 @@ export default function CreateInvoicePage() {
                             <span className="font-medium text-slate-700">Validity date </span>
                             <div className="relative">
                               <input
+                                ref={validityDateRef}
                                 type="date"
                                 value={invoiceMeta.validityDate}
                                 onChange={(event) => updateInvoiceMeta("validityDate", event.target.value)}
                                 className="w-full rounded-xl border border-slate-200 px-3 py-2.5 pr-10 text-slate-900 outline-none focus:border-teal-500"
                               />
-                              <FaCalendar className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const input = validityDateRef.current;
+                                  if (!input) return;
+
+                                  if (typeof input.showPicker === "function") {
+                                    input.showPicker();
+                                    return;
+                                  }
+
+                                  input.focus();
+                                  input.click();
+                                }}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                                aria-label="Open validity date picker"
+                              >
+                                <FaCalendar />
+                              </button>
                             </div>
                           </label>
                         </div>
