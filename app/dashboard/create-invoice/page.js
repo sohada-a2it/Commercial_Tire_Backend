@@ -56,6 +56,16 @@ const BASE_PAYMENT_METHODS = [
 ];
 
 const toSafeNumber = (value) => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  if (typeof value === "string") {
+    const cleaned = value.replace(/[^0-9.-]/g, "");
+    const numeric = Number(cleaned);
+    return Number.isFinite(numeric) ? numeric : 0;
+  }
+
   const numeric = Number(value);
   return Number.isFinite(numeric) ? numeric : 0;
 };
@@ -83,7 +93,17 @@ const normalizePositiveInteger = (value) => {
 };
 
 const getProductUnitPrice = (product) => {
-  const candidates = [product?.offerPrice, product?.price, product?.unitPrice, product?.basePrice, product?.mrp];
+  const candidates = [
+    product?.offerPrice,
+    product?.price,
+    product?.unitPrice,
+    product?.basePrice,
+    product?.mrp,
+    product?.pricing?.offerPrice,
+    product?.pricing?.price,
+    product?.pricingTiers?.[0]?.pricePerTire,
+    product?.pricingTiers?.[0]?.price,
+  ];
   for (const candidate of candidates) {
     const parsed = toSafeNumber(candidate);
     if (parsed > 0) return parsed;
@@ -290,7 +310,7 @@ export default function CreateInvoicePage() {
 
       try {
         setProductLoading(true);
-        const result = await fetchProducts({ search: debouncedSearch, limit: 8, page: 1, sort: "newest" });
+        const result = await fetchProducts({ search: debouncedSearch, limit: 3, page: 1, sort: "newest" });
         setProductResults(result.products || []);
       } catch (error) {
         toast.error(error.message || "Failed to load products");
@@ -492,8 +512,8 @@ export default function CreateInvoicePage() {
         ) : inquiries.length === 0 ? (
           <div className="rounded-2xl bg-white p-6 text-slate-600 shadow-sm ring-1 ring-slate-200">No pending inquiries available for invoicing.</div>
         ) : (
-          <div className="grid gap-6 xl:grid-cols-[1.55fr_1fr] [&_input]:bg-white [&_input]:text-slate-900 [&_input]:placeholder:text-slate-400 [&_input]:dark:bg-white [&_input]:dark:text-slate-900 [&_input]:dark:border-slate-300 [&_select]:bg-white [&_select]:text-slate-900 [&_select]:dark:bg-white [&_select]:dark:text-slate-900 [&_select]:dark:border-slate-300 [&_textarea]:bg-white [&_textarea]:text-slate-900 [&_textarea]:placeholder:text-slate-400 [&_textarea]:dark:bg-white [&_textarea]:dark:text-slate-900 [&_textarea]:dark:border-slate-300">
-            <section className="space-y-6">
+          <div className="space-y-6 [&_input]:bg-white [&_input]:text-slate-900 [&_input]:placeholder:text-slate-400 [&_input]:dark:bg-white [&_input]:dark:text-slate-900 [&_input]:dark:border-slate-300 [&_select]:bg-white [&_select]:text-slate-900 [&_select]:dark:bg-white [&_select]:dark:text-slate-900 [&_select]:dark:border-slate-300 [&_textarea]:bg-white [&_textarea]:text-slate-900 [&_textarea]:placeholder:text-slate-400 [&_textarea]:dark:bg-white [&_textarea]:dark:text-slate-900 [&_textarea]:dark:border-slate-300">
+            <div className="space-y-6">
               <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                   <div>
@@ -640,8 +660,8 @@ export default function CreateInvoicePage() {
                     </div>
                   </div>
 
-                  <div className="grid gap-6 xl:grid-cols-2">
-                    <div className="space-y-4 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                  <div className="grid gap-6 xl:grid-cols-2 xl:items-stretch">
+                    <div className="flex min-h-[30rem] flex-col rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                       <div className="flex items-center justify-between gap-3">
                         <div>
                           <h3 className="text-lg font-semibold text-slate-900">Invoice products</h3>
@@ -656,7 +676,7 @@ export default function CreateInvoicePage() {
                         </button>
                       </div>
 
-                      <div className="space-y-4">
+                      <div className="mt-4 flex-1 space-y-4 overflow-y-auto pr-1">
                         {editableItems.map((item, index) => {
                           const imageUrl = item.image || "";
 
@@ -756,7 +776,7 @@ export default function CreateInvoicePage() {
                       </div>
                     </div>
 
-                    <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <div className="flex min-h-[30rem] flex-col rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                       <h3 className="text-lg font-semibold text-slate-900">Add products</h3>
                       <label className="mt-3 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 focus-within:border-teal-500">
                         <Search className="h-4 w-4 text-slate-400" />
@@ -768,7 +788,7 @@ export default function CreateInvoicePage() {
                         />
                       </label>
 
-                      <div className="mt-3 max-h-[28rem] space-y-3 overflow-y-auto rounded-2xl border border-slate-200 p-3">
+                      <div className="mt-3 flex-1 space-y-3 overflow-y-auto rounded-2xl border border-slate-200 p-3">
                         {productLoading ? (
                           <div className="flex items-center justify-center py-6 text-teal-600">
                             <Loader2 className="h-5 w-5 animate-spin" />
@@ -811,8 +831,8 @@ export default function CreateInvoicePage() {
                     </div>
                   </div>
 
-                  <div className="grid gap-6 xl:grid-cols-2">
-                    <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                  <div className="grid gap-6 xl:grid-cols-2 xl:items-stretch">
+                    <div className="h-full rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                     <div className="flex items-center gap-2 text-slate-900">
                       <Calculator className="h-5 w-5 text-teal-600" />
                       <h3 className="text-lg font-semibold">Calculation</h3>
@@ -868,7 +888,7 @@ export default function CreateInvoicePage() {
                     </div>
                     </div>
 
-                    <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <div className="h-full rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                     <h3 className="text-lg font-semibold text-slate-900">Payment details</h3>
                     <div className="mt-4 space-y-3 text-sm text-slate-700">
                       <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
@@ -935,9 +955,6 @@ export default function CreateInvoicePage() {
                   </div>
                 </>
               ) : null}
-            </section>
-
-            <aside className="space-y-6">
               {selectedInquiry ? (
                 <>
                   <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
@@ -1001,12 +1018,8 @@ export default function CreateInvoicePage() {
                     {saving ? "Generating..." : "Generate Invoice"}
                   </button>
                 </>
-              ) : (
-                <div className="rounded-3xl bg-white p-6 text-sm text-slate-600 shadow-sm ring-1 ring-slate-200">
-                  Select an inquiry to start building the invoice.
-                </div>
-              )}
-            </aside>
+              ) : null}
+            </div>
           </div>
         )}
       </div>
