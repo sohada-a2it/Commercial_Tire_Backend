@@ -59,6 +59,12 @@ export const updateInquiryStatus = async (inquiryId, payload) => {
   });
 };
 
+export const deleteInquiry = async (inquiryId) => {
+  return apiRequest(`/api/inquiries/${inquiryId}`, {
+    method: "DELETE",
+  });
+};
+
 export const createInvoice = async (payload) => {
   return apiRequest("/api/invoices", {
     method: "POST",
