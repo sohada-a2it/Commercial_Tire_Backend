@@ -261,7 +261,7 @@ export default function InquiriesPage() {
                       </div>
                     </div>
 
-                    <div className="grid gap-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
+                    <div className="flex gap-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
                       <div>
                         <span className="text-slate-500">Customer</span>
                         <p className="font-medium text-slate-900">{inquiry.customer?.name}</p>

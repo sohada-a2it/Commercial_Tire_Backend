@@ -28,6 +28,8 @@ const EMPTY_ITEM = {
   productId: "",
   name: "",
   title: "",
+  categoryName: "",
+  ply: "",
   quantity: 1,
   unitPrice: 0,
   discount: 0,
@@ -86,9 +88,10 @@ const normalizeNonNegativeNumber = (value) => {
 
 const normalizePositiveInteger = (value) => {
   const raw = String(value ?? "").trim();
+  if (!raw) return 0;
   const cleaned = raw.replace(/[^0-9]/g, "").replace(/^0+(?=\d)/, "");
   const numeric = Number(cleaned || 0);
-  if (!Number.isFinite(numeric) || numeric <= 0) return 1;
+  if (!Number.isFinite(numeric) || numeric < 0) return 0;
   return numeric;
 };
 
@@ -121,6 +124,11 @@ const displayNumericValue = (value) => {
 const roundCurrency = (value) => Math.round((Number(value || 0) + Number.EPSILON) * 100) / 100;
 
 const getProductImage = (product) => product?.image?.url || product?.image || product?.thumbnail || "";
+
+const isVehicleAccessoryItem = (item) => {
+  const categoryText = String(item?.categoryName || item?.category || "").toLowerCase();
+  return categoryText.includes("vehicle parts") || categoryText.includes("accessories");
+};
 
 const serializeInvoiceMetaToNotes = (meta) => {
   const rows = [
@@ -283,6 +291,8 @@ export default function CreateInvoicePage() {
         productId: item.productId || "",
         name: item.name,
         title: item.title || item.name || "",
+        categoryName: item.categoryName || "",
+        ply: item.ply || "",
         quantity: normalizePositiveInteger(item.quantity || 1),
         unitPrice: toSafeNumber(item.unitPrice || 0),
         discount: toSafeNumber(item.discount || 0),
@@ -368,6 +378,8 @@ export default function CreateInvoicePage() {
           productId: String(product.id),
           name: product.name || "Product",
           title: product.name || product.title || "",
+          categoryName: product.categoryName || product.mainCategory || "",
+          ply: String(product?.keyAttributes?.ply || ""),
           quantity: 1,
           unitPrice,
           discount: 0,
@@ -439,6 +451,11 @@ export default function CreateInvoicePage() {
 
     if (editableItems.length === 0) {
       toast.error("At least one invoice item is required");
+      return;
+    }
+
+    if (editableItems.some((item) => Number(item.quantity || 0) <= 0)) {
+      toast.error("Each invoice item must have quantity greater than 0");
       return;
     }
 
@@ -752,12 +769,23 @@ export default function CreateInvoicePage() {
                                     <span className="font-medium text-slate-700">Qty</span>
                                     <input
                                       type="number"
-                                      min="1"
+                                      min="0"
                                       value={displayNumericValue(item.quantity)}
                                       onChange={(event) => updateItem(index, "quantity", event.target.value)}
                                       className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
                                     />
                                   </label>
+                                  {isVehicleAccessoryItem(item) ? (
+                                    <label className="space-y-1 text-sm">
+                                      <span className="font-medium text-slate-700">Ply</span>
+                                      <input
+                                        value={item.ply || ""}
+                                        onChange={(event) => updateItem(index, "ply", event.target.value)}
+                                        placeholder="Ex: 16"
+                                        className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
+                                      />
+                                    </label>
+                                  ) : null}
                                   <label className="space-y-1 text-sm">
                                     <span className="font-medium text-slate-700">Unit price</span>
                                     <input

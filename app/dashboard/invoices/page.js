@@ -281,7 +281,7 @@ export default function AdminInvoicesPage() {
                       </div>
                     </div>
 
-                    <div className="space-y-3 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
+                    <div className="flex gap-3 px-4 rounded-2xl bg-slate-50 p-4 text-sm text-slate-700">
                       <div>
                         <span className="text-slate-500">Customer</span>
                         <p className="font-medium text-slate-900">{invoice.customer?.name}</p>
