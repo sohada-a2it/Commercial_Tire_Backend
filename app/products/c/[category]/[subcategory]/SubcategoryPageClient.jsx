@@ -12,6 +12,19 @@ import RecentPurchaseNotification from "@/components/shared/RecentPurchaseNotifi
 import dataService from "@/services/dataService";
 import { SubcategoryPageSkeleton } from "@/components/shared/RouteSkeletons";
 
+const DESKTOP_PAGE_SIZE = 8;
+const MOBILE_PAGE_SIZE = 4;
+
+const getPageSize = () => {
+  if (typeof window === "undefined") return DESKTOP_PAGE_SIZE;
+  return window.innerWidth < 640 ? MOBILE_PAGE_SIZE : DESKTOP_PAGE_SIZE;
+};
+
+const getScrollTopOffset = () => {
+  if (typeof window === "undefined") return 60;
+  return window.innerWidth < 640 ? 20 : 60;
+};
+
 const SubcategoryPageClient = () => {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -33,9 +46,9 @@ const SubcategoryPageClient = () => {
   const [showTireTypeDropdown, setShowTireTypeDropdown] = useState(false);
   const [popupProducts, setPopupProducts] = useState([]);
   const [products, setProducts] = useState([]);
-  const [pagination, setPagination] = useState({ page: 1, hasNextPage: false, total: 0 });
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, hasNextPage: false, hasPrevPage: false, total: 0 });
   const [availableBrands, setAvailableBrands] = useState([]);
+  const [pageSize, setPageSize] = useState(DESKTOP_PAGE_SIZE);
 
   const isVehicleCategory =
     String(category?.name || "").toLowerCase() ===
@@ -49,6 +62,16 @@ const SubcategoryPageClient = () => {
   const sortDropdownRef = useRef(null);
   const tireTypeDropdownRef = useRef(null);
   const filterSectionRef = useRef(null); // Ref for scrolling to filter section
+
+  useEffect(() => {
+    const updatePageSize = () => {
+      setPageSize(getPageSize());
+    };
+
+    updatePageSize();
+    window.addEventListener("resize", updatePageSize);
+    return () => window.removeEventListener("resize", updatePageSize);
+  }, []);
 
   // Initialize filters from URL params on mount and when params change
   useEffect(() => {
@@ -147,7 +170,7 @@ const SubcategoryPageClient = () => {
           foundSubcategory.name,
           {
             page: 1,
-            limit: 24,
+            limit: pageSize,
             brand: selectedBrand || undefined,
             pattern: selectedTireType || undefined,
           }
@@ -165,7 +188,9 @@ const SubcategoryPageClient = () => {
         setAvailableBrands(productsResponse.filters?.brands || []);
         setPagination({
           page: productsResponse.pagination?.page || 1,
+          totalPages: productsResponse.pagination?.totalPages || 1,
           hasNextPage: Boolean(productsResponse.pagination?.hasNextPage),
+          hasPrevPage: Boolean(productsResponse.pagination?.hasPrevPage),
           total: productsResponse.pagination?.total || pageProducts.length,
         });
       } catch (err) {
@@ -179,17 +204,17 @@ const SubcategoryPageClient = () => {
     if (params.category && params.subcategory) {
       fetchData();
     }
-  }, [params.category, params.subcategory, selectedBrand, selectedTireType]);
+  }, [params.category, params.subcategory, selectedBrand, selectedTireType, pageSize]);
 
-  const handleLoadMoreProducts = async () => {
-    if (!category || !subcategory || !pagination.hasNextPage || isLoadingMore) return;
+  const handlePageChange = async (targetPage) => {
+    if (!category || !subcategory) return;
+    if (targetPage < 1 || targetPage > Number(pagination.totalPages || 1)) return;
 
     try {
-      setIsLoadingMore(true);
-      const nextPage = Number(pagination.page || 1) + 1;
+      setLoading(true);
       const response = await dataService.getProductsBySubcategory(category.name, subcategory.name, {
-        page: nextPage,
-        limit: 24,
+        page: targetPage,
+        limit: pageSize,
         brand: selectedBrand || undefined,
         pattern: selectedTireType || undefined,
       });
@@ -200,17 +225,26 @@ const SubcategoryPageClient = () => {
         subcategory: subcategory.name,
       }));
 
-      setProducts((prev) => [...prev, ...nextProducts]);
-      setAllProducts((prev) => [...prev, ...nextProducts]);
+      setProducts(nextProducts);
+      setAllProducts(nextProducts);
+      setPopupProducts(nextProducts.slice(0, 10));
       setPagination({
-        page: response.pagination?.page || nextPage,
+        page: response.pagination?.page || targetPage,
+        totalPages: response.pagination?.totalPages || 1,
         hasNextPage: Boolean(response.pagination?.hasNextPage),
-        total: response.pagination?.total || 0,
+        hasPrevPage: Boolean(response.pagination?.hasPrevPage),
+        total: response.pagination?.total || nextProducts.length,
       });
+
+      const sectionTop = filterSectionRef.current
+        ? filterSectionRef.current.getBoundingClientRect().top + window.scrollY
+        : 0;
+      const offset = getScrollTopOffset();
+      window.scrollTo({ top: Math.max(0, sectionTop - offset), behavior: "smooth" });
     } catch (err) {
-      console.error("Error loading more products:", err);
+      console.error("Error loading page products:", err);
     } finally {
-      setIsLoadingMore(false);
+      setLoading(false);
     }
   };
 
@@ -618,11 +652,47 @@ const SubcategoryPageClient = () => {
           selectedTireType={selectedTireType}
           sortBy={sortBy}
           isHomePage={false}
-          enableServerPagination={true}
-          hasMore={pagination.hasNextPage}
-          onLoadMore={handleLoadMoreProducts}
-          isLoadingMore={isLoadingMore}
+          enableServerPagination={false}
         />
+
+        {pagination.totalPages > 1 && (
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            <button
+              onClick={() => handlePageChange(Number(pagination.page || 1) - 1)}
+              disabled={!pagination.hasPrevPage}
+              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
+            >
+              Previous
+            </button>
+
+            {Array.from({ length: Number(pagination.totalPages || 1) }, (_, idx) => idx + 1)
+              .filter((pageNumber) => {
+                const current = Number(pagination.page || 1);
+                return pageNumber === 1 || pageNumber === Number(pagination.totalPages || 1) || Math.abs(pageNumber - current) <= 1;
+              })
+              .map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  onClick={() => handlePageChange(pageNumber)}
+                  className={`rounded-md px-3 py-2 text-sm border ${
+                    pageNumber === Number(pagination.page || 1)
+                      ? "bg-teal-600 text-white border-teal-600"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+
+            <button
+              onClick={() => handlePageChange(Number(pagination.page || 1) + 1)}
+              disabled={!pagination.hasNextPage}
+              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Recent Purchase Notification - Show for all subcategories with popup products */}
