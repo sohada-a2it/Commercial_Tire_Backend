@@ -111,23 +111,7 @@ export default function MyInquiriesPage() {
 
   const activeInquiryItems = activeInquiry?.items || [];
 
-  const handleDeleteInquiry = async (inquiry) => {
-    const label = inquiry.inquiryNumber || inquiry.id;
-    if (!confirm(`Remove inquiry ${label} from your dashboard?`)) {
-      return;
-    }
 
-    try {
-      const result = await deleteInquiry(inquiry.id);
-      toast.success(result.message || "Inquiry removed");
-      setInquiries((current) => current.filter((item) => String(item.id) !== String(inquiry.id)));
-      if (activeInquiry && String(activeInquiry.id) === String(inquiry.id)) {
-        setActiveInquiry(null);
-      }
-    } catch (error) {
-      toast.error(error.message || "Failed to remove inquiry");
-    }
-  };
 
   return (
     <DashboardLayout>
@@ -268,13 +252,7 @@ export default function MyInquiriesPage() {
                       </span>
                     </div>
                     <div className="flex flex-wrap justify-start gap-2 lg:justify-end">
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteInquiry(inquiry)}
-                        className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-white px-4 py-2.5 text-sm font-medium text-rose-700 transition hover:bg-rose-50"
-                      >
-                        <Trash2 className="h-4 w-4" /> Delete
-                      </button>
+                     
                       <button
                         type="button"
                         onClick={() => setActiveInquiry(inquiry)}
