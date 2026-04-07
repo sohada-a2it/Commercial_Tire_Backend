@@ -15,7 +15,7 @@ const SearchResultsContent = () => {
   const [inputValue, setInputValue] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [searchMeta, setSearchMeta] = useState({ total: 0 });
+  const [searchMeta, setSearchMeta] = useState({ total: 0, page: 1, totalPages: 1, hasNextPage: false, hasPrevPage: false });
   const [searchInputLoading, setSearchInputLoading] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedTireType, setSelectedTireType] = useState("");
@@ -23,11 +23,15 @@ const SearchResultsContent = () => {
   const [showBrandDropdown, setShowBrandDropdown] = useState(false);
   const [showTireTypeDropdown, setShowTireTypeDropdown] = useState(false);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   
   const brandDropdownRef = useRef(null);
   const tireTypeDropdownRef = useRef(null);
   const sortDropdownRef = useRef(null);
   const searchTimeoutRef = useRef(null);
+  const resultsSectionRef = useRef(null);
+
+  const PAGE_SIZE = 8;
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -58,33 +62,44 @@ const SearchResultsContent = () => {
     const brand = searchParams.get("brand") || "";
     const tireType = searchParams.get("tireType") || "";
     const sort = searchParams.get("sort") || "";
+    const page = Number.parseInt(searchParams.get("page") || "1", 10) || 1;
     
     setSearchQuery(query);
     setInputValue(query);
     setSelectedBrand(brand);
     setSelectedTireType(tireType);
     setSortBy(sort);
+    setCurrentPage(page);
 
     if (query) {
-      performSearch(query);
+      performSearch(query, { brand, tireType, page });
     } else {
+      setSearchResults([]);
+      setSearchMeta({ total: 0, page: 1, totalPages: 1, hasNextPage: false, hasPrevPage: false });
       setLoading(false);
     }
   }, [location.search]);
 
-  const performSearch = async (query) => {
+  const performSearch = async (query, options = {}) => {
+    const page = Number(options.page || 1);
     try {
       setLoading(true);
       const response = await dataService.fetchProducts({
         search: query,
-        page: 1,
-        limit: 48,
-        brand: selectedBrand || undefined,
-        pattern: selectedTireType || undefined,
+        page,
+        limit: PAGE_SIZE,
+        brand: options.brand || undefined,
+        pattern: options.tireType || undefined,
       });
 
       setSearchResults(response.products || []);
-      setSearchMeta({ total: response.pagination?.total || (response.products || []).length });
+      setSearchMeta({
+        total: response.pagination?.total || (response.products || []).length,
+        page: response.pagination?.page || page,
+        totalPages: response.pagination?.totalPages || 1,
+        hasNextPage: Boolean(response.pagination?.hasNextPage),
+        hasPrevPage: Boolean(response.pagination?.hasPrevPage),
+      });
     } catch (error) {
       console.error("Search error:", error);
     } finally {
@@ -114,8 +129,12 @@ const SearchResultsContent = () => {
   );
 
   // Helper function to update URL with current filters
-  const updateURLWithFilters = (brand, sort, tireType) => {
-    const params = new URLSearchParams(location.search);
+  const updateURLWithFilters = (brand, sort, tireType, page = 1, query = searchQuery || inputValue) => {
+    const params = new URLSearchParams();
+
+    if (query) {
+      params.set("q", query);
+    }
     
     if (brand) {
       params.set('brand', brand);
@@ -135,6 +154,10 @@ const SearchResultsContent = () => {
       params.delete('tireType');
     }
 
+    if (page > 1) {
+      params.set("page", String(page));
+    }
+
     const queryString = params.toString();
     const newUrl = queryString 
       ? `${window.location.pathname}?${queryString}`
@@ -146,19 +169,40 @@ const SearchResultsContent = () => {
   const handleBrandSelect = (brand) => {
     setSelectedBrand(brand);
     setShowBrandDropdown(false);
-    updateURLWithFilters(brand, sortBy, selectedTireType);
+    const nextPage = 1;
+    setCurrentPage(nextPage);
+    updateURLWithFilters(brand, sortBy, selectedTireType, nextPage);
+    performSearch(searchQuery || inputValue, { brand, tireType: selectedTireType, page: nextPage });
   };
 
   const handleTireTypeSelect = (tireType) => {
     setSelectedTireType(tireType);
     setShowTireTypeDropdown(false);
-    updateURLWithFilters(selectedBrand, sortBy, tireType);
+    const nextPage = 1;
+    setCurrentPage(nextPage);
+    updateURLWithFilters(selectedBrand, sortBy, tireType, nextPage);
+    performSearch(searchQuery || inputValue, { brand: selectedBrand, tireType, page: nextPage });
   };
 
   const handleSortSelect = (sortOption) => {
     setSortBy(sortOption);
     setShowSortDropdown(false);
-    updateURLWithFilters(selectedBrand, sortOption, selectedTireType);
+    const nextPage = 1;
+    setCurrentPage(nextPage);
+    updateURLWithFilters(selectedBrand, sortOption, selectedTireType, nextPage);
+    performSearch(searchQuery || inputValue, { brand: selectedBrand, tireType: selectedTireType, page: nextPage });
+  };
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > Number(searchMeta.totalPages || 1)) return;
+    setCurrentPage(page);
+    updateURLWithFilters(selectedBrand, sortBy, selectedTireType, page);
+    performSearch(searchQuery || inputValue, { brand: selectedBrand, tireType: selectedTireType, page });
+
+    const sectionTop = resultsSectionRef.current
+      ? resultsSectionRef.current.getBoundingClientRect().top + window.scrollY
+      : 0;
+    window.scrollTo({ top: Math.max(0, sectionTop - 60), behavior: "smooth" });
   };
 
   const handleNewSearch = (e) => {
@@ -259,7 +303,7 @@ const SearchResultsContent = () => {
         </div>
 
         {/* Results */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div ref={resultsSectionRef} className="bg-white rounded-lg shadow-md p-6">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
             <div>
               <h1 className="text-3xl font-bold text-teal-800">
@@ -446,6 +490,45 @@ const SearchResultsContent = () => {
                 selectedTireType={selectedTireType}
                 sortBy={sortBy}
               />
+
+              {Number(searchMeta.totalPages || 1) > 1 && (
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={!searchMeta.hasPrevPage}
+                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
+                  >
+                    Previous
+                  </button>
+
+                  {Array.from({ length: Number(searchMeta.totalPages || 1) }, (_, idx) => idx + 1)
+                    .filter((pageNumber) => {
+                      const current = Number(currentPage || 1);
+                      return pageNumber === 1 || pageNumber === Number(searchMeta.totalPages || 1) || Math.abs(pageNumber - current) <= 1;
+                    })
+                    .map((pageNumber) => (
+                      <button
+                        key={pageNumber}
+                        onClick={() => handlePageChange(pageNumber)}
+                        className={`rounded-md px-3 py-2 text-sm border ${
+                          pageNumber === Number(currentPage || 1)
+                            ? "bg-teal-600 text-white border-teal-600"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        {pageNumber}
+                      </button>
+                    ))}
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={!searchMeta.hasNextPage}
+                    className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             <div className="text-center py-12">
