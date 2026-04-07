@@ -14,7 +14,8 @@ const SearchResultsContent = () => {
   const [inputValue, setInputValue] = useState("");
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [searchMeta, setSearchMeta] = useState({ total: 0 });
+  const [searchInputLoading, setSearchInputLoading] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedTireType, setSelectedTireType] = useState("");
   const [sortBy, setSortBy] = useState("");
@@ -25,6 +26,7 @@ const SearchResultsContent = () => {
   const brandDropdownRef = useRef(null);
   const tireTypeDropdownRef = useRef(null);
   const sortDropdownRef = useRef(null);
+  const searchTimeoutRef = useRef(null);
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -69,39 +71,19 @@ const SearchResultsContent = () => {
     }
   }, [location.search]);
 
-  // Fetch categories once for suggestions
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await dataService.getCategories();
-        setCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
-
   const performSearch = async (query) => {
     try {
       setLoading(true);
-      const allProducts = await dataService.getAllProducts();
-
-      // Simple search algorithm - you can enhance this as needed
-      const results = allProducts.filter((product) => {
-        const searchTerms = query.toLowerCase().split(" ");
-        const productText = `
-          ${product.name} 
-          ${product.keyAttributes?.["Brand"] || ""} 
-          ${product.keyAttributes?.Size || ""} 
-          ${product.keyAttributes?.Pattern || ""}
-          ${product.description || ""}
-        `.toLowerCase();
-
-        return searchTerms.every((term) => productText.includes(term));
+      const response = await dataService.fetchProducts({
+        search: query,
+        page: 1,
+        limit: 48,
+        brand: selectedBrand || undefined,
+        pattern: selectedTireType || undefined,
       });
 
-      setSearchResults(results);
+      setSearchResults(response.products || []);
+      setSearchMeta({ total: response.pagination?.total || (response.products || []).length });
     } catch (error) {
       console.error("Search error:", error);
     } finally {
@@ -115,7 +97,7 @@ const SearchResultsContent = () => {
     const brands = [
       ...new Set(
         searchResults
-          .map((product) => product.keyAttributes?.["Brand"])
+          .map((product) => product.keyAttributes?.["Brand"] || product.brand)
           .filter((brand) => brand)
       ),
     ];
@@ -126,7 +108,8 @@ const SearchResultsContent = () => {
 
   // Check if results contain truck tires
   const hasTruckTires = searchResults.some(
-    (product) => product.subcategory?.toLowerCase() === "truck tires"
+    (product) =>
+      String(product.subcategory || product.subcategoryName || "").toLowerCase() === "truck tires"
   );
 
   // Helper function to update URL with current filters
@@ -194,36 +177,27 @@ const SearchResultsContent = () => {
     if (query.trim() === "") {
       setSearchSuggestions([]);
       setShowSuggestions(false);
+      setSearchInputLoading(false);
       return;
     }
 
-    // Flatten all products from all categories and subcategories
-    const allProducts = categories.flatMap((category) =>
-      (category.subcategories || []).flatMap((subcategory) =>
-        (subcategory.products || []).map((product) => ({
-          ...product,
-          category: category.name,
-          subcategory: subcategory.name,
-        }))
-      )
-    );
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
 
-    // Filter products based on search query
-    const results = allProducts.filter((product) => {
-      const searchTerms = query.toLowerCase().split(" ");
-      const productText = `
-        ${product.name} 
-        ${product.keyAttributes?.["Brand"] || ""} 
-        ${product.keyAttributes?.Size || ""} 
-        ${product.keyAttributes?.Pattern || ""}
-        ${product.description || ""}
-      `.toLowerCase();
-
-      return searchTerms.every((term) => productText.includes(term));
-    });
-
-    setSearchSuggestions(results.slice(0, 5)); // Show top 5 suggestions
-    setShowSuggestions(true);
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        setSearchInputLoading(true);
+        const results = await dataService.searchProducts(query, { page: 1, limit: 5 });
+        setSearchSuggestions(results);
+        setShowSuggestions(true);
+      } catch (_error) {
+        setSearchSuggestions([]);
+        setShowSuggestions(false);
+      } finally {
+        setSearchInputLoading(false);
+      }
+    }, 200);
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -284,7 +258,7 @@ const SearchResultsContent = () => {
                 suggestions={searchSuggestions}
                 onSuggestionClick={handleSuggestionClick}
                 searchQuery={inputValue}
-                isVisible={showSuggestions}
+                isVisible={showSuggestions && !searchInputLoading}
               />
             </div>
           </form>
@@ -298,7 +272,7 @@ const SearchResultsContent = () => {
                 Search Results
               </h1>
               <p className="text-gray-600 mt-2">
-                Found {searchResults.length} product(s) for "{searchQuery}"
+                Found {searchMeta.total || searchResults.length} product(s) for "{searchQuery}"
               </p>
             </div>
 

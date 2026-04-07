@@ -334,8 +334,15 @@ const ProductDetails = () => {
           setIsTyre(tyreCheck);
 
           // Get all products for recommendations
-          const allProducts = await dataService.getAllProducts();
-          setAllProducts(allProducts);
+          const relatedResponse = await dataService.getProductsBySubcategory(
+            foundProduct.categoryName,
+            foundProduct.subcategoryName,
+            { page: 1, limit: 60 }
+          );
+          const relatedProducts = Array.isArray(relatedResponse?.products)
+            ? relatedResponse.products
+            : [];
+          setAllProducts(relatedProducts);
         } else {
           setProduct(null);
         }

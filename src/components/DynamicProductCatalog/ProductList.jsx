@@ -27,6 +27,10 @@ const ProductList = ({
   selectedTireType,
   sortBy = "",
   isHomePage = false,
+  enableServerPagination = false,
+  hasMore = false,
+  onLoadMore = null,
+  isLoadingMore = false,
 }) => {
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [hoveredProduct, setHoveredProduct] = useState(null);
@@ -42,7 +46,8 @@ const ProductList = ({
   // Filter by brand
   if (selectedBrand) {
     filteredProducts = filteredProducts.filter(
-      (product) => product.keyAttributes?.["Brand"] === selectedBrand
+      (product) =>
+        (product.keyAttributes?.["Brand"] || product.brand) === selectedBrand
     );
   }
 
@@ -307,18 +312,31 @@ const ProductList = ({
 
           {/* Show "See All" button if there are more products to show */}
           {!showAllProducts &&
-            filteredProducts.length > initialProductsCount && (
+            ((enableServerPagination && hasMore) ||
+              (!enableServerPagination && filteredProducts.length > initialProductsCount)) && (
               <div className="mt-8 text-center">
                 <button
-                  onClick={handleSeeAllClick}
+                  onClick={
+                    enableServerPagination && typeof onLoadMore === "function"
+                      ? onLoadMore
+                      : handleSeeAllClick
+                  }
+                  disabled={isLoadingMore}
                   className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium"
                 >
-                  {isHomePage ? `View All Products →` : `See All Products`}
+                  {isLoadingMore
+                    ? "Loading..."
+                    : enableServerPagination
+                    ? "Load More Products"
+                    : isHomePage
+                    ? `View All Products →`
+                    : `See All Products`}
                 </button>
               </div>
             )}
           {/* show less button  */}
           {showAllProducts &&
+            !enableServerPagination &&
             filteredProducts.length > initialProductsCount && (
               <div className="mt-8 text-center">
                 <button

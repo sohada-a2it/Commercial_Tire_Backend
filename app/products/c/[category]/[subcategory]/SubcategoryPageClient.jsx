@@ -31,6 +31,10 @@ const SubcategoryPageClient = () => {
   const [selectedTireType, setSelectedTireType] = useState(null);
   const [showTireTypeDropdown, setShowTireTypeDropdown] = useState(false);
   const [popupProducts, setPopupProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState({ page: 1, hasNextPage: false, total: 0 });
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [availableBrands, setAvailableBrands] = useState([]);
 
   // Refs for click outside detection
   const brandDropdownRef = useRef(null);
@@ -128,19 +132,34 @@ const SubcategoryPageClient = () => {
         }
 
         setCategory(foundCategory);
-        setSubcategory(foundSubcategory);
+        setSubcategory({ ...foundSubcategory, products: [] });
 
-        // Set all products for search
-        const products =
-          foundSubcategory.products?.map((product) => ({
-            ...product,
-            category: foundCategory.name,
-            subcategory: foundSubcategory.name,
-          })) || [];
-        setAllProducts(products);
+        const productsResponse = await dataService.getProductsBySubcategory(
+          foundCategory.name,
+          foundSubcategory.name,
+          {
+            page: 1,
+            limit: 24,
+            brand: selectedBrand || undefined,
+            pattern: selectedTireType || undefined,
+          }
+        );
 
-        // Reuse current subcategory products for purchase notifications.
-        setPopupProducts(products.slice(0, 10));
+        const pageProducts = (productsResponse.products || []).map((product) => ({
+          ...product,
+          category: foundCategory.name,
+          subcategory: foundSubcategory.name,
+        }));
+
+        setProducts(pageProducts);
+        setAllProducts(pageProducts);
+        setPopupProducts(pageProducts.slice(0, 10));
+        setAvailableBrands(productsResponse.filters?.brands || []);
+        setPagination({
+          page: productsResponse.pagination?.page || 1,
+          hasNextPage: Boolean(productsResponse.pagination?.hasNextPage),
+          total: productsResponse.pagination?.total || pageProducts.length,
+        });
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to load products. Please try again later.");
@@ -152,7 +171,40 @@ const SubcategoryPageClient = () => {
     if (params.category && params.subcategory) {
       fetchData();
     }
-  }, [params.category, params.subcategory]);
+  }, [params.category, params.subcategory, selectedBrand, selectedTireType]);
+
+  const handleLoadMoreProducts = async () => {
+    if (!category || !subcategory || !pagination.hasNextPage || isLoadingMore) return;
+
+    try {
+      setIsLoadingMore(true);
+      const nextPage = Number(pagination.page || 1) + 1;
+      const response = await dataService.getProductsBySubcategory(category.name, subcategory.name, {
+        page: nextPage,
+        limit: 24,
+        brand: selectedBrand || undefined,
+        pattern: selectedTireType || undefined,
+      });
+
+      const nextProducts = (response.products || []).map((product) => ({
+        ...product,
+        category: category.name,
+        subcategory: subcategory.name,
+      }));
+
+      setProducts((prev) => [...prev, ...nextProducts]);
+      setAllProducts((prev) => [...prev, ...nextProducts]);
+      setPagination({
+        page: response.pagination?.page || nextPage,
+        hasNextPage: Boolean(response.pagination?.hasNextPage),
+        total: response.pagination?.total || 0,
+      });
+    } catch (err) {
+      console.error("Error loading more products:", err);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   // Update search suggestions when query changes
   useEffect(() => {
@@ -251,16 +303,11 @@ const SubcategoryPageClient = () => {
 
   // Get unique brands from current subcategory products
   const getUniqueBrands = () => {
-    if (!subcategory || !subcategory.products) return [];
+    if (availableBrands.length > 0) {
+      return [...availableBrands].sort();
+    }
 
-    const brands = [
-      ...new Set(
-        subcategory.products
-          .map((product) => product.keyAttributes?.["Brand"])
-          .filter((brand) => brand)
-      ),
-    ];
-
+    const brands = [...new Set(products.map((product) => product.keyAttributes?.["Brand"]).filter(Boolean))];
     return brands.sort();
   };
 
@@ -300,7 +347,7 @@ const SubcategoryPageClient = () => {
         title={`${subcategory?.name || "Products"} - ${
           category?.name || ""
         } | Asian Import Export`}
-        description={`Browse ${subcategory?.products?.length || 0} ${
+        description={`Browse ${pagination.total || products.length || 0} ${
           subcategory?.name?.toLowerCase() || "products"
         } from ${
           category?.name || "our catalog"
@@ -326,11 +373,11 @@ const SubcategoryPageClient = () => {
         </div>
 
         {/* Category Banner */}
-        {category?.name && subcategory?.products && (
+        {category?.name && products?.length > 0 && (
           <div className="mb-8">
             <CategoryBanner 
               category={category.name} 
-              products={subcategory.products} 
+              products={products} 
             />
           </div>
         )}
@@ -565,11 +612,15 @@ const SubcategoryPageClient = () => {
         {/* Products List */}
         <ProductList
           category={category}
-          subcategory={subcategory}
+          subcategory={{ ...subcategory, products }}
           selectedBrand={selectedBrand}
           selectedTireType={selectedTireType}
           sortBy={sortBy}
           isHomePage={false}
+          enableServerPagination={true}
+          hasMore={pagination.hasNextPage}
+          onLoadMore={handleLoadMoreProducts}
+          isLoadingMore={isLoadingMore}
         />
       </div>
 

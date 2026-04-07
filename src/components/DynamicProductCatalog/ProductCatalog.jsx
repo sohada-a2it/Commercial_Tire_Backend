@@ -17,7 +17,9 @@ const ProductCatalog = ({ isHomePage = false }) => {
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mobileSlideIndex, setMobileSlideIndex] = useState({});
+  const [searchLoading, setSearchLoading] = useState(false);
   const intervalRefs = useRef({});
+  const searchTimeoutRef = useRef(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -111,36 +113,27 @@ const ProductCatalog = ({ isHomePage = false }) => {
     if (query.trim() === "") {
       setSearchSuggestions([]);
       setShowSuggestions(false);
+      setSearchLoading(false);
       return;
     }
 
-    // Flatten all products from all categories and subcategories
-    const allProducts = categories.flatMap((category) =>
-      (category.subcategories || []).flatMap((subcategory) =>
-        (subcategory.products || []).map((product) => ({
-          ...product,
-          category: category.name,
-          subcategory: subcategory.name,
-        }))
-      )
-    );
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
 
-    // Filter products based on search query
-    const results = allProducts.filter((product) => {
-      const searchTerms = query.toLowerCase().split(" ");
-      const productText = `
-        ${product.name} 
-        ${product.keyAttributes?.["Brand"] || ""} 
-        ${product.keyAttributes?.Size || ""} 
-        ${product.keyAttributes?.Pattern || ""}
-        ${product.description || ""}
-      `.toLowerCase();
-
-      return searchTerms.every((term) => productText.includes(term));
-    });
-
-    setSearchSuggestions(results.slice(0, 5)); // Show top 5 suggestions
-    setShowSuggestions(true);
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        setSearchLoading(true);
+        const results = await dataService.searchProducts(query, { page: 1, limit: 5 });
+        setSearchSuggestions(results);
+        setShowSuggestions(true);
+      } catch (_error) {
+        setSearchSuggestions([]);
+        setShowSuggestions(false);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 200);
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -248,7 +241,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
                   suggestions={searchSuggestions}
                   onSuggestionClick={handleSuggestionClick}
                   searchQuery={searchQuery}
-                  isVisible={showSuggestions}
+                  isVisible={showSuggestions && !searchLoading}
                 />
               </div>
             </form>
@@ -316,7 +309,10 @@ const ProductCatalog = ({ isHomePage = false }) => {
                     {category.subcategories?.map((subcategory) => {
                       // Get the first product image as subcategory representative
                       const representativeImage =
-                        subcategory.products?.[0]?.image ||
+                        subcategory.image?.url ||
+                        subcategory.image ||
+                        category.image?.url ||
+                        category.image ||
                         "/assets/placeholder.png";
 
                       return (
@@ -441,7 +437,10 @@ const ProductCatalog = ({ isHomePage = false }) => {
                           <div className="flex">
                             {category.subcategories.map((subcategory) => {
                               const representativeImage =
-                                subcategory.products?.[0]?.image ||
+                                subcategory.image?.url ||
+                                subcategory.image ||
+                                category.image?.url ||
+                                category.image ||
                                 "/assets/placeholder.png";
 
                               return (
