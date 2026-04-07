@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
 import { deleteInquiry, getMyInquiries } from "@/services/orderFlowService";
-import { CalendarDays, ChevronRight, Eye, Package, Trash2, X } from "lucide-react";
+import { CalendarDays, ChevronRight, Eye, FileText, Package, Trash2, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const statusLabel = {
@@ -48,6 +49,7 @@ const statusStyles = {
 
 export default function MyInquiriesPage() {
   const { userProfile } = useAuth();
+  const router = useRouter();
   const role = normalizeRole(userProfile?.role);
   const [loading, setLoading] = useState(true);
   const [inquiries, setInquiries] = useState([]);
@@ -260,6 +262,15 @@ export default function MyInquiriesPage() {
                       >
                         <Eye className="h-4 w-4" /> View
                       </button>
+                      {inquiry.linkedInvoice ? (
+                        <button
+                          type="button"
+                          onClick={() => router.push(`/dashboard/my-invoices?inquiry=${inquiry.id}`)}
+                          className="inline-flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
+                        >
+                          <FileText className="h-4 w-4" /> Invoice Created
+                        </button>
+                      ) : null}
                     </div>
                   </div>
                 </article>
@@ -384,6 +395,19 @@ export default function MyInquiriesPage() {
                         {activeInquiry.customer?.notes || "No extra note added by the customer."}
                       </p>
                     </div>
+
+                    {activeInquiry.linkedInvoice ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveInquiry(null);
+                          router.push(`/dashboard/my-invoices?inquiry=${activeInquiry.id}`);
+                        }}
+                        className="w-full rounded-2xl bg-teal-600 px-4 py-3 font-semibold text-white transition hover:bg-teal-700"
+                      >
+                        <FileText className="mr-2 inline h-4 w-4" /> View Invoice
+                      </button>
+                    ) : null}
                   </aside>
                 </div>
               </div>
