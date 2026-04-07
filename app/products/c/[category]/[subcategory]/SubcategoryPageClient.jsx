@@ -9,6 +9,7 @@ import ClientSideMetadata from "@/components/shared/ClientSideMetadata";
 import CategoryBanner from "@/common/CategoryBanner";
 import TruckTireBanner from "@/components/DynamicProductCatalog/TruckTireBanner";
 import RecentPurchaseNotification from "@/components/shared/RecentPurchaseNotification";
+import dataService from "@/services/dataService";
 
 const SubcategoryPageClient = () => {
   const params = useParams();
@@ -97,13 +98,7 @@ const SubcategoryPageClient = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/categories.json");
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await dataService.getCategories();
 
         // Convert URL slugs back to names
         const categoryName = decodeURIComponent(params.category).replace(
@@ -144,21 +139,8 @@ const SubcategoryPageClient = () => {
           })) || [];
         setAllProducts(products);
 
-        // Fetch popup products from popup.json
-        try {
-          const popupResponse = await fetch("/popup.json");
-          if (popupResponse.ok) {
-            const popupData = await popupResponse.json();
-            
-            // Get products for current category and subcategory
-            const categoryProducts = popupData[foundCategory.name];
-            if (categoryProducts && categoryProducts[foundSubcategory.name]) {
-              setPopupProducts(categoryProducts[foundSubcategory.name]);
-            }
-          }
-        } catch (popupErr) {
-          console.error("Error fetching popup products:", popupErr);
-        }
+        // Reuse current subcategory products for purchase notifications.
+        setPopupProducts(products.slice(0, 10));
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to load products. Please try again later.");

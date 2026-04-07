@@ -1,34 +1,23 @@
 import ProductDetailsContent from "@/components/DynamicProductCatalog/ProductDetails";
 import { Suspense } from "react";
-import fs from "fs";
-import path from "path";
+
+const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
 
 // Generate static params for all products at build time
 export async function generateStaticParams() {
   try {
-    const categoriesPath = path.join(
-      process.cwd(),
-      "public",
-      "categories.json"
-    );
-    const categoriesData = fs.readFileSync(categoriesPath, "utf8");
-    const categories = JSON.parse(categoriesData);
+    const response = await fetch(`${backendUrl}/api/categories/public/products?all=true`, {
+      next: { revalidate: 300 },
+    });
+    if (!response.ok) return [];
 
-    const productIds = [];
+    const data = await response.json();
+    const products = Array.isArray(data?.products) ? data.products : [];
 
-    for (const category of categories) {
-      if (category.subcategories) {
-        for (const subcategory of category.subcategories) {
-          if (subcategory.products) {
-            subcategory.products.forEach((product) => {
-              productIds.push({ id: product.id.toString() });
-            });
-          }
-        }
-      }
-    }
-
-    return productIds;
+    return products
+      .map((product) => product?.id)
+      .filter((id) => id !== undefined && id !== null && id !== "")
+      .map((id) => ({ id: String(id) }));
   } catch (error) {
     console.error("Error generating static params:", error);
     return [];
@@ -38,36 +27,17 @@ export async function generateStaticParams() {
 // Helper function to get product data
 async function getProductData(id) {
   try {
-    const categoriesPath = path.join(
-      process.cwd(),
-      "public",
-      "categories.json"
-    );
-    const categoriesData = fs.readFileSync(categoriesPath, "utf8");
-    const categories = JSON.parse(categoriesData);
-
-    let productData = null;
-    let categoryName = "";
-    let subcategoryName = "";
-
-    for (const category of categories) {
-      if (category.subcategories) {
-        for (const subcategory of category.subcategories) {
-          if (subcategory.products) {
-            const product = subcategory.products.find(
-              (p) => p.id === parseInt(id)
-            );
-            if (product) {
-              productData = product;
-              categoryName = category.name;
-              subcategoryName = subcategory.name;
-              break;
-            }
-          }
-        }
-      }
-      if (productData) break;
+    const response = await fetch(`${backendUrl}/api/categories/public/products/${encodeURIComponent(id)}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      return { product: null, category: "", subcategory: "" };
     }
+
+    const data = await response.json();
+    const productData = data?.product || null;
+    const categoryName = productData?.categoryName || "";
+    const subcategoryName = productData?.subcategoryName || "";
 
     return {
       product: productData,

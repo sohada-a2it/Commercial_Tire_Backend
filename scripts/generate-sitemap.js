@@ -6,12 +6,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function generateSitemap() {
+async function generateSitemap() {
   try {
-    // Read categories
-    const categoriesPath = path.join(path.dirname(__dirname), 'public', 'categories.json');
-    const categories = JSON.parse(fs.readFileSync(categoriesPath, 'utf8'));
-
+    const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000').replace(/\/+$/, '');
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://asianimportexport.com';
 
     // Static routes
@@ -60,23 +57,33 @@ function generateSitemap() {
     <priority>0.7</priority>
   </url>`;
 
+    const fetchJson = async (url) => {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Request failed for ${url}: ${response.status}`);
+      }
+      return response.json();
+    };
+
+    const [categoriesPayload, productsPayload] = await Promise.all([
+      fetchJson(`${backendUrl}/api/categories?all=true&isActive=true`),
+      fetchJson(`${backendUrl}/api/categories/public/products?all=true`),
+    ]);
+
+    const categories = Array.isArray(categoriesPayload?.categories) ? categoriesPayload.categories : [];
+    const products = Array.isArray(productsPayload?.products) ? productsPayload.products : [];
+
     // Add all products
-    categories.forEach(category => {
-      if (category.subcategories) {
-        category.subcategories.forEach(subcategory => {
-          if (subcategory.products) {
-            subcategory.products.forEach(product => {
-              sitemap += `
+    products.forEach(product => {
+      if (product?.id === undefined || product?.id === null || product?.id === '') return;
+
+      sitemap += `
   <url>
     <loc>${baseUrl}/product/${product.id}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>`;
-            });
-          }
-        });
-      }
     });
 
     // Helper function to convert name to URL slug
@@ -129,7 +136,8 @@ function generateSitemap() {
 }
 
 // Run if called directly
-const success = generateSitemap();
-process.exit(success ? 0 : 1);
+generateSitemap()
+  .then((ok) => process.exit(ok ? 0 : 1))
+  .catch(() => process.exit(1));
 
 export default generateSitemap;

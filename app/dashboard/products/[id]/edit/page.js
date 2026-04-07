@@ -1,28 +1,21 @@
 import ProductEditorPage from "@/components/Dashboard/ProductEditorPage";
-import fs from "fs/promises";
-import path from "path";
 
-const getCatalogPath = () => path.resolve(process.cwd(), "public", "categories.json");
+const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
 
 export async function generateStaticParams() {
   try {
-    const raw = await fs.readFile(getCatalogPath(), "utf8");
-    const parsed = JSON.parse(raw);
-    const categories = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.categories) ? parsed.categories : [];
+    const response = await fetch(`${backendUrl}/api/categories/public/products?all=true`, {
+      next: { revalidate: 300 },
+    });
+    if (!response.ok) return [];
 
-    const ids = new Set();
-    for (const category of categories) {
-      for (const subcategory of category?.subcategories || []) {
-        for (const product of subcategory?.products || []) {
-          const sourceId = product?.id;
-          if (sourceId !== undefined && sourceId !== null && sourceId !== "") {
-            ids.add(String(sourceId));
-          }
-        }
-      }
-    }
+    const data = await response.json();
+    const products = Array.isArray(data?.products) ? data.products : [];
 
-    return Array.from(ids).map((id) => ({ id }));
+    return products
+      .map((product) => product?.id)
+      .filter((id) => id !== undefined && id !== null && id !== "")
+      .map((id) => ({ id: String(id) }));
   } catch (_error) {
     return [];
   }

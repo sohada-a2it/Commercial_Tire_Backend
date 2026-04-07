@@ -1,12 +1,23 @@
 import SubcategoryPageClient from "./SubcategoryPageClient";
-import fs from "fs";
-import path from "path";
+
+const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
+
+const fetchCategories = async () => {
+  try {
+    const response = await fetch(`${backendUrl}/api/categories?all=true&isActive=true`, {
+      next: { revalidate: 300 },
+    });
+    if (!response.ok) return [];
+    const data = await response.json();
+    return Array.isArray(data?.categories) ? data.categories : [];
+  } catch (_error) {
+    return [];
+  }
+};
 
 // Generate static params for all category/subcategory combinations
 export async function generateStaticParams() {
-  const categoriesPath = path.join(process.cwd(), "public", "categories.json");
-  const categoriesData = fs.readFileSync(categoriesPath, "utf8");
-  const categories = JSON.parse(categoriesData);
+  const categories = await fetchCategories();
 
   const nameToSlug = (name) => name.replace(/\s+/g, "-");
 

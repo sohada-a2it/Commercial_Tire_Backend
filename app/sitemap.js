@@ -1,15 +1,29 @@
-import fs from "fs";
-import path from "path";
-
 export const dynamic = "force-static";
 
-export default function sitemap() {
-  const baseUrl = "https://asianimportexport.com";
+const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
 
-  // Read categories data
-  const categoriesPath = path.join(process.cwd(), "public", "categories.json");
-  const categoriesData = fs.readFileSync(categoriesPath, "utf8");
-  const categories = JSON.parse(categoriesData);
+const fetchCatalog = async () => {
+  try {
+    const [categoriesResponse, productsResponse] = await Promise.all([
+      fetch(`${backendUrl}/api/categories?all=true&isActive=true`, { next: { revalidate: 300 } }),
+      fetch(`${backendUrl}/api/categories/public/products?all=true`, { next: { revalidate: 300 } }),
+    ]);
+
+    const categoriesPayload = categoriesResponse.ok ? await categoriesResponse.json() : {};
+    const productsPayload = productsResponse.ok ? await productsResponse.json() : {};
+
+    return {
+      categories: Array.isArray(categoriesPayload?.categories) ? categoriesPayload.categories : [],
+      products: Array.isArray(productsPayload?.products) ? productsPayload.products : [],
+    };
+  } catch (_error) {
+    return { categories: [], products: [] };
+  }
+};
+
+export default async function sitemap() {
+  const baseUrl = "https://asianimportexport.com";
+  const { categories, products } = await fetchCatalog();
 
   // Helper function to convert name to URL slug
   const nameToSlug = (name) => {
@@ -65,21 +79,15 @@ export default function sitemap() {
   ];
 
   // Add all product pages
-  categories.forEach((category) => {
-    if (category.subcategories) {
-      category.subcategories.forEach((subcategory) => {
-        if (subcategory.products) {
-          subcategory.products.forEach((product) => {
-            routes.push({
-              url: `${baseUrl}/product/${product.id}`,
-              lastModified: currentDate,
-              changeFrequency: "weekly",
-              priority: 0.8,
-            });
-          });
-        }
-      });
-    }
+  products.forEach((product) => {
+    if (product?.id === undefined || product?.id === null || product?.id === "") return;
+
+    routes.push({
+      url: `${baseUrl}/product/${product.id}`,
+      lastModified: currentDate,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    });
   });
 
   // Add category and subcategory pages

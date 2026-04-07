@@ -1,18 +1,31 @@
 import { Suspense } from "react";
 import ProductCatalog from "@/components/DynamicProductCatalog/ProductCatalog";
-import fs from "fs";
-import path from "path";
+
+const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
+
+const fetchCatalogData = async () => {
+  try {
+    const [categoriesResponse, productsResponse] = await Promise.all([
+      fetch(`${backendUrl}/api/categories?all=true&isActive=true`, { next: { revalidate: 300 } }),
+      fetch(`${backendUrl}/api/categories/public/products?all=true`, { next: { revalidate: 300 } }),
+    ]);
+
+    const categoriesPayload = categoriesResponse.ok ? await categoriesResponse.json() : {};
+    const productsPayload = productsResponse.ok ? await productsResponse.json() : {};
+
+    return {
+      categories: Array.isArray(categoriesPayload?.categories) ? categoriesPayload.categories : [],
+      products: Array.isArray(productsPayload?.products) ? productsPayload.products : [],
+    };
+  } catch (_error) {
+    return { categories: [], products: [] };
+  }
+};
 
 // Helper function to get category data
 async function getCategoryData(categorySlug) {
   try {
-    const categoriesPath = path.join(
-      process.cwd(),
-      "public",
-      "categories.json"
-    );
-    const categoriesData = fs.readFileSync(categoriesPath, "utf8");
-    const categories = JSON.parse(categoriesData);
+    const { categories, products } = await fetchCatalogData();
 
     const categoryName = decodeURIComponent(categorySlug).replace(/-/g, " ");
 
@@ -32,10 +45,25 @@ async function getCategoryData(categorySlug) {
             (sub) => sub.name.toLowerCase() === categoryName.toLowerCase()
           );
 
-    return { category, subcategory, categoryName };
+    const productCount = products.filter((product) => {
+      const productCategory = String(product?.categoryName || "").toLowerCase();
+      const productSubcategory = String(product?.subcategoryName || "").toLowerCase();
+
+      if (category) {
+        return productCategory === category.name.toLowerCase();
+      }
+
+      if (subcategory) {
+        return productSubcategory === subcategory.name.toLowerCase();
+      }
+
+      return false;
+    }).length;
+
+    return { category, subcategory, categoryName, productCount };
   } catch (error) {
     console.error("Error loading category:", error);
-    return { category: null, subcategory: null, categoryName: "" };
+    return { category: null, subcategory: null, categoryName: "", productCount: 0 };
   }
 }
 
@@ -43,19 +71,12 @@ async function getCategoryData(categorySlug) {
 export async function generateMetadata({ params }) {
   // Await params in Next.js 15+
   const resolvedParams = await Promise.resolve(params);
-  const { category, subcategory, categoryName } = await getCategoryData(
+  const { category, subcategory, categoryName, productCount } = await getCategoryData(
     resolvedParams.category
   );
 
   const itemName = category?.name || subcategory?.name || categoryName;
   const icon = category?.icon || "";
-  const productCount = category
-    ? category.subcategories?.reduce(
-        (acc, sub) => acc + (sub.products?.length || 0),
-        0
-      )
-    : subcategory?.products?.length || 0;
-
   return {
     title: `${itemName} ${icon} | Browse Products | Asian Import Export`,
     description: `Explore ${productCount}+ ${itemName.toLowerCase()} products. Wholesale prices, international shipping, quality guaranteed. ${
@@ -92,13 +113,7 @@ export async function generateMetadata({ params }) {
 // This function is required for static export
 export async function generateStaticParams() {
   try {
-    const categoriesPath = path.join(
-      process.cwd(),
-      "public",
-      "categories.json"
-    );
-    const categoriesData = fs.readFileSync(categoriesPath, "utf8");
-    const categories = JSON.parse(categoriesData);
+    const { categories } = await fetchCatalogData();
 
     // Helper function to convert name to URL slug
     const nameToSlug = (name) => {

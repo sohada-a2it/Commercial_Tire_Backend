@@ -1,7 +1,9 @@
 /**
  * Centralized Data Service
- * Provides cached access to categories.json to prevent multiple fetches
+ * Provides cached access to catalog data from MongoDB APIs
  */
+
+import config from "@/config/site";
 
 class DataService {
   constructor() {
@@ -47,16 +49,96 @@ class DataService {
    */
   async fetchCategories() {
     try {
-      const response = await fetch("/categories.json");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      const baseUrl = config.email.backendUrl;
+
+      const [categoriesResponse, productsResponse] = await Promise.all([
+        fetch(`${baseUrl}/api/categories?all=true&isActive=true`, { cache: "no-store" }),
+        fetch(`${baseUrl}/api/categories/public/products?all=true`, { cache: "no-store" }),
+      ]);
+
+      if (!categoriesResponse.ok) {
+        throw new Error(`Categories request failed: ${categoriesResponse.status}`);
       }
-      const data = await response.json();
-      return data;
+
+      if (!productsResponse.ok) {
+        throw new Error(`Products request failed: ${productsResponse.status}`);
+      }
+
+      const categoriesPayload = await categoriesResponse.json();
+      const productsPayload = await productsResponse.json();
+
+      const categories = Array.isArray(categoriesPayload?.categories)
+        ? categoriesPayload.categories
+        : [];
+      const products = Array.isArray(productsPayload?.products)
+        ? productsPayload.products
+        : [];
+
+      return this.buildCatalogTree(categories, products);
     } catch (error) {
       console.error("Error fetching categories:", error);
       throw error;
     }
+  }
+
+  buildCatalogTree(categories, products) {
+    const categoriesByName = new Map();
+
+    const normalizedCategories = categories.map((category) => {
+      const categoryName = String(category?.name || "").trim();
+      const normalized = {
+        ...category,
+        id: category?.sourceId || category?.id,
+        image: category?.image?.url || category?.image || "",
+        subcategories: (category?.subcategories || []).map((subcategory) => ({
+          ...subcategory,
+          products: [],
+          image: subcategory?.image?.url || subcategory?.image || "",
+        })),
+      };
+
+      categoriesByName.set(categoryName.toLowerCase(), normalized);
+      return normalized;
+    });
+
+    products.forEach((product) => {
+      const categoryName = String(product?.categoryName || "").trim();
+      const subcategoryName = String(product?.subcategoryName || "").trim();
+      const category = categoriesByName.get(categoryName.toLowerCase());
+      if (!category || !subcategoryName) return;
+
+      let subcategory = category.subcategories.find(
+        (sub) => String(sub?.name || "").toLowerCase() === subcategoryName.toLowerCase()
+      );
+
+      if (!subcategory) {
+        subcategory = {
+          id: product?.subcategoryId || category.subcategories.length + 1,
+          name: subcategoryName,
+          slug: product?.subcategorySlug || subcategoryName.toLowerCase().replace(/\s+/g, "-"),
+          description: "",
+          displayOrder: category.subcategories.length,
+          isActive: true,
+          image: "",
+          products: [],
+        };
+        category.subcategories.push(subcategory);
+      }
+
+      subcategory.products.push({
+        ...product,
+        id: product?.id || product?.sourceId || product?.dbId,
+        image: product?.image?.url || product?.image || "",
+        images: Array.isArray(product?.images)
+          ? product.images.map((asset) => (typeof asset === "string" ? asset : asset?.url || "")).filter(Boolean)
+          : [],
+        categoryName: category.name,
+        categoryIcon: category.icon,
+        subcategoryName: subcategory.name,
+      });
+    });
+
+    return normalizedCategories;
   }
 
   /**
