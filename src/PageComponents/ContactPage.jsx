@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WebsiteLogo from "../components/shared/WebsiteLogo";
 import { useNavigate } from "@/lib/navigation";
 import { FaArrowLeft } from "react-icons/fa";
 import { config } from "@/config/site";
+import toast from "react-hot-toast";
+import { useAuth } from "@/context/AuthContext";
 
 const ContactPage = () => {
   const navigate = useNavigate();
+  const { user, userProfile } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -17,7 +20,16 @@ const ContactPage = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+
+  useEffect(() => {
+    if (!user?.email) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      email: user.email,
+      name: prev.name || userProfile?.fullName || "",
+    }));
+  }, [user?.email, userProfile?.fullName]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,9 +39,9 @@ const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus(null);
 
     try {
+      const submitEmail = user?.email || formData.email;
       const response = await fetch(
         `${config.email.backendUrl}/api/send-email`,
         {
@@ -37,6 +49,7 @@ const ContactPage = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...formData,
+            email: submitEmail,
             type: "general_inquiry",
             subject: "General Inquiry from Contact Page",
           }),
@@ -44,20 +57,20 @@ const ContactPage = () => {
       );
 
       if (response.ok) {
-        setSubmitStatus("success");
+        toast.success("Your message has been sent successfully! We'll get back to you very soon.Thank you!");
         setFormData({
           name: "",
           company: "",
-          email: "",
+          email: user?.email || "",
           phone: "",
           message: "",
         });
       } else {
-        setSubmitStatus("error");
+        toast.error("Failed to send your message. Please try again.");
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      setSubmitStatus("error");
+      toast.error("Failed to send your message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -204,20 +217,6 @@ const ContactPage = () => {
               </h2>
 
               <div className="flex-1">
-                {submitStatus === "success" && (
-                  <div className="bg-green-100 text-green-800 p-4 rounded-lg mb-6">
-                    Your message has been sent successfully! We'll get back to
-                    you soon.
-                  </div>
-                )}
-
-                {submitStatus === "error" && (
-                  <div className="bg-red-100 text-red-800 p-4 rounded-lg mb-6">
-                    Failed to send your message. Please try again or contact us
-                    directly.
-                  </div>
-                )}
-
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label className="block text-gray-700 mb-2 font-medium">
@@ -256,8 +255,14 @@ const ContactPage = () => {
                       required
                       value={formData.email}
                       onChange={handleChange}
+                      readOnly={Boolean(user?.email)}
                       className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-800 bg-gray-50"
                     />
+                    {user?.email ? (
+                      <p className="mt-1 text-xs text-gray-500">
+                        We always use your logged-in email for inquiry updates.
+                      </p>
+                    ) : null}
                   </div>
 
                   <div>
