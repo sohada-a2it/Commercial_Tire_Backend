@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import emailjs from "@emailjs/browser";
 import { FaSpinner } from "react-icons/fa";
+import { config } from "@/config/site";
 
 const ContactForm = ({ product, quantity, onClose }) => {
   const [formData, setFormData] = useState({
@@ -21,32 +21,35 @@ const ContactForm = ({ product, quantity, onClose }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const templateParams = {
-      from_name: formData.name,
-      from_company: formData.company,
-      from_email: formData.email,
-      from_phone: formData.phone,
-      message: formData.message,
-      product_details: `Brand: ${product.brand}\nModel: ${product.model}\nSize: ${product.size}\nQuantity: ${quantity}\nPrice: ${product.price}`,
-    };
+    try {
+      const response = await fetch(`${config.email.backendUrl}/api/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          quantity,
+          model: product.model,
+          address: "",
+          shippingTerm: "FOB",
+          type: "product_inquiry",
+        }),
+      });
 
-    emailjs
-      .send(
-        "service_ndavwwd",
-        "template_4tz9dk9",
-        templateParams,
-        "OV1oMBRWjofxknEHS"
-      )
-      .then(() => {
-        setSubmitStatus("success");
-        setTimeout(onClose, 2000); // Close after 2 seconds
-      })
-      .catch(() => setSubmitStatus("error"))
-      .finally(() => setIsSubmitting(false));
+      if (!response.ok) {
+        throw new Error("Failed to send inquiry");
+      }
+
+      setSubmitStatus("success");
+      setTimeout(onClose, 2000);
+    } catch (_error) {
+      setSubmitStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
