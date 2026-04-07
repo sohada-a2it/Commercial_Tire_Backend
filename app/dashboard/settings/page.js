@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getUserByUid, updateUser } from "@/services/userService";
 import {
   AlertCircle,
   CheckCircle,
@@ -27,6 +28,10 @@ import { auth } from "@/config/firebase";
 export default function DashboardSettingsPage() {
   const { userProfile, updateUserProfile, user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const targetUserId = searchParams.get("userId") || "";
+  const role = normalizeRole(userProfile?.role);
+  const isAdminEditingCustomer = role === "admin" && Boolean(targetUserId);
   const [loading, setLoading] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [activeTab, setActiveTab] = useState("profile");
@@ -54,32 +59,68 @@ export default function DashboardSettingsPage() {
     newPassword: "",
     confirmPassword: "",
   });
+  const [targetProfile, setTargetProfile] = useState(null);
 
-  // Verify customer role
+  const mapProfileToFormData = (profile = {}) => ({
+    fullName: profile?.fullName || "",
+    companyName: profile?.companyName || "",
+    whatsappNumber: profile?.whatsappNumber || "",
+    businessType: profile?.businessType || "Other",
+    country: profile?.country || "",
+    address: {
+      street: profile?.address?.street || "",
+      city: profile?.address?.city || "",
+      state: profile?.address?.state || "",
+      postalCode: profile?.address?.postalCode || "",
+      country: profile?.address?.country || "",
+    },
+  });
+
+  const sanitizeFormData = (payload = {}) => ({
+    ...payload,
+    fullName: String(payload?.fullName || "").trim(),
+    companyName: String(payload?.companyName || "").trim(),
+    whatsappNumber: String(payload?.whatsappNumber || "").trim(),
+    businessType: String(payload?.businessType || "").trim(),
+    country: String(payload?.country || "").trim(),
+    address: {
+      street: String(payload?.address?.street || "").trim(),
+      city: String(payload?.address?.city || "").trim(),
+      state: String(payload?.address?.state || "").trim(),
+      postalCode: String(payload?.address?.postalCode || "").trim(),
+      country: String(payload?.address?.country || "").trim(),
+    },
+  });
+
+  // Load settings data for self (customer) or selected user (admin edit mode)
   useEffect(() => {
     if (userProfile) {
-      const role = normalizeRole(userProfile?.role);
-      if (role !== "customer") {
+      if (role !== "customer" && !isAdminEditingCustomer) {
         router.replace("/dashboard");
+        return;
+      }
+
+      if (isAdminEditingCustomer) {
+        const loadTarget = async () => {
+          setLoading(true);
+          const result = await getUserByUid(targetUserId);
+          if (!result.success || !result.user) {
+            showToast("error", result.message || "Failed to load selected user");
+            setLoading(false);
+            return;
+          }
+
+          setTargetProfile(result.user);
+          setFormData(mapProfileToFormData(result.user));
+          setLoading(false);
+        };
+
+        loadTarget();
       } else {
-        // Populate form with current user data
-        setFormData({
-          fullName: userProfile?.fullName || "",
-          companyName: userProfile?.companyName || "",
-          whatsappNumber: userProfile?.whatsappNumber || "",
-          businessType: userProfile?.businessType || "Other",
-          country: userProfile?.country || "",
-          address: {
-            street: userProfile?.address?.street || "",
-            city: userProfile?.address?.city || "",
-            state: userProfile?.address?.state || "",
-            postalCode: userProfile?.address?.postalCode || "",
-            country: userProfile?.address?.country || "",
-          },
-        });
+        setFormData(mapProfileToFormData(userProfile));
       }
     }
-  }, [userProfile, router]);
+  }, [userProfile, router, role, isAdminEditingCustomer, targetUserId]);
 
   const showToast = (type, message) => {
     const id = `${Date.now()}-${Math.random()}`;
@@ -122,9 +163,24 @@ export default function DashboardSettingsPage() {
     setLoading(true);
 
     try {
-      const result = await updateUserProfile(formData);
+      const payload = sanitizeFormData(formData);
+      const result = isAdminEditingCustomer
+        ? await updateUser(targetUserId, payload)
+        : await updateUserProfile(payload);
       if (result.success) {
-        showToast("success", "Profile updated successfully!");
+        if (isAdminEditingCustomer) {
+          const refreshed = await getUserByUid(targetUserId);
+          if (refreshed.success && refreshed.user) {
+            setTargetProfile(refreshed.user);
+            setFormData(mapProfileToFormData(refreshed.user));
+          } else {
+            setTargetProfile((current) => ({ ...(current || {}), ...(result.user || {}), ...payload }));
+            setFormData(payload);
+          }
+        } else {
+          setFormData(payload);
+        }
+        showToast("success", isAdminEditingCustomer ? "Customer updated successfully!" : "Profile updated successfully!");
       } else {
         showToast("error", result.message || "Failed to update profile");
       }
@@ -198,16 +254,17 @@ export default function DashboardSettingsPage() {
     }
   };
 
-  const isGoogleLogin = userProfile?.provider === "google";
+  const profileView = targetProfile || userProfile;
+  const isGoogleLogin = profileView?.provider === "google";
   const hasAllGoogleFields =
-    userProfile?.whatsappNumber &&
-    userProfile?.businessType &&
-    userProfile?.country;
+    profileView?.whatsappNumber &&
+    profileView?.businessType &&
+    profileView?.country;
 
   const tabs = [
     { id: "profile", label: "Personal Info", icon: UserIcon },
     { id: "address", label: "Address", icon: MapPin },
-    ...(isGoogleLogin === false ? [{ id: "password", label: "Password", icon: Lock }] : []),
+    ...(!isAdminEditingCustomer && isGoogleLogin === false ? [{ id: "password", label: "Password", icon: Lock }] : []),
   ];
 
   return (
@@ -258,9 +315,11 @@ export default function DashboardSettingsPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
-            Settings & Profile
+            {isAdminEditingCustomer ? "Edit Customer" : "Settings & Profile"}
           </h1>
-          <p className="text-gray-600 mt-2">Manage your profile and security settings</p>
+          <p className="text-gray-600 mt-2">
+            {isAdminEditingCustomer ? "Update selected customer information" : "Manage your profile and security settings"}
+          </p>
         </div>
 
         {/* Google Login Alert */}
@@ -329,7 +388,7 @@ export default function DashboardSettingsPage() {
                   <label className="block text-sm font-bold text-gray-800 mb-3">Email</label>
                   <input
                     type="email"
-                    value={userProfile?.email || ""}
+                    value={profileView?.email || ""}
                     readOnly
                     className="w-full px-5 py-3.5 border-2 border-gray-300 rounded-xl bg-gray-100 text-gray-600 cursor-not-allowed font-medium"
                   />
@@ -560,7 +619,7 @@ export default function DashboardSettingsPage() {
           )}
 
           {/* Password Tab - Only for email users */}
-          {activeTab === "password" && isGoogleLogin === false && (
+          {activeTab === "password" && !isAdminEditingCustomer && isGoogleLogin === false && (
             <div className="p-10">
               <div className="mb-8">
                 <h2 className="text-3xl font-bold text-gray-800">Change Password</h2>
@@ -697,7 +756,9 @@ export default function DashboardSettingsPage() {
               <p className="text-sm text-teal-700 font-bold uppercase tracking-wider mb-2">
                 Account Type
               </p>
-              <p className="text-3xl font-bold text-teal-700">Customer</p>
+              <p className="text-3xl font-bold text-teal-700">
+                {isAdminEditingCustomer ? "Customer (Admin Edit)" : "Customer"}
+              </p>
             </div>
 
             <div className="bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-50 p-8 rounded-xl border-2 border-blue-300 shadow-lg hover:shadow-xl transition-all">
@@ -705,7 +766,7 @@ export default function DashboardSettingsPage() {
                 Sign-in Method
               </p>
               <p className="text-3xl font-bold text-blue-700 capitalize">
-                {userProfile?.provider === "google" ? "Google" : "Email"}
+                {profileView?.provider === "google" ? "Google" : "Email"}
               </p>
             </div>
 
@@ -714,7 +775,7 @@ export default function DashboardSettingsPage() {
                 Account Created
               </p>
               <p className="text-3xl font-bold text-purple-700">
-                {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : "N/A"}
+                {profileView?.createdAt ? new Date(profileView.createdAt).toLocaleDateString() : "N/A"}
               </p>
             </div>
 
@@ -723,7 +784,7 @@ export default function DashboardSettingsPage() {
                 Last Updated
               </p>
               <p className="text-3xl font-bold text-orange-700">
-                {userProfile?.updatedAt ? new Date(userProfile.updatedAt).toLocaleDateString() : "N/A"}
+                {profileView?.updatedAt ? new Date(profileView.updatedAt).toLocaleDateString() : "N/A"}
               </p>
             </div>
           </div>

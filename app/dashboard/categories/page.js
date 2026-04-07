@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { deleteCategory, fetchCategoriesPaginated, fetchMedia, saveCategory, uploadMedia } from "@/services/catalogService";
+import { deleteCategory, fetchCategoriesPaginated, fetchMedia, saveCategory, uploadMedia, uploadMediaFromUrl } from "@/services/catalogService";
 import { Loader2, Plus, RefreshCw, Save, Trash2, Upload } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -56,6 +56,8 @@ export default function CategoriesPage() {
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [categoryUrlInput, setCategoryUrlInput] = useState("");
+  const [subcategoryUrlInputs, setSubcategoryUrlInputs] = useState({});
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 300);
@@ -169,6 +171,61 @@ export default function CategoriesPage() {
     } finally {
       setUploading(false);
       event.target.value = "";
+    }
+  };
+
+  const handleCategoryUrlUpload = async () => {
+    const imageUrl = String(categoryUrlInput || "").trim();
+    if (!imageUrl) {
+      toast.error("Please paste an image URL first");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const result = await uploadMediaFromUrl(imageUrl, { relatedType: "category-image" });
+      const media = result.media;
+      setEditor((current) => ({
+        ...current,
+        image: {
+          url: media.optimizedUrl || media.url,
+          publicId: media.publicId,
+        },
+      }));
+      setCategoryUrlInput("");
+      toast.success("Category image uploaded to Cloudinary");
+    } catch (error) {
+      toast.error(error.message || "Failed to upload category image from URL");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubcategoryUrlUpload = async (index) => {
+    const imageUrl = String(subcategoryUrlInputs[index] || "").trim();
+    if (!imageUrl) {
+      toast.error("Please paste an image URL first");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const result = await uploadMediaFromUrl(imageUrl, { relatedType: "subcategory-image" });
+      const media = result.media;
+      updateSubcategory(index, "image", {
+        url: media.optimizedUrl || media.url,
+        publicId: media.publicId,
+      });
+      setSubcategoryUrlInputs((current) => {
+        const updated = { ...current };
+        delete updated[index];
+        return updated;
+      });
+      toast.success("Subcategory image uploaded to Cloudinary");
+    } catch (error) {
+      toast.error(error.message || "Failed to upload subcategory image from URL");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -479,6 +536,26 @@ export default function CategoriesPage() {
                 </div>
               </div>
 
+              <div className="space-y-2 text-sm rounded-xl border border-gray-200 p-4 bg-gray-50">
+                <span className="font-medium text-gray-700 block">Paste & Upload from URL</span>
+                <div className="flex gap-2">
+                  <input
+                    value={categoryUrlInput}
+                    onChange={(event) => setCategoryUrlInput(event.target.value)}
+                    placeholder="Paste image URL here..."
+                    className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCategoryUrlUpload}
+                    disabled={uploading}
+                    className="inline-flex items-center gap-2 rounded-lg border border-teal-300 bg-teal-50 px-4 py-3 text-sm text-teal-700 hover:bg-teal-100 disabled:opacity-50 whitespace-nowrap"
+                  >
+                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Paste & Upload
+                  </button>
+                </div>
+              </div>
+
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
@@ -547,6 +624,26 @@ export default function CategoriesPage() {
                           {subcategory.image?.url ? (
                             <img src={subcategory.image.url} alt={subcategory.name || `subcategory-${index + 1}`} className="h-24 w-24 rounded-lg border border-gray-200 object-cover" />
                           ) : null}
+                        </div>
+
+                        <div className="space-y-2 text-sm lg:col-span-3 rounded-xl border border-gray-200 p-3 bg-gray-50">
+                          <span className="font-medium text-gray-700 block">Paste & Upload from URL</span>
+                          <div className="flex gap-2">
+                            <input
+                              value={subcategoryUrlInputs[index] || ""}
+                              onChange={(event) => setSubcategoryUrlInputs((current) => ({ ...current, [index]: event.target.value }))}
+                              placeholder="Paste image URL here..."
+                              className="min-w-0 flex-1 rounded-xl border border-gray-200 px-3 py-2 outline-none focus:border-teal-500 bg-white text-sm"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleSubcategoryUrlUpload(index)}
+                              disabled={uploading}
+                              className="inline-flex items-center gap-1 rounded-lg border border-teal-300 bg-teal-50 px-3 py-2 text-sm text-teal-700 hover:bg-teal-100 disabled:opacity-50 whitespace-nowrap"
+                            >
+                              {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />} <span className="hidden sm:inline">Paste & Upload</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>

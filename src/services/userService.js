@@ -62,13 +62,12 @@ export const getAllUsers = async (filters = {}) => {
  */
 export const getUserByUid = async (firebaseUid) => {
   try {
+    const headers = await buildAuthHeaders();
     const response = await fetch(
       `${config.email.backendUrl}/api/users/profile/${firebaseUid}`,
       {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
       }
     );
 

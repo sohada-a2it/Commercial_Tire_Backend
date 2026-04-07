@@ -197,6 +197,17 @@ export const uploadMedia = async (file, extra = {}) => {
   return { success: true, media: data.media };
 };
 
+export const uploadMediaFromUrl = async (imageUrl, extra = {}) => {
+  const headers = await buildAuthHeaders();
+  const response = await fetch(`${config.email.backendUrl}/api/catalog/media/upload-from-url`, {
+    method: "POST",
+    headers: { ...headers, "Content-Type": "application/json" },
+    body: JSON.stringify({ url: imageUrl, ...extra }),
+  });
+  const data = await parseResponse(response);
+  return { success: true, media: data.media };
+};
+
 export const deleteMedia = async (publicId) => {
   const headers = await buildAuthHeaders();
   const response = await fetch(

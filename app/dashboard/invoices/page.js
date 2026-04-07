@@ -49,6 +49,7 @@ const normalizeInvoiceStatus = (status) => {
 export default function AdminInvoicesPage() {
   const { userProfile } = useAuth();
   const role = normalizeRole(userProfile?.role);
+  const isStaff = role === "admin" || role === "moderator";
   const isAdmin = role === "admin";
   const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState([]);
@@ -70,12 +71,12 @@ export default function AdminInvoicesPage() {
   };
 
   useEffect(() => {
-    if (isAdmin) {
+    if (isStaff) {
       loadInvoices();
     } else {
       setLoading(false);
     }
-  }, [isAdmin]);
+  }, [isStaff]);
 
   const handleDownloadPdf = async (invoice) => {
     try {
@@ -135,12 +136,12 @@ export default function AdminInvoicesPage() {
 
   const activeInvoiceItems = activeInvoice?.items || [];
 
-  if (!isAdmin) {
+  if (!isStaff) {
     return (
       <DashboardLayout>
         <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
           <h1 className="text-2xl font-bold text-slate-900">Invoice Management</h1>
-          <p className="mt-2 text-slate-600">Only admin can access the invoice management route.</p>
+          <p className="mt-2 text-slate-600">Only admin/moderator can access the invoice management route.</p>
         </div>
       </DashboardLayout>
     );
@@ -262,14 +263,16 @@ export default function AdminInvoicesPage() {
                       >
                         <Download className="h-4 w-4" /> PDF
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(invoice)}
-                        disabled={deletingId === invoice.id}
-                        className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700 hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
-                      >
-                        <Trash2 className="h-4 w-4" /> {deletingId === invoice.id ? "Deleting..." : "Delete"}
-                      </button>
+                      {isAdmin ? (
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(invoice)}
+                          disabled={deletingId === invoice.id}
+                          className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700 hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          <Trash2 className="h-4 w-4" /> {deletingId === invoice.id ? "Deleting..." : "Delete"}
+                        </button>
+                      ) : null}
                     </div>
                   </div>
                 </article>

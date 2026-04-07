@@ -31,8 +31,16 @@ export const AuthProvider = ({ children }) => {
   // Fetch user profile from MongoDB
   const fetchUserProfile = async (firebaseUid) => {
     try {
+      const firebaseToken = await auth.currentUser?.getIdToken();
+      const authorizedSessionToken = getAuthorizedSession()?.token;
+      const token = firebaseToken || authorizedSessionToken;
       const response = await fetch(
-        `${config.email.backendUrl}/api/users/profile/${firebaseUid}`
+        `${config.email.backendUrl}/api/users/profile/${firebaseUid}`,
+        {
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        }
       );
       if (response.ok) {
         const data = await response.json();
@@ -205,12 +213,16 @@ export const AuthProvider = ({ children }) => {
     if (!user) return { success: false, message: "Not authenticated" };
 
     try {
+      const firebaseToken = await auth.currentUser?.getIdToken();
+      const authorizedSessionToken = getAuthorizedSession()?.token;
+      const token = firebaseToken || authorizedSessionToken;
       const response = await fetch(
         `${config.email.backendUrl}/api/users/profile/${user.uid}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify(userData),
         }

@@ -34,6 +34,7 @@ export const sidebarRoutesByRole = {
   ],
   moderator: [
     { icon: LayoutDashboard, label: "Moderator Dashboard", href: "/dashboard" },
+    { icon: FileText, label: "Invoice List", href: "/dashboard/invoices" },
     { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
@@ -51,6 +52,7 @@ export const roleAllowedRoutePrefixes = {
   admin: ["/dashboard"],
   moderator: [
     "/dashboard",
+    "/dashboard/invoices",
     "/dashboard/categories",
     "/dashboard/products",
     "/dashboard/media",

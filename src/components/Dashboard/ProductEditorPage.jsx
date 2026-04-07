@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { fetchCategories, fetchMedia, fetchProduct, saveProduct, uploadMedia } from "@/services/catalogService";
+import { fetchCategories, fetchMedia, fetchProduct, saveProduct, uploadMedia, uploadMediaFromUrl } from "@/services/catalogService";
 import { ArrowLeft, Loader2, Save, Upload } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -254,6 +254,37 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
       ],
     }));
     setGalleryUrlInput("");
+  };
+
+  const handlePasteAndUploadUrl = async () => {
+    const imageUrl = String(galleryUrlInput || "").trim();
+    if (!imageUrl) {
+      toast.error("Please paste an image URL first");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const result = await uploadMediaFromUrl(imageUrl, { relatedType: "product-gallery" });
+      const media = result.media;
+      setEditor((current) => ({
+        ...current,
+        images: [
+          ...(current.images || []),
+          {
+            url: media.optimizedUrl || media.url,
+            publicId: media.publicId,
+            alt: `${current.name || "Product"} ${(current.images || []).length + 1}`,
+          },
+        ],
+      }));
+      setGalleryUrlInput("");
+      toast.success("Image uploaded to Cloudinary and added to gallery");
+    } catch (error) {
+      toast.error(error.message || "Failed to upload image from URL");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const openMediaPicker = async () => {
@@ -546,8 +577,11 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
               </button>
             </div>
             <div className="flex gap-2">
-              <input value={galleryUrlInput} onChange={(event) => setGalleryUrlInput(event.target.value)} placeholder="Paste image URL and click Add URL" className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              <input value={galleryUrlInput} onChange={(event) => setGalleryUrlInput(event.target.value)} placeholder="Paste image URL and click Add URL or Paste & Upload" className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
               <button type="button" onClick={handleAddGalleryUrl} className="rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50">Add URL</button>
+              <button type="button" onClick={handlePasteAndUploadUrl} disabled={uploading} className="inline-flex items-center gap-2 rounded-lg border border-teal-300 bg-teal-50 px-4 py-3 text-sm text-teal-700 hover:bg-teal-100 disabled:opacity-50">
+                {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Paste & Upload
+              </button>
             </div>
             <div className="space-y-3">
               {(editor.images || []).map((image, index) => (
