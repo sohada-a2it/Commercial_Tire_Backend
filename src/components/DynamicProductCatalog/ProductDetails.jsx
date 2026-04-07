@@ -15,6 +15,7 @@ import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import dataService from "@/services/dataService";
 import ContainerLoadingCapacity from "./ContainerLoadingCapacity";
+import SearchSuggestion from "../Search/SearchSuggestion.jsx";
 import {
   generateProductSchema,
   generateBreadcrumbSchema,
@@ -299,6 +300,11 @@ const ProductDetails = () => {
   const [showLightbox, setShowLightbox] = useState(false);
   const [expandedSidebarPricing, setExpandedSidebarPricing] = useState(false);
   const [expandedSpecsPricing, setExpandedSpecsPricing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchTimeoutRef = useRef(null);
 
   useEffect(() => {
     // Reset states when ID changes
@@ -374,6 +380,58 @@ const ProductDetails = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (!query.trim()) {
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
+      setSearchLoading(false);
+      return;
+    }
+
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        setSearchLoading(true);
+        const results = await dataService.searchProducts(query, { page: 1, limit: 5 });
+        setSearchSuggestions(results);
+        setShowSuggestions(true);
+      } catch (_error) {
+        setSearchSuggestions([]);
+        setShowSuggestions(false);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 200);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setShowSuggestions(false);
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setShowSuggestions(false);
+    setSearchQuery("");
+    navigate(`/product/${suggestion.id}`);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Helper function to convert name to URL slug
   const nameToSlug = (name) => {
     return name.replace(/\s+/g, "-");
@@ -412,6 +470,13 @@ const ProductDetails = () => {
     { name: product.categoryName || "Category", url: "/products" },
     { name: product.name, url: `/product/${product.id}` },
   ]);
+
+  const reviews = Array.isArray(product?.userReviews) ? product.userReviews : [];
+  const hasReviews = reviews.length > 0;
+  const averageReviewRating =
+    hasReviews
+      ? reviews.reduce((sum, review) => sum + Number(review?.rating || 0), 0) / reviews.length
+      : 0;
 
   return (
     <>
@@ -470,15 +535,55 @@ const ProductDetails = () => {
               <span className="text-teal-600 font-medium">{product?.name}</span>
             </nav>
           </div>
-                    {/* Back Button */}
-          <div className="mb-3">
+          {/* Back + Search */}
+          <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <button
-              onClick={() => window.history.back()}
+              onClick={handleGoBack}
               className="flex items-center gap-2 text-teal-700 hover:text-teal-800 font-medium transition-colors group"
             >
               <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
               <span>Back</span>
             </button>
+
+            <form onSubmit={handleSearchSubmit} className="relative w-full lg:max-w-md">
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  onFocus={() => searchQuery && setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                  placeholder="Search products, brands..."
+                  className="w-full px-6 py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-2 bg-teal-600 text-white p-2 rounded-full hover:bg-teal-700 transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <SearchSuggestion
+                suggestions={searchSuggestions}
+                onSuggestionClick={handleSuggestionClick}
+                searchQuery={searchQuery}
+                isVisible={showSuggestions && !searchLoading}
+              />
+            </form>
           </div>
 
           <h2 className="text-3xl font-bold mb-12 text-center text-teal-800 hover:text-teal-900 transition-colors duration-300 border-b-2 border-amber-400 pb-2">
@@ -672,17 +777,14 @@ const ProductDetails = () => {
               </div>
 
               {/* Customer Reviews (if available) */}
-              {product.userReviews && (
+              {hasReviews && (
                 <div className="text-sm mt-2 flex items-center gap-2">
                   <span>Customer Reviews:</span>
                   <span className="flex items-center">
-                    {renderStars(product.userReviews[0].rating)}
+                    {renderStars(reviews[0]?.rating || averageReviewRating)}
                   </span>
                   <div className="text-sm font-bold text-teal-800">
-                    ({(
-                        product.userReviews.reduce((sum, review) => sum + review.rating, 0) /
-                        product.userReviews.length
-                    ).toFixed(1)})
+                    ({averageReviewRating.toFixed(1)})
                   </div>
                   
                 </div>
