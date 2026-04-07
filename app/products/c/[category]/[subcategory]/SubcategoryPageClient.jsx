@@ -10,6 +10,7 @@ import CategoryBanner from "@/common/CategoryBanner";
 import TruckTireBanner from "@/components/DynamicProductCatalog/TruckTireBanner";
 import RecentPurchaseNotification from "@/components/shared/RecentPurchaseNotification";
 import dataService from "@/services/dataService";
+import { SubcategoryPageSkeleton } from "@/components/shared/RouteSkeletons";
 
 const SubcategoryPageClient = () => {
   const params = useParams();
@@ -314,14 +315,7 @@ const SubcategoryPageClient = () => {
   const uniqueBrands = getUniqueBrands();
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto"></div>
-          <p className="mt-4 text-teal-800">Loading products...</p>
-        </div>
-      </div>
-    );
+    return <SubcategoryPageSkeleton />;
   }
 
   if (error) {

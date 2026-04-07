@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import ProductCatalog from "@/components/DynamicProductCatalog/ProductCatalog";
+import { CatalogPageSkeleton } from "@/components/shared/RouteSkeletons";
 
 const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
 
@@ -146,13 +147,7 @@ export async function generateStaticParams() {
 
 export default function ProductsCategoryPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center h-screen">
-          Loading products...
-        </div>
-      }
-    >
+    <Suspense fallback={<CatalogPageSkeleton />}>
       <ProductCatalog />
     </Suspense>
   );

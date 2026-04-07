@@ -5,6 +5,7 @@ import ServicesSection from "@/components/Home/ServicesSection";
 import WhyChooseUs from "@/components/Home/WhyChooseUs";
 import { generateFAQSchema } from "@/lib/structuredData";
 import OfferBanner from "@/components/Home/OfferBanner";
+import { CatalogPageSkeleton } from "@/components/shared/RouteSkeletons";
 
 export const metadata = {
   title: "Asian Import Export Co LTD - Global Trade Partner",
@@ -95,11 +96,7 @@ export default function Home() {
 
       <Banner />
       <Suspense
-        fallback={
-          <div className="flex justify-center items-center h-screen">
-            Loading products...
-          </div>
-        }
+        fallback={<CatalogPageSkeleton />}
       >
         <ProductCatalog isHomePage={true} />
       </Suspense>

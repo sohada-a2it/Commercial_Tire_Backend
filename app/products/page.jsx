@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import ProductCatalog from "@/components/DynamicProductCatalog/ProductCatalog";
+import { CatalogPageSkeleton } from "@/components/shared/RouteSkeletons";
 
 export const metadata = {
   title: "All Products | Browse Our Complete Catalog | Asian Import Export",
@@ -37,13 +38,7 @@ export const metadata = {
 
 export default function ProductsPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center h-screen">
-          Loading products...
-        </div>
-      }
-    >
+    <Suspense fallback={<CatalogPageSkeleton />}>
       <ProductCatalog />
     </Suspense>
   );

@@ -1,5 +1,6 @@
 import ProductDetailsContent from "@/components/DynamicProductCatalog/ProductDetails";
 import { Suspense } from "react";
+import { ProductDetailsPageSkeleton } from "@/components/shared/RouteSkeletons";
 
 const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
 
@@ -120,13 +121,7 @@ export async function generateMetadata({ params }) {
 
 export default function ProductPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="loading loading-spinner loading-lg"></div>
-        </div>
-      }
-    >
+    <Suspense fallback={<ProductDetailsPageSkeleton />}>
       <ProductDetailsContent />
     </Suspense>
   );

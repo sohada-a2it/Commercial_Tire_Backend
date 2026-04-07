@@ -99,6 +99,23 @@ const ProductCatalog = ({ isHomePage = false }) => {
     return name.replace(/\s+/g, "-");
   };
 
+  const resolveImageUrl = (image) => {
+    if (!image) return "";
+    if (typeof image === "string") return image.trim();
+    if (typeof image === "object") {
+      return String(image.url || image.optimizedUrl || image.secure_url || image.src || "").trim();
+    }
+    return "";
+  };
+
+  const getSubcategoryImage = (category, subcategory) => {
+    return (
+      resolveImageUrl(subcategory?.image) ||
+      resolveImageUrl(category?.image) ||
+      "/assets/placeholder.png"
+    );
+  };
+
   const handleSubcategoryClick = (category, subcategory) => {
     const categorySlug = nameToSlug(category.name);
     const subcategorySlug = nameToSlug(subcategory.name);
@@ -307,13 +324,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
                   {/* Desktop Grid View */}
                   <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {category.subcategories?.map((subcategory) => {
-                      // Get the first product image as subcategory representative
-                      const representativeImage =
-                        subcategory.image?.url ||
-                        subcategory.image ||
-                        category.image?.url ||
-                        category.image ||
-                        "/assets/placeholder.png";
+                      const representativeImage = getSubcategoryImage(category, subcategory);
 
                       return (
                         <div
@@ -436,12 +447,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
                         >
                           <div className="flex">
                             {category.subcategories.map((subcategory) => {
-                              const representativeImage =
-                                subcategory.image?.url ||
-                                subcategory.image ||
-                                category.image?.url ||
-                                category.image ||
-                                "/assets/placeholder.png";
+                              const representativeImage = getSubcategoryImage(category, subcategory);
 
                               return (
                                 <div

@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "@/lib/navigation";
 import ProductList from "../DynamicProductCatalog/ProductList";
 import SearchSuggestion from "./SearchSuggestion.jsx";
 import dataService from "@/services/dataService";
+import { SearchPageSkeleton } from "@/components/shared/RouteSkeletons";
 
 const SearchResultsContent = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -207,14 +208,7 @@ const SearchResultsContent = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto"></div>
-          <p className="mt-4 text-teal-800">Searching products...</p>
-        </div>
-      </div>
-    );
+    return <SearchPageSkeleton />;
   }
 
   return (
@@ -470,7 +464,7 @@ const SearchResultsContent = () => {
 
 const SearchResults = () => {
   return (
-    <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><div className="loading loading-spinner loading-lg"></div></div>}>
+    <Suspense fallback={<SearchPageSkeleton />}>
       <SearchResultsContent />
     </Suspense>
   );

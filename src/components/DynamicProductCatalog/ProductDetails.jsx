@@ -19,6 +19,7 @@ import {
   generateProductSchema,
   generateBreadcrumbSchema,
 } from "@/lib/structuredData";
+import { ProductDetailsPageSkeleton } from "@/components/shared/RouteSkeletons";
 
 // Helper functions for recommended products
 const parsePrice = (priceStr) => {
@@ -396,16 +397,7 @@ const ProductDetails = () => {
   };
 
   if (loading || !product) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center">
-          <div className="loading loading-spinner loading-lg text-teal-600"></div>
-          <p className="text-lg mt-4 text-gray-800">
-            Loading product details...
-          </p>
-        </div>
-      </div>
-    );
+    return <ProductDetailsPageSkeleton />;
   }
 
   // Generate structured data for SEO

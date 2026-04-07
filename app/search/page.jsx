@@ -2,16 +2,11 @@
 
 import { Suspense } from "react";
 import SearchResultsContent from "@/components/Search/SearchResults";
+import { SearchPageSkeleton } from "@/components/shared/RouteSkeletons";
 
 export default function SearchPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center h-screen">
-          Loading search results...
-        </div>
-      }
-    >
+    <Suspense fallback={<SearchPageSkeleton />}>
       <SearchResultsContent />
     </Suspense>
   );
