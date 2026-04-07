@@ -164,7 +164,18 @@ export const fetchMedia = async (filters = {}) => {
     { headers }
   );
   const data = await parseResponse(response);
-  return { success: true, media: data.media || [] };
+  return {
+    success: true,
+    media: data.media || [],
+    pagination: data.pagination || {
+      page: Number(filters.page || 1),
+      limit: Number(filters.limit || 24),
+      total: (data.media || []).length,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPrevPage: false,
+    },
+  };
 };
 
 export const uploadMedia = async (file, extra = {}) => {

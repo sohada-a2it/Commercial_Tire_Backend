@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
 import { deleteMedia, fetchMedia, uploadMedia } from "@/services/catalogService";
 import { ImagePlus, Loader2, RefreshCw, Trash2, Upload } from "lucide-react";
 import toast from "react-hot-toast";
+
+const PAGE_SIZE = 24;
 
 export default function MediaPage() {
   const { userProfile } = useAuth();
@@ -17,10 +19,27 @@ export default function MediaPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
+  const requestIdRef = useRef(0);
 
-  const loadMedia = async () => {
+  const loadMedia = async (nextPage = page, nextSearch = debouncedSearch) => {
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
     setLoading(true);
-    const result = await fetchMedia({ search });
+    const result = await fetchMedia({
+      page: nextPage,
+      limit: PAGE_SIZE,
+      paginate: true,
+      search: nextSearch,
+    });
+
+    // Ignore stale responses from older search/page requests.
+    if (requestId !== requestIdRef.current) {
+      return;
+    }
+
     if (!result.success) {
       toast.error(result.message || "Failed to load media");
       setLoading(false);
@@ -28,18 +47,22 @@ export default function MediaPage() {
     }
 
     setMedia(result.media || []);
+    setPagination(result.pagination || { page: nextPage, limit: PAGE_SIZE, total: (result.media || []).length, totalPages: 1, hasNextPage: false, hasPrevPage: false });
     setLoading(false);
   };
 
   useEffect(() => {
-    if (isStaff) loadMedia();
-  }, [isStaff]);
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [search]);
 
   useEffect(() => {
     if (!isStaff) return;
-    const timeoutId = setTimeout(() => loadMedia(), 300);
-    return () => clearTimeout(timeoutId);
-  }, [search, isStaff]);
+    loadMedia(page, debouncedSearch);
+  }, [isStaff, page, debouncedSearch]);
 
   const handleUpload = async (event) => {
     const files = Array.from(event.target.files || []);
@@ -49,7 +72,7 @@ export default function MediaPage() {
     try {
       await Promise.all(files.map((file) => uploadMedia(file)));
       toast.success(`${files.length} image(s) uploaded to Cloudinary`);
-      await loadMedia();
+      await loadMedia(page, debouncedSearch);
     } catch (error) {
       toast.error(error.message || "Upload failed");
     } finally {
@@ -68,7 +91,9 @@ export default function MediaPage() {
     }
 
     toast.success("Media deleted");
-    await loadMedia();
+    const nextPage = media.length === 1 && page > 1 ? page - 1 : page;
+    setPage(nextPage);
+    await loadMedia(nextPage, debouncedSearch);
   };
 
   if (!isStaff) {
@@ -91,7 +116,7 @@ export default function MediaPage() {
             <p className="text-gray-700 mt-1">Upload and remove Cloudinary assets used across the catalog.</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <button onClick={loadMedia} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
+            <button onClick={() => loadMedia(page, debouncedSearch)} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50">
               <RefreshCw className="w-4 h-4" /> Refresh
             </button>
             <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-white hover:bg-teal-700">
@@ -109,7 +134,7 @@ export default function MediaPage() {
               placeholder="Search by file name or public id"
               className="w-full md:max-w-md rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500"
             />
-            <div className="text-sm text-gray-700">{media.length} asset{media.length === 1 ? "" : "s"}</div>
+            <div className="text-sm text-gray-700">{pagination.total} asset{pagination.total === 1 ? "" : "s"}</div>
           </div>
 
           {loading ? (
@@ -146,6 +171,28 @@ export default function MediaPage() {
                   </div>
                 </article>
               ))}
+            </div>
+          )}
+
+          {!loading && pagination.totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-between gap-3">
+              <button
+                onClick={() => setPage((current) => Math.max(1, current - 1))}
+                disabled={!pagination.hasPrevPage}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
+              >
+                Previous
+              </button>
+              <p className="text-sm text-gray-700">
+                Page {pagination.page} of {pagination.totalPages}
+              </p>
+              <button
+                onClick={() => setPage((current) => current + 1)}
+                disabled={!pagination.hasNextPage}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
+              >
+                Next
+              </button>
             </div>
           )}
         </div>

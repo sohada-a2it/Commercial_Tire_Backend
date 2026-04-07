@@ -37,6 +37,13 @@ const SubcategoryPageClient = () => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [availableBrands, setAvailableBrands] = useState([]);
 
+  const isVehicleCategory =
+    String(category?.name || "").toLowerCase() ===
+    "vehicle parts and accessories";
+  const isTruckTiresSubcategory = ["truck tires", "truck tyre", "truck tyres"].includes(
+    String(subcategory?.name || "").toLowerCase()
+  );
+
   // Refs for click outside detection
   const brandDropdownRef = useRef(null);
   const sortDropdownRef = useRef(null);
@@ -300,7 +307,7 @@ const SubcategoryPageClient = () => {
   };
 
   // Check if current subcategory is Truck Tires
-  const isTruckTires = subcategory?.name?.toLowerCase() === "truck tires";
+  const isTruckTires = isVehicleCategory && isTruckTiresSubcategory;
 
   // Get unique brands from current subcategory products
   const getUniqueBrands = () => {
