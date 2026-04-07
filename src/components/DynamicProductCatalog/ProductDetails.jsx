@@ -312,12 +312,13 @@ const ProductDetails = () => {
     setProduct(null);
     setSelectedImage(null);
     setQuantity(1);
+    setAllProducts([]);
     setRecommendedProducts([]);
 
     // Scroll to top when product changes
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // Use dataService to get product data
+    // Load primary product data first so the page can render quickly.
     const loadProductData = async () => {
       try {
         // Get product by ID
@@ -339,17 +340,6 @@ const ProductDetails = () => {
             foundProduct.name?.toLowerCase().includes("tire") ||
             foundProduct.name?.toLowerCase().includes("tyre");
           setIsTyre(tyreCheck);
-
-          // Get all products for recommendations
-          const relatedResponse = await dataService.getProductsBySubcategory(
-            foundProduct.categoryName,
-            foundProduct.subcategoryName,
-            { page: 1, limit: 60 }
-          );
-          const relatedProducts = Array.isArray(relatedResponse?.products)
-            ? relatedResponse.products
-            : [];
-          setAllProducts(relatedProducts);
         } else {
           setProduct(null);
         }
@@ -364,6 +354,38 @@ const ProductDetails = () => {
     loadProductData();
   }, [id]); // Only depend on id
 
+  useEffect(() => {
+    if (!product?.categoryName || !product?.subcategoryName) return;
+
+    let isCancelled = false;
+
+    const loadRelatedProducts = async () => {
+      try {
+        const relatedResponse = await dataService.getProductsBySubcategory(
+          product.categoryName,
+          product.subcategoryName,
+          { page: 1, limit: 24 }
+        );
+
+        if (isCancelled) return;
+        const relatedProducts = Array.isArray(relatedResponse?.products)
+          ? relatedResponse.products
+          : [];
+        setAllProducts(relatedProducts);
+      } catch (_error) {
+        if (!isCancelled) {
+          setAllProducts([]);
+        }
+      }
+    };
+
+    loadRelatedProducts();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [product?.categoryName, product?.subcategoryName]);
+
   // Generate recommendations when product data is available
   useEffect(() => {
     if (product && allProducts.length > 0) {
@@ -373,11 +395,31 @@ const ProductDetails = () => {
   }, [product, allProducts]);
 
   const handleGoBack = () => {
-    if (window.history.state && window.history.state.idx > 0) {
-      navigate(-1);
-    } else {
-      navigate("/");
+    if (typeof window === "undefined") {
+      navigate("/products");
+      return;
     }
+
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    const referrer = document.referrer;
+    if (referrer) {
+      try {
+        const referrerUrl = new URL(referrer);
+        if (referrerUrl.origin === window.location.origin) {
+          const target = `${referrerUrl.pathname}${referrerUrl.search}${referrerUrl.hash}`;
+          navigate(target || "/products");
+          return;
+        }
+      } catch (_error) {
+        // Ignore parsing failures and continue fallback.
+      }
+    }
+
+    navigate("/products");
   };
 
   const handleSearchChange = (e) => {
