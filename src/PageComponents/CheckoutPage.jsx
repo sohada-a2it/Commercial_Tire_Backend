@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -28,6 +28,16 @@ const CheckoutPage = () => {
     notes: "",
     paymentMethod: "credit-card",
   });
+
+  useEffect(() => {
+    if (!user?.email) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      email: user.email,
+      name: prev.name || userProfile?.fullName || "",
+    }));
+  }, [user?.email, userProfile?.fullName]);
 
   const parseNumber = (value) => {
     if (typeof value === "number") {
@@ -133,7 +143,7 @@ const CheckoutPage = () => {
 
       await placeOrderInquiry(orderData);
 
-      toast.success("Inquiry sent successfully. Admin will contact you and send invoice.");
+      toast.success("Inquiry sent successfully. Admin will contact,confirm and send invoice very shortly!");
       clearCart();
       router.push("/dashboard/my-inquiries");
     } catch (error) {
@@ -219,9 +229,15 @@ const CheckoutPage = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
+                      readOnly={Boolean(user?.email)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                       required
                     />
+                    {user?.email ? (
+                      <p className="mt-1 text-xs text-gray-500">
+                        Inquiry and invoice emails are sent to your login email.
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 
