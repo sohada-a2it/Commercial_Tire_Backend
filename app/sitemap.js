@@ -1,21 +1,12 @@
 export const dynamic = "force-static";
 
-const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
+import { getAllCategories, getAllProducts, nameToSlug } from "@/lib/seoMetadata";
 
 const fetchCatalog = async () => {
   try {
-    const [categoriesResponse, productsResponse] = await Promise.all([
-      fetch(`${backendUrl}/api/categories?all=true&isActive=true`, { next: { revalidate: 300 } }),
-      fetch(`${backendUrl}/api/categories/public/products?all=true`, { next: { revalidate: 300 } }),
-    ]);
-
-    const categoriesPayload = categoriesResponse.ok ? await categoriesResponse.json() : {};
-    const productsPayload = productsResponse.ok ? await productsResponse.json() : {};
-
-    return {
-      categories: Array.isArray(categoriesPayload?.categories) ? categoriesPayload.categories : [],
-      products: Array.isArray(productsPayload?.products) ? productsPayload.products : [],
-    };
+    const categories = await getAllCategories();
+    const products = await getAllProducts();
+    return { categories, products };
   } catch (_error) {
     return { categories: [], products: [] };
   }
@@ -25,93 +16,88 @@ export default async function sitemap() {
   const baseUrl = "https://asianimportexport.com";
   const { categories, products } = await fetchCatalog();
 
-  // Helper function to convert name to URL slug
-  const nameToSlug = (name) => {
-    return name.replace(/\s+/g, "-");
-  };
-
-  const currentDate = new Date();
-
   // Static pages
-  const routes = [
+  const staticPages = [
     {
       url: baseUrl,
-      lastModified: currentDate,
+      lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1.0,
     },
     {
       url: `${baseUrl}/products`,
-      lastModified: currentDate,
+      lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
       url: `${baseUrl}/aboutUs`,
-      lastModified: currentDate,
+      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/contact`,
-      lastModified: currentDate,
+      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/shipping`,
-      lastModified: currentDate,
+      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
       url: `${baseUrl}/privacy`,
-      lastModified: currentDate,
+      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
       url: `${baseUrl}/search`,
-      lastModified: currentDate,
+      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,
     },
   ];
 
-  // Add all product pages
-  products.forEach((product) => {
-    if (product?.id === undefined || product?.id === null || product?.id === "") return;
+  // Category pages
+  const categoryPages = categories.flatMap((category) => {
+    const pages = [
+      {
+        url: `${baseUrl}/products/c/${nameToSlug(category.name)}`,
+        lastModified: new Date(),
+        changeFrequency: "daily",
+        priority: 0.85,
+      },
+    ];
 
-    routes.push({
-      url: `${baseUrl}/product/${product.id}`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    });
-  });
-
-  // Add category and subcategory pages
-  categories.forEach((category) => {
-    const categorySlug = nameToSlug(category.name);
-    routes.push({
-      url: `${baseUrl}/products/c/${categorySlug}`,
-      lastModified: currentDate,
-      changeFrequency: "daily",
-      priority: 0.7,
-    });
-
+    // Subcategory pages
     if (category.subcategories) {
       category.subcategories.forEach((subcategory) => {
-        const subcategorySlug = nameToSlug(subcategory.name);
-        routes.push({
-          url: `${baseUrl}/products/c/${subcategorySlug}`,
-          lastModified: currentDate,
+        pages.push({
+          url: `${baseUrl}/products/c/${nameToSlug(subcategory.name)}`,
+          lastModified: new Date(),
           changeFrequency: "daily",
-          priority: 0.6,
+          priority: 0.8,
         });
       });
     }
+
+    return pages;
   });
 
-  return routes;
+  // Product pages
+  const productPages = products
+    .filter((product) => product?.id)
+    .map((product) => ({
+      url: `${baseUrl}/product/${product.id}`,
+      lastModified: new Date(product.updatedAt || product.createdAt || new Date()),
+      changeFrequency: "weekly",
+      priority: 0.75,
+    }));
+
+  // Combine all URLs
+  return [...staticPages, ...categoryPages, ...productPages];
 }

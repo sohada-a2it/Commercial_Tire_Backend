@@ -1,4 +1,5 @@
 import SubcategoryPageClient from "./SubcategoryPageClient";
+import { generateSubcategoryMetadata } from "@/lib/seoMetadata";
 
 const backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
 
@@ -35,6 +36,34 @@ export async function generateStaticParams() {
   });
 
   return params;
+}
+
+export async function generateMetadata({ params }) {
+  const resolvedParams = await Promise.resolve(params);
+  const metadata = await generateSubcategoryMetadata(
+    resolvedParams.category,
+    resolvedParams.subcategory
+  );
+
+  if (!metadata) {
+    return {
+      title: "Subcategory Not Found",
+      description: "The requested subcategory could not be found.",
+    };
+  }
+
+  return {
+    title: metadata.title,
+    description: metadata.description,
+    keywords: metadata.keywords,
+    openGraph: metadata.openGraph,
+    twitter: metadata.twitter,
+    alternates: metadata.alternates,
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 }
 
 export default function SubcategoryPage() {

@@ -64,7 +64,6 @@ npm start
 │   ├── Pages/             # Page content components
 │   └── lib/               # Utilities
 ├── public/                # Static assets
-│   ├── categories.json    # Product data
 │   └── assets/            # Images
 └── next.config.mjs        # Next.js configuration
 ```
@@ -72,7 +71,7 @@ npm start
 ## 🎯 SEO Features
 
 ### Automatic Product Indexing
-Every product in `public/categories.json` is automatically:
+Every product in the database is automatically:
 - Added to the sitemap
 - Given unique SEO metadata
 - Optimized for search engines
@@ -123,7 +122,7 @@ verification: {
 
 ### Product Data
 
-Update products in `public/categories.json`. The sitemap automatically includes all products.
+Update products from the admin/database system. The sitemap automatically includes all products.
 
 ## 🚀 Deployment
 
