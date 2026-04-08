@@ -648,7 +648,7 @@ export default function CreateInvoicePage() {
       return;
     }
 
-    const requiredCustomerFields = ["name", "email", "phone", "address", "city", "zone", "area", "zipCode"];
+    const requiredCustomerFields = ["name", "email", "phone", "address", "city", "zone", "area"];
     for (const field of requiredCustomerFields) {
       if (!String(customerDraft[field] || "").trim()) {
         toast.error(`Please fill customer ${field}`);
