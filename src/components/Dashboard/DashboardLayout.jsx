@@ -72,10 +72,10 @@ const DashboardLayout = ({ children }) => {
             {/* Right - User Profile */}
             <div className="flex items-center gap-4 ml-auto">
               {/* Notifications */}
-              <button className="relative text-gray-600 hover:text-teal-600 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+              {/* <button className="relative text-gray-600 hover:text-teal-600 p-2 rounded-lg hover:bg-gray-100 transition-colors">
                 <Bell className="w-5 h-5" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
+              </button> */}
 
               {/* User Dropdown */}
               <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 cursor-pointer">
