@@ -69,6 +69,21 @@ const CartSidebar = () => {
     calculateItemPrice,
   } = useCart();
 
+  const parsePriceValue = (value) => {
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    if (typeof value === "string") {
+      const parsed = parseFloat(value.replace(/[^0-9.-]/g, ""));
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    return 0;
+  };
+
+  const getBaseItemPriceValue = (item) => parsePriceValue(item?.offerPrice || item?.price);
+
   // Helper function to get price display for an item
   const getPriceDisplay = (item) => {
     const quantity = item.quantity || 1;
@@ -103,15 +118,15 @@ const CartSidebar = () => {
 
     // For products with pricing tiers (truck tires, metals)
     if (item.pricingTiers && item.pricingTiers.length > 0) {
-      if (item.pricingTiers[0].pricePerTire !== undefined) {
+      if (
+        item.pricingTiers[0].pricePerTire !== undefined ||
+        item.pricingTiers[0].pricePerUnit !== undefined
+      ) {
         // Truck tires
         if (quantity < item.pricingTiers[0].minQuantity) {
           // Using offer price for quantities below first tier
           const basePrice = item.offerPrice || item.price;
-          const unitPrice =
-            typeof basePrice === "string"
-              ? parseFloat(basePrice.replace(/[^0-9.]/g, ""))
-              : basePrice;
+          const unitPrice = parsePriceValue(basePrice);
           return {
             type: "offer-price",
             unitPrice: unitPrice,
@@ -125,12 +140,17 @@ const CartSidebar = () => {
             quantity >= tier.minQuantity &&
             (tier.maxQuantity === null || quantity <= tier.maxQuantity)
           ) {
+            const unitPriceRaw =
+              tier.pricePerTire || tier.pricePerUnit || tier.pricePerTon || tier.pricePerKg;
+            const numericUnitPrice = parsePriceValue(unitPriceRaw);
+            const fallbackUnitPrice = numericUnitPrice > 0 ? numericUnitPrice : getBaseItemPriceValue(item);
             return {
               type: "tiered",
               tierInfo: `${tier.minQuantity}${
                 tier.maxQuantity ? `-${tier.maxQuantity}` : "+"
-              } tires`,
-              unitPrice: tier.pricePerTire,
+              } ${item.moqUnit || "units"}`,
+              unitPrice: unitPriceRaw || fallbackUnitPrice,
+              numericUnitPrice: fallbackUnitPrice,
               total: itemPrice,
             };
           }
@@ -140,10 +160,7 @@ const CartSidebar = () => {
         if (quantity < item.pricingTiers[0].minQuantity) {
           // Using offer price for quantities below first tier
           const basePrice = item.offerPrice || item.price;
-          const unitPrice =
-            typeof basePrice === "string"
-              ? parseFloat(basePrice.replace(/[^0-9.]/g, ""))
-              : basePrice;
+          const unitPrice = parsePriceValue(basePrice);
           return {
             type: "offer-price",
             unitPrice: unitPrice,
@@ -157,12 +174,16 @@ const CartSidebar = () => {
             quantity >= tier.minQuantity &&
             (tier.maxQuantity === null || quantity <= tier.maxQuantity)
           ) {
+            const unitPriceRaw = tier.pricePerTon || tier.pricePerKg || tier.pricePerUnit;
+            const numericUnitPrice = parsePriceValue(unitPriceRaw);
+            const fallbackUnitPrice = numericUnitPrice > 0 ? numericUnitPrice : getBaseItemPriceValue(item);
             return {
               type: "tiered",
               tierInfo: `${tier.minQuantity}${
                 tier.maxQuantity ? `-${tier.maxQuantity}` : "+"
               } tons`,
-              unitPrice: tier.pricePerTon,
+              unitPrice: unitPriceRaw || fallbackUnitPrice,
+              numericUnitPrice: fallbackUnitPrice,
               total: itemPrice,
             };
           }
@@ -172,10 +193,7 @@ const CartSidebar = () => {
 
     // Default pricing (standard products or those without tiers)
     const basePrice = item.offerPrice || item.price;
-    const unitPrice =
-      typeof basePrice === "string"
-        ? parseFloat(basePrice.replace(/[^0-9.]/g, ""))
-        : basePrice;
+    const unitPrice = parsePriceValue(basePrice);
 
     return {
       type: "standard",
@@ -304,8 +322,8 @@ const CartSidebar = () => {
                                 Unit: {priceInfo.unitPrice}
                               </p>
                               <p className="text-blue-600 font-bold text-sm">
-                                Total: {priceInfo.unitPrice} × {item.quantity} =
-                                ${priceInfo.total?.toFixed(2)}
+                                Total: ${(priceInfo.numericUnitPrice ?? 0).toFixed(2)} × {item.quantity} =
+                                ${Number.isFinite(priceInfo.total) ? priceInfo.total.toFixed(2) : "0.00"}
                               </p>
                             </div>
                           );
@@ -318,7 +336,7 @@ const CartSidebar = () => {
                               </p>
                               <p className="text-blue-600 font-bold text-sm">
                                 Total: ${priceInfo.unitPrice?.toFixed(2)} ×{" "}
-                                {item.quantity} = ${priceInfo.total?.toFixed(2)}
+                                {item.quantity} = ${Number.isFinite(priceInfo.total) ? priceInfo.total.toFixed(2) : "0.00"}
                               </p>
                             </div>
                           );
@@ -327,7 +345,7 @@ const CartSidebar = () => {
                           return (
                             <p className="text-blue-600 font-bold text-sm mb-2">
                               Total: ${priceInfo.unitPrice?.toFixed(2)} ×{" "}
-                              {item.quantity} = ${priceInfo.total?.toFixed(2)}
+                              {item.quantity} = ${Number.isFinite(priceInfo.total) ? priceInfo.total.toFixed(2) : "0.00"}
                             </p>
                           );
                         }
