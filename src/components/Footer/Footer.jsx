@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Link, usePathname } from "@/lib/navigation";
+import { Link, usePathname, useRouter } from "@/lib/navigation";
+import { useData } from "@/context/DataContext";
+import { nameToSlug } from "@/lib/seoMetadata";
 import {
   FaFacebookF,
   FaInstagram,
@@ -21,6 +23,8 @@ const Footer = () => {
   if (pathname.startsWith("/dashboard")) return null;
   const [showMoreLinks, setShowMoreLinks] = useState(false);
   const [showMoreProducts, setShowMoreProducts] = useState(false);
+  const { categories } = useData();
+  const router = useRouter();
 
   const infoLinks = [
     { label: "Contact", to: "/contact" },
@@ -30,14 +34,46 @@ const Footer = () => {
     { label: "Privacy Policy", to: "/privacy" },
   ];
 
-  const productCategories = [
-    { name: "Vehicle Parts & Accessories", hash: "Vehicle-Parts-and-Accessories" },
-    { name: "Metals & Metal Products", hash: "Metals-and-Metal-Products" },
-    { name: "Dry Food", hash: "Dry-Food" },
-    { name: "Agriculture", hash: "Agriculture" },
-    { name: "Frozen Fish", hash: "Frozen-Fish" },
-    { name: "Wood Products", hash: "Wood-Products" },
+  const normalizeCategoryHash = (category) => {
+    if (!category?.name) return "";
+    return nameToSlug(category.name);
+  };
+
+  const fallbackProductCategories = [
+    { name: "Vehicle Parts & Accessories", hash: normalizeCategoryHash({ name: "Vehicle Parts & Accessories" }) },
+    { name: "Metals & Metal Products", hash: normalizeCategoryHash({ name: "Metals & Metal Products" }) },
+    { name: "Dry Food", hash: normalizeCategoryHash({ name: "Dry Food" }) },
+    { name: "Agriculture", hash: normalizeCategoryHash({ name: "Agriculture" }) },
+    { name: "Frozen Fish", hash: normalizeCategoryHash({ name: "Frozen Fish" }) },
+    { name: "Wood Products", hash: normalizeCategoryHash({ name: "Wood Products" }) },
   ];
+
+  const productCategories = Array.isArray(categories) && categories.length > 0
+    ? categories.map((category) => ({
+        name: category?.name || "Unnamed category",
+        hash: category?.slug || normalizeCategoryHash(category),
+      }))
+    : fallbackProductCategories;
+
+  const scrollToCategory = async (hash) => {
+    if (!hash) return;
+    const element = document.getElementById(hash);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.replaceState(null, "", `#${hash}`);
+    } else {
+      await router.push(`/#${hash}`);
+    }
+  };
+
+  const handleCategoryClick = async (event, hash) => {
+    if (!hash) return;
+    const shouldScrollInPlace = pathname === "/" || pathname === "";
+    if (shouldScrollInPlace) {
+      event.preventDefault();
+      await scrollToCategory(hash);
+    }
+  };
 
   const contactInfo = [
     {
@@ -160,7 +196,11 @@ const Footer = () => {
               : productCategories.slice(0, 3)
             ).map((category) => (
               <li key={category.name}>
-                <Link to={`/#${category.hash}`} className="flex items-center hover:text-amber-300">
+                <Link
+                  to={`/#${category.hash}`}
+                  onClick={(event) => handleCategoryClick(event, category.hash)}
+                  className="flex items-center hover:text-amber-300"
+                >
                   <span className="w-2 h-2 bg-amber-400 rounded-full mr-3"></span>
                   {category.name}
                 </Link>
