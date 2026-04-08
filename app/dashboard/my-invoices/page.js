@@ -151,7 +151,7 @@ export default function MyInvoicesPage() {
               <Filter className="h-5 w-5 text-teal-600" />
               <div>
                 <h2 className="text-lg font-semibold">Filter and sort</h2>
-                <p className="text-sm text-slate-600">Narrow invoices by status or order them by payment progression.</p>
+                <p className="text-sm text-slate-600">All invoices here and you can filter or sort them as needed.</p>
               </div>
             </div>
 

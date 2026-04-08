@@ -220,15 +220,65 @@ export default function ProductsPage() {
             <div className="text-sm text-gray-700">20 products per page</div>
           </div>
 
-          <div className="max-h-[58vh] overflow-auto rounded-xl border border-gray-200">
+          <div className="grid gap-4 sm:hidden">
+            {products.length === 0 ? (
+              <div className="rounded-2xl border border-gray-200 p-4 bg-white text-center text-gray-700">No products found.</div>
+            ) : loading ? (
+              <div className="rounded-2xl border border-gray-200 p-4 bg-white text-center text-teal-600"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></div>
+            ) : (
+              products.map((product) => {
+                const routeId = product.sourceId || product.id;
+                return (
+                  <div key={product.id} className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+                    <div className="flex items-start gap-3">
+                      <div className="h-14 w-14 overflow-hidden rounded-lg bg-gray-100 flex-shrink-0">
+                        {product.image?.url ? <img src={product.image.url} alt={product.name} className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-gray-600"><ImagePlus className="w-5 h-5" /></div>}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate font-semibold text-gray-900">{product.name}</div>
+                        <div className="truncate text-xs text-gray-500">{product.slug}</div>
+                        <div className="mt-2 text-sm text-gray-700">{product.categoryName} / {product.subcategoryName}</div>
+                        <div className="mt-1 text-sm text-gray-700">Brand: {product.brand || "-"}</div>
+                        {isVehicleCategorySelected ? <div className="mt-1 text-sm text-gray-700">Pattern: {product.pattern || "-"}</div> : null}
+                      </div>
+                    </div>
+                    <div className="mt-4 flex flex-col gap-2">
+                      <div className="flex items-center justify-between text-sm text-gray-900">
+                        <span>Price</span>
+                        <span className="font-semibold">{product.offerPrice || product.price || "-"}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() => router.push(`/dashboard/products/edit?productId=${routeId}`)}
+                          className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                        >
+                          <Pencil className="w-3.5 h-3.5" /> Edit
+                        </button>
+                        {isAdmin ? (
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-2 text-xs text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" /> Delete
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          <div className="max-h-[58vh] overflow-auto rounded-xl border border-gray-200 hidden sm:block">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-700">
                 <tr>
                   <th className="px-4 py-3 text-left">Product</th>
-                  <th className="px-4 py-3 text-left">Category</th>
-                  <th className="px-4 py-3 text-left">Brand</th>
+                  <th className="px-4 py-3 text-left hidden lg:table-cell">Category</th>
+                  <th className="px-4 py-3 text-left hidden lg:table-cell">Brand</th>
                   <th className="px-4 py-3 text-left">Price</th>
-                  {isVehicleCategorySelected ? <th className="px-4 py-3 text-left">Pattern</th> : null}
+                  {isVehicleCategorySelected ? <th className="px-4 py-3 text-left hidden xl:table-cell">Pattern</th> : null}
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
@@ -253,10 +303,10 @@ export default function ProductsPage() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-gray-700">{product.categoryName} / {product.subcategoryName}</td>
-                        <td className="px-4 py-3 text-gray-700">{product.brand || "-"}</td>
+                        <td className="px-4 py-3 text-gray-700 hidden lg:table-cell">{product.categoryName} / {product.subcategoryName}</td>
+                        <td className="px-4 py-3 text-gray-700 hidden lg:table-cell">{product.brand || "-"}</td>
                         <td className="px-4 py-3 text-gray-900 font-semibold">{product.offerPrice || product.price || "-"}</td>
-                        {isVehicleCategorySelected ? <td className="px-4 py-3 text-gray-700">{product.pattern || "-"}</td> : null}
+                        {isVehicleCategorySelected ? <td className="px-4 py-3 text-gray-700 hidden xl:table-cell">{product.pattern || "-"}</td> : null}
                         <td className="px-4 py-3">
                           <div className="flex items-center justify-end gap-2">
                             <button

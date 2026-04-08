@@ -710,8 +710,8 @@ export default function CreateInvoicePage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="rounded-3xl bg-white p-4 sm:p-6 shadow-sm ring-1 ring-slate-200">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-700">Simple Invoice Form</p>
@@ -735,9 +735,9 @@ export default function CreateInvoicePage() {
         ) : inquiries.length === 0 ? (
           <div className="rounded-2xl bg-white p-6 text-slate-600 shadow-sm ring-1 ring-slate-200">No pending inquiries available for invoicing.</div>
         ) : (
-          <div className="space-y-6 [&_input]:bg-white [&_input]:text-slate-900 [&_input]:placeholder:text-slate-400 [&_input]:dark:bg-white [&_input]:dark:text-slate-900 [&_input]:dark:border-slate-300 [&_select]:bg-white [&_select]:text-slate-900 [&_select]:dark:bg-white [&_select]:dark:text-slate-900 [&_select]:dark:border-slate-300 [&_textarea]:bg-white [&_textarea]:text-slate-900 [&_textarea]:placeholder:text-slate-400 [&_textarea]:dark:bg-white [&_textarea]:dark:text-slate-900 [&_textarea]:dark:border-slate-300">
+          <div className="space-y-4 sm:space-y-6 [&_input]:bg-white [&_input]:text-slate-900 [&_input]:placeholder:text-slate-400 [&_input]:dark:bg-white [&_input]:dark:text-slate-900 [&_input]:dark:border-slate-300 [&_select]:bg-white [&_select]:text-slate-900 [&_select]:dark:bg-white [&_select]:dark:text-slate-900 [&_select]:dark:border-slate-300 [&_textarea]:bg-white [&_textarea]:text-slate-900 [&_textarea]:placeholder:text-slate-400 [&_textarea]:dark:bg-white [&_textarea]:dark:text-slate-900 [&_textarea]:dark:border-slate-300">
             <div className="space-y-6">
-              <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+              <div className="rounded-3xl bg-white p-4 sm:p-5 shadow-sm ring-1 ring-slate-200">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                   <div>
                     <h2 className="text-lg font-semibold text-slate-900">Select inquiry</h2>
@@ -771,7 +771,7 @@ export default function CreateInvoicePage() {
 
               {selectedInquiry ? (
                 <>
-                  <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                  <div className="rounded-3xl bg-white p-4 sm:p-5 shadow-sm ring-1 ring-slate-200">
                     <div className="grid gap-4 lg:grid-cols-2">
                       <div className="rounded-2xl border border-slate-200 p-4">
                         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Invoice details</p>
@@ -863,10 +863,10 @@ export default function CreateInvoicePage() {
                     </div>
                   </div>
 
-                  <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <div className="rounded-3xl bg-white p-4 sm:p-5 shadow-sm ring-1 ring-slate-200">
                     <h3 className="text-lg font-semibold text-slate-900">Buyer details</h3>
                     <p className="mt-1 text-sm text-slate-600">Edit this information before generating the invoice.</p>
-                    <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                       <label className="space-y-1 text-sm">
                         <span className="font-medium text-slate-700">Name</span>
                         <input value={customerDraft.name} onChange={(event) => updateCustomer("name", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
@@ -907,7 +907,7 @@ export default function CreateInvoicePage() {
                   </div>
 
                   <div className="grid gap-6 xl:grid-cols-2 xl:items-stretch">
-                    <div className="flex min-h-[30rem] flex-col rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <div className="flex min-h-[24rem] flex-col rounded-3xl bg-white p-4 sm:p-5 shadow-sm ring-1 ring-slate-200">
                       <div className="flex items-center justify-between gap-3">
                         <div>
                           <h3 className="text-lg font-semibold text-slate-900">Invoice products</h3>
@@ -930,7 +930,7 @@ export default function CreateInvoicePage() {
                           return (
                             <div key={`${item.productId || "item"}-${index}`} className="rounded-2xl border border-slate-200 p-4">
                               <div className="flex flex-col gap-4 xl:flex-row xl:items-start">
-                                <div className="flex gap-4 xl:w-[260px]">
+                                <div className="flex w-full flex-col gap-4 sm:flex-row xl:w-[260px]">
                                   <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-100">
                                     {imageUrl ? (
                                       <img src={imageUrl} alt={item.title || item.name} className="h-full w-full object-cover" />
@@ -940,7 +940,7 @@ export default function CreateInvoicePage() {
                                       </div>
                                     )}
                                   </div>
-                                  <div className="min-w-0">
+                                  <div className="min-w-0 w-full">
                                     <p className="truncate font-semibold text-slate-900">{item.title || item.name || "Invoice item"}</p>
                                     <p className="text-sm text-slate-600">{item.name || "Use the add products panel."}</p>
                                     <p className="mt-1 text-sm font-medium text-slate-900">
@@ -949,7 +949,7 @@ export default function CreateInvoicePage() {
                                   </div>
                                 </div>
 
-                                <div className="grid flex-1 gap-3 md:grid-cols-4">
+                                <div className="grid flex-1 gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
                                   <label className="space-y-1 text-sm">
                                     <span className="font-medium text-slate-700">Product name</span>
                                     <input
@@ -1035,7 +1035,7 @@ export default function CreateInvoicePage() {
                                       className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500"
                                     />
                                   </label>
-                                  <label className="space-y-1 text-sm md:col-span-2">
+                                  <label className="space-y-1 text-sm sm:col-span-2">
                                     <span className="font-medium text-slate-700">Item image</span>
                                     <input
                                       type="file"
@@ -1044,13 +1044,13 @@ export default function CreateInvoicePage() {
                                       className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white"
                                     />
                                   </label>
-                                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 md:col-span-2">
+                                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 sm:col-span-2">
                                     Line total: {formatCurrency(Math.max(Number(item.quantity || 0) * Number(item.unitPrice || 0), 0))}
                                   </div>
                                   <button
                                     type="button"
                                     onClick={() => removeItem(index)}
-                                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm font-medium text-rose-700 hover:bg-rose-100"
+                                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm font-medium text-rose-700 hover:bg-rose-100 sm:w-auto"
                                   >
                                     <Trash2 className="h-4 w-4" /> Remove
                                   </button>
@@ -1062,7 +1062,7 @@ export default function CreateInvoicePage() {
                       </div>
                     </div>
 
-                    <div className="flex min-h-[30rem] flex-col rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <div className="flex min-h-[24rem] flex-col rounded-3xl bg-white p-4 sm:p-5 shadow-sm ring-1 ring-slate-200">
                       <h3 className="text-lg font-semibold text-slate-900">Add products</h3>
                       <label className="mt-3 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 focus-within:border-teal-500">
                         <Search className="h-4 w-4 text-slate-400" />
@@ -1087,7 +1087,7 @@ export default function CreateInvoicePage() {
                             const unitPrice = getProductUnitPrice(product);
 
                             return (
-                              <div key={product.id} className="flex items-center gap-3 rounded-2xl border border-slate-200 p-3">
+                              <div key={product.id} className="flex flex-col items-start gap-3 rounded-2xl border border-slate-200 p-3 sm:flex-row sm:items-center">
                                 <div className="h-14 w-14 overflow-hidden rounded-xl bg-slate-100">
                                   {imageUrl ? (
                                     <img src={imageUrl} alt={product.name} className="h-full w-full object-cover" />
@@ -1118,7 +1118,7 @@ export default function CreateInvoicePage() {
                   </div>
 
                   <div className="grid gap-6 xl:grid-cols-2 xl:items-stretch">
-                    <div className="h-full rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <div className="h-full rounded-3xl bg-white p-4 sm:p-5 shadow-sm ring-1 ring-slate-200">
                     <div className="flex items-center gap-2 text-slate-900">
                       <Calculator className="h-5 w-5 text-teal-600" />
                       <h3 className="text-lg font-semibold">Calculation</h3>
@@ -1174,7 +1174,7 @@ export default function CreateInvoicePage() {
                     </div>
                     </div>
 
-                    <div className="h-full rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <div className="h-full rounded-3xl bg-white p-4 sm:p-5 shadow-sm ring-1 ring-slate-200">
                     <h3 className="text-lg font-semibold text-slate-900">Payment details</h3>
                     <div className="mt-4 space-y-3 text-sm text-slate-700">
                       <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
@@ -1243,7 +1243,7 @@ export default function CreateInvoicePage() {
               ) : null}
               {selectedInquiry ? (
                 <>
-                  <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                  <div className="rounded-3xl bg-white p-4 sm:p-5 shadow-sm ring-1 ring-slate-200">
                     <h3 className="text-lg font-semibold text-slate-900">Invoice terms and notes</h3>
                     <div className="mt-4 space-y-4">
                       <label className="block text-sm font-medium text-slate-700">

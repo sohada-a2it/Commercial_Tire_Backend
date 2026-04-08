@@ -128,15 +128,15 @@ export default function UsersPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
+              <h1 className="text-3xl font-bold text-gray-800 flex flex-wrap items-center gap-2">
                 <UsersIcon className="w-8 h-8 text-teal-600" />
                 Customer A-Z
               </h1>
               <p className="text-gray-600 mt-1">View and manage all customer accounts in alphabetical order</p>
             </div>
-            <div className="bg-teal-600 text-white px-6 py-3 rounded-lg shadow-md">
+            <div className="bg-teal-600 text-white px-6 py-3 rounded-lg shadow-md w-full lg:w-auto">
               <p className="text-sm font-medium">Total:</p>
               <p className="text-2xl font-bold">{filteredUsers.length}</p>
             </div>
@@ -185,96 +185,154 @@ export default function UsersPage() {
                 <p className="text-gray-600">No users found</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50 border-b-2 border-gray-200">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Customer</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Company</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Contact</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Location</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Business Type</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Joined</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {currentUsers.map((user) => (
-                      <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-bold">
-                              {user.fullName?.charAt(0).toUpperCase() || "U"}
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">{user.fullName || "N/A"}</div>
-                              <div className="text-sm text-gray-500">{user.email || "N/A"}</div>
-                            </div>
+              <>
+                <div className="grid gap-4 sm:hidden p-4">
+                  {currentUsers.map((user) => (
+                    <div key={user.id} className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-bold">
+                            {user.fullName?.charAt(0).toUpperCase() || "U"}
                           </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{user.companyName || "N/A"}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{user.whatsappNumber || "N/A"}</div>
-                          {user.whatsappNumber && (
-                            <a
-                              href={`https://wa.me/${user.whatsappNumber}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-green-600 hover:text-green-700"
-                            >
-                              WhatsApp
-                            </a>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{user.country || "N/A"}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          <div>
+                            <div className="font-semibold text-gray-900">{user.fullName || "N/A"}</div>
+                            <div className="text-sm text-gray-500">{user.email || "N/A"}</div>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEditCustomer(user)}
+                            className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                            title="Edit User"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleViewCustomer(user)}
+                            className="inline-flex items-center justify-center rounded-lg border border-gray-300 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
+                            title="View Details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteCustomer(user.firebaseUid)}
+                            className="inline-flex items-center justify-center rounded-lg border border-red-200 px-3 py-2 text-xs text-red-700 hover:bg-red-50"
+                            title="Delete User"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="mt-4 grid gap-2 text-sm text-gray-700">
+                        <div><span className="font-medium">Company:</span> {user.companyName || "N/A"}</div>
+                        <div><span className="font-medium">Contact:</span> {user.whatsappNumber || "N/A"}</div>
+                        {user.whatsappNumber ? (
+                          <a href={`https://wa.me/${user.whatsappNumber}`} target="_blank" rel="noreferrer" className="text-xs text-green-600 hover:text-green-700">
+                            WhatsApp
+                          </a>
+                        ) : null}
+                        <div><span className="font-medium">Location:</span> {user.country || "N/A"}</div>
+                        <div>
+                          <span className="font-medium">Type:</span>{" "}
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            user.businessType === "Wholesaler"
+                              ? "bg-purple-100 text-purple-800"
+                              : user.businessType === "Retailer"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-gray-100 text-gray-800"
+                          }`}>
+                            {user.businessType || "Other"}
+                          </span>
+                        </div>
+                        <div><span className="font-medium">Joined:</span> {formatDate(user.createdAt)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="overflow-x-auto hidden sm:block">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 border-b-2 border-gray-200">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Customer</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Company</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Contact</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Location</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Business Type</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Joined</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {currentUsers.map((user) => (
+                        <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-bold">
+                                {user.fullName?.charAt(0).toUpperCase() || "U"}
+                              </div>
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-gray-900">{user.fullName || "N/A"}</div>
+                                <div className="text-sm text-gray-500">{user.email || "N/A"}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">{user.companyName || "N/A"}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">{user.whatsappNumber || "N/A"}</div>
+                            {user.whatsappNumber && (
+                              <a href={`https://wa.me/${user.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="text-xs text-green-600 hover:text-green-700">
+                                WhatsApp
+                              </a>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">{user.country || "N/A"}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                               user.businessType === "Wholesaler"
                                 ? "bg-purple-100 text-purple-800"
                                 : user.businessType === "Retailer"
                                   ? "bg-blue-100 text-blue-800"
                                   : "bg-gray-100 text-gray-800"
-                            }`}
-                          >
-                            {user.businessType || "Other"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(user.createdAt)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleEditCustomer(user)}
-                              className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-colors"
-                              title="Edit User"
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleViewCustomer(user)}
-                              className="text-teal-600 hover:text-teal-900 p-2 hover:bg-teal-50 rounded-lg transition-colors"
-                              title="View Details"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteCustomer(user.firebaseUid)}
-                              className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors"
-                              title="Delete User"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                            }`}>
+                              {user.businessType || "Other"}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(user.createdAt)}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleEditCustomer(user)}
+                                className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                                title="Edit User"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleViewCustomer(user)}
+                                className="text-teal-600 hover:text-teal-900 p-2 hover:bg-teal-50 rounded-lg transition-colors"
+                                title="View Details"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteCustomer(user.firebaseUid)}
+                                className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Delete User"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
 
             {!loading && currentUsers.length > 0 && (
