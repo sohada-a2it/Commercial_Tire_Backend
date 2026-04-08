@@ -7,6 +7,17 @@ import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
 import toast from "react-hot-toast";
 
+const businessTypeOptions = [
+  "Wholesaler",
+  "Distributor",
+  "Manufacturer",
+  "Supplier",
+  "Exporter/Importer",
+  "Service Provider",
+  "Trading Business",
+  "Other",
+];
+
 // Countries list for dropdown
 const countries = [
   "Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria",
@@ -42,6 +53,7 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
     whatsappNumber: "",
     country: "",
     businessType: "",
+    customBusinessType: "",
     password: "",
     confirmPassword: "",
   });
@@ -88,6 +100,16 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
       return;
     }
 
+    if (registerData.businessType === "Other" && !registerData.customBusinessType.trim()) {
+      toast.error("Please enter a custom business type");
+      return;
+    }
+
+    const selectedBusinessType =
+      registerData.businessType === "Other"
+        ? registerData.customBusinessType.trim()
+        : registerData.businessType;
+
     if (registerData.password !== registerData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
@@ -110,7 +132,7 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
       companyName: registerData.companyName,
       whatsappNumber: registerData.whatsappNumber,
       country: registerData.country,
-      businessType: registerData.businessType,
+      businessType: selectedBusinessType,
     });
     setLoading(false);
 
@@ -348,18 +370,44 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <select
                     value={registerData.businessType}
-                    onChange={(e) => setRegisterData({ ...registerData, businessType: e.target.value })}
+                    onChange={(e) =>
+                      setRegisterData({
+                        ...registerData,
+                        businessType: e.target.value,
+                        customBusinessType: e.target.value === "Other" ? registerData.customBusinessType : "",
+                      })
+                    }
                     className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900 appearance-none"
                     required
                   >
                     <option value="">Select business type</option>
-                    <option value="Wholeseller">Wholeseller</option>
-                    <option value="Retailer">Retailer</option>
-                    <option value="REGULAR USER">REGULAR USER</option>
-                    <option value="OTHER">Other</option>
+                    {businessTypeOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option === "Exporter/Importer" ? "Exporter / Importer" : option}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
+
+              {registerData.businessType === "Other" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Other Business Type *
+                  </label>
+                  <div className="relative">
+                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      value={registerData.customBusinessType}
+                      onChange={(e) => setRegisterData({ ...registerData, customBusinessType: e.target.value })}
+                      className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
+                      placeholder="Enter your business type"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
