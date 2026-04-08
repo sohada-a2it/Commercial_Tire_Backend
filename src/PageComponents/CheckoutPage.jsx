@@ -23,8 +23,8 @@ const CheckoutPage = () => {
     email: "",
     address: "",
     city: "",
-    state: "",
-    zipCode: "",
+    zone: "",
+    area: "",
     notes: "",
     paymentMethod: "credit-card",
   });
@@ -64,8 +64,8 @@ const CheckoutPage = () => {
       "email",
       "address",
       "city",
-      "state",
-      "zipCode",
+      "zone",
+      "area",
     ];
 
     for (const field of required) {
@@ -256,7 +256,7 @@ const CheckoutPage = () => {
                   />
                 </div>
 
-                {/* City, State, Zip */}
+                {/* City, Zone, Area */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -273,12 +273,12 @@ const CheckoutPage = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      State *
+                      Zone *
                     </label>
                     <input
                       type="text"
-                      name="state"
-                      value={formData.state}
+                      name="zone"
+                      value={formData.zone}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                       required
@@ -286,12 +286,12 @@ const CheckoutPage = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Zip Code *
+                      Area *
                     </label>
                     <input
                       type="text"
-                      name="zipCode"
-                      value={formData.zipCode}
+                      name="area"
+                      value={formData.area}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                       required

@@ -18,7 +18,8 @@ const EMPTY_CUSTOMER = {
   companyName: "",
   address: "",
   city: "",
-  state: "",
+  zone: "",
+  area: "",
   zipCode: "",
   notes: "",
   paymentMethod: "bank",
@@ -353,7 +354,8 @@ export default function CreateInvoicePage() {
       companyName: selectedInquiry.customer?.companyName || "",
       address: selectedInquiry.customer?.address || "",
       city: selectedInquiry.customer?.city || "",
-      state: selectedInquiry.customer?.state || "",
+      zone: selectedInquiry.customer?.zone || selectedInquiry.customer?.state || "",
+      area: selectedInquiry.customer?.area || "",
       zipCode: selectedInquiry.customer?.zipCode || "",
       notes: selectedInquiry.customer?.notes || "",
       paymentMethod: selectedInquiry.paymentMethod || "bank",
@@ -646,7 +648,7 @@ export default function CreateInvoicePage() {
       return;
     }
 
-    const requiredCustomerFields = ["name", "email", "phone", "address", "city", "state", "zipCode"];
+    const requiredCustomerFields = ["name", "email", "phone", "address", "city", "zone", "area", "zipCode"];
     for (const field of requiredCustomerFields) {
       if (!String(customerDraft[field] || "").trim()) {
         toast.error(`Please fill customer ${field}`);
@@ -864,7 +866,7 @@ export default function CreateInvoicePage() {
                   <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
                     <h3 className="text-lg font-semibold text-slate-900">Buyer details</h3>
                     <p className="mt-1 text-sm text-slate-600">Edit this information before generating the invoice.</p>
-                    <div className="mt-4 grid gap-3 md:grid-cols-2">
+                    <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                       <label className="space-y-1 text-sm">
                         <span className="font-medium text-slate-700">Name</span>
                         <input value={customerDraft.name} onChange={(event) => updateCustomer("name", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
@@ -890,8 +892,12 @@ export default function CreateInvoicePage() {
                         <input value={customerDraft.city} onChange={(event) => updateCustomer("city", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
                       </label>
                       <label className="space-y-1 text-sm">
-                        <span className="font-medium text-slate-700">State</span>
-                        <input value={customerDraft.state} onChange={(event) => updateCustomer("state", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
+                        <span className="font-medium text-slate-700">Zone</span>
+                        <input value={customerDraft.zone} onChange={(event) => updateCustomer("zone", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-1 text-sm">
+                        <span className="font-medium text-slate-700">Area</span>
+                        <input value={customerDraft.area} onChange={(event) => updateCustomer("area", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
                       </label>
                       <label className="space-y-1 text-sm">
                         <span className="font-medium text-slate-700">Zip code</span>

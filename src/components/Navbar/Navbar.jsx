@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
-import { ShoppingBag, User, LogOut, ChevronDown, LayoutDashboard } from "lucide-react";
+import { ShoppingBag, User, LogOut, ChevronDown, LayoutDashboard, ShoppingCart } from "lucide-react";
 import { Link, useNavigate, useLocation, usePathname } from "@/lib/navigation";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
@@ -308,7 +308,7 @@ const Navbar = () => {
             className="relative text-white hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-300"
           >
             <div className="flex items-center gap-1">
-              <ShoppingBag className="w-5 h-5" />
+              <ShoppingCart className="w-5 h-5" />
               <span className="font-medium">Cart</span>
               {getCartItemCount() > 0 && (
                 <span className="ml-1 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center">
@@ -449,7 +449,7 @@ const Navbar = () => {
                 className="relative text-white hover:text-amber-300 transition-colors py-3 px-4 rounded-md hover:bg-teal-700 text-left"
               >
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5" />
+                  <ShoppingCart className="w-5 h-5" />
                   <span className="font-medium">Cart</span>
                   {getCartItemCount() > 0 && (
                     <span className="ml-1 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center">
