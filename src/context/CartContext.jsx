@@ -17,6 +17,26 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const parsePriceValue = (value) => {
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    if (typeof value === "string") {
+      const parsed = parseFloat(value.replace(/[^0-9.-]/g, ""));
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    return 0;
+  };
+
+  const getTierPriceValue = (tier) =>
+    parsePriceValue(
+      tier?.pricePerTire ?? tier?.pricePerUnit ?? tier?.pricePerTon ?? tier?.pricePerKg ?? tier?.price
+    );
+
+  const getBaseItemPriceValue = (item) => parsePriceValue(item?.offerPrice || item?.price);
+
   // Load cart from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem("asian-cart");
@@ -48,21 +68,18 @@ export const CartProvider = ({ children }) => {
       if (item.pricingTiers[0].minWeight !== undefined) {
         // Use offerPrice or price for frozen fish
         const basePrice = item.offerPrice || item.price;
-        if (typeof basePrice === "string") {
-          return parseFloat(basePrice.replace(/[^0-9.]/g, "")) * quantity;
-        }
-        return basePrice * quantity;
+        return parsePriceValue(basePrice) * quantity;
       }
 
       // For truck tires (uses pricePerTire)
-      if (item.pricingTiers[0].pricePerTire !== undefined) {
+      if (
+        item.pricingTiers[0].pricePerTire !== undefined ||
+        item.pricingTiers[0].pricePerUnit !== undefined
+      ) {
         // If quantity is less than the first tier minimum, use offerPrice
         if (quantity < item.pricingTiers[0].minQuantity) {
           const basePrice = item.offerPrice || item.price;
-          if (typeof basePrice === "string") {
-            return parseFloat(basePrice.replace(/[^0-9.]/g, "")) * quantity;
-          }
-          return basePrice * quantity;
+          return parsePriceValue(basePrice) * quantity;
         }
 
         // Find the applicable tier
@@ -71,10 +88,12 @@ export const CartProvider = ({ children }) => {
             quantity >= tier.minQuantity &&
             (tier.maxQuantity === null || quantity <= tier.maxQuantity)
           ) {
-            const priceNum = parseFloat(
-              tier.pricePerTire.replace(/[^0-9.]/g, "")
-            );
-            return priceNum * quantity;
+            const priceNum = getTierPriceValue(tier);
+            if (priceNum > 0) {
+              return priceNum * quantity;
+            }
+
+            return getBaseItemPriceValue(item) * quantity;
           }
         }
       }
@@ -84,10 +103,7 @@ export const CartProvider = ({ children }) => {
         // If quantity is less than the first tier minimum, use offerPrice
         if (quantity < item.pricingTiers[0].minQuantity) {
           const basePrice = item.offerPrice || item.price;
-          if (typeof basePrice === "string") {
-            return parseFloat(basePrice.replace(/[^0-9.]/g, "")) * quantity;
-          }
-          return basePrice * quantity;
+          return parsePriceValue(basePrice) * quantity;
         }
 
         // Find the applicable tier
@@ -96,10 +112,12 @@ export const CartProvider = ({ children }) => {
             quantity >= tier.minQuantity &&
             (tier.maxQuantity === null || quantity <= tier.maxQuantity)
           ) {
-            const priceNum = parseFloat(
-              tier.pricePerTon.replace(/[^0-9.]/g, "")
-            );
-            return priceNum * quantity;
+            const priceNum = getTierPriceValue(tier);
+            if (priceNum > 0) {
+              return priceNum * quantity;
+            }
+
+            return getBaseItemPriceValue(item) * quantity;
           }
         }
       }
@@ -107,10 +125,7 @@ export const CartProvider = ({ children }) => {
 
     // Default: use offerPrice or price
     const basePrice = item.offerPrice || item.price;
-    if (typeof basePrice === "string") {
-      return parseFloat(basePrice.replace(/[^0-9.]/g, "")) * quantity;
-    }
-    return basePrice * quantity;
+    return parsePriceValue(basePrice) * quantity;
   };
 
   const addToCart = (product) => {
@@ -164,7 +179,7 @@ export const CartProvider = ({ children }) => {
   const getCartTotal = () => {
     return cart.reduce((total, item) => {
       const itemTotal = calculateItemPrice(item);
-      return total + itemTotal;
+      return total + (Number.isFinite(itemTotal) ? itemTotal : 0);
     }, 0);
   };
 
