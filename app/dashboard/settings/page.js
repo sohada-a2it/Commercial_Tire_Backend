@@ -25,6 +25,18 @@ import {
 } from "@/config/firebase";
 import { auth } from "@/config/firebase";
 
+const businessTypeOptions = [
+  "Wholesaler",
+  "Distributor",
+  "Manufacturer",
+  "Supplier",
+  "Exporter/Importer",
+  "Service Provider",
+  "Trading Business",
+];
+
+const isKnownBusinessType = (value = "") => businessTypeOptions.includes(value);
+
 export default function DashboardSettingsPage() {
   const { userProfile, updateUserProfile, user } = useAuth();
   const router = useRouter();
@@ -44,6 +56,7 @@ export default function DashboardSettingsPage() {
     companyName: "",
     whatsappNumber: "",
     businessType: "",
+    customBusinessType: "",
     country: "",
     address: {
       street: "",
@@ -65,7 +78,8 @@ export default function DashboardSettingsPage() {
     fullName: profile?.fullName || "",
     companyName: profile?.companyName || "",
     whatsappNumber: profile?.whatsappNumber || "",
-    businessType: profile?.businessType || "Other",
+    businessType: isKnownBusinessType(profile?.businessType) ? profile.businessType : "Other",
+    customBusinessType: isKnownBusinessType(profile?.businessType) ? "" : profile?.businessType || "",
     country: profile?.country || "",
     address: {
       street: profile?.address?.street || "",
@@ -76,21 +90,28 @@ export default function DashboardSettingsPage() {
     },
   });
 
-  const sanitizeFormData = (payload = {}) => ({
-    ...payload,
-    fullName: String(payload?.fullName || "").trim(),
-    companyName: String(payload?.companyName || "").trim(),
-    whatsappNumber: String(payload?.whatsappNumber || "").trim(),
-    businessType: String(payload?.businessType || "").trim(),
-    country: String(payload?.country || "").trim(),
-    address: {
-      street: String(payload?.address?.street || "").trim(),
-      city: String(payload?.address?.city || "").trim(),
-      state: String(payload?.address?.state || "").trim(),
-      postalCode: String(payload?.address?.postalCode || "").trim(),
-      country: String(payload?.address?.country || "").trim(),
-    },
-  });
+  const sanitizeFormData = (payload = {}) => {
+    const { customBusinessType, ...rest } = payload;
+
+    return {
+      ...rest,
+      fullName: String(payload?.fullName || "").trim(),
+      companyName: String(payload?.companyName || "").trim(),
+      whatsappNumber: String(payload?.whatsappNumber || "").trim(),
+      businessType:
+        payload?.businessType === "Other"
+          ? String(payload?.customBusinessType || "").trim()
+          : String(payload?.businessType || "").trim(),
+      country: String(payload?.country || "").trim(),
+      address: {
+        street: String(payload?.address?.street || "").trim(),
+        city: String(payload?.address?.city || "").trim(),
+        state: String(payload?.address?.state || "").trim(),
+        postalCode: String(payload?.address?.postalCode || "").trim(),
+        country: String(payload?.address?.country || "").trim(),
+      },
+    };
+  };
 
   // Load settings data for self (customer) or selected user (admin edit mode)
   useEffect(() => {
@@ -136,6 +157,7 @@ export default function DashboardSettingsPage() {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "businessType" && value !== "Other" ? { customBusinessType: "" } : {}),
     }));
   };
 
@@ -163,6 +185,12 @@ export default function DashboardSettingsPage() {
     setLoading(true);
 
     try {
+      if (formData.businessType === "Other" && !String(formData.customBusinessType || "").trim()) {
+        showToast("error", "Please enter a custom business type");
+        setLoading(false);
+        return;
+      }
+
       const payload = sanitizeFormData(formData);
       const result = isAdminEditingCustomer
         ? await updateUser(targetUserId, payload)
@@ -445,13 +473,33 @@ export default function DashboardSettingsPage() {
                       required={isGoogleLogin && !formData.businessType}
                     >
                       <option value="">Select business type</option>
-                      <option value="Wholesaler">Wholesaler</option>
-                      <option value="Wholeseller">Wholeseller</option>
-                      <option value="Retailer">Retailer</option>
-                      <option value="REGULAR USER">Regular User</option>
+                      {businessTypeOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option === "Exporter/Importer" ? "Exporter / Importer" : option}
+                        </option>
+                      ))}
                       <option value="Other">Other</option>
                     </select>
                   </div>
+                  {formData.businessType === "Other" && (
+                    <div className="mt-4">
+                      <label className="block text-sm font-bold text-gray-800 mb-3">
+                        Other Business Type
+                        {isGoogleLogin && !formData.customBusinessType && (
+                          <span className="text-red-500">*</span>
+                        )}
+                      </label>
+                      <input
+                        type="text"
+                        name="customBusinessType"
+                        value={formData.customBusinessType}
+                        onChange={handleChange}
+                        className="w-full px-5 py-3.5 border-2 border-gray-300 rounded-xl focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-300 bg-white hover:border-teal-300 text-gray-800 font-medium placeholder-gray-400"
+                        placeholder="Enter your business type"
+                        required={isGoogleLogin && !formData.customBusinessType}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Country */}
