@@ -70,9 +70,9 @@ const OfferBanner = () => {
             <div className="flex gap-3 md:gap-6">
               {/* Weeks */}
               <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
+                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
                   <span className="text-2xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.weeks).padStart(2, "0")}
                   </span>
@@ -84,9 +84,9 @@ const OfferBanner = () => {
 
               {/* Days */}
               <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
+                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
                   <span className="text-2xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.days).padStart(2, "0")}
                   </span>
@@ -98,9 +98,9 @@ const OfferBanner = () => {
 
               {/* Hours */}
               <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
+                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
                   <span className="text-2xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.hours).padStart(2, "0")}
                   </span>
@@ -112,9 +112,9 @@ const OfferBanner = () => {
 
               {/* Minutes */}
               <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
+                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
+                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
                   <span className="text-2xl md:text-4xl font-bold text-gray-900 relative z-10">
                     {String(timeLeft.minutes).padStart(2, "0")}
                   </span>
@@ -126,11 +126,11 @@ const OfferBanner = () => {
 
               {/* Seconds - With Animation */}
               <div className="flex flex-col items-center">
-                <div className={`bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-2xl border-2 border-yellow-600 relative overflow-hidden transition-transform duration-300 animate-pulse-glow ${
+                <div className={`bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden transition-transform duration-300 animate-pulse-glow ${
                   isAnimating ? 'scale-110' : 'scale-100'
                 }`}>
                   <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_20px_rgba(250,204,21,0.8),0_0_40px_rgba(250,204,21,0.6),inset_0_0_20px_rgba(255,255,255,0.3)]"></div>
+                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
                   <span className={`text-2xl md:text-4xl font-bold text-gray-900 relative z-10 transition-all duration-300 ${
                     isAnimating ? 'scale-125' : 'scale-100'
                   }`}>
