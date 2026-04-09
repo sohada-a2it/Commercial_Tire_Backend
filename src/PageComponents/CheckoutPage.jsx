@@ -10,6 +10,8 @@ import toast from "react-hot-toast";
 import AuthModal from "@/components/Auth/AuthModal";
 import { normalizeRole } from "@/config/dashboardRoutes";
 import { placeOrderInquiry } from "@/services/orderFlowService";
+import { US_STATES, findStateByNameOrCode } from "@/lib/usStates";
+import { getUsCitiesByState, getUsZipCodesByCity } from "@/services/addressService";
 
 const CheckoutPage = () => {
   const router = useRouter();
@@ -17,14 +19,23 @@ const CheckoutPage = () => {
   const { user, userProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [stateSuggestions, setStateSuggestions] = useState([]);
+  const [availableCities, setAvailableCities] = useState([]);
+  const [citySuggestions, setCitySuggestions] = useState([]);
+  const [zipOptions, setZipOptions] = useState([]);
+  const [loadingCities, setLoadingCities] = useState(false);
+  const [loadingZipCodes, setLoadingZipCodes] = useState(false);
+  const [addressLookupError, setAddressLookupError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
     address: "",
+    state: "",
     city: "",
     zone: "",
     area: "",
+    postalCode: "",
     notes: "",
     paymentMethod: "credit-card",
   });
@@ -54,8 +65,129 @@ const CheckoutPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "state") {
+      const query = String(value || "").trim().toLowerCase();
+      const suggestions = query
+        ? US_STATES.filter(
+            (state) =>
+              state.name.toLowerCase().includes(query) ||
+              state.abbreviation.toLowerCase().includes(query)
+          ).slice(0, 8)
+        : [];
+      setStateSuggestions(suggestions);
+    }
+
+    setFormData((prev) => {
+      const next = { ...prev, [name]: value };
+
+      if (name === "state") {
+        next.zone = value;
+        next.city = "";
+        next.postalCode = "";
+      }
+
+      if (name === "city") {
+        next.postalCode = "";
+      }
+
+      return next;
+    });
   };
+
+  const handleSelectState = (stateName) => {
+    setFormData((prev) => ({
+      ...prev,
+      state: stateName,
+      zone: stateName,
+      city: "",
+      postalCode: "",
+    }));
+    setStateSuggestions([]);
+  };
+
+  const handleSelectCity = (cityName) => {
+    setFormData((prev) => ({
+      ...prev,
+      city: cityName,
+      postalCode: "",
+    }));
+    setCitySuggestions([]);
+  };
+
+  useEffect(() => {
+    const selectedState = findStateByNameOrCode(formData.state);
+    const stateAbbreviation = selectedState?.abbreviation;
+
+    if (!stateAbbreviation) {
+      setAvailableCities([]);
+      setCitySuggestions([]);
+      setZipOptions([]);
+      setLoadingCities(false);
+      return;
+    }
+
+    const loadCities = async () => {
+      setLoadingCities(true);
+      setAddressLookupError("");
+      try {
+        const cities = await getUsCitiesByState(stateAbbreviation);
+        setAvailableCities(cities);
+        setCitySuggestions(cities.slice(0, 50));
+      } catch (error) {
+        console.error("City lookup error:", error);
+        setAvailableCities([]);
+        setCitySuggestions([]);
+        setZipOptions([]);
+        setAddressLookupError("Unable to load city suggestions for selected state.");
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+
+    loadCities();
+  }, [formData.state]);
+
+  useEffect(() => {
+    const query = formData.city.trim().toLowerCase();
+    const filtered = query
+      ? availableCities.filter((city) => city.toLowerCase().includes(query)).slice(0, 50)
+      : availableCities.slice(0, 50);
+
+    setCitySuggestions(filtered);
+  }, [formData.city, availableCities]);
+
+  useEffect(() => {
+    const selectedState = findStateByNameOrCode(formData.state);
+    const stateAbbreviation = selectedState?.abbreviation;
+    const city = formData.city.trim();
+
+    if (!stateAbbreviation || !city) {
+      setZipOptions([]);
+      setLoadingZipCodes(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setLoadingZipCodes(true);
+      setAddressLookupError("");
+      try {
+        const zips = await getUsZipCodesByCity(stateAbbreviation, city);
+        setZipOptions(zips);
+        if (zips.length === 0) {
+          setAddressLookupError("No postal codes found for the selected city.");
+        }
+      } catch (error) {
+        console.error("Zip lookup error:", error);
+        setZipOptions([]);
+        setAddressLookupError("Unable to load postal code suggestions.");
+      } finally {
+        setLoadingZipCodes(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [formData.state, formData.city]);
 
   const validateForm = () => {
     const required = [
@@ -63,9 +195,10 @@ const CheckoutPage = () => {
       "phone",
       "email",
       "address",
+      "state",
       "city",
-      "zone",
       "area",
+      "postalCode",
     ];
 
     for (const field of required) {
@@ -256,33 +389,92 @@ const CheckoutPage = () => {
                   />
                 </div>
 
-                {/* City, Zone, Area */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
+                {/* State, City, Postal Code, Area */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="relative">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      City *
+                      State *
+                    </label>
+                    <input
+                      type="text"
+                      name="state"
+                      value={formData.state}
+                      onChange={handleInputChange}
+                      placeholder="Start typing a U.S. state"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                      required
+                      autoComplete="off"
+                    />
+                    {stateSuggestions.length > 0 && (
+                      <div className="absolute z-20 mt-1 max-h-52 w-full overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+                        {stateSuggestions.slice(0, 8).map((state) => (
+                          <button
+                            type="button"
+                            key={state.abbreviation}
+                            onClick={() => handleSelectState(state.name)}
+                            className="w-full text-left px-4 py-2 hover:bg-teal-50"
+                          >
+                            {state.name} ({state.abbreviation})
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="relative">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      City / Zone *
                     </label>
                     <input
                       type="text"
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
+                      placeholder={loadingCities ? "Loading cities..." : "Select city after state"}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                       required
+                      autoComplete="off"
                     />
+                    {citySuggestions.length > 0 && formData.city.trim() !== "" && (
+                      <div className="absolute z-20 mt-1 max-h-52 w-full overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+                        {citySuggestions.slice(0, 8).map((city) => (
+                          <button
+                            type="button"
+                            key={city}
+                            onClick={() => handleSelectCity(city)}
+                            className="w-full text-left px-4 py-2 hover:bg-teal-50"
+                          >
+                            {city}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Zone *
+                      Postal Code *
                     </label>
                     <input
+                      list="postal-code-options"
                       type="text"
-                      name="zone"
-                      value={formData.zone}
+                      name="postalCode"
+                      value={formData.postalCode}
                       onChange={handleInputChange}
+                      placeholder={loadingZipCodes ? "Loading postal codes..." : "Select postal code"}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                       required
                     />
+                    <datalist id="postal-code-options">
+                      {zipOptions.map((zip) => (
+                        <option key={zip} value={zip} />
+                      ))}
+                    </datalist>
+                    {addressLookupError ? (
+                      <p className="mt-1 text-xs text-red-600">{addressLookupError}</p>
+                    ) : null}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -298,6 +490,7 @@ const CheckoutPage = () => {
                     />
                   </div>
                 </div>
+                <input type="hidden" name="zone" value={formData.zone} />
 
                 {/* Notes */}
                 <div>
