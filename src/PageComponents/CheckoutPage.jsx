@@ -406,13 +406,13 @@ const CheckoutPage = () => {
                       autoComplete="off"
                     />
                     {stateSuggestions.length > 0 && (
-                      <div className="absolute z-20 mt-1 max-h-52 w-full overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+                      <div className="absolute z-20 mt-1 max-h-52 w-full overflow-y-auto rounded-md border border-gray-200 bg-cyan-100 shadow-lg">
                         {stateSuggestions.slice(0, 8).map((state) => (
                           <button
                             type="button"
                             key={state.abbreviation}
                             onClick={() => handleSelectState(state.name)}
-                            className="w-full text-left px-4 py-2 hover:bg-teal-50"
+                            className="w-full text-left px-4 py-2 hover:bg-teal-50 text-cyan-950"
                           >
                             {state.name} ({state.abbreviation})
                           </button>
@@ -436,13 +436,13 @@ const CheckoutPage = () => {
                       autoComplete="off"
                     />
                     {citySuggestions.length > 0 && formData.city.trim() !== "" && (
-                      <div className="absolute z-20 mt-1 max-h-52 w-full overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg">
+                      <div className="absolute z-20 mt-1 max-h-52 w-full overflow-y-auto rounded-md border border-gray-200 bg-cyan-100 shadow-lg">
                         {citySuggestions.slice(0, 8).map((city) => (
                           <button
                             type="button"
                             key={city}
                             onClick={() => handleSelectCity(city)}
-                            className="w-full text-left px-4 py-2 hover:bg-teal-50"
+                            className="w-full text-left px-4 py-2 hover:bg-teal-50 text-cyan-950"
                           >
                             {city}
                           </button>
