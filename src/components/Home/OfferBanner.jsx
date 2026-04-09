@@ -55,10 +55,10 @@ const OfferBanner = () => {
     <div className="relative w-full bg-white py-4 md:py-4">
       <div className="max-w-7xl mx-auto px-4">
         {/* Banner with Countdown Inside */}
-        <div className="relative w-full h-[180px] md:h-[400px] overflow-hidden rounded-lg">
+        <div className="relative w-full h-[180px] md:h-[420px] overflow-hidden rounded-lg">
           {/* Background Image */}
           <img
-            src="/assets/banner3.webp"
+            src="/assets/banner4.png"
             alt="Offer Banner"
             className="w-full h-full object-fill"
           />
@@ -66,7 +66,7 @@ const OfferBanner = () => {
           <div className="absolute inset-0 bg-black bg-opacity-10"></div>
 
           {/* Countdown Timer - Centered */}
-          <div className="absolute inset-0 flex items-center justify-center -mt-4">
+          <div className="absolute inset-0 flex items-end justify-start mb-24 ml-8">
             <div className="flex gap-3 md:gap-6">
               {/* Weeks */}
               <div className="flex flex-col items-center">
