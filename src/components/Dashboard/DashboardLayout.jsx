@@ -51,7 +51,6 @@ const DashboardLayout = ({ children }) => {
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} role={role} />
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header */}
         <header className="bg-white shadow-md z-30">

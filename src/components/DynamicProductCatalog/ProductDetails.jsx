@@ -866,7 +866,7 @@ const ProductDetails = () => {
                     <p className="text-sm text-blue-800 font-medium">
                       {isTyre
                         ? "🚚 DDP from Thailand — No hidden costs. U.S. FET & import taxes included"
-                        : "📦 Shipping cost will be calculated based on your area"}
+                        : "📦 Shipping cost will be calculated based on your location"}
                     </p>
                   </div>
                 </div>

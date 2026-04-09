@@ -34,7 +34,6 @@ const CheckoutPage = () => {
     state: "",
     city: "",
     zone: "",
-    area: "",
     postalCode: "",
     notes: "",
     paymentMethod: "credit-card",
@@ -197,7 +196,6 @@ const CheckoutPage = () => {
       "address",
       "state",
       "city",
-      "area",
       "postalCode",
     ];
 
@@ -374,22 +372,7 @@ const CheckoutPage = () => {
                   </div>
                 </div>
 
-                {/* Address */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Street Address *
-                  </label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
-                    required
-                  />
-                </div>
-
-                {/* State, City, Postal Code, Area */}
+                {/* State / City and Postal Code / Street Address */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="relative">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -400,7 +383,7 @@ const CheckoutPage = () => {
                       name="state"
                       value={formData.state}
                       onChange={handleInputChange}
-                      placeholder="Start typing a U.S. state"
+                      placeholder="Start typing a state"
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                       required
                       autoComplete="off"
@@ -450,9 +433,7 @@ const CheckoutPage = () => {
                       </div>
                     )}
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Postal Code *
@@ -476,14 +457,15 @@ const CheckoutPage = () => {
                       <p className="mt-1 text-xs text-red-600">{addressLookupError}</p>
                     ) : null}
                   </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Area *
+                      Street Address *
                     </label>
                     <input
                       type="text"
-                      name="area"
-                      value={formData.area}
+                      name="address"
+                      value={formData.address}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                       required

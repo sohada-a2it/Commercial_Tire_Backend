@@ -19,7 +19,6 @@ const EMPTY_CUSTOMER = {
   address: "",
   city: "",
   zone: "",
-  area: "",
   zipCode: "",
   notes: "",
   paymentMethod: "bank",
@@ -355,7 +354,6 @@ export default function CreateInvoicePage() {
       address: selectedInquiry.customer?.address || "",
       city: selectedInquiry.customer?.city || "",
       zone: selectedInquiry.customer?.zone || selectedInquiry.customer?.state || "",
-      area: selectedInquiry.customer?.area || "",
       zipCode: selectedInquiry.customer?.zipCode || "",
       notes: selectedInquiry.customer?.notes || "",
       paymentMethod: selectedInquiry.paymentMethod || "bank",
@@ -648,7 +646,7 @@ export default function CreateInvoicePage() {
       return;
     }
 
-    const requiredCustomerFields = ["name", "email", "phone", "address", "city", "zone", "area"];
+    const requiredCustomerFields = ["name", "email", "phone", "address", "city", "zone"];
     for (const field of requiredCustomerFields) {
       if (!String(customerDraft[field] || "").trim()) {
         toast.error(`Please fill customer ${field}`);
@@ -894,10 +892,6 @@ export default function CreateInvoicePage() {
                       <label className="space-y-1 text-sm">
                         <span className="font-medium text-slate-700">Zone</span>
                         <input value={customerDraft.zone} onChange={(event) => updateCustomer("zone", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
-                      </label>
-                      <label className="space-y-1 text-sm">
-                        <span className="font-medium text-slate-700">Area</span>
-                        <input value={customerDraft.area} onChange={(event) => updateCustomer("area", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
                       </label>
                       <label className="space-y-1 text-sm">
                         <span className="font-medium text-slate-700">Zip code</span>
