@@ -417,6 +417,16 @@ const Navbar = () => {
                   </div>
                   <button
                     onClick={() => {
+                      navigate("/dashboard");
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-teal-200 hover:bg-teal-700 transition-colors rounded-md"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={() => {
                       handleLogout();
                       setIsMenuOpen(false);
                     }}
