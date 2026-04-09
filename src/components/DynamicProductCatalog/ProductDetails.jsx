@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "@/lib/navigation";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import {
   FaArrowLeft,
   FaPlus,
@@ -283,7 +283,10 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
 
 // Main ProductDetails Component
 const ProductDetails = () => {
-  const { id } = useParams();
+  const { id: routeId } = useParams();
+  const pathname = usePathname();
+  const runtimePathMatch = String(pathname || "").match(/^\/product\/([^/]+)\/?$/i);
+  const id = String(routeId || runtimePathMatch?.[1] || "");
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
@@ -307,6 +310,12 @@ const ProductDetails = () => {
   const searchTimeoutRef = useRef(null);
 
   useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      setProduct(null);
+      return;
+    }
+
     // Reset states when ID changes
     setLoading(true);
     setProduct(null);
@@ -476,7 +485,10 @@ const ProductDetails = () => {
 
   // Helper function to convert name to URL slug
   const nameToSlug = (name) => {
-    return name.replace(/\s+/g, "-");
+    return String(name || "")
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
   };
 
   const renderStars = (rating = 0) => {
@@ -565,7 +577,7 @@ const ProductDetails = () => {
                     onClick={() => {
                       const categorySlug = nameToSlug(categoryInfo.name);
                       const subcategorySlug = nameToSlug(subcategoryInfo.name);
-                      navigate(`/products/c/${categorySlug}/${subcategorySlug}`);
+                      navigate(`/products/c/${categorySlug}/${subcategorySlug}/`);
                     }}
                     className="hover:text-teal-600 transition-colors"
                   >

@@ -1,23 +1,35 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  
-  # If the request is for an existing file or directory, serve it
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  
-  # For directories, try to serve index.html
+
+  # Let Apache serve real files and directories directly.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^(.*)$ $1/index.html [L]
-  
-  # For all other requests, try to find the file with .html extension
+  RewriteRule ^ - [L]
+
+  # If a route maps to a generated /index.html folder, force trailing slash.
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.+[^/])$ /$1/ [R=301,L]
+
+  # Support direct access to generated .html files.
   RewriteCond %{REQUEST_FILENAME}.html -f
-  RewriteRule ^(.*)$ $1.html [L]
-  
-  # If file doesn't exist, redirect to index.html (fallback for client-side routing)
+  RewriteRule ^(.+)$ /$1.html [L]
+
+  # Runtime fallbacks for newly added catalog items not present in static export.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^(.*)$ /index.html [L,QSA]
+  RewriteRule ^product/[^/]+/?$ /product-runtime/ [L,QSA]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^products/c/[^/]+/[^/]+/?$ /products/c-runtime/ [L,QSA]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^products/c/[^/]+/?$ /products/ [L,QSA]
+
+  # For unknown paths, return static 404 page instead of home page.
+  RewriteRule ^ /404.html [L]
 </IfModule>
 
 # Disable directory browsing

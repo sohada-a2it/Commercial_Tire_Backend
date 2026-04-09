@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { useNavigate } from "@/lib/navigation";
 import ProductList from "@/components/DynamicProductCatalog/ProductList";
 import SearchSuggestion from "@/components/Search/SearchSuggestion.jsx";
@@ -27,8 +27,13 @@ const getScrollTopOffset = () => {
 
 const SubcategoryPageClient = () => {
   const params = useParams();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const navigate = useNavigate();
+
+  const runtimePathMatch = String(pathname || "").match(/^\/products\/c\/([^/]+)\/([^/]+)\/?$/i);
+  const categorySlug = String(params?.category || runtimePathMatch?.[1] || "");
+  const subcategorySlug = String(params?.subcategory || runtimePathMatch?.[2] || "");
 
   const [category, setCategory] = useState(null);
   const [subcategory, setSubcategory] = useState(null);
@@ -136,11 +141,11 @@ const SubcategoryPageClient = () => {
         const data = await dataService.getCategories();
 
         // Convert URL slugs back to names
-        const categoryName = decodeURIComponent(params.category).replace(
+        const categoryName = decodeURIComponent(categorySlug).replace(
           /-/g,
           " "
         );
-        const subcategoryName = decodeURIComponent(params.subcategory).replace(
+        const subcategoryName = decodeURIComponent(subcategorySlug).replace(
           /-/g,
           " "
         );
@@ -201,10 +206,10 @@ const SubcategoryPageClient = () => {
       }
     };
 
-    if (params.category && params.subcategory) {
+    if (categorySlug && subcategorySlug) {
       fetchData();
     }
-  }, [params.category, params.subcategory, selectedBrand, selectedTireType, pageSize]);
+  }, [categorySlug, subcategorySlug, selectedBrand, selectedTireType, pageSize]);
 
   const handlePageChange = async (targetPage) => {
     if (!category || !subcategory) return;
@@ -387,7 +392,7 @@ const SubcategoryPageClient = () => {
         } from ${
           category?.name || "our catalog"
         }. Wholesale prices, international shipping, quality guaranteed.`}
-        canonical={`/products/c/${params.category}/${params.subcategory}`}
+        canonical={`/products/c/${categorySlug}/${subcategorySlug}`}
       />
 
       <div className="px-4 max-w-7xl mx-auto">

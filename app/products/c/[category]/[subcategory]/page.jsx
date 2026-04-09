@@ -20,7 +20,11 @@ const fetchCategories = async () => {
 export async function generateStaticParams() {
   const categories = await fetchCategories();
 
-  const nameToSlug = (name) => name.replace(/\s+/g, "-");
+  const nameToSlug = (name) =>
+    String(name || "")
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
 
   const params = [];
 

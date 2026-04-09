@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Enable static export for production deployment
-  // output: "export",
+  output: "export",
 
   // Enable trailing slashes for static hosting compatibility
   trailingSlash: true,

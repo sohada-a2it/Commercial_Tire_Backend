@@ -9,7 +9,9 @@
     "postbuild": "node scripts/optimize-images.js",
     "start": "next start",
     "lint": "next lint",
-    "optimize-images": "node scripts/optimize-images.js"
+    "optimize-images": "node scripts/optimize-images.js",
+    "deploy": "node scripts/deploy-cpanel.js",
+    "deploy:build-only": "npm run build"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
@@ -27,6 +29,7 @@
     "react-icons": "^5.5.0",
     "react-spinners": "^0.17.0",
     "sharp": "^0.33.5",
+    "ssh2-sftp-client": "^12.1.1",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {

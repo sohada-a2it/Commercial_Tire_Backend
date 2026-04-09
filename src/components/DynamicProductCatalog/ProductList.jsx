@@ -115,14 +115,17 @@ const ProductList = ({
 
   // Helper function to convert name to URL slug
   const nameToSlug = (name) => {
-    return name.replace(/\s+/g, "-");
+    return String(name || "")
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
   };
 
   const handleSeeAllClick = () => {
     if (isHomePage) {
       // Navigate to products page with the category selected
       const slug = nameToSlug(categoryName);
-      navigate(`/products/c/${slug}`);
+      navigate(`/products/c/${slug}/`);
     } else {
       // Just expand the list on the products page
       setShowAllProducts(true);

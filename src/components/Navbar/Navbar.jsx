@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import AuthModal from "@/components/Auth/AuthModal";
+import dataService from "@/services/dataService";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -18,6 +19,7 @@ const Navbar = () => {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [productCategories, setProductCategories] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const { getCartItemCount, toggleCart } = useCart();
@@ -58,54 +60,54 @@ const Navbar = () => {
     setIsProfileOpen(false);
   };
 
-  // Product categories
-  const productCategories = [
-    {
-      name: "Vehicle Parts & Accessories",
-      categorySlug: "Vehicle-Parts-and-Accessories",
-      items: [
-        "Truck Tires",
-        "Golf Cart",
-        "Rim",
-        "Electric Bike",
-      ],
-    },
-    {
-      name: "Frozen Fish",
-      categorySlug: "Frozen-Fish",
-      items: ["Eel", "Crab", "Shrimp", "Tilapia"],
-    },
-    {
-      name: "Metals & Metal Products",
-      categorySlug: "Metals-and-Metal-Products",
-      items: ["Copper Scrap", "Cathode Copper", "Aluminum Metal"],
-    },
-    {
-      name: "Dry Food",
-      categorySlug: "Dry-Food",
-      items: ["Rice", "Sugar", "Nuts"],
-    },
-    {
-      name: "Agriculture",
-      categorySlug: "Agriculture",
-      items: ["Fresh Potatoes", "Fresh Onion"],
-    },
-    {
-      name: "Wood Products",
-      categorySlug: "Wood-Products",
-      items: ["Wood Pellets"],
-    },
-  ];
-
   // Helper function to convert name to URL slug
   const nameToSlug = (name) => {
-    return name.replace(/\s+/g, '-');
+    return String(name || "")
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
   };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCategories = async () => {
+      try {
+        const categories = await dataService.getCategories();
+        if (!isMounted) return;
+
+        const mapped = categories
+          .filter((category) => category?.isActive !== false)
+          .map((category) => ({
+            name: String(category?.name || "").trim(),
+            categorySlug: nameToSlug(category?.name || ""),
+            items: Array.isArray(category?.subcategories)
+              ? category.subcategories
+                  .filter((sub) => sub?.isActive !== false)
+                  .map((sub) => String(sub?.name || "").trim())
+                  .filter(Boolean)
+              : [],
+          }))
+          .filter((category) => category.name && category.items.length > 0);
+
+        setProductCategories(mapped);
+      } catch (_error) {
+        if (isMounted) {
+          setProductCategories([]);
+        }
+      }
+    };
+
+    loadCategories();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleProductClick = (categorySlug, subcategoryName) => {
     const subcategorySlug = nameToSlug(subcategoryName);
-    const path = `/products/c/${categorySlug}/${subcategorySlug}`;
-    console.log('Navigating to:', path, 'from category:', categorySlug, 'item:', subcategoryName);
+    const path = `/products/c/${categorySlug}/${subcategorySlug}/`;
     navigate(path);
     setIsProductsOpen(false);
     setIsMenuOpen(false);
@@ -173,113 +175,28 @@ const Navbar = () => {
             {isProductsOpen && (
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-white shadow-2xl rounded-lg p-4 w-[700px] max-w-[90vw] z-20 border border-teal-200">
                 <div className="flex gap-3 flex-wrap">
-                  {/* Vehicle Parts */}
-                  <div className="flex-1">
-                    <h3 className="text-sm font-bold text-teal-800 pb-1 mb-2 border-b border-teal-200">
-                      Vehicle Parts
-                    </h3>
-                    <div className="space-y-0.5">
-                      {productCategories[0].items.map((item, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleProductClick(productCategories[0].categorySlug, item)}
-                          className="block w-full text-left py-1 px-2 hover:bg-teal-50 rounded text-xs text-gray-700"
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Seafood */}
-                  <div className="flex-1">
-                    <h3 className="text-sm font-bold text-teal-800 pb-1 mb-2 border-b border-teal-200">
-                      Seafood
-                    </h3>
-                    <div className="space-y-0.5">
-                      {productCategories[1].items.map((item, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleProductClick(productCategories[1].categorySlug, item)}
-                          className="block w-full text-left py-1 px-2 hover:bg-teal-50 rounded text-xs text-gray-700"
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Metals */}
-                  <div className="flex-1">
-                    <h3 className="text-sm font-bold text-teal-800 pb-1 mb-2 border-b border-teal-200">
-                      Metals
-                    </h3>
-                    <div className="space-y-0.5">
-                      {productCategories[2].items.map((item, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleProductClick(productCategories[2].categorySlug, item)}
-                          className="block w-full text-left py-1 px-2 hover:bg-teal-50 rounded text-xs text-gray-700"
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Dry Food */}
-                  <div className="flex-1">
-                    <h3 className="text-sm font-bold text-teal-800 pb-1 mb-2 border-b border-teal-200">
-                      Dry Food
-                    </h3>
-                    <div className="space-y-0.5">
-                      {productCategories[3].items.map((item, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleProductClick(productCategories[3].categorySlug, item)}
-                          className="block w-full text-left py-1 px-2 hover:bg-amber-50 rounded text-xs text-gray-700"
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Agriculture */}
-                  <div className="flex-1">
-                    <h3 className="text-sm font-bold text-teal-800 pb-1 mb-2 border-b border-teal-200">
-                      Agriculture
-                    </h3>
-                    <div className="space-y-0.5">
-                      {productCategories[4].items.map((item, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleProductClick(productCategories[4].categorySlug, item)}
-                          className="block w-full text-left py-1 px-2 hover:bg-teal-50 rounded text-xs text-gray-700"
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Wood */}
-                  <div className="flex-1">
-                    <h3 className="text-sm font-bold text-teal-800 pb-1 mb-2 border-b border-teal-200">
-                      Wood
-                    </h3>
-                    <div className="space-y-0.5">
-                      {productCategories[5].items.map((item, i) => (
-                        <button
-                          key={i}
-                          onClick={() => handleProductClick(productCategories[5].categorySlug, item)}
-                          className="block w-full text-left py-1 px-2 hover:bg-amber-50 rounded text-xs text-gray-700"
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  {productCategories.length > 0 ? (
+                    productCategories.map((category) => (
+                      <div key={category.categorySlug} className="flex-1 min-w-[130px]">
+                        <h3 className="text-sm font-bold text-teal-800 pb-1 mb-2 border-b border-teal-200 truncate" title={category.name}>
+                          {category.name}
+                        </h3>
+                        <div className="space-y-0.5">
+                          {category.items.map((item) => (
+                            <button
+                              key={`${category.categorySlug}-${item}`}
+                              onClick={() => handleProductClick(category.categorySlug, item)}
+                              className="block w-full text-left py-1 px-2 hover:bg-teal-50 rounded text-xs text-gray-700"
+                            >
+                              {item}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="w-full text-sm text-gray-500 px-2 py-1">Loading categories...</div>
+                  )}
                 </div>
 
                 {/* View All Products */}

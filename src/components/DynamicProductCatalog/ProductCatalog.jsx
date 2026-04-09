@@ -96,7 +96,10 @@ const ProductCatalog = ({ isHomePage = false }) => {
 
   // Helper function to convert name to URL slug
   const nameToSlug = (name) => {
-    return name.replace(/\s+/g, "-");
+    return String(name || "")
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
   };
 
   const resolveImageUrl = (image) => {
@@ -119,7 +122,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
   const handleSubcategoryClick = (category, subcategory) => {
     const categorySlug = nameToSlug(category.name);
     const subcategorySlug = nameToSlug(subcategory.name);
-    navigate(`/products/c/${categorySlug}/${subcategorySlug}`);
+    navigate(`/products/c/${categorySlug}/${subcategorySlug}/`);
   };
 
   // Search functionality
