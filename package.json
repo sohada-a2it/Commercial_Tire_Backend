@@ -20,6 +20,7 @@
     "emailjs": "^4.0.3",
     "firebase": "^12.1.0",
     "framer-motion": "^12.23.12",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.541.0",
     "motion": "^12.23.12",
     "next": "^16.0.6",
