@@ -26,6 +26,7 @@ const CheckoutPage = () => {
   const [loadingCities, setLoadingCities] = useState(false);
   const [loadingZipCodes, setLoadingZipCodes] = useState(false);
   const [addressLookupError, setAddressLookupError] = useState("");
+  const [postalCodeError, setPostalCodeError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -88,6 +89,10 @@ const CheckoutPage = () => {
 
       if (name === "city") {
         next.postalCode = "";
+      }
+
+      if (name === "postalCode") {
+        setPostalCodeError("");
       }
 
       return next;
@@ -174,7 +179,9 @@ const CheckoutPage = () => {
         const zips = await getUsZipCodesByCity(stateAbbreviation, city);
         setZipOptions(zips);
         if (zips.length === 0) {
-          setAddressLookupError("No postal codes found for the selected city.");
+          setAddressLookupError(
+            "No postal code suggestions available for the selected city. You may enter postal code manually."
+          );
         }
       } catch (error) {
         console.error("Zip lookup error:", error);
@@ -206,6 +213,17 @@ const CheckoutPage = () => {
         );
         return false;
       }
+    }
+
+    if (
+      zipOptions.length > 0 &&
+      formData.postalCode.trim() &&
+      !zipOptions.includes(formData.postalCode.trim())
+    ) {
+      toast.error(
+        "Please select a valid postal code from the suggestions for the selected city."
+      );
+      return false;
     }
 
     // Email validation
@@ -444,7 +462,26 @@ const CheckoutPage = () => {
                       name="postalCode"
                       value={formData.postalCode}
                       onChange={handleInputChange}
-                      placeholder={loadingZipCodes ? "Loading postal codes..." : "Select postal code"}
+                      onBlur={() => {
+                        if (
+                          zipOptions.length > 0 &&
+                          formData.postalCode.trim() &&
+                          !zipOptions.includes(formData.postalCode.trim())
+                        ) {
+                          setPostalCodeError(
+                            "Please select a valid postal code from the suggestions for the selected city."
+                          );
+                        } else {
+                          setPostalCodeError("");
+                        }
+                      }}
+                      placeholder={
+                        zipOptions.length > 0
+                          ? "Select postal code"
+                          : loadingZipCodes
+                          ? "Loading postal codes..."
+                          : "Enter postal code"
+                      }
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
                       required
                     />
@@ -453,7 +490,9 @@ const CheckoutPage = () => {
                         <option key={zip} value={zip} />
                       ))}
                     </datalist>
-                    {addressLookupError ? (
+                    {postalCodeError ? (
+                      <p className="mt-1 text-xs text-red-600">{postalCodeError}</p>
+                    ) : addressLookupError ? (
                       <p className="mt-1 text-xs text-red-600">{addressLookupError}</p>
                     ) : null}
                   </div>
