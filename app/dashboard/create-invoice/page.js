@@ -17,9 +17,11 @@ const EMPTY_CUSTOMER = {
   phone: "",
   companyName: "",
   address: "",
+  state: "",
   city: "",
   zone: "",
   zipCode: "",
+  addressOptional: "",
   notes: "",
   paymentMethod: "bank",
 };
@@ -352,9 +354,11 @@ export default function CreateInvoicePage() {
       phone: selectedInquiry.customer?.phone || "",
       companyName: selectedInquiry.customer?.companyName || "",
       address: selectedInquiry.customer?.address || "",
+      state: selectedInquiry.customer?.state || selectedInquiry.customer?.zone || "",
       city: selectedInquiry.customer?.city || "",
       zone: selectedInquiry.customer?.zone || selectedInquiry.customer?.state || "",
       zipCode: selectedInquiry.customer?.zipCode || "",
+      addressOptional: selectedInquiry.customer?.addressOptional || "",
       notes: selectedInquiry.customer?.notes || "",
       paymentMethod: selectedInquiry.paymentMethod || "bank",
     });
@@ -576,7 +580,12 @@ export default function CreateInvoicePage() {
   };
 
   const updateCustomer = (key, value) => {
-    setCustomerDraft((prev) => ({ ...prev, [key]: value }));
+    setCustomerDraft((prev) => {
+      if (key === "state") {
+        return { ...prev, state: value, zone: value };
+      }
+      return { ...prev, [key]: value };
+    });
   };
 
   const handleNumericInputChange = (setter) => (event) => {
@@ -646,7 +655,7 @@ export default function CreateInvoicePage() {
       return;
     }
 
-    const requiredCustomerFields = ["name", "email", "phone", "address", "city", "zone"];
+    const requiredCustomerFields = ["name", "email", "phone", "address", "state", "city", "zipCode", "zone"];
     for (const field of requiredCustomerFields) {
       if (!String(customerDraft[field] || "").trim()) {
         toast.error(`Please fill customer ${field}`);
@@ -864,7 +873,7 @@ export default function CreateInvoicePage() {
                     <div className="rounded-3xl bg-white p-4 sm:p-5 shadow-sm ring-1 ring-slate-200">
                     <h3 className="text-lg font-semibold text-slate-900">Buyer details</h3>
                     <p className="mt-1 text-sm text-slate-600">Edit this information before generating the invoice.</p>
-                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-2">
                       <label className="space-y-1 text-sm">
                         <span className="font-medium text-slate-700">Name</span>
                         <input value={customerDraft.name} onChange={(event) => updateCustomer("name", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
@@ -881,21 +890,25 @@ export default function CreateInvoicePage() {
                         <span className="font-medium text-slate-700">Phone</span>
                         <input value={customerDraft.phone} onChange={(event) => updateCustomer("phone", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
                       </label>
-                      <label className="space-y-1 text-sm md:col-span-2">
-                        <span className="font-medium text-slate-700">Address</span>
-                        <input value={customerDraft.address} onChange={(event) => updateCustomer("address", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
+                      <label className="space-y-1 text-sm">
+                        <span className="font-medium text-slate-700">State</span>
+                        <input value={customerDraft.state} onChange={(event) => updateCustomer("state", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
                       </label>
                       <label className="space-y-1 text-sm">
                         <span className="font-medium text-slate-700">City</span>
                         <input value={customerDraft.city} onChange={(event) => updateCustomer("city", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
                       </label>
                       <label className="space-y-1 text-sm">
-                        <span className="font-medium text-slate-700">Zone</span>
-                        <input value={customerDraft.zone} onChange={(event) => updateCustomer("zone", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
+                        <span className="font-medium text-slate-700">Postal code</span>
+                        <input value={customerDraft.zipCode} onChange={(event) => updateCustomer("zipCode", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
                       </label>
                       <label className="space-y-1 text-sm">
-                        <span className="font-medium text-slate-700">Zip code</span>
-                        <input value={customerDraft.zipCode} onChange={(event) => updateCustomer("zipCode", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
+                        <span className="font-medium text-slate-700">Street Address</span>
+                        <input value={customerDraft.address} onChange={(event) => updateCustomer("address", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
+                      </label>
+                      <label className="space-y-1 text-sm sm:col-span-2">
+                        <span className="font-medium text-slate-700">Address (optional)</span>
+                        <input value={customerDraft.addressOptional} onChange={(event) => updateCustomer("addressOptional", event.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-slate-900 outline-none focus:border-teal-500" />
                       </label>
                     </div>
                   </div>
