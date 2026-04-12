@@ -138,12 +138,7 @@ const ServicesSection = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-teal-50 px-4 py-1.5 rounded-full mb-2">
-            <div className="w-1.5 h-1.5 bg-teal-500 rounded-full"></div>
-            <span className="text-teal-700 text-xs font-semibold uppercase tracking-wider">
-              Premium Services
-            </span>
-          </div>
+            
           <h2 className="text-3xl font-bold text-gray-900 mb-0 tracking-tight">
             We go above and
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600">
