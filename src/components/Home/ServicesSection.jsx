@@ -8,6 +8,7 @@ import {
   HeadphonesIcon,
   Database,
   MapPin,
+  ArrowRight,
 } from "lucide-react";
 
 const ServicesSection = () => {
@@ -69,42 +70,62 @@ const ServicesSection = () => {
   ];
 
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="py-16 bg-white relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-20 right-10 w-72 h-72 bg-teal-50 rounded-full blur-3xl opacity-30"></div>
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-cyan-50 rounded-full blur-3xl opacity-30"></div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">
-            Our Services
+          <div className="inline-flex items-center gap-2 bg-teal-50 px-4 py-1.5 rounded-full mb-4">
+            <div className="w-1.5 h-1.5 bg-teal-500 rounded-full"></div>
+            <span className="text-teal-700 text-xs font-semibold uppercase tracking-wider">Premium Services</span>
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">
+            We go above and<span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600"> beyond for you</span>
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Comprehensive import and export solutions designed to streamline
-            your business operations
+          <p className="text-gray-500 max-w-2xl mx-auto text-sm">
+            Comprehensive import and export solutions designed to streamline your business operations
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
           {services.map((service, index) => (
             <div
               key={index}
-              className="bg-gradient-to-br from-gray-50 to-white border rounded-lg p-6 hover:shadow-lg transition-all duration-300 group"
+              className="group relative bg-white rounded-2xl p-6 transition-all duration-500 hover:shadow-2xl border border-gray-100 hover:border-teal-200"
             >
-              <div className="bg-teal-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-teal-200 transition-colors">
-                <service.icon className="text-teal-600" size={24} />
+              {/* Animated gradient background on hover */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-50/0 via-teal-50/0 to-cyan-50/0 group-hover:from-teal-50/50 group-hover:via-teal-50/30 group-hover:to-cyan-50/20 transition-all duration-700"></div>
+              
+              {/* Icon with pulse effect */}
+              <div className="relative mb-5">
+                <div className="absolute inset-0 bg-teal-400 rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                <div className="relative bg-gradient-to-br from-teal-500 to-cyan-600 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                  <service.icon className="text-white" size={24} strokeWidth={1.5} />
+                </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors duration-300">
                 {service.title}
               </h3>
-              <p className="text-gray-600 mb-4">{service.description}</p>
-              <ul className="space-y-2">
+              
+              <p className="text-gray-500 text-sm mb-3 leading-relaxed">
+                {service.description}
+              </p>
+              
+              <div className="space-y-2.5 mb-2">
                 {service.features.map((feature, featureIndex) => (
-                  <li
+                  <div
                     key={featureIndex}
-                    className="flex items-center text-sm text-gray-600"
+                    className="flex items-center gap-2 text-sm text-gray-600 group-hover:translate-x-1 transition-transform duration-300"
+                    style={{ transitionDelay: `${featureIndex * 50}ms` }}
                   >
-                    <div className="w-1.5 h-1.5 bg-teal-500 rounded-full mr-2"></div>
-                    {feature}
-                  </li>
+                    <div className="w-1.5 h-1.5 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full"></div>
+                    <span>{feature}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           ))}
         </div>
