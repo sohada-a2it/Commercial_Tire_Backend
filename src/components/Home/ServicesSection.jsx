@@ -131,13 +131,13 @@ const ServicesSection = () => {
   const currentServices = slides[currentIndex] || slides[0];
 
   return (
-    <section className="py-16 bg-white relative overflow-hidden">
+    <section className="md:py-16 py-6 bg-white relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-20 right-10 w-72 h-72 bg-teal-50 rounded-full blur-3xl opacity-30"></div>
       <div className="absolute bottom-10 left-10 w-96 h-96 bg-cyan-50 rounded-full blur-3xl opacity-30"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-12">
+        <div className="text-center mb-4 md:mb-12">
             
           <h2 className="text-3xl font-bold text-gray-900 mb-0 tracking-tight">
             We go above and
