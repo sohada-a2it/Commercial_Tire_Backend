@@ -31,7 +31,7 @@ const Sidebar = ({ isOpen, toggleSidebar, role }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:sticky top-0 left-0 h-screen w-72 z-50 transform overflow-y-auto bg-gradient-to-b from-slate-950 via-teal-950 to-teal-900 text-slate-100 shadow-2xl transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 h-screen w-72 z-50 transform overflow-y-auto bg-gradient-to-b from-slate-950 via-teal-950 to-teal-900 text-slate-100 shadow-2xl transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
