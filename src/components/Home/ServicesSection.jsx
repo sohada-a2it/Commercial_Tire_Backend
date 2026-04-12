@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Truck,
   Shield,
@@ -8,7 +8,8 @@ import {
   HeadphonesIcon,
   Database,
   MapPin,
-  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const ServicesSection = () => {
@@ -69,67 +70,222 @@ const ServicesSection = () => {
     },
   ];
 
+  // Create slides: groups of 3 services each
+  const createSlides = () => {
+    const slides = [];
+    for (let i = 0; i < services.length; i += 3) {
+      slides.push(services.slice(i, i + 3));
+    }
+    return slides;
+  };
+
+  const [slides] = useState(createSlides());
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [slideDirection, setSlideDirection] = useState("next");
+
+  const goToNextSlide = useCallback(() => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setSlideDirection("next");
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+  }, [isAnimating, slides.length]);
+
+  const goToPrevSlide = useCallback(() => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setSlideDirection("prev");
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? slides.length - 1 : prevIndex - 1
+    );
+  }, [isAnimating, slides.length]);
+
+  useEffect(() => {
+    if (!isAnimating) return;
+
+    const timer = setTimeout(() => {
+      setIsAnimating(false);
+    }, 500); // Match transition duration
+
+    return () => clearTimeout(timer);
+  }, [isAnimating]);
+
+  // Auto-play every 4 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      goToNextSlide();
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [goToNextSlide]);
+
+  // Handle manual dot click
+  const goToSlide = (index) => {
+    if (isAnimating || index === currentIndex) return;
+    setIsAnimating(true);
+    setSlideDirection(index > currentIndex ? "next" : "prev");
+    setCurrentIndex(index);
+  };
+
+  // Get current services to display
+  const currentServices = slides[currentIndex] || slides[0];
+
   return (
     <section className="py-16 bg-white relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute top-20 right-10 w-72 h-72 bg-teal-50 rounded-full blur-3xl opacity-30"></div>
       <div className="absolute bottom-10 left-10 w-96 h-96 bg-cyan-50 rounded-full blur-3xl opacity-30"></div>
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-teal-50 px-4 py-1.5 rounded-full mb-4">
+          <div className="inline-flex items-center gap-2 bg-teal-50 px-4 py-1.5 rounded-full mb-2">
             <div className="w-1.5 h-1.5 bg-teal-500 rounded-full"></div>
-            <span className="text-teal-700 text-xs font-semibold uppercase tracking-wider">Premium Services</span>
+            <span className="text-teal-700 text-xs font-semibold uppercase tracking-wider">
+              Premium Services
+            </span>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">
-            We go above and<span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600"> beyond for you</span>
+          <h2 className="text-3xl font-bold text-gray-900 mb-0 tracking-tight">
+            We go above and
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600">
+              {" "}beyond for you
+            </span>
           </h2>
           <p className="text-gray-500 max-w-2xl mx-auto text-sm">
-            Comprehensive import and export solutions designed to streamline your business operations
+            Comprehensive import and export solutions designed to streamline
+            your business operations
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-          {services.map((service, index) => (
+        {/* Carousel with Arrows */}
+        <div className="relative">
+          {/* Left Arrow */}
+          <button
+            onClick={goToPrevSlide}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 lg:-translate-x-6 z-20 bg-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-600 rounded-full p-2 shadow-lg border border-gray-200 hover:border-transparent group transition-all duration-300"
+            aria-label="Previous slide"
+            disabled={isAnimating}
+          >
+            <ChevronLeft 
+              size={24} 
+              className="text-gray-600 group-hover:text-white transition-colors duration-300" 
+            />
+          </button>
+
+          {/* Carousel Container */}
+          <div className="overflow-hidden">
             <div
-              key={index}
-              className="group relative bg-white rounded-2xl p-6 transition-all duration-500 hover:shadow-2xl border border-gray-100 hover:border-teal-200"
+              className="transition-all duration-500 ease-in-out"
             >
-              {/* Animated gradient background on hover */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-50/0 via-teal-50/0 to-cyan-50/0 group-hover:from-teal-50/50 group-hover:via-teal-50/30 group-hover:to-cyan-50/20 transition-all duration-700"></div>
-              
-              {/* Icon with pulse effect */}
-              <div className="relative mb-5">
-                <div className="absolute inset-0 bg-teal-400 rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
-                <div className="relative bg-gradient-to-br from-teal-500 to-cyan-600 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
-                  <service.icon className="text-white" size={24} strokeWidth={1.5} />
-                </div>
-              </div>
-              
-              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors duration-300">
-                {service.title}
-              </h3>
-              
-              <p className="text-gray-500 text-sm mb-3 leading-relaxed">
-                {service.description}
-              </p>
-              
-              <div className="space-y-2.5 mb-2">
-                {service.features.map((feature, featureIndex) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                {currentServices.map((service, index) => (
                   <div
-                    key={featureIndex}
-                    className="flex items-center gap-2 text-sm text-gray-600 group-hover:translate-x-1 transition-transform duration-300"
-                    style={{ transitionDelay: `${featureIndex * 50}ms` }}
+                    key={`${currentIndex}-${index}`}
+                    className={`group relative bg-white rounded-2xl p-5 transition-all duration-500 hover:shadow-2xl border border-gray-100 hover:border-teal-200
+                      ${slideDirection === "next" ? "animate-slideInRight" : "animate-slideInLeft"}`}
                   >
-                    <div className="w-1.5 h-1.5 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full"></div>
-                    <span>{feature}</span>
+                    {/* Animated gradient background on hover */}
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-50/0 via-teal-50/0 to-cyan-50/0 group-hover:from-teal-50/50 group-hover:via-teal-50/30 group-hover:to-cyan-50/20 transition-all duration-700"></div>
+
+                    {/* Icon with pulse effect */}
+                    <div className="relative mb-5">
+                      <div className="absolute inset-0 bg-teal-400 rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                      <div className="relative bg-gradient-to-br from-teal-500 to-cyan-600 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                        <service.icon
+                          className="text-white"
+                          size={24}
+                          strokeWidth={1.5}
+                        />
+                      </div>
+                    </div>
+
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors duration-300">
+                      {service.title}
+                    </h3>
+
+                    <p className="text-gray-500 text-sm mb-3 leading-relaxed">
+                      {service.description}
+                    </p>
+
+                    <div className="space-y-2.5 mb-2">
+                      {service.features.map((feature, featureIndex) => (
+                        <div
+                          key={featureIndex}
+                          className="flex items-center gap-2 text-sm text-gray-600 group-hover:translate-x-1 transition-transform duration-300"
+                          style={{ transitionDelay: `${featureIndex * 50}ms` }}
+                        >
+                          <div className="w-1.5 h-1.5 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full"></div>
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
+          </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={goToNextSlide}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 lg:translate-x-6 z-20 bg-white hover:bg-gradient-to-r hover:from-teal-500 hover:to-cyan-600 rounded-full p-2 shadow-lg border border-gray-200 hover:border-transparent group transition-all duration-300"
+            aria-label="Next slide"
+            disabled={isAnimating}
+          >
+            <ChevronRight 
+              size={24} 
+              className="text-gray-600 group-hover:text-white transition-colors duration-300" 
+            />
+          </button>
+        </div>
+
+        {/* Pagination Dots */}
+        <div className="flex justify-center items-center gap-2 mt-2">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => goToSlide(idx)}
+              className={`transition-all duration-300 rounded-full ${
+                currentIndex === idx
+                  ? "w-8 h-2 bg-gradient-to-r from-teal-500 to-cyan-500"
+                  : "w-2 h-2 bg-gray-300 hover:bg-gray-400"
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        .animate-slideInRight {
+          animation: slideInRight 0.5s ease-out forwards;
+        }
+        
+        .animate-slideInLeft {
+          animation: slideInLeft 0.5s ease-out forwards;
+        }
+      `}</style>
     </section>
   );
 };
