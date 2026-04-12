@@ -43,18 +43,25 @@ const ProductList = ({
   // Filter products by selected brand and tire type
   let filteredProducts = subcategory.products || [];
 
+  const normalizeFilterValue = (value) =>
+    String(value || "").trim().toLowerCase();
+
   // Filter by brand
   if (selectedBrand) {
-    filteredProducts = filteredProducts.filter(
-      (product) =>
-        (product.keyAttributes?.["Brand"] || product.brand) === selectedBrand
-    );
+    const normalizedBrand = normalizeFilterValue(selectedBrand);
+    filteredProducts = filteredProducts.filter((product) => {
+      const productBrand = normalizeFilterValue(
+        product.keyAttributes?.["Brand"] || product.brand
+      );
+      return productBrand === normalizedBrand;
+    });
   }
 
   // Filter by tire type (for Truck Tires) - using Pattern attribute
   if (selectedTireType) {
-    filteredProducts = filteredProducts.filter(
-      (product) => product.keyAttributes?.["Pattern"] === selectedTireType
+    const normalizedType = normalizeFilterValue(selectedTireType);
+    filteredProducts = filteredProducts.filter((product) =>
+      normalizeFilterValue(product.keyAttributes?.["Pattern"]) === normalizedType
     );
   }
 

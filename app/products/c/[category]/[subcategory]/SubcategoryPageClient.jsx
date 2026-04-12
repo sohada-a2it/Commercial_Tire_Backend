@@ -178,6 +178,7 @@ const SubcategoryPageClient = () => {
             limit: pageSize,
             brand: selectedBrand || undefined,
             pattern: selectedTireType || undefined,
+            sort: sortBy || undefined,
           }
         );
 
@@ -209,7 +210,7 @@ const SubcategoryPageClient = () => {
     if (categorySlug && subcategorySlug) {
       fetchData();
     }
-  }, [categorySlug, subcategorySlug, selectedBrand, selectedTireType, pageSize]);
+  }, [categorySlug, subcategorySlug, selectedBrand, selectedTireType, sortBy, pageSize]);
 
   const handlePageChange = async (targetPage) => {
     if (!category || !subcategory) return;
@@ -222,6 +223,7 @@ const SubcategoryPageClient = () => {
         limit: pageSize,
         brand: selectedBrand || undefined,
         pattern: selectedTireType || undefined,
+        sort: sortBy || undefined,
       });
 
       const nextProducts = (response.products || []).map((product) => ({
