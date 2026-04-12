@@ -47,7 +47,7 @@ const DashboardLayout = ({ children }) => {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-100 text-slate-900 overflow-hidden">
+    <div className="flex min-h-screen bg-slate-100 text-slate-900 overflow-hidden lg:pl-72">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} role={role} />
 
