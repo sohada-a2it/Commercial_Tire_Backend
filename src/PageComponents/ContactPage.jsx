@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import WebsiteLogo from "../components/shared/WebsiteLogo";
 import { useNavigate } from "@/lib/navigation";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaBuilding, FaUser, FaComment } from "react-icons/fa";
 import { config } from "@/config/site";
 import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
@@ -57,7 +57,7 @@ const ContactPage = () => {
       );
 
       if (response.ok) {
-        toast.success("Your message has been sent successfully! We'll get back to you very soon.Thank you!");
+        toast.success("Message sent successfully! We'll get back to you soon.");
         setFormData({
           name: "",
           company: "",
@@ -66,11 +66,11 @@ const ContactPage = () => {
           message: "",
         });
       } else {
-        toast.error("Failed to send your message. Please try again.");
+        toast.error("Failed to send message. Please try again.");
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      toast.error("Failed to send your message. Please try again.");
+      toast.error("Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -84,126 +84,90 @@ const ContactPage = () => {
     }
   };
 
+  const contactInfo = [
+    { icon: FaMapMarkerAlt, title: "Location", details: ["63/16 Soi Chumchon Talat Tha Ruea", "Khlong Toei, Bangkok 10110, Thailand"], color: "text-teal-600" },
+    { icon: FaPhone, title: "Phone", details: ["+1 437-900-3996"], link: "tel:+14379003996", color: "text-teal-600" },
+    { icon: FaEnvelope, title: "Email", details: ["info@asianimportexport.com"], link: "mailto:info@asianimportexport.com", color: "text-teal-600" },
+    { icon: FaClock, title: "Business Hours", details: ["Mon-Fri: 9:00 AM - 6:00 PM", "Sat: 10:00 AM - 4:00 PM"], color: "text-teal-600" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-white py-8">
       <div className="px-4 max-w-7xl mx-auto">
+        {/* Back Button */}
         <button
           onClick={handleGoBack}
-          className="flex items-center text-teal-700 hover:text-teal-800 mb-6 transition-colors duration-200"
+          className="group flex items-center gap-2 text-gray-500 hover:text-teal-600 mb-6 transition-all duration-300"
         >
-          <FaArrowLeft className="mr-2" />
-          Back
+          <div className="bg-gray-100 group-hover:bg-teal-50 p-1.5 rounded-full shadow-sm transition-all">
+            <FaArrowLeft size={12} className="group-hover:-translate-x-0.5 transition-transform" />
+          </div>
+          <span className="text-sm font-medium">Back</span>
         </button>
 
         {/* Header Section */}
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-6">
-            <WebsiteLogo className="h-10" />
+          <div className="flex justify-center mb-4">
+            <div className="bg-gradient-to-r from-teal-500 to-teal-600 p-0.5 rounded-2xl">
+              <div className="bg-white rounded-2xl px-6 py-3">
+                <WebsiteLogo className="h-10" />
+              </div>
+            </div>
           </div>
-          <p className="text-teal-700 mb-2">
-            Manufacturer, Wholesaler and Distributor
+          <p className="text-gray-500 text-sm mb-3">
+            Manufacturer, Wholesaler & Distributor
           </p>
-          <div className="inline-block bg-teal-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-            Trusted Alibaba's Supplier
+          <div className="inline-flex items-center gap-2 bg-teal-50 text-teal-700 px-4 py-1.5 rounded-full text-xs font-semibold border border-teal-100">
+            <span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
+            Trusted Alibaba Supplier
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Contact Information */}
           <div className="lg:w-1/2">
-            <div className="bg-white rounded-lg shadow-md p-6 h-full flex flex-col">
-              <h2 className="text-2xl font-bold text-teal-800 mb-6">
-                Get In Touch
-              </h2>
+            <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-8 h-full transition-all duration-300 hover:shadow-xl">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-1 h-8 bg-gradient-to-b from-teal-500 to-teal-600 rounded-full"></div>
+                <h2 className="text-2xl font-bold text-gray-800">Get In Touch</h2>
+              </div>
 
-              <div className="space-y-6 flex-1">
-                <div className="flex items-start">
-                  <div className="text-teal-600 mr-4 mt-1">
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+              <div className="space-y-6">
+                {contactInfo.map((info, idx) => (
+                  <div key={idx} className="flex items-start group">
+                    <div className="flex-shrink-0 w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center mr-4 group-hover:bg-teal-100 transition-all duration-300 group-hover:scale-110">
+                      <info.icon className="text-teal-600 text-xl" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                        {info.title}
+                      </h3>
+                      {info.details.map((detail, i) => (
+                        info.link ? (
+                          <a 
+                            key={i} 
+                            href={info.link} 
+                            className="text-gray-600 text-sm hover:text-teal-600 transition-colors block"
+                          >
+                            {detail}
+                          </a>
+                        ) : (
+                          <p key={i} className="text-gray-600 text-sm">
+                            {detail}
+                          </p>
+                        )
+                      ))}
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-teal-800 mb-1">
-                      Our Location
-                    </h3>
-                    <p className="text-gray-700">
-                      63/16 Soi Chumchon Talat Tha Ruea Khlong Toei
-                    </p>
-                    <p className="text-gray-700">
-                      Khwaeng Khlong Toei, Khet Khlong Toei
-                    </p>
-                    <p className="text-gray-700">
-                      Krung Thep Maha Nakhon 10110, Thailand
-                    </p>
-                  </div>
-                </div>
+                ))}
+              </div>
 
-                <div className="flex items-start">
-                  <div className="text-teal-600 mr-4 mt-1">
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-teal-800 mb-1">
-                      Phone Number
-                    </h3>
-                    <p className="text-gray-700">+1 437-900-3996</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="text-teal-600 mr-4 mt-1">
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-teal-800 mb-1">
-                      Email Address
-                    </h3>
-                    <p className="text-gray-700">info@asianimportexport.com</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="text-teal-600 mr-4 mt-1">
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-teal-800 mb-1">
-                      Website
-                    </h3>
-                    <p className="text-gray-700">asianimportexport.com</p>
-                  </div>
+              {/* Trust Badges */}
+              <div className="mt-8 pt-6 border-t border-gray-100">
+                <div className="flex flex-wrap gap-3">
+                  <span className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 rounded-full">✓ ISO Certified</span>
+                  <span className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 rounded-full">✓ 24/7 Support</span>
+                  <span className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 rounded-full">✓ Global Shipping</span>
                 </div>
               </div>
             </div>
@@ -211,44 +175,56 @@ const ContactPage = () => {
 
           {/* Contact Form */}
           <div className="lg:w-1/2">
-            <div className="bg-white rounded-lg shadow-md p-6 h-full flex flex-col">
-              <h2 className="text-2xl font-bold text-teal-800 mb-6">
-                Send Us a Message
-              </h2>
+            <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-8 transition-all duration-300 hover:shadow-xl">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-1 h-8 bg-gradient-to-b from-teal-500 to-teal-600 rounded-full"></div>
+                <h2 className="text-2xl font-bold text-gray-800">Send a Message</h2>
+              </div>
 
-              <div className="flex-1">
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
-                      Your Name *
+                    <label className="block text-gray-700 text-sm font-medium mb-2">
+                      Your Name <span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-800 bg-gray-50"
-                    />
+                    <div className="relative">
+                      <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+                      <input
+                        type="text"
+                        name="name"
+                        required
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="John Doe"
+                        className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
+                    <label className="block text-gray-700 text-sm font-medium mb-2">
                       Company Name
                     </label>
-                    <input
-                      type="text"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleChange}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-800 bg-gray-50"
-                    />
+                    <div className="relative">
+                      <FaBuilding className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+                      <input
+                        type="text"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleChange}
+                        placeholder="Your Company"
+                        className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
+                      />
+                    </div>
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
-                      Email Address *
-                    </label>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
                     <input
                       type="email"
                       name="email"
@@ -256,106 +232,107 @@ const ContactPage = () => {
                       value={formData.email}
                       onChange={handleChange}
                       readOnly={Boolean(user?.email)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-800 bg-gray-50"
+                      placeholder="hello@company.com"
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
                     />
-                    {user?.email ? (
-                      <p className="mt-1 text-xs text-gray-500">
-                        We always use your logged-in email for inquiry updates.
-                      </p>
-                    ) : null}
                   </div>
+                  {user?.email && (
+                    <p className="mt-1.5 text-xs text-gray-500 flex items-center gap-1">
+                      <span className="w-1 h-1 bg-teal-500 rounded-full"></span>
+                      Using your registered email
+                    </p>
+                  )}
+                </div>
 
-                  <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
-                      Phone Number
-                    </label>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Phone Number
+                  </label>
+                  <div className="relative">
+                    <FaPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-gray-800 bg-gray-50"
+                      placeholder="+1 234 567 8900"
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
                     />
                   </div>
+                </div>
 
-                  <div>
-                    <label className="block text-gray-700 mb-2 font-medium">
-                      Message *
-                    </label>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Message <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <FaComment className="absolute left-3 top-3 text-gray-400 text-sm" />
                     <textarea
                       name="message"
                       required
                       value={formData.message}
                       onChange={handleChange}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent h-40 text-gray-800 bg-gray-50"
+                      rows={4}
+                      placeholder="Tell us about your requirements..."
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all resize-none"
                     ></textarea>
                   </div>
+                </div>
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <svg
-                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        Sending...
-                      </>
-                    ) : (
-                      "Send Message"
-                    )}
-                  </button>
-                </form>
-              </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2">
+                      Send Message
+                      <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </span>
+                  )}
+                </button>
+              </form>
             </div>
           </div>
         </div>
 
         {/* Map Section */}
-        <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-teal-800 mb-4">
-            Our Location
-          </h2>
+        <div className="mt-8">
+          <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-1 h-6 bg-gradient-to-b from-teal-500 to-teal-600 rounded-full"></div>
+              <h2 className="text-xl font-bold text-gray-800">Our Location</h2>
+            </div>
 
-          <div className="bg-gray-200 h-96 rounded-lg overflow-hidden">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3879.223179266149!2d100.5603145759964!3d13.726486397299883!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29f3a315d5f5f%3A0xea51cbff758e4d4c!2s63%2F16%20Soi%20Chumchon%20Talat%20Tha%20Ruea%2C%20Khlong%20Toei%2C%20Bangkok%2010110%2C%20Thailand!5e0!3m2!1sen!2sus!4v1690900000000!5m2!1sen!2sus"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Asian Import & Export Location"
-            ></iframe>
-          </div>
+            <div className="bg-gray-100 h-64 rounded-xl overflow-hidden">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3879.223179266149!2d100.5603145759964!3d13.726486397299883!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29f3a315d5f5f%3A0xea51cbff758e4d4c!2s63%2F16%20Soi%20Chumchon%20Talat%20Tha%20Ruea%2C%20Khlong%20Toei%2C%20Bangkok%2010110%2C%20Thailand!5e0!3m2!1sen!2sus!4v1690900000000!5m2!1sen!2sus"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Asian Import & Export Location"
+              ></iframe>
+            </div>
 
-          <div className="mt-4 p-4 bg-teal-50 rounded-lg">
-            <h3 className="font-semibold text-teal-800 mb-2">Directions</h3>
-            <p className="text-sm text-gray-700">
-              We are located in the heart of Bangkok's commercial district.
-              Easily accessible by public transportation or car. Free parking
-              available on premises.
-            </p>
+            <div className="mt-4 p-4 bg-teal-50 rounded-xl">
+              <p className="text-sm text-gray-700 flex items-center gap-2">
+                <span className="text-teal-600">📍</span>
+                Located in Bangkok's commercial district. Easily accessible by public transportation.
+              </p>
+            </div>
           </div>
         </div>
       </div>
