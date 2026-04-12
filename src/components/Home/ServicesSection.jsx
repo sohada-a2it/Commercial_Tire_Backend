@@ -70,16 +70,17 @@ const ServicesSection = () => {
     },
   ];
 
-  // Create slides: groups of 3 services each
-  const createSlides = () => {
+  // Create slides by grouping services based on the current viewport size.
+  const createSlides = (itemsPerSlide) => {
     const slides = [];
-    for (let i = 0; i < services.length; i += 3) {
-      slides.push(services.slice(i, i + 3));
+    for (let i = 0; i < services.length; i += itemsPerSlide) {
+      slides.push(services.slice(i, i + itemsPerSlide));
     }
     return slides;
   };
 
-  const [slides] = useState(createSlides());
+  const [itemsPerSlide, setItemsPerSlide] = useState(1);
+  const [slides, setSlides] = useState(() => createSlides(1));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [slideDirection, setSlideDirection] = useState("next");
@@ -110,6 +111,26 @@ const ServicesSection = () => {
     return () => clearTimeout(timer);
   }, [isAnimating]);
 
+  useEffect(() => {
+    const updateSlides = () => {
+      const width = window.innerWidth;
+      const nextItemsPerSlide = width >= 1024 ? 3 : width >= 768 ? 2 : 1;
+      setItemsPerSlide(nextItemsPerSlide);
+    };
+
+    updateSlides();
+    window.addEventListener("resize", updateSlides);
+    return () => window.removeEventListener("resize", updateSlides);
+  }, []);
+
+  useEffect(() => {
+    const newSlides = createSlides(itemsPerSlide);
+    setSlides(newSlides);
+    setCurrentIndex((prevIndex) =>
+      prevIndex >= newSlides.length ? 0 : prevIndex
+    );
+  }, [itemsPerSlide]);
+
   // Auto-play every 4 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -139,7 +160,7 @@ const ServicesSection = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-4 md:mb-12">
             
-          <h2 className="text-3xl font-bold text-gray-900 mb-0 tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-0 tracking-tight">
             We go above and
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600">
               {" "}beyond for you

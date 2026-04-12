@@ -52,7 +52,7 @@ const OfferBanner = () => {
   }, [prevSeconds]);
 
   return (
-    <div className="relative w-full bg-white  md:py-4">
+    <div className="relative w-full bg-white -mt-4 md:-mt-0 md:py-4">
       <div className="max-w-7xl mx-auto px-1 md:px-4">
         {/* Banner with Countdown Inside */}
         <div className="relative w-full h-[180px] md:h-[420px] overflow-hidden rounded-lg">

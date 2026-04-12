@@ -441,7 +441,7 @@ const SubcategoryPageClient = () => {
                 onFocus={() =>
                   searchQuery.length > 1 && setShowSuggestions(true)
                 }
-                className="w-full px-6 py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
+                className="w-full px-6 py-2 md:py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
               />
               <button
                 type="submit"
@@ -449,7 +449,7 @@ const SubcategoryPageClient = () => {
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
+                  className="h-4 w-4 md:h-6 md:w-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -482,7 +482,7 @@ const SubcategoryPageClient = () => {
         <div ref={filterSectionRef} className="bg-white rounded-lg shadow-md p-6 mb-2 mt-4">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-teal-800 flex items-center">
+              <h1 className="md:text-3xl text-2xl font-bold text-teal-800 flex items-center">
                 <span className="mr-3 text-3xl">{category?.icon}</span>
                 {subcategory?.name}
               </h1>

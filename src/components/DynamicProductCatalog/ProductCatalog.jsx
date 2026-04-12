@@ -172,7 +172,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-gray-50 py-4 md:py-8">
         <div className="container mx-auto px-4">
           {/* Slider Skeleton */}
           <ProductSliderSkeleton />
@@ -218,7 +218,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
         {/* Search Section */}
         {isHomePage && (
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-teal-800 mb-4 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-teal-800 mb-4 text-center">
               What are you looking for?
             </h2>
             <form
@@ -235,14 +235,14 @@ const ProductCatalog = ({ isHomePage = false }) => {
                     setTimeout(() => setShowSuggestions(false), 200)
                   }
                   placeholder="Search products, brands, categories..."
-                  className="w-full px-6 py-4 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
+                  className="w-full px-6 py-2 md:py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-teal-600 hover:bg-teal-700 text-white p-3 rounded-full transition-colors"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-teal-600 hover:bg-teal-700 text-white p-2  rounded-full transition-colors"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="h-4 w-4 md:h-6 md:w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -268,7 +268,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
           </div>
         )}
 
-        <h1 className="text-3xl font-bold text-teal-800 mb-2 mt-14 text-center">
+        <h1 className="text-3xl font-bold text-teal-800 mb-2 mt-8 md:mt-14 text-center">
           Product Catalog
         </h1>
 
