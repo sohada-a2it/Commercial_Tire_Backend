@@ -1,42 +1,106 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   CheckCircle,
   DollarSign,
   Users,
   Zap,
-  Star,
   ArrowRight,
+  Shield,
+  Clock,
+  Award,
 } from "lucide-react";
 import { Link } from "@/lib/navigation";
 
 const WhyChooseUs = () => {
-  const [isVisible, setIsVisible] = useState(false);
   const [activeCard, setActiveCard] = useState(0);
+  const [counts, setCounts] = useState({
+    clients: 0,
+    countries: 0,
+    orders: 0,
+    delivery: 0,
+  });
+  const sectionRef = useRef(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
+  // Simple counter function
+  const startCounter = () => {
+    if (hasAnimated) return;
+    setHasAnimated(true);
+    
+    // Target values
+    const targets = {
+      clients: 500,
+      countries: 50,
+      orders: 10000,
+      delivery: 99,
+    };
+    
+    // Duration in milliseconds
+    const duration = 2000;
+    const startTime = Date.now();
+    
+    const updateCounters = () => {
+      const now = Date.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      setCounts({
+        clients: Math.floor(targets.clients * progress),
+        countries: Math.floor(targets.countries * progress),
+        orders: Math.floor(targets.orders * progress),
+        delivery: Math.floor(targets.delivery * progress),
+      });
+      
+      if (progress < 1) {
+        requestAnimationFrame(updateCounters);
+      } else {
+        // Ensure final exact values
+        setCounts({
+          clients: targets.clients,
+          countries: targets.countries,
+          orders: targets.orders,
+          delivery: targets.delivery,
+        });
+      }
+    };
+    
+    requestAnimationFrame(updateCounters);
+  };
+
+  // Intersection Observer to detect when section is visible
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            startCounter();
+          }
+        });
       },
-      { threshold: 0.2 }
+      { threshold: 0.3, triggerOnce: true }
     );
+    
+    const currentSection = sectionRef.current;
+    if (currentSection) {
+      observer.observe(currentSection);
+    }
+    
+    return () => {
+      if (currentSection) {
+        observer.unobserve(currentSection);
+      }
+    };
+  }, [hasAnimated]);
 
-    const element = document.getElementById("why-choose-us");
-    if (element) observer.observe(element);
-
-    // Auto-rotate active card
+  // Auto-rotate active card
+  useEffect(() => {
     const interval = setInterval(() => {
       setActiveCard((prev) => (prev + 1) % 4);
-    }, 3000);
-
-    return () => {
-      observer.disconnect();
-      clearInterval(interval);
-    };
+    }, 4000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const reasons = [
@@ -44,173 +108,226 @@ const WhyChooseUs = () => {
       icon: DollarSign,
       title: "Competitive Pricing",
       description:
-        "We offer the most competitive rates in the market without compromising on quality.",
-      highlight: "Up to 25% savings",
-      color: "from-green-400 to-green-600",
-      bgColor: "from-green-50 to-green-100",
+        "Market-leading rates with transparent pricing and no hidden fees.",
+      highlight: "Save up to 25%",
+      metric: "25%",
+      metricLabel: "Average Savings",
     },
     {
       icon: CheckCircle,
-      title: "Quality Products",
+      title: "Quality Assurance",
       description:
-        "Every product meets international quality standards and comes with certifications.",
-      highlight: "ISO certified",
-      color: "from-blue-400 to-blue-600",
-      bgColor: "from-blue-50 to-blue-100",
+        "All products certified to meet international quality standards.",
+      highlight: "ISO 9001:2024",
+      metric: "100%",
+      metricLabel: "Quality Guarantee",
     },
     {
       icon: Zap,
-      title: "Fast Processing",
+      title: "Fast Turnaround",
       description:
-        "Quick order processing and same-day shipping for in-stock items.",
-      highlight: "Same-day shipping",
-      color: "from-yellow-400 to-yellow-600",
-      bgColor: "from-yellow-50 to-yellow-100",
+        "Streamlined processes ensuring rapid order fulfillment and delivery.",
+      highlight: "Same-day dispatch",
+      metric: "24h",
+      metricLabel: "Avg Processing",
     },
     {
       icon: Users,
-      title: "Expert Team",
+      title: "Expert Support",
       description:
-        "Our experienced team provides personalized service and industry expertise.",
-      highlight: "8+ years experience",
-      color: "from-purple-400 to-purple-600",
-      bgColor: "from-purple-50 to-purple-100",
+        "Dedicated account managers with deep industry expertise.",
+      highlight: "8+ years exp.",
+      metric: "24/7",
+      metricLabel: "Customer Support",
     },
   ];
 
   return (
     <section
       id="why-choose-us"
-      className="py-20 bg-gradient-to-br from-teal-900 via-teal-800 to-teal-700 text-white relative overflow-hidden"
+      ref={sectionRef}
+      className="py-16 bg-white relative overflow-hidden"
     >
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-teal-600/20 to-transparent animate-pulse"></div>
-        <div className="absolute top-20 left-20 w-72 h-72 bg-orange-400/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl animate-float delay-1000"></div>
+      {/* Subtle Background Pattern */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-white to-gray-50"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-teal-50/20 via-transparent to-transparent"></div>
+      
+      {/* Decorative Lines */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-200 to-transparent"></div>
 
-        {/* Floating Stars */}
-        {[...Array(15)].map((_, i) => (
-          <Star
-            key={i}
-            size={Math.random() * 20 + 10}
-            className="absolute text-white/10 animate-twinkle"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
-        <div
-          className={`text-center mb-10 transform transition-all duration-1000 ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-          }`}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-white via-teal-100 to-orange-200 bg-clip-text text-transparent animate-gradient">
-            Why Choose Asian Import & Export?
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Header */}
+        <div className="text-center mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 tracking-tight">
+            Choose{" "}
+            <span className="text-teal-600">Asian Import & Export</span>
           </h2>
-          <p className="text-teal-100 max-w-3xl mx-auto text-sm leading-relaxed">
-            We've built our reputation on trust, quality, and exceptional
-            service delivery
+          
+          <div className="w-16 h-0.5 bg-teal-600 mx-auto mb-3"></div>
+          
+          <p className="text-gray-600 max-w-2xl mx-auto text-sm">
+            Built on a foundation of trust, quality, and exceptional service delivery
           </p>
-          <div className="flex justify-center mt-2">
-            <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-teal-400 rounded-full animate-pulse"></div>
-          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
           {reasons.map((reason, index) => (
             <div
               key={index}
-              className={`group relative transform transition-all duration-700 hover:scale-105 ${
-                isVisible
-                  ? "translate-y-0 opacity-100"
-                  : "translate-y-10 opacity-0"
-              } ${activeCard === index ? "scale-105" : ""}`}
-              style={{ animationDelay: `${index * 200}ms` }}
+              className="group transition-all duration-500"
               onMouseEnter={() => setActiveCard(index)}
             >
-              {/* Card Background */}
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${reason.bgColor} opacity-0 group-hover:opacity-20 rounded-2xl transition-all duration-500`}
-              ></div>
-
-              {/* Main Card */}
-              <div className="relative bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:border-white/40 transition-all duration-500 h-full">
-                {/* Icon Container */}
+                className={`relative bg-white rounded-lg p-5 border transition-all duration-300 h-full
+                  ${
+                    activeCard === index
+                      ? "border-teal-300 shadow-md shadow-teal-100/50"
+                      : "border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300"
+                  }
+                `}
+              >
+                {/* Icon */}
                 <div
-                  className={`relative w-20 h-20 bg-gradient-to-br ${reason.color} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl`}
+                  className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-all duration-300
+                    ${
+                      activeCard === index
+                        ? "bg-teal-600 shadow-md shadow-teal-200"
+                        : "bg-gray-100 group-hover:bg-teal-50"
+                    }
+                  `}
                 >
-                  <reason.icon size={36} className="text-white" />
-
-                  {/* Glow Effect */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${reason.color} rounded-2xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-500`}
-                  ></div>
+                  <reason.icon
+                    size={22}
+                    className={`transition-all duration-300 ${
+                      activeCard === index
+                        ? "text-white"
+                        : "text-teal-600 group-hover:text-teal-700"
+                    }`}
+                  />
                 </div>
 
                 {/* Highlight Badge */}
-                <div className="text-center mb-4">
+                <div className="mb-3">
                   <span
-                    className={`inline-block bg-gradient-to-r ${reason.color} text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg animate-pulse`}
+                    className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold transition-all duration-300
+                      ${
+                        activeCard === index
+                          ? "bg-teal-600 text-white"
+                          : "bg-teal-50 text-teal-700"
+                      }
+                    `}
                   >
                     {reason.highlight}
                   </span>
                 </div>
 
-                {/* Content */}
-                <div className="text-center">
-                  <h3 className="text-xl font-bold mb-4 group-hover:text-orange-200 transition-colors duration-300">
-                    {reason.title}
-                  </h3>
-                  <p className="text-teal-100 leading-relaxed text-sm">
-                    {reason.description}
-                  </p>
+                {/* Title */}
+                <h3 className="text-base font-bold text-gray-900 mb-1.5">
+                  {reason.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-gray-600 text-xs leading-relaxed mb-3">
+                  {reason.description}
+                </p>
+
+                {/* Metric */}
+                <div className="pt-3 border-t border-gray-100">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-xl font-bold text-teal-600">
+                      {reason.metric}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {reason.metricLabel}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Hover Arrow */}
-                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-                  <ArrowRight size={20} className="text-orange-400" />
-                </div>
-
-                {/* Active Indicator */}
-                {activeCard === index && (
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-orange-400 to-teal-400 rounded-full animate-pulse"></div>
-                )}
+                {/* Active Indicator Line */}
+                <div
+                  className={`absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 rounded-b-lg transition-all duration-300 ${
+                    activeCard === index ? "opacity-100" : "opacity-0"
+                  }`}
+                ></div>
               </div>
             </div>
           ))}
         </div>
 
+        {/* Stats Section - Now with guaranteed working counters */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <Users size={24} className="text-teal-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-gray-900 mb-0.5">
+              {counts.clients.toLocaleString()}+
+            </div>
+            <div className="text-xs text-gray-600">Happy Clients</div>
+          </div>
+          
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <Shield size={24} className="text-teal-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-gray-900 mb-0.5">
+              {counts.countries.toLocaleString()}+
+            </div>
+            <div className="text-xs text-gray-600">Countries Served</div>
+          </div>
+          
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <CheckCircle size={24} className="text-teal-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-gray-900 mb-0.5">
+              {counts.orders.toLocaleString()}+
+            </div>
+            <div className="text-xs text-gray-600">Orders Completed</div>
+          </div>
+          
+          <div className="text-center p-4 bg-gray-50 rounded-lg">
+            <Clock size={24} className="text-teal-600 mx-auto mb-2" />
+            <div className="text-2xl font-bold text-gray-900 mb-0.5">
+              {counts.delivery}%
+            </div>
+            <div className="text-xs text-gray-600">On-Time Delivery</div>
+          </div>
+        </div>
+
         {/* CTA Section */}
-        <div
-          className={`text-center transform transition-all duration-1000 delay-800 ${
-            isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-          }`}
-        >
-          <div className="bg-gradient-to-r from-orange-500/20 to-teal-500/20 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-            <h3 className="text-2xl font-bold mb-4">
-              Ready to Experience the Difference?
-            </h3>
-            <p className="text-teal-100 mb-6 max-w-2xl mx-auto">
-              Join hundreds of satisfied clients who trust us for their import
-              and export needs
-            </p>
-            <Link to="/contact" className="inline-block">
-              <button className="group bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-300 hover:to-orange-400 text-white px-10 py-4 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl">
-                <span className="flex items-center justify-center">
-                  Get Started Today
-                  <ArrowRight
-                    size={20}
-                    className="ml-2 group-hover:translate-x-1 transition-transform duration-300"
-                  />
-                </span>
-              </button>
-            </Link>
+        <div>
+          <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-6 text-center">
+            <div className="max-w-2xl mx-auto">
+              <Award size={32} className="text-teal-400 mx-auto mb-3" />
+              
+              <h3 className="text-xl md:text-2xl font-bold text-white mb-2">
+                Ready to Partner With Us?
+              </h3>
+              
+              <p className="text-gray-300 text-sm mb-6">
+                Join 500+ businesses that trust us for their import and export needs
+              </p>
+              
+              <Link to="/contact" className="inline-block">
+                <button className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-md text-sm">
+                  <span className="flex items-center justify-center">
+                    Get Started Today
+                    <ArrowRight size={16} className="ml-2" />
+                  </span>
+                </button>
+              </Link>
+              
+              <div className="flex justify-center gap-5 mt-5 pt-4 border-t border-gray-700">
+                <div className="flex items-center gap-1.5">
+                  <Shield size={12} className="text-teal-400" />
+                  <span className="text-xs text-gray-400">Secure Transactions</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle size={12} className="text-teal-400" />
+                  <span className="text-xs text-gray-400">100% Guarantee</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Clock size={12} className="text-teal-400" />
+                  <span className="text-xs text-gray-400">24/7 Support</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
