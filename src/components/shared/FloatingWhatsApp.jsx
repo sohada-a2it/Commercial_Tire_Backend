@@ -8,7 +8,7 @@ import { FaWhatsapp } from "react-icons/fa";
 const FloatingWhatsApp = ({
   phoneNumber = "8801846937397",
   message = "Hello! I have a query.",
-  position = { bottom: 80, right: 16 },
+  position = { bottom: 68, right: 16 },
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 

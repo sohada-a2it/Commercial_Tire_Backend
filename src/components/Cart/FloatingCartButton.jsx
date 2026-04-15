@@ -18,7 +18,7 @@ const FloatingCartButton = () => {
     <>
       <button
         onClick={toggleCart}
-        className="fixed right-4 bottom-32 z-40 bg-red-600 text-white rounded-full shadow-2xl hover:shadow-red-400/40 transition-all duration-300 hover:scale-105 p-1 flex items-center justify-center w-10 h-10 md:hidden"
+        className="fixed right-4 bottom-28 z-40 bg-red-600 text-white rounded-full shadow-2xl hover:shadow-red-400/40 transition-all duration-300 hover:scale-105 p-1 flex items-center justify-center w-10 h-10 md:hidden"
         aria-label="Open Cart"
       >
         <div className="relative">
