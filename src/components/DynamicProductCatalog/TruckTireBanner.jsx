@@ -154,7 +154,7 @@ const TruckTireBanner = ({ onBrandClick }) => {
                 className="flex-shrink-0 w-full md:w-1/3"
               >
                 <div
-                  className="rounded-lg shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl relative group h-44"
+                  className="rounded-lg shadow-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl relative group h-32 md:h-44 "
                   onClick={() => handleBrandClick(brand.name)}
                   style={{
                     backgroundImage: `url(${brand.image})`,

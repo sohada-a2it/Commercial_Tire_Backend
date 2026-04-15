@@ -420,6 +420,10 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
     }
   };
 
+  const handleBack = () => {
+    router.push(returnUrl || "/dashboard/products");
+  };
+
   if (!isStaff) {
     return (
       <DashboardLayout>
@@ -451,7 +455,7 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
           </div>
           <button
             type="button"
-            onClick={() => router.push("/dashboard/products")}
+            onClick={handleBack}
             className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50"
           >
             <ArrowLeft className="w-4 h-4" /> Back to products

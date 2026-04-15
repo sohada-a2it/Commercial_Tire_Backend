@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
@@ -25,7 +26,7 @@ const useDebouncedValue = (value, delay = 300) => {
 
 export default function ProductsPage() {
   const router = useRouter();
-  const searchParams = useRouter.__INTERNAL_USE_ONLY_BROWSER_API__ ? new URL(typeof window !== "undefined" ? window.location.href : "").searchParams : null;
+  const searchParams = useSearchParams();
   const { userProfile } = useAuth();
   const role = normalizeRole(userProfile?.role);
   const isStaff = useMemo(() => ["admin", "moderator"].includes(role), [role]);
@@ -45,49 +46,66 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
 
   const didInitialLoad = useRef(false);
+  const didHydrateFromUrl = useRef(false);
+  const skipNextPageReset = useRef(false);
   const searchDebounced = useDebouncedValue(search, 300);
 
   const isVehicleCategorySelected = filterCategory === VEHICLE_CATEGORY_NAME;
 
-  // Helper function to handle edit button click with new tab support
-  const handleEditClick = (event, productId, routeId) => {
-    const returnUrl = `/dashboard/products?page=${page}&search=${encodeURIComponent(search)}&category=${encodeURIComponent(filterCategory)}&subcategory=${encodeURIComponent(filterSubcategory)}&pattern=${encodeURIComponent(filterPattern)}&brand=${encodeURIComponent(filterBrand)}&sort=${encodeURIComponent(sortBy)}`;
-    const editUrl = `/dashboard/products/edit?productId=${routeId}&returnUrl=${encodeURIComponent(returnUrl)}`;
+  const buildReturnUrl = () => {
+    const params = new URLSearchParams();
 
-    // Check for modifier keys (Ctrl, Cmd, or middle-click)
-    if (event.ctrlKey || event.metaKey || event.button === 1) {
-      event.preventDefault();
-      window.open(editUrl, "_blank");
-    } else if (event.button === 0) {
-      // Normal left-click
-      event.preventDefault();
-      setSelectedId(String(productId));
-      router.push(editUrl);
-    }
+    if (page > 1) params.set("page", String(page));
+    if (search) params.set("search", search);
+    if (filterCategory !== "all") params.set("category", filterCategory);
+    if (filterSubcategory !== "all") params.set("subcategory", filterSubcategory);
+    if (filterPattern !== "all") params.set("pattern", filterPattern);
+    if (filterBrand !== "all") params.set("brand", filterBrand);
+    if (sortBy !== "newest") params.set("sort", sortBy);
+
+    const query = params.toString();
+    return query ? `/dashboard/products?${query}` : "/dashboard/products";
   };
 
-  // Restore state from URL params if coming back from edit
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    const urlPage = params.get("page");
-    const urlSearch = params.get("search");
-    const urlCategory = params.get("category");
-    const urlSubcategory = params.get("subcategory");
-    const urlPattern = params.get("pattern");
-    const urlBrand = params.get("brand");
-    const urlSort = params.get("sort");
-
-    if (urlPage) setPage(parseInt(urlPage, 10));
-    if (urlSearch) setSearch(decodeURIComponent(urlSearch));
-    if (urlCategory) setFilterCategory(decodeURIComponent(urlCategory));
-    if (urlSubcategory) setFilterSubcategory(decodeURIComponent(urlSubcategory));
-    if (urlPattern) setFilterPattern(decodeURIComponent(urlPattern));
-    if (urlBrand) setFilterBrand(decodeURIComponent(urlBrand));
-    if (urlSort) setSortBy(decodeURIComponent(urlSort));
-  }, []);
+  const buildEditUrl = (routeId) => {
+    const returnUrl = buildReturnUrl();
+    return `/dashboard/products/edit?productId=${encodeURIComponent(routeId)}&returnUrl=${encodeURIComponent(returnUrl)}`;
+  };
 
   useEffect(() => {
+    if (didHydrateFromUrl.current) return;
+
+    const urlPage = searchParams.get("page");
+    const urlSearch = searchParams.get("search");
+    const urlCategory = searchParams.get("category");
+    const urlSubcategory = searchParams.get("subcategory");
+    const urlPattern = searchParams.get("pattern");
+    const urlBrand = searchParams.get("brand");
+    const urlSort = searchParams.get("sort");
+
+    const hasAnyParams = Boolean(urlPage || urlSearch || urlCategory || urlSubcategory || urlPattern || urlBrand || urlSort);
+
+    if (hasAnyParams) {
+      skipNextPageReset.current = true;
+    }
+
+    if (urlPage) setPage(Number(urlPage) || 1);
+    if (urlSearch) setSearch(urlSearch);
+    if (urlCategory) setFilterCategory(urlCategory);
+    if (urlSubcategory) setFilterSubcategory(urlSubcategory);
+    if (urlPattern) setFilterPattern(urlPattern);
+    if (urlBrand) setFilterBrand(urlBrand);
+    if (urlSort) setSortBy(urlSort);
+
+    didHydrateFromUrl.current = true;
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!didHydrateFromUrl.current) return;
+    if (skipNextPageReset.current) {
+      skipNextPageReset.current = false;
+      return;
+    }
     setPage(1);
   }, [searchDebounced, filterCategory, filterSubcategory, filterPattern, filterBrand, sortBy]);
 
@@ -192,8 +210,7 @@ export default function ProductsPage() {
           <div className="flex flex-wrap gap-3">
             <button 
               onClick={() => {
-                const returnUrl = `/dashboard/products?page=${page}&search=${encodeURIComponent(search)}&category=${encodeURIComponent(filterCategory)}&subcategory=${encodeURIComponent(filterSubcategory)}&pattern=${encodeURIComponent(filterPattern)}&brand=${encodeURIComponent(filterBrand)}&sort=${encodeURIComponent(sortBy)}`;
-                router.push(`/dashboard/products/create?returnUrl=${encodeURIComponent(returnUrl)}`);
+                router.push(`/dashboard/products/create?returnUrl=${encodeURIComponent(buildReturnUrl())}`);
               }}
               className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50"
             >
@@ -293,13 +310,12 @@ export default function ProductsPage() {
                         <span className="font-semibold">{product.offerPrice || product.price || "-"}</span>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        <button
-                          onClick={(event) => handleEditClick(event, product.id, routeId)}
-                          onMouseUp={(event) => event.button === 1 && handleEditClick(event, product.id, routeId)}
+                        <Link
+                          href={buildEditUrl(routeId)}
                           className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-xs text-gray-700 hover:bg-gray-50"
                         >
                           <Pencil className="w-3.5 h-3.5" /> Edit
-                        </button>
+                        </Link>
                         {isAdmin ? (
                           <button
                             onClick={() => handleDelete(product.id)}
@@ -355,13 +371,12 @@ export default function ProductsPage() {
                         {isVehicleCategorySelected ? <td className="px-4 py-3 text-gray-700 hidden xl:table-cell">{product.pattern || "-"}</td> : null}
                         <td className="px-4 py-3">
                           <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={(event) => handleEditClick(event, product.id, product.sourceId || product.id)}
-                              onMouseUp={(event) => event.button === 1 && handleEditClick(event, product.id, product.sourceId || product.id)}
+                            <Link
+                              href={buildEditUrl(product.sourceId || product.id)}
                               className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50"
                             >
                               <Pencil className="w-3.5 h-3.5" /> Edit
-                            </button>
+                            </Link>
                             {isAdmin ? (
                               <button onClick={() => handleDelete(product.id)} className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs text-red-700 hover:bg-red-50">
                                 <Trash2 className="w-3.5 h-3.5" /> Delete
