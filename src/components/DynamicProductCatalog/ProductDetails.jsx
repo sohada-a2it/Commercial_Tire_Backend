@@ -187,8 +187,8 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
   const translateX = -currentIndex * CARD_WIDTH;
 
   return (
-    <div className="mt-12 relative max-w-7xl mx-auto">
-      <h3 className="text-3xl font-bold text-center text-teal-800 mb-6 border-b-2 border-amber-400 pb-2">
+    <div className="mt-10 md:mt-12 relative max-w-7xl mx-auto px-2 sm:px-4 lg:px-0">
+      <h3 className="text-2xl sm:text-3xl font-bold text-center text-teal-800 mb-6 border-b-2 border-amber-400 pb-2">
         Recommended {isTyre ? "Tyres" : "Products"}
       </h3>
 
@@ -197,14 +197,14 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
         <>
           <button
             onClick={prevSlide}
-            className="absolute top-1/2 left-0 -translate-y-1/2 bg-teal-600 text-white rounded-full p-2 shadow hover:bg-teal-700 z-10"
+            className="absolute top-1/2 left-0 -translate-y-1/2 bg-teal-600 text-white rounded-full p-1.5 sm:p-2 shadow hover:bg-teal-700 z-10"
             aria-label="Previous"
           >
             &#8592;
           </button>
           <button
             onClick={nextSlide}
-            className="absolute top-1/2 right-0 -translate-y-1/2 bg-teal-600 text-white rounded-full p-2 shadow hover:bg-teal-700 z-10"
+            className="absolute top-1/2 right-0 -translate-y-1/2 bg-teal-600 text-white rounded-full p-1.5 sm:p-2 shadow hover:bg-teal-700 z-10"
             aria-label="Next"
           >
             &#8594;
@@ -220,29 +220,29 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
           {displayProducts.map((product, idx) => (
             <div
               key={`${product.id}-${idx}`}
-              className="min-w-[220px] mr-5 bg-white p-4 rounded-lg flex-shrink-0 cursor-pointer hover:shadow-lg transition border border-teal-100"
+              className="min-w-[180px] sm:min-w-[220px] mr-4 sm:mr-5 bg-white p-3 sm:p-4 rounded-lg flex-shrink-0 cursor-pointer hover:shadow-lg transition border border-teal-100"
             >
               <img
                 src={product.image || ""}
                 alt={product.name || "Product Image"}
-                className="h-28 w-full object-contain mb-4"
+                className="h-24 sm:h-28 w-full object-contain mb-3 sm:mb-4"
                 onClick={() => {
                   navigate(`/product/${product.id}`);
                 }}
               />
-              <div className="text-teal-800 font-bold text-sm truncate">
+              <div className="text-teal-800 font-bold text-xs sm:text-sm truncate">
                 {product.name || "Product Name"}
               </div>
-              <div className="text-xs text-gray-400 mb-1">
+              <div className="text-[11px] sm:text-xs text-gray-400 mb-1">
                 {product.keyAttributes?.Brand || "Brand"}
               </div>
-              <div className="text-xs text-gray-400 mb-1">
+              <div className="text-[11px] sm:text-xs text-gray-400 mb-1">
                 {ratings ? ratings(product.rating || 0) : null}
               </div>
 
               {/* Show tyre-specific attributes if it's a tyre */}
               {isTyre && product.keyAttributes?.Size && (
-                <div className="text-xs text-gray-500 mb-1">
+                <div className="text-[11px] sm:text-xs text-gray-500 mb-1">
                   Size: {product.keyAttributes.Size}
                 </div>
               )}
@@ -251,15 +251,15 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
               <div className="mb-2">
                 {product.offerPrice ? (
                   <>
-                    <div className="text-xs text-gray-400 line-through">
+                    <div className="text-[11px] sm:text-xs text-gray-400 line-through">
                       {product.price || "Regular Price N/A"}
                     </div>
-                    <div className="text-amber-600 font-semibold">
+                    <div className="text-sm sm:text-amber-600 font-semibold">
                       {product.offerPrice}
                     </div>
                   </>
                 ) : (
-                  <div className="text-teal-800 font-semibold">
+                  <div className="text-sm sm:text-teal-800 font-semibold">
                     {product.price || "Price N/A"}
                   </div>
                 )}
@@ -269,7 +269,7 @@ const RecommendedProducts = ({ recs = [], ratings, isTyre = false }) => {
                 onClick={() => {
                   navigate(`/product/${product.id}`);
                 }}
-                className="w-full border border-teal-600 hover:bg-teal-600 text-teal-600 hover:text-white text-sm font-medium py-1 px-1 rounded transition-all duration-300 text-center mt-2"
+                className="w-full border border-teal-600 hover:bg-teal-600 text-teal-600 hover:text-white text-xs sm:text-sm font-medium py-1 px-1 rounded transition-all duration-300 text-center mt-2"
               >
                 View Details
               </button>
@@ -545,11 +545,11 @@ const ProductDetails = () => {
       />
 
       <div className="w-full bg-gray-50 px-4 lg:px-0">
-        <div className="max-w-7xl mx-auto p-1 md:p-6 text-gray-800 rounded-lg">
+        <div className="max-w-7xl mx-auto p-0 sm:p-1 md:p-6 text-gray-800 rounded-lg">
 
           {/* Breadcrumb Navigation */}
           <div className="mb-3">
-            <nav className="flex items-center text-sm text-gray-600 flex-wrap">
+            <nav className="flex items-center text-xs sm:text-sm text-gray-600 flex-wrap gap-y-2">
               <button
                 onClick={() => navigate("/products")}
                 className="hover:text-teal-600 transition-colors"
@@ -608,11 +608,11 @@ const ProductDetails = () => {
                   onFocus={() => searchQuery && setShowSuggestions(true)}
                   onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                   placeholder="Search products, brands..."
-                  className="w-full px-6 py-2 md:py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
+                  className="w-full px-4 sm:px-6 py-2 md:py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800 text-sm sm:text-base"
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 bg-teal-600 text-white p-2  rounded-full hover:bg-teal-700 transition-colors"
+                  className="absolute right-2 bg-teal-600 text-white p-2 rounded-full hover:bg-teal-700 transition-colors"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -640,20 +640,20 @@ const ProductDetails = () => {
             </form>
           </div>
 
-          <h2 className="text-3xl font-bold mb-12 text-center text-teal-800 hover:text-teal-900 transition-colors duration-300 border-b-2 border-amber-400 pb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-8 sm:mb-12 text-center text-teal-800 hover:text-teal-900 transition-colors duration-300 border-b-2 border-amber-400 pb-2">
             {product.keyAttributes?.["Brand"] || "Product Details"}
           </h2>
 
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* Left: Image Gallery */}
-            <div className="flex flex-col items-center lg:w-2/5 relative">
+            <div className="flex flex-col items-center w-full lg:w-2/5 relative">
               <div className="relative overflow-hidden group w-full max-w-lg cursor-pointer"
                 onClick={() => setShowLightbox(true)}
               >
                 <img
                   src={selectedImage || product.image}
                   alt={product.name}
-                  className="w-full h-auto max-h-66 md:max-h-80 object-contain mb-4 transition-transform duration-300 border border-gray-200 rounded-lg"
+                  className="w-full h-auto max-h-48 sm:max-h-56 md:max-h-80 object-contain mb-4 transition-transform duration-300 border border-gray-200 rounded-lg"
                 />
                 {/* Plus Icon Overlay */}
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center mb-4">
@@ -670,7 +670,7 @@ const ProductDetails = () => {
                   onClick={() => {
                     setSelectedImage(product.image);
                   }}
-                  className={`h-16 w-16 object-cover border-2 rounded cursor-pointer ${
+                  className={`h-14 w-14 sm:h-16 sm:w-16 object-cover border-2 rounded cursor-pointer ${
                     selectedImage === product.image
                       ? "border-amber-400"
                       : "border-gray-300 opacity-50"
@@ -685,7 +685,7 @@ const ProductDetails = () => {
                     onClick={() => {
                       setSelectedImage(img);
                     }}
-                    className={`h-16 w-16 object-cover border-2 rounded cursor-pointer ${
+                    className={`h-14 w-14 sm:h-16 sm:w-16 object-cover border-2 rounded cursor-pointer ${
                       selectedImage === img
                         ? "border-amber-400"
                         : "border-gray-300 opacity-50"
@@ -696,15 +696,15 @@ const ProductDetails = () => {
             </div>
 
             {/* Center: Product Details */}
-            <div className="lg:w-1/2 space-y-2">
-              <h1 className="text-2xl font-bold text-teal-800">
+            <div className="w-full lg:w-1/2 space-y-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-teal-800">
                 {product.name}
               </h1>
-              <p className="text-xl text-yellow-600 mb-2 font-semibold">
+              <p className="text-lg sm:text-xl text-yellow-600 mb-2 font-semibold">
                 Price: {product?.price || "N/A"}
               </p>
 
-              <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700 mt-4">
                 {/* Conditionally render attributes based on product type */}
                 {product.keyAttributes?.["Load Range"] && (
                   <p>
@@ -847,7 +847,7 @@ const ProductDetails = () => {
               {/* Product Description */}
               {product.description && (
                 <div className="mt-8">
-                  <h3 className="text-2xl font-semibold mb-1 text-teal-800 ">
+                  <h3 className="text-xl sm:text-2xl font-semibold mb-1 text-teal-800 ">
                     Description
                   </h3>
                   <p className="text-gray-700 text-sm">{product.description}</p>
@@ -880,7 +880,7 @@ const ProductDetails = () => {
 
             {/* Right: Purchase Box */}
   {/* Right: Purchase Box - Compact Style */}
-<div className="lg:w-1/4 bg-white text-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 h-fit">
+<div className="w-full lg:w-1/4 bg-white text-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 h-fit">
   {/* Price Section - Compact */}
   <div className="mb-2">
     {product.price && product.offerPrice ? (
@@ -913,9 +913,9 @@ const ProductDetails = () => {
 
   {/* Volume Pricing - Compact Table */}
   {product.pricingTiers && product.pricingTiers.length > 0 && (
-    <div className="mb-4  pt-3">
+    <div className="mb-4 pt-3">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-md font-semibold text-red-500">Volume Pricing<span>↓</span></span>
+        <span className="text-sm sm:text-md font-semibold text-red-500">Volume Pricing<span>↓</span></span>
         <span className="text-xs text-teal-600">Save more</span>
       </div>
       
@@ -1048,7 +1048,7 @@ const ProductDetails = () => {
   onChange={(e) =>
     setQuantity(Math.max(1, parseInt(e.target.value) || 1))
   }
-  className="w-16 text-center font-semibold border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-200 bg-white dark:bg-white text-gray-900 dark:text-gray-900"
+  className="w-14 sm:w-16 text-center font-semibold border border-gray-300 rounded px-2 py-1.5 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-200 bg-white dark:bg-white text-gray-900 dark:text-gray-900"
   min="1"
 />
       <button
@@ -1101,33 +1101,33 @@ const ProductDetails = () => {
           {/* Tabbed Interface for Product Details */}
           <div className="mt-12">
             {/* Tab Navigation */}
-            <div className="flex border-b border-gray-200 mb-6">
+            <div className="flex overflow-x-auto border-b border-gray-200 mb-6 gap-1 whitespace-nowrap">
               <button
                 onClick={() => setActiveTab("specifications")}
-                className={`px-6 py-3 font-semibold transition-colors relative ${
+                className={`px-4 sm:px-6 py-3 font-semibold transition-colors relative ${
                   activeTab === "specifications"
-                    ? "text-teal-600 border-b-2 border-teal-600 text-lg"
-                    : "text-gray-600 hover:text-teal-600 text-sm"
+                    ? "text-teal-600 border-b-2 border-teal-600 text-sm md:text-lg"
+                    : "text-gray-600 hover:text-teal-600 text-xs sm:text-sm"
                 }`}
               >
                 ⚙️ Technical Specifications
               </button>
               <button
                 onClick={() => setActiveTab("pricing")}
-                className={`px-6 py-3 font-semibold transition-colors relative ${
+                className={`px-4 sm:px-6 py-3 font-semibold transition-colors relative ${
                   activeTab === "pricing"
-                    ? "text-teal-600 border-b-2 border-teal-600 text-lg"
-                    : "text-gray-600 hover:text-teal-600 text-sm"
+                    ? "text-teal-600 border-b-2 border-teal-600 text-sm md:text-lg"
+                    : "text-gray-600 hover:text-teal-600 text-xs sm:text-sm"
                 }`}
               >
                💲Pricing Options
               </button>
               <button
                 onClick={() => setActiveTab("reviews")}
-                className={`px-6 py-3 font-semibold transition-colors relative ${
+                className={`px-4 sm:px-6 py-3 font-semibold transition-colors relative ${
                   activeTab === "reviews"
-                    ? "text-teal-600 border-b-2 border-teal-600 text-lg"
-                    : "text-gray-600 hover:text-teal-600 text-sm"
+                    ? "text-teal-600 border-b-2 border-teal-600 text-sm md:text-lg"
+                    : "text-gray-600 hover:text-teal-600 text-xs sm:text-sm"
                 }`}
               >
                 ⭐ Reviews
@@ -1135,14 +1135,14 @@ const ProductDetails = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+            <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
               {/* Technical Specifications Tab */}
               {activeTab === "specifications" && product.keyAttributes && (
                 <div>
-                  <h3 className="text-3xl font-bold text-teal-800 mb-4">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-teal-800 mb-4">
                     Product Specifications
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {Object.entries(product.keyAttributes).map(([key, value]) => {
                       // Skip supplier-specific fields that will be shown separately
                       const supplierFields = [
@@ -1178,13 +1178,13 @@ const ProductDetails = () => {
               {/* Pricing Options Tab */}
               {activeTab === "pricing" && (
                 <div>
-                  <h3 className="text-xl font-bold text-teal-800 mb-4">
+                  <h3 className="text-lg sm:text-xl font-bold text-teal-800 mb-4">
                     Pricing Details
                   </h3>
                   <div className="space-y-6">
                     {/* Base Price */}
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold text-teal-700 mb-2 text-lg">Base Price</h4>
+                        <h4 className="font-semibold text-teal-700 mb-2 text-base sm:text-lg">Base Price</h4>
                       {product.price && product.offerPrice ? (
                         <div>
                           <div className="flex items-center gap-3 mb-2">
@@ -1366,7 +1366,7 @@ const ProductDetails = () => {
               {/* Reviews Tab */}
               {activeTab === "reviews" && (
                 <div>
-                  <h3 className="text-3xl font-bold text-teal-800 mb-4">Customer Reviews</h3>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-teal-800 mb-4">Customer Reviews</h3>
                   {product.userReviews && product.userReviews.length > 0 ? (
                     <div>
                       {/* Overall Rating Summary */}
