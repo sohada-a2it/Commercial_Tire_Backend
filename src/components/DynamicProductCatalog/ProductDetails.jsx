@@ -545,7 +545,7 @@ const ProductDetails = () => {
       />
 
       <div className="w-full bg-gray-50 px-4 lg:px-0">
-        <div className="max-w-7xl mx-auto p-6 text-gray-800 rounded-lg">
+        <div className="max-w-7xl mx-auto p-1 md:p-6 text-gray-800 rounded-lg">
 
           {/* Breadcrumb Navigation */}
           <div className="mb-3">

@@ -6,6 +6,7 @@ import ProductEditorPage from "@/components/Dashboard/ProductEditorPage";
 export default function EditProductStaticPage() {
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId") || "";
+  const returnUrl = searchParams.get("returnUrl") || "";
 
-  return <ProductEditorPage mode="edit" productId={productId} />;
+  return <ProductEditorPage mode="edit" productId={productId} returnUrl={returnUrl} />;
 }

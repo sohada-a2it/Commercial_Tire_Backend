@@ -144,7 +144,7 @@ const ProductList = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md  p-6">
+    <div className="bg-white rounded-lg shadow-md p-1 md:p-6">
       {displayedProducts && displayedProducts.length > 0 ? (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">

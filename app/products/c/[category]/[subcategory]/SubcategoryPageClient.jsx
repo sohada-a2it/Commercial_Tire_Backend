@@ -578,7 +578,7 @@ const SubcategoryPageClient = () => {
         )}
 
         {/* Category Header with Brand Filter and Sort */}
-        <div ref={filterSectionRef} className="bg-white rounded-lg shadow-md p-6 mb-2 mt-4">
+        <div ref={filterSectionRef} className="bg-white rounded-lg shadow-md p-1 md:p-6 mb-2 mt-4">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
               <h1 className="md:text-3xl text-2xl font-bold text-teal-800 flex items-center">
