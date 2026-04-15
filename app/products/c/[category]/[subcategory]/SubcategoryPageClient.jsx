@@ -25,6 +25,27 @@ const getScrollTopOffset = () => {
   return window.innerWidth < 640 ? 20 : 60;
 };
 
+const parsePriceForSort = (priceValue) => {
+  if (priceValue === undefined || priceValue === null) return 0;
+  const cleaned = String(priceValue).replace(/[^0-9.-]/g, "");
+  const parsed = Number.parseFloat(cleaned);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const sortProductsByPrice = (items, sortMode) => {
+  const direction = sortMode === "price-high-low" ? -1 : 1;
+  return [...items].sort((left, right) => {
+    const leftPrice = parsePriceForSort(left.offerPrice || left.price);
+    const rightPrice = parsePriceForSort(right.offerPrice || right.price);
+
+    if (leftPrice !== rightPrice) {
+      return direction * (leftPrice - rightPrice);
+    }
+
+    return String(left.name || "").localeCompare(String(right.name || ""));
+  });
+};
+
 const SubcategoryPageClient = () => {
   const params = useParams();
   const pathname = usePathname();
@@ -51,9 +72,11 @@ const SubcategoryPageClient = () => {
   const [showTireTypeDropdown, setShowTireTypeDropdown] = useState(false);
   const [popupProducts, setPopupProducts] = useState([]);
   const [products, setProducts] = useState([]);
+  const [priceSortedProducts, setPriceSortedProducts] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, hasNextPage: false, hasPrevPage: false, total: 0 });
   const [availableBrands, setAvailableBrands] = useState([]);
   const [pageSize, setPageSize] = useState(DESKTOP_PAGE_SIZE);
+  const [filtersInitialized, setFiltersInitialized] = useState(false);
 
   const isVehicleCategory =
     String(category?.name || "").toLowerCase() ===
@@ -84,9 +107,11 @@ const SubcategoryPageClient = () => {
     const sortParam = searchParams.get('sort');
     const tireTypeParam = searchParams.get('tireType');
 
+    setLoading(true);
     setSelectedBrand(brandParam || null);
     setSortBy(sortParam || "");
     setSelectedTireType(tireTypeParam || null);
+    setFiltersInitialized(true);
   }, [searchParams]);
 
   // Helper function to update URL with current filters
@@ -170,35 +195,75 @@ const SubcategoryPageClient = () => {
         setCategory(foundCategory);
         setSubcategory({ ...foundSubcategory, products: [] });
 
-        const productsResponse = await dataService.getProductsBySubcategory(
-          foundCategory.name,
-          foundSubcategory.name,
-          {
+        const isPriceSort = sortBy === "price-low-high" || sortBy === "price-high-low";
+
+        if (isPriceSort) {
+          const productsResponse = await dataService.getProductsBySubcategory(
+            foundCategory.name,
+            foundSubcategory.name,
+            {
+              all: true,
+              brand: selectedBrand || undefined,
+              pattern: selectedTireType || undefined,
+              sort: sortBy,
+            }
+          );
+
+          const mappedProducts = (productsResponse.products || []).map((product) => ({
+            ...product,
+            category: foundCategory.name,
+            subcategory: foundSubcategory.name,
+          }));
+
+          const sortedProducts = sortProductsByPrice(mappedProducts, sortBy);
+          const firstPageProducts = sortedProducts.slice(0, pageSize);
+          const total = sortedProducts.length;
+          const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+          setPriceSortedProducts(sortedProducts);
+          setProducts(firstPageProducts);
+          setAllProducts(firstPageProducts);
+          setPopupProducts(firstPageProducts.slice(0, 10));
+          setAvailableBrands(productsResponse.filters?.brands || []);
+          setPagination({
             page: 1,
-            limit: pageSize,
-            brand: selectedBrand || undefined,
-            pattern: selectedTireType || undefined,
-            sort: sortBy || undefined,
-          }
-        );
+            totalPages,
+            hasNextPage: totalPages > 1,
+            hasPrevPage: false,
+            total,
+          });
+        } else {
+          setPriceSortedProducts([]);
+          const productsResponse = await dataService.getProductsBySubcategory(
+            foundCategory.name,
+            foundSubcategory.name,
+            {
+              page: 1,
+              limit: pageSize,
+              brand: selectedBrand || undefined,
+              pattern: selectedTireType || undefined,
+              sort: sortBy || undefined,
+            }
+          );
 
-        const pageProducts = (productsResponse.products || []).map((product) => ({
-          ...product,
-          category: foundCategory.name,
-          subcategory: foundSubcategory.name,
-        }));
+          const pageProducts = (productsResponse.products || []).map((product) => ({
+            ...product,
+            category: foundCategory.name,
+            subcategory: foundSubcategory.name,
+          }));
 
-        setProducts(pageProducts);
-        setAllProducts(pageProducts);
-        setPopupProducts(pageProducts.slice(0, 10));
-        setAvailableBrands(productsResponse.filters?.brands || []);
-        setPagination({
-          page: productsResponse.pagination?.page || 1,
-          totalPages: productsResponse.pagination?.totalPages || 1,
-          hasNextPage: Boolean(productsResponse.pagination?.hasNextPage),
-          hasPrevPage: Boolean(productsResponse.pagination?.hasPrevPage),
-          total: productsResponse.pagination?.total || pageProducts.length,
-        });
+          setProducts(pageProducts);
+          setAllProducts(pageProducts);
+          setPopupProducts(pageProducts.slice(0, 10));
+          setAvailableBrands(productsResponse.filters?.brands || []);
+          setPagination({
+            page: productsResponse.pagination?.page || 1,
+            totalPages: productsResponse.pagination?.totalPages || 1,
+            hasNextPage: Boolean(productsResponse.pagination?.hasNextPage),
+            hasPrevPage: Boolean(productsResponse.pagination?.hasPrevPage),
+            total: productsResponse.pagination?.total || pageProducts.length,
+          });
+        }
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to load products. Please try again later.");
@@ -207,10 +272,14 @@ const SubcategoryPageClient = () => {
       }
     };
 
+    if (!filtersInitialized) {
+      return;
+    }
+
     if (categorySlug && subcategorySlug) {
       fetchData();
     }
-  }, [categorySlug, subcategorySlug, selectedBrand, selectedTireType, sortBy, pageSize]);
+  }, [categorySlug, subcategorySlug, selectedBrand, selectedTireType, sortBy, pageSize, filtersInitialized]);
 
   const handlePageChange = async (targetPage) => {
     if (!category || !subcategory) return;
@@ -218,6 +287,30 @@ const SubcategoryPageClient = () => {
 
     try {
       setLoading(true);
+
+      const isPriceSort = sortBy === "price-low-high" || sortBy === "price-high-low";
+      if (isPriceSort && priceSortedProducts.length > 0) {
+        const startIdx = (targetPage - 1) * pageSize;
+        const nextProducts = priceSortedProducts.slice(startIdx, startIdx + pageSize);
+
+        setProducts(nextProducts);
+        setAllProducts(nextProducts);
+        setPopupProducts(nextProducts.slice(0, 10));
+        setPagination((prev) => ({
+          ...prev,
+          page: targetPage,
+          hasPrevPage: targetPage > 1,
+          hasNextPage: targetPage < Number(prev.totalPages || 1),
+        }));
+
+        const sectionTop = filterSectionRef.current
+          ? filterSectionRef.current.getBoundingClientRect().top + window.scrollY
+          : 0;
+        const offset = getScrollTopOffset();
+        window.scrollTo({ top: Math.max(0, sectionTop - offset), behavior: "smooth" });
+        return;
+      }
+
       const response = await dataService.getProductsBySubcategory(category.name, subcategory.name, {
         page: targetPage,
         limit: pageSize,
@@ -301,6 +394,7 @@ const SubcategoryPageClient = () => {
   };
 
   const handleBrandSelect = (brand) => {
+    setLoading(true);
     setSelectedBrand(brand);
     setShowBrandDropdown(false);
     updateURLWithFilters(brand, sortBy, selectedTireType);
@@ -311,6 +405,7 @@ const SubcategoryPageClient = () => {
   };
 
   const handleSortSelect = (sortOption) => {
+    setLoading(true);
     setSortBy(sortOption);
     setShowSortDropdown(false);
     updateURLWithFilters(selectedBrand, sortOption, selectedTireType);
@@ -321,6 +416,7 @@ const SubcategoryPageClient = () => {
   };
 
   const handleTireTypeSelect = (tireType) => {
+    setLoading(true);
     setSelectedTireType(tireType);
     setShowTireTypeDropdown(false);
     updateURLWithFilters(selectedBrand, sortBy, tireType);
@@ -333,6 +429,7 @@ const SubcategoryPageClient = () => {
   // Handler for when user clicks a brand from the banner
   const handleBrandClickFromBanner = (brandName) => {
     // Set the brand filter
+    setLoading(true);
     setSelectedBrand(brandName);
     updateURLWithFilters(brandName, sortBy, selectedTireType);
     
@@ -362,7 +459,7 @@ const SubcategoryPageClient = () => {
 
   const uniqueBrands = getUniqueBrands();
 
-  if (loading) {
+  if (!filtersInitialized || loading) {
     return <SubcategoryPageSkeleton />;
   }
 
@@ -659,7 +756,7 @@ const SubcategoryPageClient = () => {
           selectedTireType={selectedTireType}
           sortBy={sortBy}
           isHomePage={false}
-          enableServerPagination={false}
+          enableServerPagination={true}
         />
 
         {pagination.totalPages > 1 && (

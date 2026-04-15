@@ -42,12 +42,13 @@ const ProductList = ({
 
   // Filter products by selected brand and tire type
   let filteredProducts = subcategory.products || [];
+  const shouldApplyClientFilterSort = !enableServerPagination;
 
   const normalizeFilterValue = (value) =>
     String(value || "").trim().toLowerCase();
 
   // Filter by brand
-  if (selectedBrand) {
+  if (shouldApplyClientFilterSort && selectedBrand) {
     const normalizedBrand = normalizeFilterValue(selectedBrand);
     filteredProducts = filteredProducts.filter((product) => {
       const productBrand = normalizeFilterValue(
@@ -58,7 +59,7 @@ const ProductList = ({
   }
 
   // Filter by tire type (for Truck Tires) - using Pattern attribute
-  if (selectedTireType) {
+  if (shouldApplyClientFilterSort && selectedTireType) {
     const normalizedType = normalizeFilterValue(selectedTireType);
     filteredProducts = filteredProducts.filter((product) =>
       normalizeFilterValue(product.keyAttributes?.["Pattern"]) === normalizedType
@@ -66,7 +67,7 @@ const ProductList = ({
   }
 
   // Sort products by price if sortBy is specified
-  if (sortBy) {
+  if (shouldApplyClientFilterSort && sortBy) {
     filteredProducts = [...filteredProducts].sort((a, b) => {
       // Get the effective price (offerPrice if available, otherwise regular price)
       const priceA = parsePrice(a.offerPrice || a.price);
