@@ -103,11 +103,11 @@ const TruckTireBanner = ({ onBrandClick }) => {
   return (
     <div className="mb-4 relative">
 
-      <div className="relative max-w-6xl mx-auto">
+      <div className="relative max-w-6xl mx-auto overflow-hidden">
         {/* Navigation arrows */}
         <button
           onClick={prevSlide}
-          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white z-10 transition-all duration-300"
+          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white z-10 transition-all duration-300"
           aria-label="Previous"
         >
           <svg
@@ -127,7 +127,7 @@ const TruckTireBanner = ({ onBrandClick }) => {
 
         <button
           onClick={nextSlide}
-          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white z-10 transition-all duration-300"
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white z-10 transition-all duration-300"
           aria-label="Next"
         >
           <svg
