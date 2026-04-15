@@ -592,9 +592,9 @@ const SubcategoryPageClient = () => {
             <div className="relative flex-1 sm:flex-initial min-w-0" ref={sortDropdownRef}>
               <button
                 onClick={toggleSortDropdown}
-                className="w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-3 border border-teal-200 bg-teal-50 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[180px]"
+                className="w-full flex items-center justify-between px-2 sm:px-1 py-2 sm:py-3 border border-teal-200 bg-teal-50 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[180px]"
               >
-                <span className="truncate sm:truncate-none">
+                <span className="truncate sm:truncate-none text-[11px] md:text-sm ">
                   {sortBy === "price-low-high" 
                     ? "Low to High"
                     : sortBy === "price-high-low"
@@ -602,7 +602,7 @@ const SubcategoryPageClient = () => {
                     : "Sort by Price"}
                 </span>
                 <svg
-                  className={`ml-1 sm:ml-0 h-4 w-4 flex-shrink-0 transition-transform ${
+                  className={`ml-1 sm:ml-0 h-3 w-3 md:h-4 md:w-4 flex-shrink-0 transition-transform ${
                     showSortDropdown ? "rotate-180" : ""
                   }`}
                   fill="none"
@@ -647,11 +647,11 @@ const SubcategoryPageClient = () => {
               <div className="relative flex-1 sm:flex-initial min-w-0" ref={tireTypeDropdownRef}>
                 <button
                   onClick={toggleTireTypeDropdown}
-                  className="w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
+                  className="w-full flex items-center justify-between px-2 sm:px-1 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
                 >
-                  <span className="truncate sm:truncate-none">{selectedTireType || "Tire Type"}</span>
+                  <span className="truncate sm:truncate-none text-[11px] md:text-sm">{selectedTireType || "Tire Type"}</span>
                   <svg
-                    className={`ml-1 sm:ml-0 h-4 w-4 flex-shrink-0 transition-transform ${
+                    className={`ml-1 sm:ml-0 h-3 w-3 md:h-4 md:w-4 flex-shrink-0 transition-transform ${
                       showTireTypeDropdown ? "rotate-180" : ""
                     }`}
                     fill="none"
@@ -703,11 +703,11 @@ const SubcategoryPageClient = () => {
               <div className="relative flex-1 sm:flex-initial min-w-0" ref={brandDropdownRef}>
                 <button
                   onClick={toggleBrandDropdown}
-                  className="w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
+                  className="w-full flex items-center justify-between px-2 sm:px-1 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
                 >
-                  <span className="truncate sm:truncate-none">{selectedBrand || "All Brands"}</span>
+                  <span className="truncate sm:truncate-none text-[11px] md:text-sm">{selectedBrand || "All Brands"}</span>
                   <svg
-                    className={`ml-1 sm:ml-2 h-4 w-4 flex-shrink-0 transition-transform ${
+                    className={`ml-1 sm:ml-2 h-3 w-3 md:h-4 md:w-4 flex-shrink-0 transition-transform ${
                       showBrandDropdown ? "rotate-180" : ""
                     }`}
                     fill="none"

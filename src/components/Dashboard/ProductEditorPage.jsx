@@ -74,7 +74,7 @@ const cleanImages = (images = []) =>
 
 const VEHICLE_CATEGORY_NAME = "Vehicle Parts and Accessories";
 
-export default function ProductEditorPage({ mode = "create", productId = "" }) {
+export default function ProductEditorPage({ mode = "create", productId = "", returnUrl = "" }) {
   const router = useRouter();
   const { userProfile } = useAuth();
   const role = normalizeRole(userProfile?.role);
@@ -410,7 +410,8 @@ export default function ProductEditorPage({ mode = "create", productId = "" }) {
       toast.success(isEditMode ? "Product updated" : "Product created");
 
       if (result?.product?.id || isEditMode) {
-        router.push("/dashboard/products");
+        const redirectUrl = returnUrl || "/dashboard/products";
+        router.push(redirectUrl);
       }
     } catch (error) {
       toast.error(error.message || "Failed to save product");
