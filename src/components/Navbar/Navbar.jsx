@@ -128,14 +128,14 @@ const Navbar = () => {
     }`;
 
   const getMobileLinkClasses = (path) =>
-    `text-white font-medium py-3 px-4 rounded-md transition-colors ${
+    `text-white text-sm font-medium py-2.5 px-3 rounded-md transition-colors ${
       location.pathname === path
         ? "bg-teal-700 text-amber-300"
         : "hover:bg-teal-700"
     }`;
 
   return (
-    <nav className="bg-gradient-to-r from-teal-800 to-teal-600 shadow-lg px-4 py-2 sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-teal-800 to-teal-600 shadow-lg px-2 sm:px-4 py-1.5 sm:py-2 sticky top-0 z-50">
       <div className="flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center">
@@ -147,9 +147,9 @@ const Navbar = () => {
               height={64}
               className="h-10 md:h-16 w-auto"
             />
-            <div className="ml-1 text-white">
-              <p className="font-semibold md:text-lg text-sm">ASIAN IMPORT & EXPORT Co. LTD</p>
-              <p className="md:text-sm text-xs text-yellow-500 ">Manufacturer & Wholesaler</p>
+            <div className="ml-1 text-white leading-tight max-w-[190px] sm:max-w-none">
+              <p className="font-semibold md:text-lg text-xs sm:text-sm">ASIAN IMPORT & EXPORT Co. LTD</p>
+              <p className="md:text-sm text-[10px] sm:text-xs text-yellow-500">Manufacturer & Wholesaler</p>
             </div>
           </Link>
         </div>
@@ -314,10 +314,10 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <div className="flex items-center lg:hidden">
           <button
-            className="text-white p-2 rounded-lg hover:bg-teal-700"
+            className="text-white p-1.5 sm:p-2 rounded-lg hover:bg-teal-700"
             onClick={toggleMenu}
           >
-            {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+            {isMenuOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
           </button>
         </div>
       </div>
@@ -337,11 +337,11 @@ const Navbar = () => {
           
           {/* Menu Content */}
           <div 
-            className="lg:hidden mt-4 py-4 border-t border-teal-700 bg-teal-800 rounded-lg relative pointer-events-auto" 
+            className="lg:hidden mt-3 py-3 border-t border-teal-700 bg-teal-800 rounded-lg relative pointer-events-auto max-h-[75vh] overflow-y-auto" 
             style={{ zIndex: 40 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex flex-col space-y-1 px-4">
+            <div className="flex flex-col space-y-1 px-3">
               <Link
                 to="/"
                 className={getMobileLinkClasses("/")}
@@ -363,11 +363,11 @@ const Navbar = () => {
                   toggleCart();
                   setIsMenuOpen(false);
                 }}
-                className="relative text-white hover:text-amber-300 transition-colors py-3 px-4 rounded-md hover:bg-teal-700 text-left"
+                className="relative text-white hover:text-amber-300 transition-colors py-2.5 px-3 rounded-md hover:bg-teal-700 text-left"
               >
                 <div className="flex items-center gap-2">
-                  <ShoppingCart className="w-5 h-5" />
-                  <span className="font-medium">Cart</span>
+                  <ShoppingCart className="w-4 h-4" />
+                  <span className="text-sm font-medium">Cart</span>
                   {getCartItemCount() > 0 && (
                     <span className="ml-1 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center">
                       {getCartItemCount()}
@@ -394,7 +394,7 @@ const Navbar = () => {
               {/* Mobile Profile/Login */}
               {user ? (
                 <div className="border-t border-teal-700 mt-2 pt-2">
-                  <div className="flex items-center gap-3 px-4 py-2 text-white">
+                  <div className="flex items-center gap-3 px-3 py-2 text-white">
                     <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center overflow-hidden">
                       {user.photoURL ? (
                         <Image
@@ -420,7 +420,7 @@ const Navbar = () => {
                       navigate("/dashboard");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-teal-200 hover:bg-teal-700 transition-colors rounded-md"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-teal-200 hover:bg-teal-700 transition-colors rounded-md"
                   >
                     <LayoutDashboard className="w-4 h-4" />
                     Dashboard
@@ -430,7 +430,7 @@ const Navbar = () => {
                       handleLogout();
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-red-300 hover:bg-teal-700 transition-colors rounded-md"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-300 hover:bg-teal-700 transition-colors rounded-md"
                   >
                     <LogOut className="w-4 h-4" />
                     Sign Out
@@ -442,7 +442,7 @@ const Navbar = () => {
                     setAuthModalOpen(true);
                     setIsMenuOpen(false);
                   }}
-                  className="flex items-center gap-2 px-4 py-3 text-white hover:bg-teal-700 rounded-md transition-colors"
+                  className="flex items-center gap-2 px-3 py-2.5 text-sm text-white hover:bg-teal-700 rounded-md transition-colors"
                 >
                   <User className="w-5 h-5" />
                   <span className="font-medium">Sign In / Register</span>
