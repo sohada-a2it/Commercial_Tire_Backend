@@ -172,8 +172,8 @@ const ProductCatalog = ({ isHomePage = false }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-4 md:py-8">
-        <div className="container mx-auto px-4">
+      <div className="min-h-screen bg-gray-50 py-3 sm:py-4 md:py-8">
+        <div className="container mx-auto px-2 sm:px-4">
           {/* Slider Skeleton */}
           <ProductSliderSkeleton />
           
@@ -213,12 +213,12 @@ const ProductCatalog = ({ isHomePage = false }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="px-4 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50 py-5 sm:py-8">
+      <div className="px-2 sm:px-1 max-w-7xl mx-auto">
         {/* Search Section */}
         {isHomePage && (
-          <div className="mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-teal-800 mb-4 text-center">
+          <div className="mb-6 sm:mb-8">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-teal-800 mb-3 sm:mb-4 text-center">
               What are you looking for?
             </h2>
             <form
@@ -235,7 +235,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
                     setTimeout(() => setShowSuggestions(false), 200)
                   }
                   placeholder="Search products, brands, categories..."
-                  className="w-full px-6 py-2 md:py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
+                  className="w-full px-4 sm:px-6 py-2 md:py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800 text-sm sm:text-base"
                 />
                 <button
                   type="submit"
@@ -268,12 +268,12 @@ const ProductCatalog = ({ isHomePage = false }) => {
           </div>
         )}
 
-        <h1 className="text-3xl font-bold text-teal-800 mb-2 mt-8 md:mt-14 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold text-teal-800 mb-2 mt-6 sm:mt-8 md:mt-14 text-center">
           Product Catalog
         </h1>
 
         {/* Animated Horizontal Line - Centered */}
-        <div className="flex justify-center mb-8 -mt-1">
+        <div className="flex justify-center mb-6 sm:mb-8 -mt-1">
           <div className="relative h-1 w-1/5 overflow-hidden bg-gray-200 rounded-full">
             <div className="absolute h-full w-1/4 animate-marquee bg-gradient-to-r from-teal-400 via-teal-600 to-teal-400 rounded-full"></div>
           </div>
@@ -294,7 +294,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
           }
         `}</style>
 
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
           {/* Left Sidebar - Company Info */}
           <div className="lg:w-1/4">
             <div className="bg-white rounded-lg shadow-md sticky top-[76px] max-h-[calc(100vh-100px)] overflow-auto">
@@ -313,17 +313,17 @@ const ProductCatalog = ({ isHomePage = false }) => {
           {/* Right Side - Categories Grid */}
           <div className="lg:w-3/4">
             {categories.map((category, categoryIndex) => (
-              <div key={category.id} id={nameToSlug(category.name)} className="mb-12 scroll-mb-22">
+              <div key={category.id} id={nameToSlug(category.name)} className="mb-8 sm:mb-12 scroll-mb-22">
                 {/* Category Header */}
-                <div className="bg-gradient-to-r from-teal-500 to-teal-800 rounded-t-lg p-4 shadow-lg">
-                  <h2 className="text-2xl font-bold text-white flex items-center">
-                    <span className="mr-3 text-3xl">{category.icon}</span>
+                <div className="bg-gradient-to-r from-teal-500 to-teal-800 rounded-t-lg p-3 sm:p-4 shadow-lg">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center">
+                    <span className="mr-2 sm:mr-3 text-2xl sm:text-3xl">{category.icon}</span>
                     {category.name}
                   </h2>
                 </div>
 
                 {/* Subcategories Grid */}
-                <div className="bg-white rounded-b-lg shadow-md p-4">
+                <div className="bg-white rounded-b-lg shadow-md p-2 sm:p-4">
                   {/* Desktop Grid View */}
                   <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {category.subcategories?.map((subcategory) => {
@@ -381,11 +381,11 @@ const ProductCatalog = ({ isHomePage = false }) => {
                                 });
                               }, 6000);
                             }}
-                            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white transition-all duration-300"
+                            className="absolute left-1.5 top-1/2 -translate-y-1/2 z-10 bg-white/90 text-teal-600 rounded-full p-1.5 shadow-lg hover:bg-teal-600 hover:text-white transition-all duration-300"
                             aria-label="Previous"
                           >
                             <svg
-                              className="w-5 h-5"
+                              className="w-4 h-4"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -423,11 +423,11 @@ const ProductCatalog = ({ isHomePage = false }) => {
                                 });
                               }, 6000);
                             }}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/90 text-teal-600 rounded-full p-2 shadow-lg hover:bg-teal-600 hover:text-white transition-all duration-300"
+                            className="absolute right-1.5 top-1/2 -translate-y-1/2 z-10 bg-white/90 text-teal-600 rounded-full p-1.5 shadow-lg hover:bg-teal-600 hover:text-white transition-all duration-300"
                             aria-label="Next"
                           >
                             <svg
-                              className="w-5 h-5"
+                              className="w-4 h-4"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -460,7 +460,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
                                     handleSubcategoryClick(category, subcategory)
                                   }
                                 >
-                                  <div className="group cursor-pointer bg-gray-50 rounded-lg p-4 hover:shadow-lg transition-all duration-300 border border-gray-200 hover:border-teal-400">
+                                  <div className="group cursor-pointer bg-gray-50 rounded-lg p-3 hover:shadow-lg transition-all duration-300 border border-gray-200 hover:border-teal-400">
                                     <div className="aspect-square relative mb-3 overflow-hidden rounded-lg bg-white">
                                       <img
                                         src={representativeImage}
@@ -468,7 +468,7 @@ const ProductCatalog = ({ isHomePage = false }) => {
                                         className="w-full h-full object-contain"
                                       />
                                     </div>
-                                    <h3 className="text-center font-semibold text-gray-800 group-hover:text-teal-600 transition-colors">
+                                    <h3 className="text-center text-sm font-semibold text-gray-800 group-hover:text-teal-600 transition-colors">
                                       {subcategory.name}
                                     </h3>
                                   </div>

@@ -108,37 +108,37 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gradient-to-b from-teal-900 to-teal-800 text-gray-200 pt-12 pb-6 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-gradient-to-b from-teal-900 to-teal-800 text-gray-200 pt-8 sm:pt-12 pb-5 sm:pb-6 px-3 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
         {/* Company Info */}
-        <div className="lg:col-span-2">
-          <div className="flex items-center mb-6">
+        <div className="col-span-2 lg:col-span-2">
+          <div className="flex items-center mb-4 sm:mb-6">
 
           <img
             src="/logo.png"
             alt="Asian Import and Export"
-            className="h-14 mb-0"
+            className="h-11 sm:h-14 mb-0"
           />
-          <div className="ml-1 text-white">
-              <p className="font-semibold text-lg">ASIAN IMPORT & EXPORT Co. LTD</p>
-              <p className="text-sm text-yellow-500 ">Manufacturer & Wholesaler</p>
+          <div className="ml-1 text-white leading-tight">
+              <p className="font-semibold text-sm md:text-base ">ASIAN IMPORT & EXPORT Co. LTD</p>
+              <p className="text-xs sm:text-sm text-yellow-500">Manufacturer & Wholesaler</p>
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5 sm:space-y-3">
             {[contactInfo[0]].map((item, index) => (
-              <div key={`contact-top-${index}`} className="flex items-center">
-                <span className="mr-3 text-lg">{item.icon}</span>
-                <a href={item.link} className="hover:text-amber-300">
+              <div key={`contact-top-${index}`} className="flex items-start text-sm sm:text-base">
+                <span className="mr-2 sm:mr-3 text-base sm:text-lg mt-0.5">{item.icon}</span>
+                <a href={item.link} className="hover:text-amber-300 leading-snug">
                   {item.text}
                 </a>
               </div>
             ))}
 
-            <div className="flex flex-wrap items-center gap-10">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-10 text-sm sm:text-base">
               {contactInfo.slice(1, 3).map((item, index) => (
                 <div key={`contact-phone-${index}`} className="flex items-center">
-                  <span className="mr-1 text-lg">{item.icon}</span>
+                  <span className="mr-1 text-base sm:text-lg">{item.icon}</span>
                   <a href={item.link} className="hover:text-amber-300">
                     {item.text}
                   </a>
@@ -147,8 +147,8 @@ const Footer = () => {
             </div>
 
             {contactInfo.slice(3).map((item, index) => (
-              <div key={`contact-bottom-${index}`} className="flex items-center">
-                <span className="mr-1 text-lg">{item.icon}</span>
+              <div key={`contact-bottom-${index}`} className="flex items-center text-sm sm:text-base">
+                <span className="mr-1 text-base sm:text-lg">{item.icon}</span>
                 <a href={item.link} className="hover:text-amber-300">
                   {item.text}
                 </a>
@@ -158,12 +158,12 @@ const Footer = () => {
         </div>
 
         {/* Quick Links */}
-        <div>
-          <h4 className="text-xl font-semibold text-white mb-5 pb-2 border-b border-teal-700">
+        <div className="col-span-1">
+          <h4 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-5 pb-2 border-b border-teal-700">
             Quick Links
           </h4>
 
-          <ul className="space-y-3">
+          <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base">
             {(showMoreLinks ? infoLinks : infoLinks.slice(0, 3)).map((link) => (
               <li key={link.label}>
                 <Link to={link.to} className="flex items-center hover:text-amber-300">
@@ -185,12 +185,12 @@ const Footer = () => {
         </div>
 
         {/* Our Products */}
-        <div>
-          <h4 className="text-xl font-semibold text-white mb-5 pb-2 border-b border-teal-700">
+        <div className="col-span-1">
+          <h4 className="text-lg sm:text-xl font-semibold text-white mb-4 sm:mb-5 pb-2 border-b border-teal-700">
             Our Products
           </h4>
 
-          <ul className="space-y-3">
+          <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base">
             {(showMoreProducts
               ? productCategories
               : productCategories.slice(0, 3)
@@ -220,17 +220,17 @@ const Footer = () => {
       </div>
 
       {/* Bottom */}
-      <div className="max-w-7xl mx-auto mt-5 pt-5 border-t border-teal-700">
+      <div className="max-w-7xl mx-auto mt-4 sm:mt-5 pt-4 sm:pt-5 border-t border-teal-700">
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex space-x-5 mb-4 md:mb-0">
+          <div className="flex space-x-4 sm:space-x-5 mb-3 sm:mb-4 md:mb-0">
             {socialLinks.map((social, index) => (
-              <a key={index} href={social.to} className={`text-2xl ${social.color}`}>
+              <a key={index} href={social.to} className={`text-xl sm:text-2xl ${social.color}`}>
                 {social.icon}
               </a>
             ))}
           </div>
 
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 text-xs sm:text-sm text-center md:text-left">
             © {new Date().getFullYear()} Asian Import & Export Co., LTD. All rights
             reserved.
           </p>

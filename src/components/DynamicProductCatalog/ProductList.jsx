@@ -144,10 +144,10 @@ const ProductList = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-1 md:p-6">
+    <div className="bg-white rounded-lg shadow-md p-0.5 sm:p-3 md:p-6">
       {displayedProducts && displayedProducts.length > 0 ? (
         <div>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
             {displayedProducts.map((product) => {
               // Get display image - show first image from images array on hover, otherwise main image
               const displayImage = hoveredProduct === product.id && product.images?.[0]
@@ -157,12 +157,12 @@ const ProductList = ({
               return (
               <div
                 key={product.id}
-                className="border border-teal-100 rounded-lg p-4 hover:shadow-md transition-shadow flex flex-col relative group"
+                className="border border-teal-100 rounded-lg p-2 sm:p-4 hover:shadow-md transition-shadow flex flex-col relative group"
                 onMouseEnter={() => setHoveredProduct(product.id)}
                 onMouseLeave={() => setHoveredProduct(null)}
               >
                 {/* Product Image */}
-                <div className="h-48 w-full bg-gray-100 rounded-sm mb-4 flex items-center justify-center overflow-hidden relative">
+                <div className="h-32 sm:h-44 md:h-48 w-full bg-gray-100 rounded-sm mb-2 sm:mb-4 flex items-center justify-center overflow-hidden relative">
                   {/* Discount Badge */}
                   {product.offerPrice && product.price && calculateDiscount(product.price, product.offerPrice) > 0 && (() => {
                     const discount = calculateDiscount(product.price, product.offerPrice);
@@ -181,14 +181,14 @@ const ProductList = ({
                     }
                     
                     return (
-                      <div className={`absolute top-2 right-0 ${badgeColor} px-1 py-1 rounded-sm text-[10px] font-bold shadow-lg z-[1]`}>
+                      <div className={`absolute top-1.5 sm:top-2 right-0 ${badgeColor} px-1 py-0.5 sm:py-1 rounded-sm text-[9px] sm:text-[10px] font-bold shadow-lg z-[1]`}>
                         {discount}% OFF
                       </div>
                     );
                   })()}
 
                   {/* Hover Action Buttons - Slide from left in column */}
-                  <div className="absolute -left-16 top-1/2 -translate-y-1/2 group-hover:left-2 flex flex-col gap-2 transition-all duration-300 z-[2]">
+                  <div className="hidden md:flex absolute -left-16 top-1/2 -translate-y-1/2 group-hover:left-2 flex-col gap-2 transition-all duration-300 z-[2]">
                     <button
                       onClick={() => handleAddToCart(product)}
                       className="bg-white hover:bg-teal-600 hover:text-white text-teal-600 p-3 rounded-sm shadow-lg transition-colors"
@@ -209,24 +209,24 @@ const ProductList = ({
                     <img
                       src={displayImage}
                       alt={product.name}
-                      className="object-contain h-full w-full p-2 transition-all duration-300"
+                      className="object-contain h-full w-full p-1.5 sm:p-2 transition-all duration-300"
                     />
                   ) : (
-                    <div className="text-gray-400 text-sm">
+                    <div className="text-gray-400 text-xs sm:text-sm">
                       No image available
                     </div>
                   )}
                 </div>
 
                 {/* Product Name */}
-                <h3 className="font-semibold text-gray-800 mb-1 line-clamp-2 h-14">
+                <h3 className="font-semibold text-gray-800 text-[12px] sm:text-xs mb-1.5 line-clamp-2 min-h-[3rem] sm:h-18 leading-snug break-words">
                   {product.name || "Unnamed Product"}
                 </h3>
 
                 {/* Product Details */}
-                <div className="mb-3 space-y-1">
+                <div className="mb-2 sm:mb-3 space-y-0.5 sm:space-y-1">
                   {product.keyAttributes?.["MOQ"] && (
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs sm:text-sm text-gray-600">
                       <span className="font-medium">MOQ:</span>{" "}
                       {product.keyAttributes["MOQ"]}
                     </p>
@@ -244,7 +244,7 @@ const ProductList = ({
                       // Check for minWeight/maxWeight
                       if (firstTier.minWeight && firstTier.maxWeight) {
                         return (
-                          <p className="text-sm text-gray-600">
+                          <p className="text-xs sm:text-sm text-gray-600">
                             <span className="font-medium">Size:</span>{" "}
                             {firstTier.minWeight}-{firstTier.maxWeight}gm
                           </p>
@@ -254,7 +254,7 @@ const ProductList = ({
                       // Check for size property
                       if (firstTier.size) {
                         return (
-                          <p className="text-sm text-gray-600">
+                          <p className="text-xs sm:text-sm text-gray-600">
                             <span className="font-medium">Size:</span>{" "}
                             {firstTier.size}
                           </p>
@@ -265,7 +265,7 @@ const ProductList = ({
                     // Fallback to keyAttributes Size
                     if (product.keyAttributes?.Size) {
                       return (
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs sm:text-sm text-gray-600">
                           <span className="font-medium">Size:</span>{" "}
                           {product.keyAttributes.Size}
                         </p>
@@ -279,45 +279,43 @@ const ProductList = ({
                 {/* Pricing Information */}
                 <div className="mt-auto">
                   {product.offerPrice && product.price ? (
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-lg font-bold text-teal-600">
+                    <div className="flex flex-wrap items-end gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                      <span className="text-base sm:text-lg font-bold text-teal-600">
                         {product.offerPrice}
                       </span>
-                      <span className="text-sm text-gray-500 line-through">
+                      <span className="text-xs sm:text-sm text-gray-500 line-through">
                         {product.price}
-                      </span>
-                      <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
-                        {calculateDiscount(product.price, product.offerPrice)}%
-                        OFF
                       </span>
                     </div>
                   ) : product.price ? (
-                    <p className="text-lg font-bold text-teal-600 mb-3">
+                    <p className="text-base sm:text-lg font-bold text-teal-600 mb-2 sm:mb-3">
                       {product.price}
                     </p>
                   ) : null}
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2">
+                  <div className="flex flex-row gap-1.5 sm:gap-1">
                     {/* See Details Button */}
                     <Link
                       href={`/product/${product.id}`}
-                      className="flex-1 border bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-md text-sm font-medium transition-colors text-center"
+                      className="flex-1 border bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-md text-[10px] sm:text-sm font-medium transition-colors text-center whitespace-nowrap"
                     >
-                      See Details
+                      <span className="sm:hidden">Details</span>
+                      <span className="hidden sm:inline">See Details</span>
                     </Link>
 
                     <button
                       onClick={() => handleAddToCart(product)}
-                      className="flex-1 border border-cyan-700 hover:bg-teal-600 hover:text-white text-cyan-600 py-2 rounded-md text-sm font-medium transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-1"
+                      className="flex-1 border border-cyan-700 hover:bg-teal-600 hover:text-white text-cyan-600 py-1 md:py-2 rounded-md text-[10px] sm:text-sm font-medium transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-1 whitespace-nowrap"
                     >
-                      <ShoppingCart className="w-4 h-4 hidden md:block" />
-                      Add to Cart
+                      <ShoppingCart className="w-3.5 h-3.5 hidden md:block" />
+                      <span className="sm:hidden inline-flex items-center gap-1 whitespace-nowrap">Add<ShoppingCart className="w-3 h-3 inline-block md:hidden shrink-0" /></span>
+                      <span className="hidden sm:inline">Add to Cart</span>
                     </button>
                   </div>
                 </div>
               </div>
-            );
+            ); 
             })}
           </div>
 
@@ -333,7 +331,7 @@ const ProductList = ({
                       : handleSeeAllClick
                   }
                   disabled={isLoadingMore}
-                  className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium"
+                  className="px-4 sm:px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm sm:text-base font-medium"
                 >
                   {isLoadingMore
                     ? "Loading..."
@@ -352,7 +350,7 @@ const ProductList = ({
               <div className="mt-8 text-center">
                 <button
                   onClick={handleShowLessClick}
-                  className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium flex items-center justify-center gap-1 mx-auto"
+                  className="px-4 sm:px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm sm:text-base font-medium flex items-center justify-center gap-1 mx-auto"
                 >
                   Show Less <ArrowUp />
                 </button>
@@ -360,12 +358,12 @@ const ProductList = ({
             )}
         </div>
       ) : (
-        <div className="bg-gray-50 rounded-lg p-8 text-center">
+        <div className="bg-gray-50 rounded-lg p-5 sm:p-8 text-center">
           <div className="text-4xl text-gray-400 mb-4">📦</div>
-          <h3 className="text-lg font-medium text-gray-700 mb-2">
+          <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-2">
             No products available
           </h3>
-          <p className="text-gray-500">
+          <p className="text-sm text-gray-500">
             {selectedBrand
               ? `There are no ${selectedBrand} products in this category.`
               : "There are currently no products in this category."}

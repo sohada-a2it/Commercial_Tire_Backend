@@ -53,11 +53,11 @@ const Banner = () => {
       {/* Content */}
       <div className="max-w-7xl mx-auto">
         <div className="relative z-10 flex items-center justify-center h-full px-4 ">
-          <div className="max-w-4xl p-8    relative overflow-hidden">
+          <div className="md:max-w-4xl max-w-5xl p-6 md:p-8    relative overflow-hidden">
             <div className="text-center mb-4">
               <div className="flex justify-center items-center mb-3">
                 <svg
-                  className="w-8 h-8 mr-3 text-amber-500"
+                  className="w-10 h-10 md:w-8 md:h-8 mr-1 md:mr-3 text-amber-500"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -68,18 +68,18 @@ const Banner = () => {
                     clipRule="evenodd"
                   ></path>
                 </svg>
-                <h1 className="text-3xl md:text-4xl font-bold text-white-800">
+                <h1 className="text-2xl md:text-4xl font-bold text-white-800">
                   Welcome to Asian Import & Export
                 </h1>
               </div>
               <div className="h-1 w-24 bg-gradient-to-r from-amber-400 to-teal-500 mx-auto rounded-full mb-2"></div>
             </div>
 
-            <div className="relative p-6 bg-white/80 rounded-xl shadow-inner mb-6 border border-teal-100">
+            <div className="relative p-1 md:p-6 bg-white/80 rounded-xl shadow-inner mb-6 border border-teal-100">
               <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-teal-500 rounded-xl blur opacity-30"></div>
               <div className="flex items-start">
                 <svg
-                  className="w-6 h-6 text-teal-600 mr-3 mt-1 flex-shrink-0"
+                  className="w-6 h-6 text-teal-600 mr-1 md:mr-3 mt-1 flex-shrink-0"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"

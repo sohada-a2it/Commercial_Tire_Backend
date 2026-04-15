@@ -480,7 +480,7 @@ const SubcategoryPageClient = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-5 sm:py-8">
       {/* Dynamic SEO Metadata */}
       <ClientSideMetadata
         title={`${subcategory?.name || "Products"} - ${
@@ -494,10 +494,10 @@ const SubcategoryPageClient = () => {
         canonical={`/products/c/${categorySlug}/${subcategorySlug}`}
       />
 
-      <div className="px-4 max-w-7xl mx-auto">
+      <div className="px-2 sm:px-1 max-w-7xl mx-auto">
         {/* Breadcrumb */}
-        <div className="mb-6">
-          <nav className="flex items-center text-sm text-gray-600">
+        <div className="mb-4 sm:mb-6">
+          <nav className="flex items-center text-xs sm:text-sm text-gray-600">
             <button
               onClick={() => navigate("/products")}
               className="hover:text-teal-600 transition-colors"
@@ -513,7 +513,7 @@ const SubcategoryPageClient = () => {
 
         {/* Category Banner */}
         {category?.name && products?.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <CategoryBanner 
               category={category.name} 
               products={products} 
@@ -522,8 +522,8 @@ const SubcategoryPageClient = () => {
         )}
 
         {/* Search Bar Section */}
-        <div className="mb-8 text-center relative">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+        <div className="mb-6 sm:mb-8 text-center relative">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4">
             Search in {subcategory?.name}
           </h2>
           <form
@@ -540,7 +540,7 @@ const SubcategoryPageClient = () => {
                 onFocus={() =>
                   searchQuery.length > 1 && setShowSuggestions(true)
                 }
-                className="w-full px-6 py-2 md:py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800"
+                className="w-full px-4 sm:px-6 py-2 md:py-3 pr-12 border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm text-teal-800 text-sm sm:text-base"
               />
               <button
                 type="submit"
@@ -578,23 +578,23 @@ const SubcategoryPageClient = () => {
         )}
 
         {/* Category Header with Brand Filter and Sort */}
-        <div ref={filterSectionRef} className="bg-white rounded-lg shadow-md p-1 md:p-6 mb-2 mt-4">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div ref={filterSectionRef} className="bg-white rounded-lg shadow-md p-2 sm:p-3 md:p-6 mb-2 mt-3 sm:mt-4">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-2 md:gap-4">
             <div>
-              <h1 className="md:text-3xl text-2xl font-bold text-teal-800 flex items-center">
-                <span className="mr-3 text-3xl">{category?.icon}</span>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-teal-800 flex items-center">
+                <span className="mr-2 sm:mr-3 text-2xl sm:text-3xl">{category?.icon}</span>
                 {subcategory?.name}
               </h1>
             </div>
 
-            <div className="flex flex-row gap-2 sm:gap-3 w-full lg:w-auto">
+            <div className="flex flex-row gap-2 w-full lg:w-auto">
             {/* Sort by Price Dropdown */}
             <div className="relative flex-1 sm:flex-initial min-w-0" ref={sortDropdownRef}>
               <button
                 onClick={toggleSortDropdown}
-                className="w-full flex items-center justify-between px-2 sm:px-1 py-2 sm:py-3 border border-teal-200 bg-teal-50 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[180px]"
+                className="w-full flex items-center justify-between px-2 sm:px-1 py-2 sm:py-3 border border-teal-200 bg-teal-50 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-xs sm:text-base sm:min-w-[180px]"
               >
-                <span className="truncate sm:truncate-none text-[11px] md:text-sm ">
+                <span className="truncate sm:truncate-none text-[11px] md:text-sm">
                   {sortBy === "price-low-high" 
                     ? "Low to High"
                     : sortBy === "price-high-low"
@@ -647,7 +647,7 @@ const SubcategoryPageClient = () => {
               <div className="relative flex-1 sm:flex-initial min-w-0" ref={tireTypeDropdownRef}>
                 <button
                   onClick={toggleTireTypeDropdown}
-                  className="w-full flex items-center justify-between px-2 sm:px-1 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
+                  className="w-full flex items-center justify-between px-2 sm:px-1 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-xs sm:text-base sm:min-w-[150px]"
                 >
                   <span className="truncate sm:truncate-none text-[11px] md:text-sm">{selectedTireType || "Tire Type"}</span>
                   <svg
@@ -703,7 +703,7 @@ const SubcategoryPageClient = () => {
               <div className="relative flex-1 sm:flex-initial min-w-0" ref={brandDropdownRef}>
                 <button
                   onClick={toggleBrandDropdown}
-                  className="w-full flex items-center justify-between px-2 sm:px-1 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-sm sm:text-base sm:min-w-[150px]"
+                  className="w-full flex items-center justify-between px-2 sm:px-1 py-2 sm:py-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-md hover:bg-teal-200 transition-colors text-xs sm:text-base sm:min-w-[150px]"
                 >
                   <span className="truncate sm:truncate-none text-[11px] md:text-sm">{selectedBrand || "All Brands"}</span>
                   <svg
@@ -760,11 +760,11 @@ const SubcategoryPageClient = () => {
         />
 
         {pagination.totalPages > 1 && (
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-5 sm:mt-6 flex flex-wrap items-center justify-center gap-1 md:gap-2">
             <button
               onClick={() => handlePageChange(Number(pagination.page || 1) - 1)}
               disabled={!pagination.hasPrevPage}
-              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
+              className="rounded-md border border-gray-300 bg-white px-2.5 sm:px-2 py-1.5 sm:py-1 text-xs sm:text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
             >
               Previous
             </button>
@@ -778,7 +778,7 @@ const SubcategoryPageClient = () => {
                 <button
                   key={pageNumber}
                   onClick={() => handlePageChange(pageNumber)}
-                  className={`rounded-md px-3 py-2 text-sm border ${
+                  className={`rounded-md px-2 md:px-2.5 sm:px-2 md:py-1.5 py-1 text-xs  border ${
                     pageNumber === Number(pagination.page || 1)
                       ? "bg-teal-600 text-white border-teal-600"
                       : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
@@ -791,7 +791,7 @@ const SubcategoryPageClient = () => {
             <button
               onClick={() => handlePageChange(Number(pagination.page || 1) + 1)}
               disabled={!pagination.hasNextPage}
-              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
+              className="rounded-md border border-gray-300 bg-white px-2.5 sm:px-2 py-1.5 sm:py-1 text-xs sm:text-sm text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50"
             >
               Next
             </button>
