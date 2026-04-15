@@ -619,21 +619,21 @@ const SubcategoryPageClient = () => {
               </button>
 
               {showSortDropdown && (
-                <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-full sm:w-56 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
+                <div className="absolute left-0 sm:right-0 sm:left-4 mt-2 w-full sm:w-56 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
                   <div
-                    className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
+                    className="md:px-4 px-1 py-1 md:py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium text-xs md:text-base"
                     onClick={() => handleSortSelect("")}
                   >
                     Default
                   </div>
                   <div
-                    className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                    className="md:px-4 px-1 py-1 md:py-2 hover:bg-teal-50 text-teal-900 cursor-pointer  text-xs md:text-base"
                     onClick={() => handleSortSelect("price-low-high")}
                   >
                     Low to High
                   </div>
                   <div
-                    className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                    className="md:px-4 px-1 py-1 md:py-2 hover:bg-teal-50 cursor-pointer text-teal-900  text-xs md:text-base"
                     onClick={() => handleSortSelect("price-high-low")}
                   >
                     High to Low
@@ -670,25 +670,25 @@ const SubcategoryPageClient = () => {
                 {showTireTypeDropdown && (
                   <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-full sm:w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden">
                     <div
-                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium text-xs md:text-base"
                       onClick={() => handleTireTypeSelect(null)}
                     >
                       All Types
                     </div>
                     <div
-                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 text-xs md:text-base"
                       onClick={() => handleTireTypeSelect("Drive")}
                     >
                       Drive
                     </div>
                     <div
-                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 text-xs md:text-base"
                       onClick={() => handleTireTypeSelect("Steer")}
                     >
                       Steer
                     </div>
                     <div
-                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 text-xs md:text-base"
                       onClick={() => handleTireTypeSelect("Trailer")}
                     >
                       Trailer
@@ -726,7 +726,7 @@ const SubcategoryPageClient = () => {
                 {showBrandDropdown && (
                   <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-full sm:w-48 bg-white rounded-sm shadow-lg z-10 border border-gray-200 overflow-hidden max-h-60 overflow-y-auto">
                     <div
-                      className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium"
+                      className="px-2 md:px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 font-medium text-xs md:text-base"
                       onClick={() => handleBrandSelect(null)}
                     >
                       All Brands
@@ -734,7 +734,7 @@ const SubcategoryPageClient = () => {
                     {uniqueBrands.map((brand) => (
                       <div
                         key={brand}
-                        className="px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900"
+                        className="px-2 md:px-4 py-2 hover:bg-teal-50 cursor-pointer text-teal-900 text-xs md:text-base"
                         onClick={() => handleBrandSelect(brand)}
                       >
                         {brand}
