@@ -219,12 +219,12 @@ const ProductList = ({
                 </div>
 
                 {/* Product Name */}
-                <h3 className="font-semibold text-gray-800 text-[12px] sm:text-xs mb-1.5 line-clamp-2 min-h-[3rem] sm:h-18 leading-snug break-words">
+                <h3 className="font-semibold text-gray-800 text-[12px] sm:text-xs mb-1 md:mb-1.5 line-clamp-2 min-h-[3rem] sm:h-18 leading-snug break-words">
                   {product.name || "Unnamed Product"}
                 </h3>
 
                 {/* Product Details */}
-                <div className="mb-2 sm:mb-3 space-y-0.5 sm:space-y-1">
+                <div className="mb-2 sm:mb-1 space-y-0.5 ">
                   {product.keyAttributes?.["MOQ"] && (
                     <p className="text-xs sm:text-sm text-gray-600">
                       <span className="font-medium">MOQ:</span>{" "}
@@ -279,16 +279,16 @@ const ProductList = ({
                 {/* Pricing Information */}
                 <div className="mt-auto">
                   {product.offerPrice && product.price ? (
-                    <div className="flex flex-wrap items-end gap-1.5 sm:gap-2 mb-2 sm:mb-3">
+                    <div className="flex flex-wrap items-end gap-1.5 sm:gap-2 mb-2 sm:mb-1">
                       <span className="text-base sm:text-lg font-bold text-teal-600">
                         {product.offerPrice}
                       </span>
-                      <span className="text-xs sm:text-sm text-gray-500 line-through">
+                      <span className="text-xs  text-gray-500 line-through">
                         {product.price}
                       </span>
                     </div>
                   ) : product.price ? (
-                    <p className="text-base sm:text-lg font-bold text-teal-600 mb-2 sm:mb-3">
+                    <p className="text-base sm:text-lg font-bold text-teal-600 mb-2 sm:mb-1">
                       {product.price}
                     </p>
                   ) : null}
@@ -298,7 +298,7 @@ const ProductList = ({
                     {/* See Details Button */}
                     <Link
                       href={`/product/${product.id}`}
-                      className="flex-1 border bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-md text-[10px] sm:text-sm font-medium transition-colors text-center whitespace-nowrap"
+                      className="flex-1 border bg-teal-500 hover:bg-teal-600 text-white py-1.5 md:py-2 rounded-md text-[10px] sm:text-sm font-medium transition-colors text-center whitespace-nowrap"
                     >
                       <span className="sm:hidden">Details</span>
                       <span className="hidden sm:inline">See Details</span>
