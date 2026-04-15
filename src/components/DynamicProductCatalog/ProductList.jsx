@@ -219,7 +219,7 @@ const ProductList = ({
                 </div>
 
                 {/* Product Name */}
-                <h3 className="font-semibold text-gray-800 text-[12px] sm:text-xs mb-1 md:mb-1.5 line-clamp-2 min-h-[3rem] sm:h-18 leading-snug break-words">
+                <h3 className="font-semibold text-gray-800 text-[12px] sm:text-sm md:text-xl mb-1 sm:mb-1.5 line-clamp-2 min-h-[3rem] sm:min-h-[2.7rem] sm:h-14 lg:h-16 leading-snug sm:leading-tight break-words">
                   {product.name || "Unnamed Product"}
                 </h3>
 
