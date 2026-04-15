@@ -218,7 +218,7 @@ const CartSidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed right-2 top-0 h-full min-w-[280px] w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)] max-w-[420px] md:right-0 md:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 h-full min-w-[280px] w-[calc(100%-1rem)] right-0 sm:w-[calc(100%-1.5rem)] max-w-[420px] md:right-0 md:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
           isCartOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
