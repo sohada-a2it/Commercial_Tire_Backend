@@ -310,7 +310,7 @@ const ProductList = ({
                       onClick={() => handleAddToCart(product)}
                       className="flex-1 border border-cyan-700 hover:bg-teal-600 hover:text-white text-cyan-600 py-2 rounded-md text-sm font-medium transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-1"
                     >
-                      <ShoppingCart className="w-4 h-4" />
+                      <ShoppingCart className="w-4 h-4 hidden md:block" />
                       Add to Cart
                     </button>
                   </div>
