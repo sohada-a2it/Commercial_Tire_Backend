@@ -544,8 +544,8 @@ const ProductDetails = () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <div className="w-full bg-gray-50 px-4 lg:px-0">
-        <div className="max-w-7xl mx-auto p-0 sm:p-1 md:p-6 text-gray-800 rounded-lg">
+      <div className="w-full bg-gray-50 px-2 sm:px-4 lg:px-0">
+        <div className="max-w-7xl mx-auto p-0 sm:p-2 md:p-6 text-gray-800 rounded-lg">
 
           {/* Breadcrumb Navigation */}
           <div className="mb-3">
@@ -593,7 +593,7 @@ const ProductDetails = () => {
           <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <button
               onClick={handleGoBack}
-              className="flex items-center gap-2 text-teal-700 hover:text-teal-800 font-medium transition-colors group"
+              className="flex items-center gap-2 text-sm sm:text-base text-teal-700 hover:text-teal-800 font-medium transition-colors group"
             >
               <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
               <span>Back</span>
@@ -640,11 +640,11 @@ const ProductDetails = () => {
             </form>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-bold mb-8 sm:mb-12 text-center text-teal-800 hover:text-teal-900 transition-colors duration-300 border-b-2 border-amber-400 pb-2">
+          <h2 className="text-xl sm:text-3xl font-bold mb-6 sm:mb-12 text-center text-teal-800 hover:text-teal-900 transition-colors duration-300 border-b-2 border-amber-400 pb-2">
             {product.keyAttributes?.["Brand"] || "Product Details"}
           </h2>
 
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
             {/* Left: Image Gallery */}
             <div className="flex flex-col items-center w-full lg:w-2/5 relative">
               <div className="relative overflow-hidden group w-full max-w-lg cursor-pointer"
@@ -697,14 +697,14 @@ const ProductDetails = () => {
 
             {/* Center: Product Details */}
             <div className="w-full lg:w-1/2 space-y-2">
-              <h1 className="text-xl sm:text-2xl font-bold text-teal-800">
+              <h1 className="text-lg sm:text-2xl font-bold text-teal-800">
                 {product.name}
               </h1>
-              <p className="text-lg sm:text-xl text-yellow-600 mb-2 font-semibold">
+              <p className="text-base sm:text-xl text-yellow-600 mb-2 font-semibold">
                 Price: {product?.price || "N/A"}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-700 mt-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-700 mt-4">
                 {/* Conditionally render attributes based on product type */}
                 {product.keyAttributes?.["Load Range"] && (
                   <p>
@@ -832,7 +832,7 @@ const ProductDetails = () => {
 
               {/* Customer Reviews (if available) */}
               {hasReviews && (
-                <div className="text-sm mt-2 flex items-center gap-2">
+                <div className="text-xs sm:text-sm mt-2 flex flex-wrap items-center gap-2">
                   <span>Customer Reviews:</span>
                   <span className="flex items-center">
                     {renderStars(reviews[0]?.rating || averageReviewRating)}
@@ -847,11 +847,11 @@ const ProductDetails = () => {
               {/* Product Description */}
               {product.description && (
                 <div className="mt-8">
-                  <h3 className="text-xl sm:text-2xl font-semibold mb-1 text-teal-800 ">
+                  <h3 className="text-lg sm:text-2xl font-semibold mb-1 text-teal-800 ">
                     Description
                   </h3>
-                  <p className="text-gray-700 text-sm">{product.description}</p>
-                  <span className="text-sm text-red-500 font-bold -mt-6">
+                  <p className="text-gray-700 text-xs sm:text-sm">{product.description}</p>
+                  <span className="text-xs sm:text-sm text-red-500 font-bold -mt-6">
                     {product.categoryName === "Vehicle Parts and Accessories" && " *DOT, ECE Certified"}
                     {product.categoryName === "Frozen Fish" && " *ISO Certified"}
                     {product.categoryName === "Dry Food" && " *ISO Certified"}
@@ -863,7 +863,7 @@ const ProductDetails = () => {
 
                   {/* Conditional Shipping Text */}
                   <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg mb-2">
-                    <p className="text-sm text-blue-800 font-medium">
+                    <p className="text-xs sm:text-sm text-blue-800 font-medium">
                       {isTyre
                         ? "🚚 DDP from Thailand — No hidden costs. U.S. FET & import taxes included"
                         : "📦 Shipping cost will be calculated based on your location"}
@@ -880,7 +880,7 @@ const ProductDetails = () => {
 
             {/* Right: Purchase Box */}
   {/* Right: Purchase Box - Compact Style */}
-<div className="w-full lg:w-1/4 bg-white text-gray-800 p-4 rounded-lg shadow-lg border border-gray-200 h-fit">
+<div className="w-full lg:w-1/4 bg-white text-gray-800 p-3 sm:p-4 rounded-lg shadow-lg border border-gray-200 h-fit">
   {/* Price Section - Compact */}
   <div className="mb-2">
     {product.price && product.offerPrice ? (
@@ -893,14 +893,14 @@ const ProductDetails = () => {
             {product.price}
           </span>
         </div>
-        <div className="text-2xl font-bold text-amber-600 shadow-glow-sm">
+        <div className="text-xl sm:text-2xl font-bold text-amber-600 shadow-glow-sm">
           {product.offerPrice}
         </div>
       </div>
     ) : product.price ? (
       <div className="text-center">
         <div className="text-sm text-gray-500 mb-1">Price</div>
-        <div className="text-2xl font-bold text-teal-800">
+        <div className="text-xl sm:text-2xl font-bold text-teal-800">
           {product.price}
         </div>
       </div>
@@ -915,7 +915,7 @@ const ProductDetails = () => {
   {product.pricingTiers && product.pricingTiers.length > 0 && (
     <div className="mb-4 pt-3">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm sm:text-md font-semibold text-red-500">Volume Pricing<span>↓</span></span>
+        <span className="text-xs sm:text-md font-semibold text-red-500">Volume Pricing<span>↓</span></span>
         <span className="text-xs text-teal-600">Save more</span>
       </div>
       
@@ -1031,7 +1031,7 @@ const ProductDetails = () => {
   {/* Quantity Selector - Compact */}
   <div className="mb-4">
     <div className="flex items-center justify-between mb-2">
-      <span className="text-sm font-medium text-gray-700">Quantity</span>
+      <span className="text-xs sm:text-sm font-medium text-gray-700">Quantity</span>
       <span className="text-xs text-gray-500">Add {quantity} to cart</span>
     </div>
     <div className="flex items-center justify-center gap-3">
@@ -1090,7 +1090,7 @@ const ProductDetails = () => {
         pricingTiers: product.pricingTiers || [],
       });
     }}
-    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-md transition-colors flex items-center justify-center gap-2 shadow hover:shadow-md"
+    className="w-full bg-teal-600 hover:bg-teal-700 text-white text-sm sm:text-base font-medium py-2.5 sm:py-3 rounded-md transition-colors flex items-center justify-center gap-2 shadow hover:shadow-md"
   >
     <ShoppingCart className="w-4 h-4" />
     <span>Add to Cart</span>
@@ -1101,7 +1101,7 @@ const ProductDetails = () => {
           {/* Tabbed Interface for Product Details */}
           <div className="mt-12">
             {/* Tab Navigation */}
-            <div className="flex overflow-x-auto border-b border-gray-200 mb-6 gap-1 whitespace-nowrap">
+            <div className="flex overflow-x-auto border-b border-gray-200 mb-4 sm:mb-6 gap-1 whitespace-nowrap">
               <button
                 onClick={() => setActiveTab("specifications")}
                 className={`px-4 sm:px-6 py-3 font-semibold transition-colors relative ${
@@ -1135,14 +1135,14 @@ const ProductDetails = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
+            <div className="bg-white p-3 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
               {/* Technical Specifications Tab */}
               {activeTab === "specifications" && product.keyAttributes && (
                 <div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-teal-800 mb-4">
+                  <h3 className="text-xl sm:text-3xl font-bold text-teal-800 mb-4">
                     Product Specifications
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
                     {Object.entries(product.keyAttributes).map(([key, value]) => {
                       // Skip supplier-specific fields that will be shown separately
                       const supplierFields = [
@@ -1164,8 +1164,8 @@ const ProductDetails = () => {
                             key={key}
                             className="bg-gray-50 p-2 rounded-lg border border-teal-100"
                           >
-                            <p className="text-gray-600 text-sm mb-1">{key}</p>
-                            <p className="text-teal-800 font-medium">{value}</p>
+                            <p className="text-gray-600 text-xs sm:text-sm mb-1">{key}</p>
+                            <p className="text-teal-800 text-xs sm:text-sm font-medium">{value}</p>
                           </div>
                         );
                       }
@@ -1178,23 +1178,23 @@ const ProductDetails = () => {
               {/* Pricing Options Tab */}
               {activeTab === "pricing" && (
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-teal-800 mb-4">
+                  <h3 className="text-base sm:text-xl font-bold text-teal-800 mb-4">
                     Pricing Details
                   </h3>
                   <div className="space-y-6">
                     {/* Base Price */}
                     <div className="bg-gray-50 p-4 rounded-lg">
-                        <h4 className="font-semibold text-teal-700 mb-2 text-base sm:text-lg">Base Price</h4>
+                        <h4 className="font-semibold text-teal-700 mb-2 text-sm sm:text-lg">Base Price</h4>
                       {product.price && product.offerPrice ? (
                         <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <p className="text-2xl font-bold text-amber-600">
+                          <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
+                            <p className="text-xl sm:text-2xl font-bold text-amber-600">
                               {product.offerPrice}
                             </p>
-                            <p className="text-xl line-through text-gray-500">
+                            <p className="text-base sm:text-xl line-through text-gray-500">
                               {product.price}
                             </p>
-                            <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            <span className="bg-red-100 text-red-800 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold">
                               {Math.round(
                                 ((parsePrice(product.price) - parsePrice(product.offerPrice)) /
                                   parsePrice(product.price)) *
@@ -1204,9 +1204,9 @@ const ProductDetails = () => {
                           </div>
                         </div>
                       ) : product.price ? (
-                        <p className="text-2xl font-bold text-teal-800">{product.price}</p>
+                        <p className="text-xl sm:text-2xl font-bold text-teal-800">{product.price}</p>
                       ) : (
-                        <p className="text-gray-500">Price available upon request</p>
+                        <p className="text-sm text-gray-500">Price available upon request</p>
                       )}
                     </div>
 
@@ -1226,10 +1226,10 @@ const ProductDetails = () => {
                                   key={index}
                                   className="flex justify-between items-center bg-white p-3 rounded border border-teal-100"
                                 >
-                                  <span className="text-gray-700">
+                                  <span className="text-xs sm:text-sm text-gray-700">
                                     {tier.minWeight}g - {tier.maxWeight}g
                                   </span>
-                                  <span className="font-semibold text-teal-700">
+                                  <span className="text-xs sm:text-sm font-semibold text-teal-700">
                                     {tier.pricePerKg}
                                   </span>
                                 </div>
@@ -1261,11 +1261,11 @@ const ProductDetails = () => {
                                   key={index}
                                   className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
                                 >
-                                  <span className="text-gray-700">
+                                  <span className="text-xs sm:text-sm text-gray-700">
                                     {tier.minQuantity}
                                     {tier.maxQuantity ? ` - ${tier.maxQuantity}` : '+'} units
                                   </span>
-                                  <span className="font-semibold text-teal-700">
+                                  <span className="text-xs sm:text-sm font-semibold text-teal-700">
                                     {tier.pricePerTire || tier.pricePerUnit}
                                   </span>
                                 </div>
@@ -1298,8 +1298,8 @@ const ProductDetails = () => {
                                   key={index}
                                   className="flex justify-between items-center bg-white p-3 rounded border border-gray-200"
                                 >
-                                  <span className="text-gray-700">Size: {tier.size}</span>
-                                  <span className="font-semibold text-teal-700">
+                                  <span className="text-xs sm:text-sm text-gray-700">Size: {tier.size}</span>
+                                  <span className="text-xs sm:text-sm font-semibold text-teal-700">
                                     {tier.pricePerTon}
                                   </span>
                                 </div>
@@ -1366,14 +1366,14 @@ const ProductDetails = () => {
               {/* Reviews Tab */}
               {activeTab === "reviews" && (
                 <div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-teal-800 mb-4">Customer Reviews</h3>
+                  <h3 className="text-xl sm:text-3xl font-bold text-teal-800 mb-4">Customer Reviews</h3>
                   {product.userReviews && product.userReviews.length > 0 ? (
                     <div>
                       {/* Overall Rating Summary */}
                       <div className="bg-gray-50 p-3 rounded-lg mb-2">
                         <div className="flex items-center gap-4 mb-2">
                           <div className="text-center">
-                            <div className="text-4xl font-bold text-teal-800">
+                            <div className="text-3xl sm:text-4xl font-bold text-teal-800">
                               {(
                                 product.userReviews.reduce((sum, review) => sum + review.rating, 0) /
                                 product.userReviews.length
@@ -1392,11 +1392,11 @@ const ProductDetails = () => {
                       {/* User Reviews */}
                       <div className="space-y-4">
                         {product.userReviews.map((review, index) => (
-                          <div key={index} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                          <div key={index} className="bg-white p-3 sm:p-5 rounded-lg border border-gray-200 shadow-sm">
                             <div className="flex items-start justify-between mb-3">
                               <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                  <h4 className="font-semibold text-gray-800">{review.username}</h4>
+                                  <h4 className="text-sm sm:text-base font-semibold text-gray-800">{review.username}</h4>
                                   {review.verified && (
                                     <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
                                       ✓ Verified Purchase
@@ -1405,7 +1405,7 @@ const ProductDetails = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                   <div className="flex">{renderStars(review.rating)}</div>
-                                  <span className="text-sm text-gray-500">
+                                  <span className="text-xs sm:text-sm text-gray-500">
                                     {new Date(review.date).toLocaleDateString('en-US', {
                                       year: 'numeric',
                                       month: 'long',
@@ -1416,9 +1416,9 @@ const ProductDetails = () => {
                               </div>
                             </div>
                             {review.title && (
-                              <h5 className="font-semibold text-gray-900 mb-2">{review.title}</h5>
+                              <h5 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">{review.title}</h5>
                             )}
-                            <p className="text-gray-700 text-sm leading-relaxed">{review.text}</p>
+                            <p className="text-gray-700 text-xs sm:text-sm leading-relaxed">{review.text}</p>
                           </div>
                         ))}
                       </div>
@@ -1429,7 +1429,7 @@ const ProductDetails = () => {
                       <div className="bg-gray-50 p-6 rounded-lg mb-6">
                         <div className="flex items-center gap-4 mb-4">
                           <div className="text-center">
-                            <div className="text-5xl font-bold text-teal-800">
+                            <div className="text-4xl sm:text-5xl font-bold text-teal-800">
                               {product.rating.toFixed(1)}
                             </div>
                             <div className="flex items-center justify-center mt-2">
@@ -1462,11 +1462,11 @@ const ProductDetails = () => {
           </div>
 
           {/* Supplier Information */}
-          <div className="mt-12 bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+          <div className="mt-10 sm:mt-12 bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
             <h3 className="text-xl font-semibold mb-4 text-teal-800 border-b-2 border-amber-400 pb-2">
               Supplier Information
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-base">
               {product.keyAttributes?.["Brand"] && (
                 <div>
                   <p className="text-gray-600">Brand Name:</p>
@@ -1545,11 +1545,11 @@ const ProductDetails = () => {
           {/* Customization Options */}
           {product.customizationOptions &&
             product.customizationOptions.length > 0 && (
-              <div className="mt-12 bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+              <div className="mt-10 sm:mt-12 bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
                 <h3 className="text-xl font-semibold mb-4 text-teal-800 border-b-2 border-amber-400 pb-2">
                   Customization Options
                 </h3>
-                <ul className="list-disc list-inside text-gray-700">
+                <ul className="list-disc list-inside text-gray-700 text-sm sm:text-base">
                   {product.customizationOptions.map((option, index) => (
                     <li key={index}>{option}</li>
                   ))}
@@ -1559,13 +1559,13 @@ const ProductDetails = () => {
 
           {/* Shipping Information */}
           {product.shipping && (
-            <div className="mt-12 bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+            <div className="mt-10 sm:mt-12 bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
               <h3 className="text-xl font-semibold mb-4 text-teal-800 border-b-2 border-amber-400 pb-2">
                 Shipping & Delivery
               </h3>
-              <p className="text-gray-700">{product.shipping}</p>
+              <p className="text-gray-700 text-sm sm:text-base">{product.shipping}</p>
               {product.packagingAndDelivery && (
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="mt-4 grid grid-cols-2 md:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-base">
                   <div>
                     <p className="text-gray-600">Selling Units:</p>
                     <p className="text-teal-800 font-medium">
