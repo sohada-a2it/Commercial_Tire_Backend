@@ -7,7 +7,7 @@ import { Link, useNavigate, useLocation, usePathname } from "@/lib/navigation";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
-import AuthModal from "@/components/Auth/AuthModal";
+import AuthDrawer from "@/components/Auth/AuthModal";
 import dataService from "@/services/dataService";
 
 const Navbar = () => {
@@ -121,37 +121,33 @@ const Navbar = () => {
 
   // active link classes
   const getLinkClasses = (path) =>
-    `text-white font-medium py-2 border-b-2 transition-colors ${
-      location.pathname === path
-        ? "text-amber-300 border-amber-300"
-        : "hover:text-amber-200 border-transparent hover:border-amber-200"
-    }`;
+  `text-gray-300 font-medium py-2 border-b-2 transition-all duration-300 ${
+    location.pathname === path
+      ? "text-amber-400 border-amber-400"
+      : "hover:text-amber-300 border-transparent hover:border-amber-300"
+  }`;
 
   const getMobileLinkClasses = (path) =>
     `text-white text-sm font-medium py-2.5 px-3 rounded-md transition-colors ${
       location.pathname === path
-        ? "bg-teal-700 text-amber-300"
-        : "hover:bg-teal-700"
+        ? "bg-amber-700 text-amber-300"
+        : "hover:bg-amber-700"
     }`;
 
   return (
-    <nav className="bg-gradient-to-r from-teal-800 to-teal-600 shadow-lg px-2 sm:px-4 py-1.5 sm:py-2 sticky top-0 z-50">
+    <nav className="bg-gray-600 shadow-lg px-2 sm:px-4 py-1.5 sm:py-2 sticky top-0 z-50">
       <div className="flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center">
-          <Link to="/" className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="Asian Import and Export"
-              width={150}
-              height={64}
-              className="h-10 md:h-16 w-auto"
-            />
-            <div className="ml-1 text-white leading-tight max-w-[190px] sm:max-w-none">
-              <p className="font-semibold md:text-lg text-xs sm:text-sm">ASIAN IMPORT & EXPORT Co. LTD</p>
-              <p className="md:text-sm text-[10px] sm:text-xs text-yellow-500">Manufacturer & Wholesaler</p>
-            </div>
-          </Link>
+          <Link to="/" className="flex items-center gap-2">
+  <Image
+    src="/logo (2).png"
+    alt="Commercial Tire"
+    width={200}
+    height={100}
+    className="h-12 md:h-16 w-auto object-contain"
+  />
+</Link>
         </div>
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center space-x-7">
@@ -173,12 +169,12 @@ const Navbar = () => {
             </button>
 
             {isProductsOpen && (
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-white shadow-2xl rounded-lg p-4 w-[700px] max-w-[90vw] z-20 border border-teal-200">
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-white shadow-2xl rounded-lg p-4 w-[700px] max-w-[90vw] z-20 border border-amber-200">
                 <div className="flex gap-3 flex-wrap">
                   {productCategories.length > 0 ? (
                     productCategories.map((category) => (
                       <div key={category.categorySlug} className="flex-1 min-w-[130px]">
-                        <h3 className="text-sm font-bold text-teal-800 pb-1 mb-2 border-b border-teal-200 truncate" title={category.name}>
+                        <h3 className="text-sm font-bold text-amber-800 pb-1 mb-2 border-b border-amber-200 truncate" title={category.name}>
                           {category.name}
                         </h3>
                         <div className="space-y-0.5">
@@ -186,7 +182,7 @@ const Navbar = () => {
                             <button
                               key={`${category.categorySlug}-${item}`}
                               onClick={() => handleProductClick(category.categorySlug, item)}
-                              className="block w-full text-left py-1 px-2 hover:bg-teal-50 rounded text-xs text-gray-700"
+                              className="block w-full text-left py-1 px-2 hover:bg-amber-50 rounded text-xs text-gray-700"
                             >
                               {item}
                             </button>
@@ -200,10 +196,10 @@ const Navbar = () => {
                 </div>
 
                 {/* View All Products */}
-                <div className="mt-4 pt-3 border-t border-teal-200">
+                <div className="mt-4 pt-3 border-t border-amber-200">
                   <button
                     onClick={handleViewAllProducts}
-                    className="block w-full py-1.5 px-3 bg-gradient-to-r from-teal-600 to-teal-700 text-white font-medium rounded text-xs text-center hover:from-teal-700 hover:to-teal-800"
+                    className="block w-full py-1.5 px-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white font-medium rounded text-xs text-center hover:from-amber-700 hover:to-amber-800"
                   >
                     View All Products
                   </button>
@@ -245,7 +241,7 @@ const Navbar = () => {
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-2 text-white hover:text-amber-300 transition-colors"
               >
-                <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center overflow-hidden border-2 border-white/30">
+                <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center overflow-hidden border-2 border-white/30">
                   {user.photoURL ? (
                     <Image
                       src={user.photoURL}
@@ -277,7 +273,7 @@ const Navbar = () => {
                       navigate("/dashboard");
                       setIsProfileOpen(false);
                     }}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-teal-600 hover:bg-teal-50 transition-colors"
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 transition-colors"
                   >
                     <LayoutDashboard className="w-4 h-4" />
                     Dashboard
@@ -297,24 +293,19 @@ const Navbar = () => {
               onClick={() => setAuthModalOpen(true)}
               className="flex items-center gap-2 text-white hover:text-amber-300 transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-teal-500/50 flex items-center justify-center border-2 border-white/30">
+              <div className="w-8 h-8 rounded-full bg-amber-500/50 flex items-center justify-center border-2 border-white/30">
                 <User className="w-5 h-5" />
               </div>
               <span className="text-sm font-medium">Sign In</span>
             </button>
-          )}
-
-          <div className="text-white text-sm border-l border-teal-500 pl-4">
-            <div className="font-medium">Import & Export Experts</div>
-            <div className="text-teal-200 text-xs">Since 2017</div>
-          </div>
+          )} 
         </div>
         
 
         {/* Mobile Menu Button */}
         <div className="flex items-center lg:hidden">
           <button
-            className="text-white p-1.5 sm:p-2 rounded-lg hover:bg-teal-700"
+            className="text-white p-1.5 sm:p-2 rounded-lg hover:bg-amber-700"
             onClick={toggleMenu}
           >
             {isMenuOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
@@ -337,7 +328,7 @@ const Navbar = () => {
           
           {/* Menu Content */}
           <div 
-            className="lg:hidden mt-3 py-3 border-t border-teal-700 bg-teal-800 rounded-lg relative pointer-events-auto max-h-[75vh] overflow-y-auto" 
+            className="lg:hidden mt-3 py-3 border-t border-amber-700 bg-amber-800 rounded-lg relative pointer-events-auto max-h-[75vh] overflow-y-auto" 
             style={{ zIndex: 40 }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -363,7 +354,7 @@ const Navbar = () => {
                   toggleCart();
                   setIsMenuOpen(false);
                 }}
-                className="relative text-white hover:text-amber-300 transition-colors py-2.5 px-3 rounded-md hover:bg-teal-700 text-left"
+                className="relative text-white hover:text-amber-300 transition-colors py-2.5 px-3 rounded-md hover:bg-amber-700 text-left"
               >
                 <div className="flex items-center gap-2">
                   <ShoppingCart className="w-4 h-4" />
@@ -393,9 +384,9 @@ const Navbar = () => {
 
               {/* Mobile Profile/Login */}
               {user ? (
-                <div className="border-t border-teal-700 mt-2 pt-2">
+                <div className="border-t border-amber-700 mt-2 pt-2">
                   <div className="flex items-center gap-3 px-3 py-2 text-white">
-                    <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center overflow-hidden">
+                    <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center overflow-hidden">
                       {user.photoURL ? (
                         <Image
                           src={user.photoURL}
@@ -412,7 +403,7 @@ const Navbar = () => {
                       <p className="text-sm font-medium truncate">
                         {userProfile?.fullName || user.displayName}
                       </p>
-                      <p className="text-xs text-teal-200 truncate">{user.email}</p>
+                      <p className="text-xs text-amber-200 truncate">{user.email}</p>
                     </div>
                   </div>
                   <button
@@ -420,7 +411,7 @@ const Navbar = () => {
                       navigate("/dashboard");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-teal-200 hover:bg-teal-700 transition-colors rounded-md"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-amber-200 hover:bg-amber-700 transition-colors rounded-md"
                   >
                     <LayoutDashboard className="w-4 h-4" />
                     Dashboard
@@ -430,7 +421,7 @@ const Navbar = () => {
                       handleLogout();
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-300 hover:bg-teal-700 transition-colors rounded-md"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-300 hover:bg-amber-700 transition-colors rounded-md"
                   >
                     <LogOut className="w-4 h-4" />
                     Sign Out
@@ -442,7 +433,7 @@ const Navbar = () => {
                     setAuthModalOpen(true);
                     setIsMenuOpen(false);
                   }}
-                  className="flex items-center gap-2 px-3 py-2.5 text-sm text-white hover:bg-teal-700 rounded-md transition-colors"
+                  className="flex items-center gap-2 px-3 py-2.5 text-sm text-white hover:bg-amber-700 rounded-md transition-colors"
                 >
                   <User className="w-5 h-5" />
                   <span className="font-medium">Sign In / Register</span>
@@ -454,10 +445,10 @@ const Navbar = () => {
       )}
 
       {/* Auth Modal */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
+      <AuthDrawer
+  isOpen={authModalOpen}
+  onClose={() => setAuthModalOpen(false)}
+/>
     </nav>
   );
 };

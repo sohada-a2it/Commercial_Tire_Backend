@@ -27,9 +27,10 @@ export const sidebarRoutesByRole = {
     { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
+    { icon: Package, label: "Featured Products", href: "/dashboard/featured" },
     { icon: Images, label: "Media Library", href: "/dashboard/media" },
     { icon: Users, label: "Customer A-Z", href: "/dashboard/users" },
-        { icon: UserCog, label: "Authorized Persons", href: "/dashboard/authorized-persons" },
+    { icon: UserCog, label: "Authorized Persons", href: "/dashboard/authorized-persons" },
 
   ],
   moderator: [

@@ -3,7 +3,7 @@
 
 "use client";
 
-import { useRouter as useNextRouter, usePathname, useSearchParams as useNextSearchParams } from 'next/navigation';
+import { useRouter as useNextRouter, usePathname, useSearchParams as useNextSearchParams, useParams as useNextParams } from 'next/navigation';
 import NextLink from 'next/link';
 import { Suspense } from 'react';
 
@@ -38,6 +38,19 @@ export function useSearchParams() {
     // Return empty URLSearchParams for static generation
     if (typeof window === 'undefined') {
       return new URLSearchParams();
+    }
+    throw error;
+  }
+}
+
+// Wrapper for useParams (for dynamic route segments)
+export function useParams() {
+  try {
+    return useNextParams();
+  } catch (error) {
+    // Return empty params for static generation
+    if (typeof window === 'undefined') {
+      return {};
     }
     throw error;
   }

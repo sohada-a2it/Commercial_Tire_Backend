@@ -77,7 +77,28 @@ class DataService {
     return payload?.product || null;
   }
 
+  // আপডেটেড মেথড - ক্যাটাগরি আইডি দ্বারা প্রোডাক্ট ফেচ করে
+  async getProductsByCategoryId(categoryId, filters = {}) {
+    console.log("Fetching products by category ID:", categoryId);
+    
+    // প্রথমে ক্যাটাগরির নাম বের করুন
+    const categories = await this.getCategories();
+    const category = categories.find(cat => cat.id === categoryId || cat._id === categoryId);
+    
+    if (!category) {
+      console.error("Category not found with ID:", categoryId);
+      return { products: [], pagination: {} };
+    }
+    
+    console.log("Found category:", category.name);
+    
+    // ক্যাটাগরির নাম দিয়ে প্রোডাক্ট ফেচ করুন
+    return this.fetchProducts({ category: category.name, ...filters });
+  }
+
+  // পুরাতন মেথড - ক্যাটাগরি নাম দ্বারা (কম্প্যাটিবিলিটির জন্য রাখলাম)
   async getProductsByCategory(categoryName, filters = {}) {
+    console.log("Fetching products by category name:", categoryName);
     const data = await this.fetchProducts({ category: categoryName, ...filters });
     return data;
   }
@@ -99,6 +120,11 @@ class DataService {
         (cat) => String(cat?.name || "").toLowerCase() === String(categoryName || "").toLowerCase()
       ) || null
     );
+  }
+
+  async getCategoryById(categoryId) {
+    const categories = await this.getCategories();
+    return categories.find(cat => cat.id === categoryId || cat._id === categoryId) || null;
   }
 
   async getSubcategoryByName(categoryName, subcategoryName) {

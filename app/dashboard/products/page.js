@@ -6,8 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
-import { deleteProduct, fetchProducts } from "@/services/catalogService";
-import { ImagePlus, Loader2, Pencil, Plus, RefreshCw, Trash2 } from "lucide-react";
+import { deleteProduct, fetchProducts, addToFeatured, removeFromFeatured } from "@/services/catalogService";
+import { ImagePlus, Loader2, Pencil, Plus, RefreshCw, Trash2, Star, StarOff } from "lucide-react";
 import toast from "react-hot-toast";
 
 const VEHICLE_CATEGORY_NAME = "Vehicle Parts and Accessories";
@@ -44,6 +44,7 @@ export default function ProductsPage() {
   const [pagination, setPagination] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false });
   const [filterOptions, setFilterOptions] = useState({ categories: [], subcategories: [], categoryMap: {}, brands: [], patterns: [] });
   const [loading, setLoading] = useState(true);
+  const [featuredLoading, setFeaturedLoading] = useState({});
 
   const didInitialLoad = useRef(false);
   const didHydrateFromUrl = useRef(false);
@@ -152,12 +153,53 @@ export default function ProductsPage() {
     }
   }, [isVehicleCategorySelected, filterPattern]);
 
+  const handleToggleFeatured = async (product) => {
+    if (!isAdmin) {
+      toast.error("Only admin can manage featured products");
+      return;
+    }
+
+    setFeaturedLoading(prev => ({ ...prev, [product.id]: true }));
+
+    try {
+      if (product.isFeatured) {
+        const result = await removeFromFeatured(product.id);
+        if (result.success) {
+          toast.success(`${product.name} removed from featured`);
+          setProducts(prev => prev.map(p => 
+            p.id === product.id ? { ...p, isFeatured: false } : p
+          ));
+        } else {
+          toast.error(result.message || "Failed to remove from featured");
+        }
+      } else {
+        const result = await addToFeatured(product.id, {
+          order: 0,
+          addedBy: userProfile?.email || "admin"
+        });
+        if (result.success) {
+          toast.success(`${product.name} added to featured`);
+          setProducts(prev => prev.map(p => 
+            p.id === product.id ? { ...p, isFeatured: true } : p
+          ));
+        } else if (result.message?.includes("already featured")) {
+          toast.error("Product is already featured");
+        } else {
+          toast.error(result.message || "Failed to add to featured");
+        }
+      }
+    } catch (error) {
+      toast.error(error.message || "Something went wrong");
+    } finally {
+      setFeaturedLoading(prev => ({ ...prev, [product.id]: false }));
+    }
+  };
+
   const categoryOptions = useMemo(() => ["all", ...(filterOptions.categories || [])], [filterOptions.categories]);
   
-  // Filter subcategories based on selected category
   const subcategoryOptions = useMemo(() => {
     if (filterCategory === "all") {
-      return ["all"]; // No subcategories when no category is selected
+      return ["all"];
     }
     const categoryMap = filterOptions.categoryMap || {};
     const subcats = categoryMap[filterCategory] || [];
@@ -186,7 +228,7 @@ export default function ProductsPage() {
     await loadData(page);
   };
 
-  const visibleColSpan = isVehicleCategorySelected ? 6 : 5;
+  const visibleColSpan = isVehicleCategorySelected ? 7 : 6;
 
   if (!isStaff) {
     return (
@@ -282,6 +324,7 @@ export default function ProductsPage() {
             <div className="text-sm text-gray-700">20 products per page</div>
           </div>
 
+          {/* Mobile View */}
           <div className="grid gap-4 sm:hidden">
             {products.length === 0 ? (
               <div className="rounded-2xl border border-gray-200 p-4 bg-white text-center text-gray-700">No products found.</div>
@@ -291,13 +334,16 @@ export default function ProductsPage() {
               products.map((product) => {
                 const routeId = product.sourceId || product.id;
                 return (
-                  <div key={product.id} className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+                  <div key={product.id} className={`rounded-2xl border p-4 shadow-sm ${product.isFeatured ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 bg-white'}`}>
                     <div className="flex items-start gap-3">
                       <div className="h-14 w-14 overflow-hidden rounded-lg bg-gray-100 flex-shrink-0">
                         {product.image?.url ? <img src={product.image.url} alt={product.name} className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-gray-600"><ImagePlus className="w-5 h-5" /></div>}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="truncate font-semibold text-gray-900">{product.name}</div>
+                        <div className="truncate font-semibold text-gray-900 flex items-center gap-2">
+                          {product.name}
+                          {product.isFeatured && <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />}
+                        </div>
                         <div className="truncate text-xs text-gray-500">{product.slug}</div>
                         <div className="mt-2 text-sm text-gray-700">{product.categoryName} / {product.subcategoryName}</div>
                         <div className="mt-1 text-sm text-gray-700">Brand: {product.brand || "-"}</div>
@@ -316,14 +362,34 @@ export default function ProductsPage() {
                         >
                           <Pencil className="w-3.5 h-3.5" /> Edit
                         </Link>
-                        {isAdmin ? (
+                        {isAdmin && (
                           <button
                             onClick={() => handleDelete(product.id)}
                             className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-2 text-xs text-red-700 hover:bg-red-50"
                           >
                             <Trash2 className="w-3.5 h-3.5" /> Delete
                           </button>
-                        ) : null}
+                        )}
+                        {isAdmin && (
+                          <button
+                            onClick={() => handleToggleFeatured(product)}
+                            disabled={featuredLoading[product.id]}
+                            className={`inline-flex items-center gap-1 rounded-lg border px-3 py-2 text-xs ${
+                              product.isFeatured 
+                                ? 'border-yellow-300 text-yellow-700 hover:bg-yellow-50' 
+                                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            {featuredLoading[product.id] ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : product.isFeatured ? (
+                              <StarOff className="w-3.5 h-3.5" />
+                            ) : (
+                              <Star className="w-3.5 h-3.5" />
+                            )}
+                            {product.isFeatured ? "Featured" : "Add to Featured"}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -332,6 +398,7 @@ export default function ProductsPage() {
             )}
           </div>
 
+          {/* Desktop Table View */}
           <div className="max-h-[58vh] overflow-auto rounded-xl border border-gray-200 hidden sm:block">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-700">
@@ -351,16 +418,19 @@ export default function ProductsPage() {
                   <tr><td className="px-4 py-8 text-center text-gray-700" colSpan={visibleColSpan}>No products found.</td></tr>
                 ) : (
                   products.map((product) => {
-                    const active = String(product.id) === String(selectedId);
+                    const routeId = product.sourceId || product.id;
                     return (
-                      <tr key={product.id} className={active ? "bg-teal-50" : "bg-white"}>
+                      <tr key={product.id} className={`${product.isFeatured ? 'bg-yellow-50/50' : 'bg-white'}`}>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
                             <div className="h-10 w-10 overflow-hidden rounded-lg bg-gray-100 flex-shrink-0">
                               {product.image?.url ? <img src={product.image.url} alt={product.name} className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-gray-600"><ImagePlus className="w-4 h-4" /></div>}
                             </div>
                             <div className="min-w-0">
-                              <div className="truncate font-semibold text-gray-900">{product.name}</div>
+                              <div className="truncate font-semibold text-gray-900 flex items-center gap-1">
+                                {product.name}
+                                {product.isFeatured && <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />}
+                              </div>
                               <div className="truncate text-xs text-gray-700">{product.slug}</div>
                             </div>
                           </div>
@@ -372,16 +442,45 @@ export default function ProductsPage() {
                         <td className="px-4 py-3">
                           <div className="flex items-center justify-end gap-2">
                             <Link
-                              href={buildEditUrl(product.sourceId || product.id)}
+                              href={buildEditUrl(routeId)}
                               className="inline-flex items-center gap-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50"
                             >
                               <Pencil className="w-3.5 h-3.5" /> Edit
                             </Link>
-                            {isAdmin ? (
-                              <button onClick={() => handleDelete(product.id)} className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs text-red-700 hover:bg-red-50">
+                            {isAdmin && (
+                              <button
+                                onClick={() => handleToggleFeatured(product)}
+                                disabled={featuredLoading[product.id]}
+                                className={`inline-flex items-center gap-1 rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+                                  product.isFeatured 
+                                    ? 'border-yellow-300 text-yellow-700 hover:bg-yellow-50' 
+                                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                                }`}
+                                title={product.isFeatured ? "Remove from featured" : "Add to featured"}
+                              >
+                                {featuredLoading[product.id] ? (
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                ) : product.isFeatured ? (
+                                  <>
+                                    <StarOff className="w-3.5 h-3.5" />
+                                    <span className="hidden sm:inline">Featured</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Star className="w-3.5 h-3.5" />
+                                    <span className="hidden sm:inline">Add to Featured</span>
+                                  </>
+                                )}
+                              </button>
+                            )}
+                            {isAdmin && (
+                              <button 
+                                onClick={() => handleDelete(product.id)} 
+                                className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs text-red-700 hover:bg-red-50"
+                              >
                                 <Trash2 className="w-3.5 h-3.5" /> Delete
                               </button>
-                            ) : null}
+                            )}
                           </div>
                         </td>
                       </tr>

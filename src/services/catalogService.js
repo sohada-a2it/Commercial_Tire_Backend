@@ -220,3 +220,49 @@ export const deleteMedia = async (publicId) => {
   const data = await parseResponse(response);
   return { success: true, message: data.message };
 };
+// services/catalogService.js
+
+// services/catalogService.js
+
+// Add product to featured
+export const addToFeatured = async (productId, options = {}) => {
+  try {
+    const response = await fetch(`${config.email.backendUrl}/api/featured-products/${productId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(options),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Add to featured error:", error);
+    return { success: false, message: error.message };
+  }
+};
+
+// Remove product from featured
+export const removeFromFeatured = async (productId) => {
+  try {
+    const response = await fetch(`${config.email.backendUrl}/api/featured-products/${productId}`, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Remove from featured error:", error);
+    return { success: false, message: error.message };
+  }
+};
+
+// Get all featured products
+export const fetchFeaturedProducts = async (limit = 10) => {
+  try {
+    const response = await fetch(`/api/featured-products?limit=${limit}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+};

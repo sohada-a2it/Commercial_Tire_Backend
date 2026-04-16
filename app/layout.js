@@ -19,8 +19,8 @@ import {
 
 export const metadata = {
   title: {
-    default: "Asian Import Export Co LTD - Global Trade Solutions",
-    template: "%s | Asian Import Export Co LTD",
+    default: "Commerciale Tire - Your Trusted Global Trade Partner",
+    template: "%s | Commerciale Tire",
   },
   description:
     "Leading import-export company specializing in agriculture, seafood, metals, trucks, vehicles, and wood products. Your trusted partner for international trade.",

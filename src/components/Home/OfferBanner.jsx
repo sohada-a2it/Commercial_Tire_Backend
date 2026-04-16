@@ -1,152 +1,143 @@
+// components/WhyChooseUsSimple.jsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const OfferBanner = () => {
-  const [timeLeft, setTimeLeft] = useState({
-    weeks: 0,
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
+const WhyChooseUsSimple = () => {
+  const [counts, setCounts] = useState({
+    years: 0,
+    clients: 0,
+    countries: 0,
+    satisfaction: 0
   });
-  const [prevSeconds, setPrevSeconds] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  
+  const counterRef = useRef(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  const features = [
+    {
+      id: 1,
+      icon: "🛡️",
+      title: "Durable Performance",
+      description: "Engineered to withstand the toughest conditions with exceptional longevity."
+    },
+    {
+      id: 2,
+      icon: "⚡",
+      title: "Fuel Efficiency",
+      description: "Advanced technology that reduces fuel consumption while maximizing performance."
+    },
+    {
+      id: 3,
+      icon: "🌍",
+      title: "Global Presence",
+      description: "Trusted by customers worldwide with distribution across 50+ countries."
+    },
+    {
+      id: 4,
+      icon: "✅",
+      title: "Certified Quality",
+      description: "ISO certified products meeting international standards for safety."
+    }
+  ];
 
   useEffect(() => {
-    // Set target date to 350 days from January 15, 2026
-    const targetDate = new Date('2026-01-15');
-    targetDate.setDate(targetDate.getDate() + 350);
-
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const difference = targetDate - now;
-
-      if (difference > 0) {
-        const seconds = Math.floor((difference / 1000) % 60);
-        
-        // Trigger animation when seconds change
-        if (seconds !== prevSeconds) {
-          setIsAnimating(true);
-          setPrevSeconds(seconds);
-          setTimeout(() => setIsAnimating(false), 300);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          
+          // Counter animation
+          const duration = 2000;
+          const step = 20;
+          const steps = duration / step;
+          
+          const targets = { years: 15, clients: 500, countries: 50, satisfaction: 100 };
+          let currentStep = 0;
+          
+          const interval = setInterval(() => {
+            currentStep++;
+            const progress = currentStep / steps;
+            
+            setCounts({
+              years: Math.min(Math.floor(targets.years * progress), targets.years),
+              clients: Math.min(Math.floor(targets.clients * progress), targets.clients),
+              countries: Math.min(Math.floor(targets.countries * progress), targets.countries),
+              satisfaction: Math.min(Math.floor(targets.satisfaction * progress), targets.satisfaction)
+            });
+            
+            if (currentStep >= steps) clearInterval(interval);
+          }, step);
         }
-
-        setTimeLeft({
-          weeks: Math.floor(difference / (1000 * 60 * 60 * 24 * 7)),
-          days: Math.floor((difference / (1000 * 60 * 60 * 24)) % 7),
-          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: seconds,
-        });
-      }
-    };
-
-    // Initial calculation
-    calculateTimeLeft();
-
-    // Update every second
-    const timer = setInterval(calculateTimeLeft, 1000);
-
-    return () => clearInterval(timer);
-  }, [prevSeconds]);
+      },
+      { threshold: 0.3 }
+    );
+    
+    if (counterRef.current) observer.observe(counterRef.current);
+    return () => observer.disconnect();
+  }, [hasAnimated]);
 
   return (
-    <div className="relative w-full bg-white -mt-4 md:-mt-0 md:py-4">
-      <div className="max-w-7xl mx-auto px-1 md:px-4">
-        {/* Banner with Countdown Inside */}
-        <div className="relative w-full h-[180px] md:h-[420px] overflow-hidden rounded-lg">
-          {/* Background Image */}
-          <img
-            src="/assets/banner4.png"
-            alt="Offer Banner"
-            className="w-full h-full object-fill"
-          />
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+    <section 
+      className="relative py-20 bg-fixed bg-cover bg-center"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/vehicle-banner.webp')`
+      }}
+    >
+      <div className="relative z-10 container mx-auto px-4 max-w-7xl">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            Why Choose <span className="text-amber-500">Us</span>
+          </h2>
+          <div className="w-20 h-1 bg-amber-500 mx-auto rounded-full"></div>
+          <p className="text-gray-300 mt-4 max-w-2xl mx-auto">
+            We combine innovation, quality, and reliability to deliver the best solutions
+          </p>
+        </div>
 
-          {/* Countdown Timer - Centered */}
-          <div className="absolute inset-0 flex items-center justify-center mr-0 md:mr-10">
-            <div className="flex gap-2 md:gap-4">
-              {/* Weeks */}
-              <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-8 h-8 md:w-14 md:h-14 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
-                  <span className="text-sm md:text-2xl  font-bold text-gray-900 relative z-10">
-                    {String(timeLeft.weeks).padStart(2, "0")}
-                  </span>
-                </div>
-                <span className="text-[8px] md:text-xs font-bold text-white mt-1  uppercase tracking-wider drop-shadow-lg">
-                  WEEKS
-                </span>
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {features.map((feature) => (
+            <div
+              key={feature.id}
+              className="group bg-white/10 backdrop-blur-md rounded-xl p-6 hover:bg-white/20 transition-all duration-300 hover:-translate-y-1 border border-white/20"
+            >
+              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">
+                {feature.icon}
               </div>
-
-              {/* Days */}
-              <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-8 h-8 md:w-14 md:h-14 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
-                  <span className="text-sm md:text-2xl  font-bold text-gray-900 relative z-10">
-                    {String(timeLeft.days).padStart(2, "0")}
-                  </span>
-                </div>
-                <span className="text-[8px] md:text-xs  font-bold text-white mt-1  uppercase tracking-wider drop-shadow-lg">
-                  DAYS
-                </span>
-              </div>
-
-              {/* Hours */}
-              <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-8 h-8 md:w-14 md:h-14 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
-                  <span className="text-sm md:text-2xl  font-bold text-gray-900 relative z-10">
-                    {String(timeLeft.hours).padStart(2, "0")}
-                  </span>
-                </div>
-                <span className="text-[8px] md:text-xs  font-bold text-white mt-1  uppercase tracking-wider drop-shadow-lg">
-                  HOURS
-                </span>
-              </div>
-
-              {/* Minutes */}
-              <div className="flex flex-col items-center">
-                <div className="bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-8 h-8 md:w-14 md:h-14 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden animate-pulse-glow">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
-                  <span className="text-sm md:text-2xl  font-bold text-gray-900 relative z-10">
-                    {String(timeLeft.minutes).padStart(2, "0")}
-                  </span>
-                </div>
-                <span className="text-[8px] md:text-xs  font-bold text-white mt-1  uppercase tracking-wider drop-shadow-lg">
-                  MINUTES
-                </span>
-              </div>
-
-              {/* Seconds - With Animation */}
-              <div className="flex flex-col items-center">
-                <div className={`bg-gradient-to-b from-yellow-300 via-yellow-400 to-yellow-500 rounded-lg w-8 h-8 md:w-14 md:h-14 flex items-center justify-center shadow-xl border-2 border-yellow-600 relative overflow-hidden transition-transform duration-300 animate-pulse-glow ${
-                  isAnimating ? 'scale-110' : 'scale-100'
-                }`}>
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                  <div className="absolute inset-0 shadow-[0_0_10px_rgba(250,204,21,0.65),0_0_20px_rgba(250,204,21,0.4),inset_0_0_10px_rgba(255,255,255,0.2)]"></div>
-                  <span className={`text-sm md:text-2xl  font-bold text-gray-900 relative z-10 transition-all duration-300 ${
-                    isAnimating ? 'scale-125' : 'scale-100'
-                  }`}>
-                    {String(timeLeft.seconds).padStart(2, "0")}
-                  </span>
-                </div>
-                <span className="text-[8px] md:text-xs  font-bold text-white mt-1  uppercase tracking-wider drop-shadow-lg">
-                  SECONDS
-                </span>
-              </div>
+              <h3 className="text-lg font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">
+                {feature.title}
+              </h3>
+              <p className="text-gray-300 text-sm">
+                {feature.description}
+              </p>
             </div>
+          ))}
+        </div>
+
+        {/* Stats Counter */}
+        <div ref={counterRef} className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center pt-8 border-t border-white/20">
+          <div>
+            <div className="text-3xl md:text-4xl font-bold text-amber-500">{counts.years}+</div>
+            <div className="text-gray-300 text-sm mt-2">Years of Excellence</div>
+          </div>
+          <div>
+            <div className="text-3xl md:text-4xl font-bold text-amber-500">{counts.clients}+</div>
+            <div className="text-gray-300 text-sm mt-2">Happy Clients</div>
+          </div>
+          <div>
+            <div className="text-3xl md:text-4xl font-bold text-amber-500">{counts.countries}+</div>
+            <div className="text-gray-300 text-sm mt-2">Countries Served</div>
+          </div>
+          <div>
+            <div className="text-3xl md:text-4xl font-bold text-amber-500">{counts.satisfaction}%</div>
+            <div className="text-gray-300 text-sm mt-2">Quality Guarantee</div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default OfferBanner;
+export default WhyChooseUsSimple;

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { X, Mail, Lock, User, Building2, Phone, Globe, Eye, EyeOff, Loader2, Truck, Shield, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { X, Mail, Lock, User, Building2, Phone, Globe, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
 import toast from "react-hot-toast";
@@ -18,34 +18,32 @@ const businessTypeOptions = [
   "Other",
 ];
 
-// Countries list for dropdown
 const countries = [
-  "Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Austria",
-  "Bangladesh", "Belgium", "Brazil", "Canada", "Chile", "China", "Colombia",
-  "Denmark", "Egypt", "Finland", "France", "Germany", "Greece", "Hong Kong",
-  "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Japan",
-  "Jordan", "Kenya", "Kuwait", "Lebanon", "Malaysia", "Mexico", "Morocco",
-  "Netherlands", "New Zealand", "Nigeria", "Norway", "Pakistan", "Philippines",
-  "Poland", "Portugal", "Qatar", "Russia", "Saudi Arabia", "Singapore",
-  "South Africa", "South Korea", "Spain", "Sri Lanka", "Sweden", "Switzerland",
-  "Taiwan", "Thailand", "Turkey", "UAE", "UK", "USA", "Vietnam", "Other"
+  "Afghanistan","Albania","Algeria","Argentina","Australia","Austria",
+  "Bangladesh","Belgium","Brazil","Canada","Chile","China","Colombia",
+  "Denmark","Egypt","Finland","France","Germany","Greece","Hong Kong",
+  "India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Japan",
+  "Jordan","Kenya","Kuwait","Lebanon","Malaysia","Mexico","Morocco",
+  "Netherlands","New Zealand","Nigeria","Norway","Pakistan","Philippines",
+  "Poland","Portugal","Qatar","Russia","Saudi Arabia","Singapore",
+  "South Africa","South Korea","Spain","Sri Lanka","Sweden","Switzerland",
+  "Taiwan","Thailand","Turkey","UAE","UK","USA","Vietnam","Other"
 ];
 
-const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
+const AuthDrawer = ({ isOpen, onClose, redirectAfterAuth }) => {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("login");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { signIn, signUp, signInWithGoogle } = useAuth();
 
-  // Login form state
+  const [activeTab, setActiveTab] = useState("login");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
 
-  // Register form state
   const [registerData, setRegisterData] = useState({
     companyName: "",
     fullName: "",
@@ -58,11 +56,8 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
     confirmPassword: "",
   });
 
-  const handlePostAuthRedirect = (result) => {
-    if (redirectAfterAuth) {
-      redirectAfterAuth(result);
-      return;
-    }
+  const handleRedirect = (result) => {
+    if (redirectAfterAuth) return redirectAfterAuth(result);
 
     const role = normalizeRole(result?.profile?.role);
     if (role === "admin" || role === "moderator") {
@@ -70,450 +65,348 @@ const AuthModal = ({ isOpen, onClose, redirectAfterAuth }) => {
     }
   };
 
-  const handleLoginSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+
     if (!loginData.email || !loginData.password) {
-      toast.error("Please fill in all fields");
-      return;
+      return toast.error("Fill all fields");
     }
 
     setLoading(true);
-    const result = await signIn(loginData.email, loginData.password);
+    const res = await signIn(loginData.email, loginData.password);
     setLoading(false);
 
-    if (result.success) {
-      toast.success("Logged in successfully!");
+    if (res.success) {
+      toast.success("Login successful");
       onClose();
-      handlePostAuthRedirect(result);
+      handleRedirect(res);
     } else {
-      toast.error(result.message || "Login failed");
+      toast.error(res.message || "Login failed");
     }
   };
 
-  const handleRegisterSubmit = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    
-    // Validation
-    if (!registerData.fullName || !registerData.email || !registerData.whatsappNumber || 
-        !registerData.country || !registerData.businessType || !registerData.password || !registerData.confirmPassword) {
-      toast.error("Please fill in all required fields");
-      return;
+
+    const {
+      fullName,
+      email,
+      whatsappNumber,
+      country,
+      businessType,
+      password,
+      confirmPassword,
+      customBusinessType,
+    } = registerData;
+
+    if (!fullName || !email || !whatsappNumber || !country || !businessType || !password || !confirmPassword) {
+      return toast.error("Fill all required fields");
     }
 
-    if (registerData.businessType === "Other" && !registerData.customBusinessType.trim()) {
-      toast.error("Please enter a custom business type");
-      return;
+    if (businessType === "Other" && !customBusinessType.trim()) {
+      return toast.error("Enter business type");
     }
 
-    const selectedBusinessType =
-      registerData.businessType === "Other"
-        ? registerData.customBusinessType.trim()
-        : registerData.businessType;
-
-    if (registerData.password !== registerData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
+    if (password !== confirmPassword) {
+      return toast.error("Passwords not match");
     }
 
-    if (registerData.password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(registerData.email)) {
-      toast.error("Please enter a valid email address");
-      return;
+    if (password.length < 6) {
+      return toast.error("Min 6 characters required");
     }
 
     setLoading(true);
-    const result = await signUp(registerData.email, registerData.password, {
-      fullName: registerData.fullName,
+
+    const finalBusinessType =
+      businessType === "Other" ? customBusinessType : businessType;
+
+    const res = await signUp(email, password, {
+      fullName,
       companyName: registerData.companyName,
-      whatsappNumber: registerData.whatsappNumber,
-      country: registerData.country,
-      businessType: selectedBusinessType,
+      whatsappNumber,
+      country,
+      businessType: finalBusinessType,
     });
+
     setLoading(false);
 
-    if (result.success) {
-      toast.success("Account created successfully!");
+    if (res.success) {
+      toast.success("Account created");
       onClose();
-      handlePostAuthRedirect(result);
+      handleRedirect(res);
     } else {
-      toast.error(result.message || "Registration failed");
+      toast.error(res.message || "Registration failed");
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogle = async () => {
     setLoading(true);
-    const result = await signInWithGoogle();
+    const res = await signInWithGoogle();
     setLoading(false);
 
-    if (result.success) {
-      toast.success("Signed in with Google!");
+    if (res.success) {
+      toast.success("Google login success");
       onClose();
-      handlePostAuthRedirect(result);
+      handleRedirect(res);
     } else {
-      toast.error(result.message || "Google sign-in failed");
+      toast.error(res.message || "Google login failed");
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors z-10"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <>
+      {/* overlay */}
+      <div
+        onClick={onClose}
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+      />
 
-        {/* Header */}
-        <div className="bg-gradient-to-r from-teal-600 to-teal-700 px-6 py-8 text-center rounded-t-2xl">
-          <h2 className="text-2xl font-bold text-white mb-2">
-            {activeTab === "login" ? "Welcome Back!" : "Create Account"}
-          </h2>
-          <p className="text-teal-100 text-sm">
-            {activeTab === "login" 
-              ? "Sign in to continue your order" 
-              : "Join us to start ordering"}
-          </p>
-        </div>
+      {/* drawer - white theme */}
+      <div className={`fixed top-0 right-0 h-full w-[480px] bg-white z-50 shadow-2xl transform transition-transform duration-300 overflow-y-auto ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
+        
+        {/* top accent bar - amber */}
+        <div className="h-1 bg-amber-500"></div>
 
-        {/* Tab Switcher */}
-        <div className="flex border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab("login")}
-            className={`flex-1 py-3 text-sm font-medium transition-colors ${
-              activeTab === "login"
-                ? "text-teal-600 border-b-2 border-teal-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
+        {/* header */}
+        <div className="flex justify-between items-center p-5 border-b border-gray-200">
+          <div className="flex items-center gap-2">
+            <Truck className="w-5 h-5 text-amber-500" />
+            <h2 className="font-bold text-xl text-gray-800 tracking-wide">
+              <img className="w-20 object-contain" src="/double.png" alt="DoubleCoin" />
+            </h2>
+          </div>
+          <button 
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            Login
-          </button>
-          <button
-            onClick={() => setActiveTab("register")}
-            className={`flex-1 py-3 text-sm font-medium transition-colors ${
-              activeTab === "register"
-                ? "text-teal-600 border-b-2 border-teal-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Register
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Form Content */}
         <div className="p-6">
+          {/* tabs */}
+          <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
+            <button
+              className={`flex-1 py-2.5 rounded-md font-semibold transition-all ${
+                activeTab === "login" 
+                  ? "bg-amber-500 text-white shadow-md" 
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => setActiveTab("login")}
+            >
+              Login
+            </button>
+            <button
+              className={`flex-1 py-2.5 rounded-md font-semibold transition-all ${
+                activeTab === "register" 
+                  ? "bg-amber-500 text-white shadow-md" 
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => setActiveTab("register")}
+            >
+              Register
+            </button>
+          </div>
+
+          {/* LOGIN */}
           {activeTab === "login" ? (
-            // Login Form
-            <form onSubmit={handleLoginSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email Address *
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="email"
-                    value={loginData.email}
-                    onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
-                    placeholder="your@email.com"
-                    required
-                  />
-                </div>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  value={loginData.email}
+                  onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password *
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={loginData.password}
-                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                    className="w-full pl-10 pr-12 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
-                    placeholder="••••••••"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  className="w-full p-3 pl-10 pr-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowPassword(!showPassword)} 
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
 
-              <button
+              <button 
                 type="submit"
+                className="w-full bg-amber-500 hover:bg-amber-600 text-white p-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-teal-600 to-teal-700 text-white font-semibold rounded-lg hover:from-teal-700 hover:to-teal-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  "Sign In"
-                )}
+                {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "Login to Dashboard"}
               </button>
             </form>
           ) : (
-            // Register Form
-            <form onSubmit={handleRegisterSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Company Name
-                </label>
-                <div className="relative">
-                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={registerData.companyName}
-                    onChange={(e) => setRegisterData({ ...registerData, companyName: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
-                    placeholder="Your company name"
-                  />
-                </div>
+            /* REGISTER */
+            <form onSubmit={handleRegister} className="space-y-3">
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input 
+                  placeholder="Full Name" 
+                  className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  value={registerData.fullName}
+                  onChange={(e) => setRegisterData({ ...registerData, fullName: e.target.value })}
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name *
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={registerData.fullName}
-                    onChange={(e) => setRegisterData({ ...registerData, fullName: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
-                    placeholder="John Doe"
-                    required
-                  />
-                </div>
+              <div className="relative">
+                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input 
+                  placeholder="Company Name" 
+                  className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  value={registerData.companyName}
+                  onChange={(e) => setRegisterData({ ...registerData, companyName: e.target.value })}
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email Address *
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="email"
-                    value={registerData.email}
-                    onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
-                    placeholder="your@email.com"
-                    required
-                  />
-                </div>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input 
+                  placeholder="Email" 
+                  className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  value={registerData.email}
+                  onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  WhatsApp Number *
-                </label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="tel"
-                    value={registerData.whatsappNumber}
-                    onChange={(e) => setRegisterData({ ...registerData, whatsappNumber: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
-                    placeholder="+1 234 567 8900"
-                    required
-                  />
-                </div>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input 
+                  placeholder="WhatsApp Number" 
+                  className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  value={registerData.whatsappNumber}
+                  onChange={(e) => setRegisterData({ ...registerData, whatsappNumber: e.target.value })}
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Country *
-                </label>
-                <div className="relative">
-                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <select
-                    value={registerData.country}
-                    onChange={(e) => setRegisterData({ ...registerData, country: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900 appearance-none"
-                    required
-                  >
-                    <option value="">Select your country</option>
-                    {countries.map((country) => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <select 
+                  className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors appearance-none"
+                  value={registerData.country}
+                  onChange={(e) => setRegisterData({ ...registerData, country: e.target.value })}
+                >
+                  <option value="" className="text-gray-400">Select Country</option>
+                  {countries.map(c => <option key={c} className="text-gray-800">{c}</option>)}
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">▼</div>
               </div>
 
-              {/* business type  */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Business Type *
-                </label>
-                <div className="relative">
-                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <select
-                    value={registerData.businessType}
-                    onChange={(e) =>
-                      setRegisterData({
-                        ...registerData,
-                        businessType: e.target.value,
-                        customBusinessType: e.target.value === "Other" ? registerData.customBusinessType : "",
-                      })
-                    }
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900 appearance-none"
-                    required
-                  >
-                    <option value="">Select business type</option>
-                    {businessTypeOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option === "Exporter/Importer" ? "Exporter / Importer" : option}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="relative">
+                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <select 
+                  className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors appearance-none"
+                  value={registerData.businessType}
+                  onChange={(e) => setRegisterData({ ...registerData, businessType: e.target.value })}
+                >
+                  <option value="" className="text-gray-400">Business Type</option>
+                  {businessTypeOptions.map(b => <option key={b} className="text-gray-800">{b}</option>)}
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">▼</div>
               </div>
 
               {registerData.businessType === "Other" && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Other Business Type *
-                  </label>
-                  <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="text"
-                      value={registerData.customBusinessType}
-                      onChange={(e) => setRegisterData({ ...registerData, customBusinessType: e.target.value })}
-                      className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
-                      placeholder="Enter your business type"
-                      required
-                    />
-                  </div>
+                <div className="relative">
+                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    placeholder="Custom Business Type"
+                    className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                    value={registerData.customBusinessType}
+                    onChange={(e) => setRegisterData({ ...registerData, customBusinessType: e.target.value })}
+                  />
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password *
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={registerData.password}
-                    onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
-                    className="w-full pl-10 pr-12 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
-                    placeholder="••••••••"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input 
+                  type="password" 
+                  placeholder="Password (min 6 characters)" 
+                  className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  value={registerData.password}
+                  onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirm Password *
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={registerData.confirmPassword}
-                    onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
-                    className="w-full pl-10 pr-12 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-900"
-                    placeholder="••••••••"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input 
+                  type="password" 
+                  placeholder="Confirm Password" 
+                  className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-colors"
+                  value={registerData.confirmPassword}
+                  onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+                />
               </div>
 
-              <button
+              <button 
                 type="submit"
+                className="w-full bg-amber-500 hover:bg-amber-600 text-white p-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all mt-4"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-teal-600 to-teal-700 text-white font-semibold rounded-lg hover:from-teal-700 hover:to-teal-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Creating account...
-                  </>
-                ) : (
-                  "Create Account"
-                )}
+                {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "Create Account"}
               </button>
             </form>
           )}
 
-          {/* Divider */}
+          {/* divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
+              <div className="w-full border-t border-gray-200"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            <div className="relative flex justify-center text-xs">
+              <span className="px-2 bg-white text-gray-400">OR</span>
             </div>
           </div>
 
-          {/* Google Sign In */}
+          {/* google button */}
           <button
-            onClick={handleGoogleSignIn}
+            onClick={handleGoogle}
+            className="w-full border border-gray-300 bg-white p-3 rounded-lg text-gray-700 font-medium flex items-center justify-center gap-3 hover:bg-gray-50 hover:border-amber-500 transition-all"
             disabled={loading}
-            className="w-full py-3 border-2 border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                fill="#4285F4"
-              />
-              <path
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                fill="#34A853"
-              />
-              <path
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                fill="#FBBC05"
-              />
-              <path
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                fill="#EA4335"
-              />
+              <path fill="#FF6B35" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#E63946" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FF6B35" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+              <path fill="#E63946" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
             </svg>
             Continue with Google
           </button>
+
+          {/* trust badges */}
+          <div className="mt-6 pt-4 border-t border-gray-200 flex justify-center gap-4 text-xs text-gray-400">
+            <div className="flex items-center gap-1">
+              <Shield className="w-3 h-3 text-amber-500" />
+              <span>Secure Login</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="w-3 h-3 text-amber-500" />
+              <span>24/7 Support</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Truck className="w-3 h-3 text-amber-500" />
+              <span>Global Shipping</span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default AuthModal;
+export default AuthDrawer;
