@@ -64,18 +64,33 @@ class DataService {
     return data.products;
   }
 
-  async getProductById(productId) {
-    if (!productId) return null;
-    const response = await fetch(
-      `${this.baseUrl}/api/categories/public/products/${encodeURIComponent(String(productId))}`,
-      { cache: "no-store" }
-    );
-    if (!response.ok) {
-      return null;
-    }
-    const payload = await response.json();
-    return payload?.product || null;
+ // In your dataService.js, update getProductById:
+
+async getProductById(productId) {
+  if (!productId) return null;
+  const response = await fetch(
+    `${this.baseUrl}/api/categories/public/products/${encodeURIComponent(String(productId))}`,
+    { cache: "no-store" }
+  );
+  if (!response.ok) {
+    return null;
   }
+  const payload = await response.json();
+  
+  // Add logging to see what's coming from API
+  console.log("API Response for product:", productId, {
+    hasTireType: !!payload?.product?.tireType,
+    hasVehicleType: !!payload?.product?.vehicleType,
+    hasApplication: !!payload?.product?.application,
+    hasTireSpecs: !!payload?.product?.tireSpecs,
+    tireType: payload?.product?.tireType,
+    vehicleType: payload?.product?.vehicleType,
+    application: payload?.product?.application,
+    tireSpecs: payload?.product?.tireSpecs
+  });
+  
+  return payload?.product || null;
+}
 
   // আপডেটেড মেথড - ক্যাটাগরি আইডি দ্বারা প্রোডাক্ট ফেচ করে
   async getProductsByCategoryId(categoryId, filters = {}) {

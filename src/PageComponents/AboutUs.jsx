@@ -1,506 +1,308 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
-import { 
-  FaCheck, 
-  FaHandshake, 
-  FaLightbulb, 
-  FaGlobe, 
-  FaChartLine, 
-  FaFileAlt,
-  FaShip,
-  FaBox,
-  FaBuilding,
-  FaUserTie,
-  FaTrophy,
-  FaUsers,
-  FaRocket,
-  FaShieldAlt,
-  FaClock,
-  FaLeaf,
-  FaAward,
-  FaEye
-} from "react-icons/fa";
-import { MdVerified } from "react-icons/md";
+import { useEffect, useRef, useState } from "react";
+import clsx from 'clsx';
 
-const Highlight = ({ children }) => (
-  <span className="relative inline-block">
-    <span className="absolute inset-0 -skew-x-6 bg-gradient-to-r from-teal-500/20 via-teal-600/20 to-amber-500/20 rounded-md" />
-    <span className="relative font-semibold text-teal-700 px-1">
-      {children}
+// Animated Counter Component
+function AnimatedCounter({ target, suffix = "", prefix = "" }) {
+  const [count, setCount] = useState(0);
+  const counterRef = useRef(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          let start = 0;
+          const duration = 2000;
+          const increment = target / (duration / 16);
+          
+          const timer = setInterval(() => {
+            start += increment;
+            if (start >= target) {
+              setCount(target);
+              clearInterval(timer);
+            } else {
+              setCount(Math.floor(start));
+            }
+          }, 16);
+          
+          return () => clearInterval(timer);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (counterRef.current) {
+      observer.observe(counterRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [target, hasAnimated]);
+
+  return (
+    <span ref={counterRef} className="text-4xl md:text-5xl font-black text-amber-600">
+      {prefix}{count}{suffix}
     </span>
-  </span>
-);
-
-const StatCard = ({ number, label, suffix = "", icon: Icon, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay }}
-    className="group"
-  >
-    <div className="relative text-center p-5 bg-white rounded-xl shadow-sm border border-gray-100 group-hover:shadow-md transition-all duration-300">
-      <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-amber-500 rounded-lg flex items-center justify-center mx-auto mb-3">
-        <Icon className="text-white text-base" />
-      </div>
-      <div className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-amber-600 bg-clip-text text-transparent mb-0.5">
-        {number}{suffix}
-      </div>
-      <div className="text-gray-500 text-xs">{label}</div>
-    </div>
-  </motion.div>
-);
-
-const ValueCard = ({ title, desc, icon: Icon, color, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay }}
-    className="group"
-  >
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-      <div className={`w-12 h-12 bg-gradient-to-br ${color} rounded-xl flex items-center justify-center mb-4`}>
-        <Icon className="text-white text-lg" />
-      </div>
-      <h3 className="text-base font-bold text-gray-900 mb-2">{title}</h3>
-      <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
-    </div>
-  </motion.div>
-);
+  );
+}
 
 export default function AboutUs() {
+  const [selectedImage, setSelectedImage] = useState(0);
+
+  const factoryImages = [
+    { src: "/factory-1.jpg", alt: "Factory Exterior", label: "Main Production Facility" },
+    { src: "/factory-2.jpg", alt: "Production Line", label: "Automated Assembly Line" },
+    { src: "/factory-3.jpg", alt: "Quality Control", label: "Quality Testing Lab" },
+    { src: "/factory-4.jpg", alt: "Warehouse", label: "Finished Goods Storage" },
+  ];
+
+  const certifications = [
+    { name: "ISO 9001:2024", icon: "fas fa-certificate", desc: "Quality Management" },
+    { name: "DOT Certified", icon: "fas fa-shield-alt", desc: "US Department of Transportation" },
+    { name: "ECE R54", icon: "fas fa-euro-sign", desc: "European Economic Community" },
+    { name: "GCC Standard", icon: "fas fa-flag", desc: "Gulf Cooperation Council" },
+    { name: "SONCAP", icon: "fas fa-check-double", desc: "Nigeria Standards" },
+    { name: "ISO 14001", icon: "fas fa-leaf", desc: "Environmental Management" },
+  ];
+
   return (
-    <div className="min-h-screen w-full bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-6 space-y-12">
+    <section className="relative w-full py-24 bg-white overflow-hidden">
+      
+      {/* Background Effects */}
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.06),transparent_50%)] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-amber-600/5 rounded-full blur-[100px]" />
+      
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none" />
 
-        {/* Hero Section */}
-        <section className="relative text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="space-y-4"
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-100">
-              <div className="w-1.5 h-1.5 bg-teal-500 rounded-full"></div>
-              <span className="text-xs font-semibold text-teal-700 uppercase tracking-wider">
-                ESTABLISHED 2017
-              </span>
-              <MdVerified className="text-teal-500 text-xs" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 bg-amber-50 px-4 py-2 rounded-full mb-4">
+            <i className="fas fa-building text-amber-600 text-sm" />
+            <span className="text-amber-600 text-sm font-semibold tracking-wide">ABOUT COMPANY</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gray-900">
+            Industry <span className="text-amber-600">Authority</span>
+          </h2>
+          <p className="text-gray-500 max-w-2xl mx-auto text-lg">
+            Decades of excellence in tire manufacturing, serving commercial vehicles worldwide
+          </p>
+        </div>
+
+        {/* Company Overview & Production Capacity - 2 Column Layout */}
+        <div className="grid lg:grid-cols-2 gap-12 mb-20">
+          
+          {/* Left: Company Overview */}
+          <div className="space-y-6">
+            <div className="inline-block">
+              <div className="w-12 h-1 bg-amber-600 mb-4" />
+              <h3 className="text-2xl font-bold text-gray-900">Company Overview</h3>
             </div>
-
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-              About <span className="text-teal-600">Asian Import & Export</span>
-            </h1>
-
-            <div className="flex justify-center gap-1.5">
-              <div className="w-12 h-0.5 bg-teal-500 rounded-full"></div>
-              <div className="w-6 h-0.5 bg-amber-500 rounded-full"></div>
-            </div>
-
-            <p className="text-gray-600 max-w-3xl mx-auto text-sm leading-relaxed">
-              Asian Import and Export Co., LTD supplies high-quality food products worldwide — 
-              while treating our team like family and supporting the communities we serve.
+            <p className="text-gray-600 leading-relaxed">
+              Founded in <span className="text-amber-600 font-semibold">1985</span>, HeavyDuty Tires has grown to become 
+              a global leader in commercial vehicle tire manufacturing. With over <span className="text-amber-600 font-semibold">3 million tires</span> 
+              produced annually, we serve customers across 100+ countries.
             </p>
-          </motion.div>
-        </section>
-
-        {/* Stats Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4"
-        >
-          <StatCard number="10" label="Years Experience" suffix="+" icon={FaTrophy} delay={0.1} />
-          <StatCard number="50" label="Countries Served" suffix="+" icon={FaGlobe} delay={0.2} />
-          <StatCard number="5000" label="Products" suffix="+" icon={FaBox} delay={0.3} />
-          <StatCard number="99.8" label="Satisfaction Rate" suffix="%" icon={FaUsers} delay={0.4} />
-        </motion.section>
-
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Our Story */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-1 h-6 bg-teal-500 rounded-full"></div>
-                <h2 className="text-xl font-bold text-gray-900">Our Story</h2>
-              </div>
-
-              <div className="flex flex-col lg:flex-row gap-6">
-                <div className="lg:w-2/5">
-                  <div className="relative rounded-lg overflow-hidden shadow-sm">
-                    <img
-                      src="/assets/certificate.webp"
-                      alt="Certification"
-                      className="w-full object-cover"
-                    />
-                  </div>
+            <p className="text-gray-500 leading-relaxed">
+              Our state-of-the-art manufacturing facility spans <span className="text-gray-900 font-semibold">500,000 sq. meters</span> and employs 
+              over <span className="text-gray-900 font-semibold">2,500 skilled professionals</span>. We combine German engineering, 
+              Japanese precision, and American durability to deliver tires that perform under extreme conditions.
+            </p>
+            
+            {/* Key Highlights */}
+            <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <i className="fas fa-calendar-alt text-amber-600" />
                 </div>
-
-                <div className="lg:w-3/5 space-y-3">
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Founded in 2013, we grew from a local trading company into a global supplier delivering premium food-grade products.
-                  </p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    We distribute across Asia, America, Australia, Europe, South Africa, CIS, and the Middle East.
-                  </p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Our logistics partners ensure top-tier shipping, safety, and temperature-controlled transport globally.
-                  </p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Committed to sustainability, we prioritize eco-friendly sourcing and community support.
-                  </p>
+                <div>
+                  <div className="font-bold text-gray-900">38+ Years</div>
+                  <div className="text-gray-400 text-xs">of Excellence</div>
                 </div>
               </div>
-            </motion.div>
-
-            {/* Trade Performance */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="space-y-4"
-            >
-              <div className="bg-gradient-to-r from-teal-600 to-amber-600 rounded-xl p-4 text-white">
-                <h3 className="text-base font-bold mb-1">Trade Performance & Analytics</h3>
-                <p className="text-teal-100 text-xs">Comprehensive trade data and shipment history</p>
-              </div>
-
-              {/* Trade Trends Image */}
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900">Detailed Trade Analysis</h4>
-                    <p className="text-gray-500 text-xs">Shipment history and market insights</p>
-                  </div>
-                  <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-amber-500 rounded-lg flex items-center justify-center">
-                    <FaChartLine className="text-white text-sm" />
-                  </div>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <i className="fas fa-globe text-amber-600" />
                 </div>
-                
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <Image
-                    src="/assets/trand.webp"
-                    alt="Trade Trends Chart"
-                    width={1200}
-                    height={600}
-                    className="w-full h-auto rounded"
-                  />
-                </div>
-                
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                  <p className="text-gray-500 text-xs flex items-center gap-1">
-                    <FaClock className="text-teal-500 text-xs" />
-                    Real-time tracking
-                  </p>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse"></div>
-                    <span className="text-xs text-teal-600 font-medium">LIVE DATA</span>
-                  </div>
+                <div>
+                  <div className="font-bold text-gray-900">100+</div>
+                  <div className="text-gray-400 text-xs">Countries Served</div>
                 </div>
               </div>
-
-              {/* Trade Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
-                      <FaShip className="text-white text-sm" />
-                    </div>
-                    <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">EXPORT</span>
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900">54</div>
-                  <div className="text-gray-500 text-xs mt-0.5">Shipments</div>
-                  <div className="text-gray-700 text-sm font-medium mt-1">$6.69M Value</div>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <i className="fas fa-trophy text-amber-600" />
                 </div>
-
-                <div className="bg-teal-50 rounded-xl p-4 border border-teal-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                      <FaBox className="text-white text-sm" />
-                    </div>
-                    <span className="text-xs font-semibold text-teal-700 bg-teal-100 px-2 py-0.5 rounded">IMPORT</span>
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900">17</div>
-                  <div className="text-gray-500 text-xs mt-0.5">Shipments</div>
-                  <div className="text-gray-700 text-sm font-medium mt-1">$427.5K Value</div>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-gray-600 to-gray-700 rounded-lg flex items-center justify-center">
-                      <FaFileAlt className="text-white text-sm" />
-                    </div>
-                    <span className="text-xs font-semibold text-gray-600 bg-gray-200 px-2 py-0.5 rounded">DATA</span>
-                  </div>
-                  <div className="space-y-2">
-                    <Link 
-                      href="https://importkey.com/i/asian-import-export-co-ltd" 
-                      target="_blank"
-                      className="flex items-center justify-between w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-gray-700 text-xs hover:bg-amber-50 transition"
-                    >
-                      <span>ImportKey</span>
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </Link>
-                    <Link 
-                      href="https://www.trademo.com/companies/asian-import-export-company/16730345" 
-                      target="_blank"
-                      className="flex items-center justify-between w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-gray-700 text-xs hover:bg-teal-50 transition"
-                    >
-                      <span>Trademo</span>
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </Link>
-                  </div>
+                <div>
+                  <div className="font-bold text-gray-900">50+</div>
+                  <div className="text-gray-400 text-xs">Industry Awards</div>
                 </div>
               </div>
-            </motion.div>
-
-            {/* Products */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="bg-white rounded-xl p-5 shadow-sm border border-gray-100"
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-1 h-6 bg-teal-500 rounded-full"></div>
-                <h3 className="text-lg font-bold text-gray-900">Our Products</h3>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <i className="fas fa-users text-amber-600" />
+                </div>
+                <div>
+                  <div className="font-bold text-gray-900">2,500+</div>
+                  <div className="text-gray-400 text-xs">Employees</div>
+                </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  "Raw Jute & Jute Goods",
-                  "Genuine Leathers",
-                  "Agro Commodities",
-                  "Terracotta Tiles",
-                  "Plastic Scrap/Flakes",
-                  "Food Products"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-teal-50 transition">
-                    <div className="w-1 h-1 bg-teal-500 rounded-full"></div>
-                    <span className="text-gray-700 text-xs">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+            </div>
           </div>
 
-          {/* Right Column - Sidebar */}
-          <div className="space-y-5">
-            {/* Leadership */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-white rounded-xl p-5 shadow-sm border border-gray-100"
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-1 h-6 bg-teal-500 rounded-full"></div>
-                <h2 className="text-lg font-bold text-gray-900">Leadership</h2>
-              </div>
-              
-              <div className="flex flex-col items-center text-center">
-                <div className="relative w-28 h-28 rounded-lg overflow-hidden border-2 border-teal-100 shadow-sm">
-                  <img 
-                    src="/assets/leader.webp" 
-                    alt="Sewkumar Singh"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                
-                <h3 className="text-base font-bold text-teal-700 mt-3">Sewkumar Singh</h3>
-                <p className="text-gray-500 text-xs mb-2">Managing Director</p>
-                <p className="text-gray-600 text-xs leading-relaxed mb-3">
-                  Over a decade of experience in international trade.
-                </p>
-                
-                <Link 
-                  href="https://www.dnb.com/business-directory/company-profiles.asian_import__export_company_limited.5e1c2886b6ec1d7bf335ba958abe0232.html" 
-                  target="_blank"
-                  className="w-full px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium transition text-center"
-                >
-                  View Registration
-                </Link>
-              </div>
-            </motion.div>
-
-            {/* Global Reach */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="bg-white rounded-xl p-5 shadow-sm border border-gray-100"
-            >
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-1 h-6 bg-teal-500 rounded-full"></div>
-                <h2 className="text-lg font-bold text-gray-900">Global Reach</h2>
-              </div>
-
-              <div className="grid grid-cols-2 gap-1.5">
-                {[
-                  "Asia","America","Australia","Europe",
-                  "South Africa","CIS","Middle East","East Europe"
-                ].map((region, i) => (
-                  <div key={i} className="flex items-center gap-1.5 p-1.5 rounded bg-gray-50">
-                    <FaGlobe size={10} className="text-teal-500" />
-                    <span className="text-gray-600 text-xs">{region}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Mission & Vision */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 space-y-4"
-            >
+          {/* Right: Production Capacity Stats */}
+          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-8 shadow-sm">
+            <div className="inline-block mb-6">
+              <div className="w-12 h-1 bg-amber-600 mb-4" />
+              <h3 className="text-2xl font-bold text-gray-900">Production Capacity</h3>
+            </div>
+            
+            <div className="space-y-8">
+              {/* Annual Production */}
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <FaRocket className="text-teal-600 text-xs" />
-                  </div>
-                  <h3 className="text-sm font-bold text-gray-900">Mission</h3>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-600">Annual Production</span>
+                  <span className="text-amber-600 font-bold">
+                    <AnimatedCounter target={3} suffix="M+" />
+                  </span>
                 </div>
-                <p className="text-gray-600 text-xs leading-relaxed pl-8">
-                  To process, market, and export high-quality commodities while maintaining sustainable business practices.
-                </p>
-              </div>
-              
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 bg-amber-100 rounded-lg flex items-center justify-center">
-                    <FaEye className="text-amber-600 text-xs" />
-                  </div>
-                  <h3 className="text-sm font-bold text-gray-900">Vision</h3>
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="w-full h-full bg-amber-500 rounded-full" />
                 </div>
-                <p className="text-gray-600 text-xs leading-relaxed pl-8">
-                  To be a leading global exporter maintaining international quality and safety standards.
-                </p>
+                <p className="text-gray-400 text-xs mt-1">Tires per year</p>
               </div>
-            </motion.div>
 
-            {/* Sustainability */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="bg-gradient-to-r from-teal-600 to-teal-700 rounded-xl p-4 text-center text-white"
-            >
-              <FaLeaf className="text-xl mx-auto mb-1" />
-              <p className="text-sm font-semibold">Eco-Friendly Commitment</p>
-              <p className="text-teal-100 text-xs mt-0.5">100% Sustainable Sourcing</p>
-            </motion.div>
+              {/* Daily Output */}
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-600">Daily Output</span>
+                  <span className="text-amber-600 font-bold">
+                    <AnimatedCounter target={8500} suffix="+" />
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="w-[85%] h-full bg-amber-500 rounded-full" />
+                </div>
+                <p className="text-gray-400 text-xs mt-1">Tires per day</p>
+              </div>
+
+              {/* Global Distribution */}
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-600">Global Distribution</span>
+                  <span className="text-amber-600 font-bold">
+                    <AnimatedCounter target={100} suffix="+" />
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="w-[95%] h-full bg-amber-500 rounded-full" />
+                </div>
+                <p className="text-gray-400 text-xs mt-1">Countries served</p>
+              </div>
+
+              {/* Export Ratio */}
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-600">Export Ratio</span>
+                  <span className="text-amber-600 font-bold">
+                    <AnimatedCounter target={85} suffix="%" />
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="w-[85%] h-full bg-amber-500 rounded-full" />
+                </div>
+                <p className="text-gray-400 text-xs mt-1">of production exported</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Values Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-center"
-        >
-          <div className="inline-flex items-center gap-1.5 bg-teal-50 px-3 py-1 rounded-full mb-4">
-            <FaShieldAlt className="text-teal-500 text-xs" />
-            <span className="text-xs font-semibold text-teal-700 uppercase tracking-wider">Core Principles</span>
+        {/* Factory Images Gallery */}
+        <div className="mb-20">
+          <div className="text-center mb-10">
+            <div className="inline-block">
+              <div className="w-12 h-1 bg-amber-600 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-gray-900">Manufacturing Excellence</h3>
+              <p className="text-gray-500 mt-2">State-of-the-art production facility</p>
+            </div>
           </div>
-          
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Our Values</h2>
-          <div className="flex justify-center gap-1.5 mb-5">
-            <div className="w-12 h-0.5 bg-teal-500 rounded-full"></div>
-            <div className="w-6 h-0.5 bg-amber-500 rounded-full"></div>
-          </div>
-          <p className="text-gray-500 text-sm mb-8 max-w-2xl mx-auto">
-            The principles that define our culture and drive our success
-          </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <ValueCard 
-              title="Quality Excellence" 
-              desc="Highest standards in all products & services with rigorous quality control" 
-              icon={FaCheck}
-              color="from-teal-500 to-teal-600"
-              delay={0.7}
+          {/* Main Featured Image */}
+          <div className="relative w-full h-[400px] rounded-2xl overflow-hidden mb-4 group shadow-lg">
+            <Image
+              src={factoryImages[selectedImage].src}
+              alt={factoryImages[selectedImage].alt}
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <ValueCard 
-              title="Integrity First" 
-              desc="We build lasting trust through honesty, transparency, and ethical practices" 
-              icon={FaHandshake}
-              color="from-blue-500 to-cyan-600"
-              delay={0.8}
-            />
-            <ValueCard 
-              title="Innovation Driven" 
-              desc="Continuously improving processes through technology and creative solutions" 
-              icon={FaLightbulb}
-              color="from-amber-500 to-orange-600"
-              delay={0.9}
-            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <p className="text-white font-semibold text-xl">{factoryImages[selectedImage].label}</p>
+            </div>
           </div>
-        </motion.section>
 
-        {/* Verification Links */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.0 }}
-          className="bg-gray-900 rounded-xl p-6 text-white"
-        >
-          <h3 className="text-lg font-bold text-center mb-1">Company Verification</h3>
-          <p className="text-gray-400 text-xs text-center mb-5">Verified business credentials and trade data</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Link 
-              href="https://www.dnb.com/business-directory/company-profiles.asian_import__export_company_limited.5e1c2886b6ec1d7bf335ba958abe0232.html" 
-              target="_blank"
-              className="bg-white/10 hover:bg-white/20 rounded-lg p-4 flex flex-col items-center text-center transition"
-            >
-              <FaBuilding className="text-teal-300 text-xl mb-2" />
-              <h4 className="text-sm font-bold mb-0.5">D&B Directory</h4>
-              <p className="text-gray-400 text-xs">Company registration</p>
-            </Link>
-            
-            <Link 
-              href="https://importkey.com/i/asian-import-export-co-ltd" 
-              target="_blank"
-              className="bg-white/10 hover:bg-white/20 rounded-lg p-4 flex flex-col items-center text-center transition"
-            >
-              <FaChartLine className="text-amber-300 text-xl mb-2" />
-              <h4 className="text-sm font-bold mb-0.5">ImportKey</h4>
-              <p className="text-gray-400 text-xs">Shipment tracking</p>
-            </Link>
-            
-            <Link 
-              href="https://www.trademo.com/companies/asian-import-export-company/16730345" 
-              target="_blank"
-              className="bg-white/10 hover:bg-white/20 rounded-lg p-4 flex flex-col items-center text-center transition"
-            >
-              <FaGlobe className="text-teal-300 text-xl mb-2" />
-              <h4 className="text-sm font-bold mb-0.5">Trademo</h4>
-              <p className="text-gray-400 text-xs">Trade intelligence</p>
-            </Link>
+          {/* Thumbnail Grid */}
+          <div className="grid grid-cols-4 gap-3">
+            {factoryImages.map((img, idx) => (
+              <button
+                key={idx}
+                onClick={() => setSelectedImage(idx)}
+                className={clsx(
+                  "relative h-24 rounded-lg overflow-hidden transition-all duration-300",
+                  selectedImage === idx 
+                    ? "ring-2 ring-amber-600 scale-95 shadow-md" 
+                    : "opacity-70 hover:opacity-100"
+                )}
+              >
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="object-cover"
+                />
+              </button>
+            ))}
           </div>
-        </motion.section>
+        </div>
 
+        {/* Certifications Section */}
+        <div>
+          <div className="text-center mb-10">
+            <div className="inline-block">
+              <div className="w-12 h-1 bg-amber-600 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-gray-900">Global Certifications</h3>
+              <p className="text-gray-500 mt-2">Recognized worldwide for quality & safety</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {certifications.map((cert, idx) => (
+              <div
+                key={idx}
+                className="group relative bg-white border border-gray-200 rounded-xl p-5 text-center hover:border-amber-600 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+              >
+                <i className={`${cert.icon} text-3xl text-amber-600 mb-3 block`} />
+                <div className="font-bold text-gray-900 text-sm mb-1">{cert.name}</div>
+                <div className="text-gray-400 text-xs">{cert.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Trust Badge / CTA */}
+        {/* <div className="mt-16 text-center">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-amber-50 rounded-full border border-amber-200">
+            <i className="fas fa-shield-alt text-amber-600" />
+            <span className="text-gray-700">Trusted by leading fleet operators worldwide</span>
+            <i className="fas fa-arrow-right text-amber-600 text-sm" />
+          </div>
+        </div> */}
       </div>
-    </div>
+    </section>
   );
 }

@@ -85,10 +85,10 @@ const ContactPage = () => {
   };
 
   const contactInfo = [
-    { icon: FaMapMarkerAlt, title: "Location", details: ["63/16 Soi Chumchon Talat Tha Ruea", "Khlong Toei, Bangkok 10110, Thailand"], color: "text-teal-600" },
-    { icon: FaPhone, title: "Phone", details: ["+1 437-900-3996"], link: "tel:+14379003996", color: "text-teal-600" },
-    { icon: FaEnvelope, title: "Email", details: ["info@asianimportexport.com"], link: "mailto:info@asianimportexport.com", color: "text-teal-600" },
-    { icon: FaClock, title: "Business Hours", details: ["Mon-Fri: 9:00 AM - 6:00 PM", "Sat: 10:00 AM - 4:00 PM"], color: "text-teal-600" },
+    { icon: FaMapMarkerAlt, title: "Location", details: ["63/16 Soi Chumchon Talat Tha Ruea", "Khlong Toei, Bangkok 10110, Thailand"], color: "text-amber-600" },
+    { icon: FaPhone, title: "Phone", details: ["+1 437-900-3996"], link: "tel:+14379003996", color: "text-amber-600" },
+    { icon: FaEnvelope, title: "Email", details: ["info@asianimportexport.com"], link: "mailto:info@asianimportexport.com", color: "text-amber-600" },
+    { icon: FaClock, title: "Business Hours", details: ["Mon-Fri: 9:00 AM - 6:00 PM", "Sat: 10:00 AM - 4:00 PM"], color: "text-amber-600" },
   ];
 
   return (
@@ -97,46 +97,28 @@ const ContactPage = () => {
         {/* Back Button */}
         <button
           onClick={handleGoBack}
-          className="group flex items-center gap-2 text-gray-500 hover:text-teal-600 mb-6 transition-all duration-300"
+          className="group flex items-center gap-2 text-gray-500 hover:text-amber-600 mb-6 transition-all duration-300"
         >
-          <div className="bg-gray-100 group-hover:bg-teal-50 p-1.5 rounded-full shadow-sm transition-all">
+          <div className="bg-gray-100 group-hover:bg-amber-50 p-1.5 rounded-full shadow-sm transition-all">
             <FaArrowLeft size={12} className="group-hover:-translate-x-0.5 transition-transform" />
           </div>
           <span className="text-sm font-medium">Back</span>
-        </button>
-
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-r from-teal-500 to-teal-600 p-0.5 rounded-2xl">
-              <div className="bg-white rounded-2xl px-6 py-3">
-                <WebsiteLogo className="h-10" />
-              </div>
-            </div>
-          </div>
-          <p className="text-gray-500 text-sm mb-3">
-            Manufacturer, Wholesaler & Distributor
-          </p>
-          <div className="inline-flex items-center gap-2 bg-teal-50 text-teal-700 px-4 py-1.5 rounded-full text-xs font-semibold border border-teal-100">
-            <span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
-            Trusted Alibaba Supplier
-          </div>
-        </div>
+        </button> 
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Contact Information */}
           <div className="lg:w-1/2">
             <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-8 h-full transition-all duration-300 hover:shadow-xl">
               <div className="flex items-center gap-2 mb-6">
-                <div className="w-1 h-8 bg-gradient-to-b from-teal-500 to-teal-600 rounded-full"></div>
+                <div className="w-1 h-8 bg-gradient-to-b from-amber-500 to-amber-600 rounded-full"></div>
                 <h2 className="text-2xl font-bold text-gray-800">Get In Touch</h2>
               </div>
 
               <div className="space-y-6">
                 {contactInfo.map((info, idx) => (
                   <div key={idx} className="flex items-start group">
-                    <div className="flex-shrink-0 w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center mr-4 group-hover:bg-teal-100 transition-all duration-300 group-hover:scale-110">
-                      <info.icon className="text-teal-600 text-xl" />
+                    <div className="flex-shrink-0 w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center mr-4 group-hover:bg-amber-100 transition-all duration-300 group-hover:scale-110">
+                      <info.icon className="text-amber-600 text-xl" />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-sm font-semibold text-gray-800 mb-1">
@@ -147,7 +129,7 @@ const ContactPage = () => {
                           <a 
                             key={i} 
                             href={info.link} 
-                            className="text-gray-600 text-sm hover:text-teal-600 transition-colors block"
+                            className="text-gray-600 text-sm hover:text-amber-600 transition-colors block"
                           >
                             {detail}
                           </a>
@@ -177,7 +159,7 @@ const ContactPage = () => {
           <div className="lg:w-1/2">
             <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-8 transition-all duration-300 hover:shadow-xl">
               <div className="flex items-center gap-2 mb-6">
-                <div className="w-1 h-8 bg-gradient-to-b from-teal-500 to-teal-600 rounded-full"></div>
+                <div className="w-1 h-8 bg-gradient-to-b from-amber-500 to-amber-600 rounded-full"></div>
                 <h2 className="text-2xl font-bold text-gray-800">Send a Message</h2>
               </div>
 
@@ -196,7 +178,7 @@ const ContactPage = () => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="John Doe"
-                        className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
+                        className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
                       />
                     </div>
                   </div>
@@ -213,7 +195,7 @@ const ContactPage = () => {
                         value={formData.company}
                         onChange={handleChange}
                         placeholder="Your Company"
-                        className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
+                        className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
                       />
                     </div>
                   </div>
@@ -233,12 +215,12 @@ const ContactPage = () => {
                       onChange={handleChange}
                       readOnly={Boolean(user?.email)}
                       placeholder="hello@company.com"
-                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
                     />
                   </div>
                   {user?.email && (
                     <p className="mt-1.5 text-xs text-gray-500 flex items-center gap-1">
-                      <span className="w-1 h-1 bg-teal-500 rounded-full"></span>
+                      <span className="w-1 h-1 bg-amber-500 rounded-full"></span>
                       Using your registered email
                     </p>
                   )}
@@ -256,7 +238,7 @@ const ContactPage = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="+1 234 567 8900"
-                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all"
                     />
                   </div>
                 </div>
@@ -274,7 +256,7 @@ const ContactPage = () => {
                       onChange={handleChange}
                       rows={4}
                       placeholder="Tell us about your requirements..."
-                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all resize-none"
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white text-gray-800 placeholder:text-gray-400 transition-all resize-none"
                     ></textarea>
                   </div>
                 </div>
@@ -282,7 +264,7 @@ const ContactPage = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -304,37 +286,7 @@ const ContactPage = () => {
               </form>
             </div>
           </div>
-        </div>
-
-        {/* Map Section */}
-        <div className="mt-8">
-          <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-1 h-6 bg-gradient-to-b from-teal-500 to-teal-600 rounded-full"></div>
-              <h2 className="text-xl font-bold text-gray-800">Our Location</h2>
-            </div>
-
-            <div className="bg-gray-100 h-64 rounded-xl overflow-hidden">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3879.223179266149!2d100.5603145759964!3d13.726486397299883!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29f3a315d5f5f%3A0xea51cbff758e4d4c!2s63%2F16%20Soi%20Chumchon%20Talat%20Tha%20Ruea%2C%20Khlong%20Toei%2C%20Bangkok%2010110%2C%20Thailand!5e0!3m2!1sen!2sus!4v1690900000000!5m2!1sen!2sus"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Asian Import & Export Location"
-              ></iframe>
-            </div>
-
-            <div className="mt-4 p-4 bg-teal-50 rounded-xl">
-              <p className="text-sm text-gray-700 flex items-center gap-2">
-                <span className="text-teal-600">📍</span>
-                Located in Bangkok's commercial district. Easily accessible by public transportation.
-              </p>
-            </div>
-          </div>
-        </div>
+        </div> 
       </div>
     </div>
   );

@@ -702,133 +702,140 @@ const ProductDetails = () => {
               </h1>
               <p className="text-base sm:text-xl text-yellow-600 mb-2 font-semibold">
                 Price: {product?.price || "N/A"}
-              </p>
+              </p> 
 
-              <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-700 mt-4">
-                {/* Conditionally render attributes based on product type */}
-                {product.keyAttributes?.["Load Range"] && (
-                  <p>
-                    Load Range:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Load Range"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Speed Symbol"] && (
-                  <p>
-                    Speed Symbol:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Speed Symbol"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Tread Depth"] && (
-                  <p>
-                    Tread Depth:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Tread Depth"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Tire Type"] && (
-                  <p>
-                    Tire Type:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Tire Type"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Size"] && (
-                  <p>
-                    Size:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Size"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Brand"] && (
-                  <p>
-                    Brand:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Brand"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Fuel Efficiency"] && (
-                  <p>
-                    Fuel Efficiency:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Fuel Efficiency"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Wet Grip"] && (
-                  <p>
-                    Wet Grip:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Wet Grip"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Noise Level"] && (
-                  <p>
-                    Noise Level:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Noise Level"]}
-                    </span>
-                  </p>
-                )}
-                {/* For food products */}
-                {product.keyAttributes?.["Species"] && (
-                  <p>
-                    Species:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Species"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Type"] && (
-                  <p>
-                    Type:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Type"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Quality"] && (
-                  <p>
-                    Quality:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Quality"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Storage"] && (
-                  <p>
-                    Storage:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Storage"]}
-                    </span>
-                  </p>
-                )}
-                {/* For metals */}
-                {product.keyAttributes?.["Purity"] && (
-                  <p>
-                    Purity:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Purity"]}
-                    </span>
-                  </p>
-                )}
-                {product.keyAttributes?.["Grade"] && (
-                  <p>
-                    Grade:{" "}
-                    <span className="text-teal-800 font-medium">
-                      {product.keyAttributes["Grade"]}
-                    </span>
-                  </p>
-                )}
-              </div>
+<div className="grid grid-cols-2 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-700 mt-4">
+  {/* Tire Specs from tireSpecs object */}
+  {product.tireSpecs?.size && (
+    <p>
+      Size: <span className="text-teal-800 font-medium">{product.tireSpecs.size}</span>
+    </p>
+  )}
+  {product.tireSpecs?.loadIndex && (
+    <p>
+      Load Index: <span className="text-teal-800 font-medium">{product.tireSpecs.loadIndex}</span>
+    </p>
+  )}
+  {product.tireSpecs?.speedRating && (
+    <p>
+      Speed Rating: <span className="text-teal-800 font-medium">{product.tireSpecs.speedRating}</span>
+    </p>
+  )}
+  {product.tireSpecs?.treadPattern && (
+    <p>
+      Tread Pattern: <span className="text-teal-800 font-medium">{product.tireSpecs.treadPattern}</span>
+    </p>
+  )}
+  {product.tireSpecs?.plyRating && (
+    <p>
+      Ply Rating: <span className="text-teal-800 font-medium">{product.tireSpecs.plyRating}</span>
+    </p>
+  )}
+  {product.tireSpecs?.loadRange && (
+    <p>
+      Load Range: <span className="text-teal-800 font-medium">{product.tireSpecs.loadRange}</span>
+    </p>
+  )}
+  {product.tireSpecs?.stdRim && (
+    <p>
+      Std Rim: <span className="text-teal-800 font-medium">{product.tireSpecs.stdRim}"</span>
+    </p>
+  )}
+  {product.tireSpecs?.overallDiameter && (
+    <p>
+      Overall Diameter: <span className="text-teal-800 font-medium">{product.tireSpecs.overallDiameter}</span>
+    </p>
+  )}
+  {product.tireSpecs?.sectionWidth && (
+    <p>
+      Section Width: <span className="text-teal-800 font-medium">{product.tireSpecs.sectionWidth}</span>
+    </p>
+  )}
+  {product.tireSpecs?.treadDepth && (
+    <p>
+      Tread Depth: <span className="text-teal-800 font-medium">{product.tireSpecs.treadDepth}</span>
+    </p>
+  )}
+  {product.tireSpecs?.maxLoad && (
+    <p>
+      Max Load: <span className="text-teal-800 font-medium">{product.tireSpecs.maxLoad}</span>
+    </p>
+  )}
+  {product.tireSpecs?.maxInflation && (
+    <p>
+      Max Inflation: <span className="text-teal-800 font-medium">{product.tireSpecs.maxInflation}</span>
+    </p>
+  )}
+  {product.tireSpecs?.constructionType && (
+    <p>
+      Construction: <span className="text-teal-800 font-medium">
+        {product.tireSpecs.constructionType === "TL" ? "Tubeless" : 
+         product.tireSpecs.constructionType === "TT" ? "Tube Type" : 
+         product.tireSpecs.constructionType}
+      </span>
+    </p>
+  )}
+  
+  {/* Tire Type from direct field */}
+  {product.tireType && (
+    <p>
+      Tire Type: <span className="text-teal-800 font-medium">
+        {product.tireType === "steer" ? "Steer Tire" :
+         product.tireType === "drive" ? "Drive Tire" :
+         product.tireType === "trailer" ? "Trailer Tire" :
+         product.tireType === "all-position" ? "All-Position Tire" :
+         product.tireType === "off-road" ? "Off-Road Tire" :
+         product.tireType === "mining" ? "Mining Tire" : product.tireType}
+      </span>
+    </p>
+  )}
+  
+  {/* Vehicle Type from array */}
+  {product.vehicleType && product.vehicleType.length > 0 && (
+    <p>
+      Vehicle Type: <span className="text-teal-800 font-medium">{product.vehicleType.join(", ")}</span>
+    </p>
+  )}
+  
+  {/* Application from array */}
+  {product.application && product.application.length > 0 && (
+    <p>
+      Application: <span className="text-teal-800 font-medium">{product.application.join(", ")}</span>
+    </p>
+  )}
+  
+  {/* Brand from direct field */}
+  {product.brand && (
+    <p>
+      Brand: <span className="text-teal-800 font-medium">{product.brand}</span>
+    </p>
+  )}
+  
+  {/* Pattern from direct field */}
+  {product.pattern && (
+    <p>
+      Pattern: <span className="text-teal-800 font-medium">{product.pattern}</span>
+    </p>
+  )}
+  
+  {/* Keep keyAttributes for non-tire products or additional specs */}
+  {product.keyAttributes && Object.entries(product.keyAttributes).map(([key, value]) => {
+    // Skip already displayed fields
+    const skipFields = ["Size", "Load Index", "Speed Rating", "Tread Pattern", "Ply Rating", 
+                        "Load Range", "Tire Type", "Brand", "Pattern", "MOQ", "Manufacturer", 
+                        "Origin", "Packaging", "Supply Ability", "Shelf Life"];
+    if (skipFields.includes(key)) return null;
+    
+    if (typeof value === "string" || typeof value === "number") {
+      return (
+        <p key={key}>
+          {key}: <span className="text-teal-800 font-medium">{value}</span>
+        </p>
+      );
+    }
+    return null;
+  })}
+</div>
 
               {/* Customer Reviews (if available) */}
               {hasReviews && (
@@ -1137,43 +1144,226 @@ const ProductDetails = () => {
             {/* Tab Content */}
             <div className="bg-white p-3 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
               {/* Technical Specifications Tab */}
-              {activeTab === "specifications" && product.keyAttributes && (
-                <div>
-                  <h3 className="text-xl sm:text-3xl font-bold text-teal-800 mb-4">
-                    Product Specifications
-                  </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
-                    {Object.entries(product.keyAttributes).map(([key, value]) => {
-                      // Skip supplier-specific fields that will be shown separately
-                      const supplierFields = [
-                        "Brand",
-                        "Manufacturer",
-                        "Origin",
-                        "Place of Origin",
-                        "Packaging",
-                        "Package",
-                        "Supply Ability",
-                        "Shelf Life",
-                        "Processing",
-                      ];
-                      if (supplierFields.includes(key)) return null;
-
-                      if (typeof value === "string" || typeof value === "number") {
-                        return (
-                          <div
-                            key={key}
-                            className="bg-gray-50 p-2 rounded-lg border border-teal-100"
-                          >
-                            <p className="text-gray-600 text-xs sm:text-sm mb-1">{key}</p>
-                            <p className="text-teal-800 text-xs sm:text-sm font-medium">{value}</p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    })}
-                  </div>
+              {/* Technical Specifications Tab */}
+{activeTab === "specifications" && (
+  <div>
+    <h3 className="text-xl sm:text-3xl font-bold text-teal-800 mb-4">
+      Technical Specifications
+    </h3>
+    
+    {/* Tire Classification Section */}
+    {(product.tireType || product.vehicleType?.length > 0 || product.application?.length > 0) && (
+      <div className="mb-6">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3 border-l-4 border-teal-500 pl-3">Tire Classification</h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {product.tireType && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Tire Type</p>
+              <p className="text-teal-800 font-semibold">
+                {product.tireType === "steer" ? "Steer Tire" :
+                 product.tireType === "drive" ? "Drive Tire" :
+                 product.tireType === "trailer" ? "Trailer Tire" :
+                 product.tireType === "all-position" ? "All-Position Tire" :
+                 product.tireType === "off-road" ? "Off-Road Tire" :
+                 product.tireType === "mining" ? "Mining Tire" : product.tireType}
+              </p>
+            </div>
+          )}
+          {product.vehicleType && product.vehicleType.length > 0 && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Vehicle Type</p>
+              <p className="text-teal-800 font-semibold">{product.vehicleType.join(", ")}</p>
+            </div>
+          )}
+          {product.application && product.application.length > 0 && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Application</p>
+              <p className="text-teal-800 font-semibold">{product.application.join(", ")}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+    
+    {/* Technical Specifications Section */}
+    {product.tireSpecs && Object.keys(product.tireSpecs).some(key => product.tireSpecs[key]) && (
+      <div className="mb-6">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3 border-l-4 border-teal-500 pl-3">Technical Specifications</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {product.tireSpecs.size && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Tire Size</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.size}</p>
+            </div>
+          )}
+          {product.tireSpecs.loadIndex && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Load Index</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.loadIndex}</p>
+            </div>
+          )}
+          {product.tireSpecs.speedRating && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Speed Rating</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.speedRating}</p>
+            </div>
+          )}
+          {product.tireSpecs.treadPattern && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Tread Pattern</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.treadPattern}</p>
+            </div>
+          )}
+          {product.tireSpecs.plyRating && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Ply Rating</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.plyRating}</p>
+            </div>
+          )}
+          {product.tireSpecs.loadRange && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Load Range</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.loadRange}</p>
+            </div>
+          )}
+          {product.tireSpecs.constructionType && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Construction</p>
+              <p className="text-teal-800 font-medium">
+                {product.tireSpecs.constructionType === "TL" ? "Tubeless" : 
+                 product.tireSpecs.constructionType === "TT" ? "Tube Type" : 
+                 product.tireSpecs.constructionType}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+    
+    {/* Dimensions Section */}
+    {(product.tireSpecs?.stdRim || product.tireSpecs?.overallDiameter || 
+      product.tireSpecs?.sectionWidth || product.tireSpecs?.treadDepth || 
+      product.tireSpecs?.staticLoadRadius || product.tireSpecs?.revsPerKm) && (
+      <div className="mb-6">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3 border-l-4 border-teal-500 pl-3">Dimensions</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {product.tireSpecs.stdRim && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Standard Rim</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.stdRim}"</p>
+            </div>
+          )}
+          {product.tireSpecs.overallDiameter && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Overall Diameter</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.overallDiameter}</p>
+            </div>
+          )}
+          {product.tireSpecs.sectionWidth && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Section Width</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.sectionWidth}</p>
+            </div>
+          )}
+          {product.tireSpecs.treadDepth && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Tread Depth</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.treadDepth}</p>
+            </div>
+          )}
+          {product.tireSpecs.staticLoadRadius && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Static Load Radius</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.staticLoadRadius}"</p>
+            </div>
+          )}
+          {product.tireSpecs.revsPerKm && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Revs per km</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.revsPerKm}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+    
+    {/* Load & Pressure Section */}
+    {(product.tireSpecs?.maxLoad || product.tireSpecs?.maxInflation || 
+      product.tireSpecs?.singleMaxLoad || product.tireSpecs?.dualMaxLoad ||
+      product.tireSpecs?.weight) && (
+      <div className="mb-6">
+        <h4 className="text-lg font-semibold text-gray-800 mb-3 border-l-4 border-teal-500 pl-3">Load & Pressure Ratings</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {product.tireSpecs.maxLoad && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Max Load</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.maxLoad}</p>
+            </div>
+          )}
+          {product.tireSpecs.maxInflation && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Max Inflation</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.maxInflation}</p>
+            </div>
+          )}
+          {product.tireSpecs.singleMaxLoad && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Single Max Load</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.singleMaxLoad}</p>
+            </div>
+          )}
+          {product.tireSpecs.singleMaxPressure && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Single Max Pressure</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.singleMaxPressure} psi</p>
+            </div>
+          )}
+          {product.tireSpecs.dualMaxLoad && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Dual Max Load</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.dualMaxLoad}</p>
+            </div>
+          )}
+          {product.tireSpecs.dualMaxPressure && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Dual Max Pressure</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.dualMaxPressure} psi</p>
+            </div>
+          )}
+          {product.tireSpecs.weight && (
+            <div className="bg-gray-50 p-3 rounded-lg">
+              <p className="text-gray-600 text-sm">Tire Weight</p>
+              <p className="text-teal-800 font-medium">{product.tireSpecs.weight} {product.tireSpecs.weightUnit || "lbs"}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+    
+    {/* Key Attributes (additional specs) */}
+    {product.keyAttributes && Object.keys(product.keyAttributes).length > 0 && (
+      <div>
+        <h4 className="text-lg font-semibold text-gray-800 mb-3 border-l-4 border-teal-500 pl-3">Additional Features</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {Object.entries(product.keyAttributes).map(([key, value]) => {
+            const skipFields = ["Size", "Load Index", "Speed Rating", "Tread Pattern", "Ply Rating", 
+                                "Load Range", "Tire Type", "Brand", "Pattern"];
+            if (skipFields.includes(key)) return null;
+            if (typeof value === "string" || typeof value === "number") {
+              return (
+                <div key={key} className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-gray-600 text-sm">{key}</p>
+                  <p className="text-teal-800 font-medium">{value}</p>
                 </div>
-              )}
+              );
+            }
+            return null;
+          })}
+        </div>
+      </div>
+    )}
+  </div>
+)}
 
               {/* Pricing Options Tab */}
               {activeTab === "pricing" && (

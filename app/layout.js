@@ -147,7 +147,7 @@ export default function RootLayout({ children }) {
           <AuthProvider>
             <DataProvider>
               <CartProvider>
-                <ScrollToTop />
+                {/* <ScrollToTop /> */}
                 <Toaster position="top-center" reverseOrder={false} />
                 <Navbar />
                 <Suspense fallback={<PageSkeleton />}>
