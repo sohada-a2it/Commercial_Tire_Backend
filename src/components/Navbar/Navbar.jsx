@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
-import { ShoppingBag, User, LogOut, ChevronDown, LayoutDashboard, ShoppingCart } from "lucide-react";
+import { ShoppingBag, User, LogOut, ChevronDown, LayoutDashboard  } from "lucide-react";
 import { Link, useNavigate, useLocation, usePathname } from "@/lib/navigation";
-import Image from "next/image";
-import { useCart } from "@/context/CartContext";
+import Image from "next/image"; 
 import { useAuth } from "@/context/AuthContext";
 import AuthDrawer from "@/components/Auth/AuthModal";
 import dataService from "@/services/dataService";
@@ -21,8 +20,7 @@ const Navbar = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [productCategories, setProductCategories] = useState([]);
   const navigate = useNavigate();
-  const location = useLocation();
-  const { getCartItemCount, toggleCart } = useCart();
+  const location = useLocation(); 
   const { user, userProfile, logout } = useAuth();
   const productsDropdownRef = useRef(null);
   const profileDropdownRef = useRef(null);
@@ -153,83 +151,19 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center space-x-7">
           <Link to="/" className={getLinkClasses("/")}>
             Home
-          </Link>
-
-          <div className="relative" ref={productsDropdownRef}>
-            <button
-              onClick={toggleProducts}
-              className={`font-medium flex items-center py-2 border-b-2 ${
-                location.pathname === "/products"
-                  ? "text-amber-300 border-amber-300"
-                  : "text-white hover:text-amber-300 border-transparent hover:border-amber-300"
-              }`}
-            >
-              Products
-              <FaChevronDown className="ml-1 text-sm" />
-            </button>
-
-            {isProductsOpen && (
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1 bg-white shadow-2xl rounded-lg p-4 w-[700px] max-w-[90vw] z-20 border border-amber-200">
-                <div className="flex gap-3 flex-wrap">
-                  {productCategories.length > 0 ? (
-                    productCategories.map((category) => (
-                      <div key={category.categorySlug} className="flex-1 min-w-[130px]">
-                        <h3 className="text-sm font-bold text-amber-800 pb-1 mb-2 border-b border-amber-200 truncate" title={category.name}>
-                          {category.name}
-                        </h3>
-                        <div className="space-y-0.5">
-                          {category.items.map((item) => (
-                            <button
-                              key={`${category.categorySlug}-${item}`}
-                              onClick={() => handleProductClick(category.categorySlug, item)}
-                              className="block w-full text-left py-1 px-2 hover:bg-amber-50 rounded text-xs text-gray-700"
-                            >
-                              {item}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="w-full text-sm text-gray-500 px-2 py-1">Loading categories...</div>
-                  )}
-                </div>
-
-                {/* View All Products */}
-                <div className="mt-4 pt-3 border-t border-amber-200">
-                  <button
-                    onClick={handleViewAllProducts}
-                    className="block w-full py-1.5 px-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white font-medium rounded text-xs text-center hover:from-amber-700 hover:to-amber-800"
-                  >
-                    View All Products
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
+          </Link> 
+          <Link to="/productList" className={getLinkClasses("/productList")}>
+            Products List
+          </Link> 
           <Link to="/aboutUs" className={getLinkClasses("/aboutUs")}>
             About Us
           </Link>
+          <Link to="/blog" className={getLinkClasses("/blog")}>
+            Blog
+          </Link>
           <Link to="/contact" className={getLinkClasses("/contact")}>
             Contact
-          </Link>
-          
-          {/* Cart Button */}
-          <button
-            onClick={toggleCart}
-            className="relative text-white hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-300"
-          >
-            <div className="flex items-center gap-1">
-              <ShoppingCart className="w-5 h-5" />
-              <span className="font-medium">Cart</span>
-              {getCartItemCount() > 0 && (
-                <span className="ml-1 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center">
-                  {getCartItemCount()}
-                </span>
-              )}
-            </div>
-          </button>
+          </Link> 
         </div>
 
         {/* Right side text */}
@@ -349,23 +283,7 @@ const Navbar = () => {
                 Products
               </Link>
 
-              <button
-                onClick={() => {
-                  toggleCart();
-                  setIsMenuOpen(false);
-                }}
-                className="relative text-white hover:text-amber-300 transition-colors py-2.5 px-3 rounded-md hover:bg-amber-700 text-left"
-              >
-                <div className="flex items-center gap-2">
-                  <ShoppingCart className="w-4 h-4" />
-                  <span className="text-sm font-medium">Cart</span>
-                  {getCartItemCount() > 0 && (
-                    <span className="ml-1 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center">
-                      {getCartItemCount()}
-                    </span>
-                  )}
-                </div>
-              </button>
+             
 
               <Link
                 to="/aboutUs"
@@ -373,6 +291,13 @@ const Navbar = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 About Us
+              </Link>
+              <Link
+                to="/blog"
+                className={getMobileLinkClasses("/blog")}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Blog
               </Link>
               <Link
                 to="/contact"

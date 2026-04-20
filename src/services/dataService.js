@@ -62,9 +62,7 @@ class DataService {
   async getAllProducts(filters = {}) {
     const data = await this.fetchProducts(filters);
     return data.products;
-  }
-
- // In your dataService.js, update getProductById:
+  } 
 
 async getProductById(productId) {
   if (!productId) return null;
@@ -77,19 +75,20 @@ async getProductById(productId) {
   }
   const payload = await response.json();
   
-  // Add logging to see what's coming from API
-  console.log("API Response for product:", productId, {
-    hasTireType: !!payload?.product?.tireType,
-    hasVehicleType: !!payload?.product?.vehicleType,
-    hasApplication: !!payload?.product?.application,
-    hasTireSpecs: !!payload?.product?.tireSpecs,
-    tireType: payload?.product?.tireType,
-    vehicleType: payload?.product?.vehicleType,
-    application: payload?.product?.application,
-    tireSpecs: payload?.product?.tireSpecs
-  });
+  // Ensure the product has the expected fields
+  const product = payload?.product || null;
   
-  return payload?.product || null;
+  if (product) {
+    // Log to verify data is coming through
+    console.log("Product data received:", {
+      tireType: product.tireType,
+      vehicleType: product.vehicleType,
+      application: product.application,
+      tireSpecs: product.tireSpecs
+    });
+  }
+  
+  return product;
 }
 
   // আপডেটেড মেথড - ক্যাটাগরি আইডি দ্বারা প্রোডাক্ট ফেচ করে

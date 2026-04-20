@@ -60,7 +60,7 @@ const Banner = () => {
 
           {/* Products Button */}
           <Link
-            to="/products"
+            to="/productList"
             className="group relative px-7 py-3 border border-amber-500 text-white font-semibold tracking-wide overflow-hidden transition-all duration-300 hover:scale-105"
           >
             <span className="relative z-10">EXPLORE PRODUCTS</span>
@@ -69,7 +69,7 @@ const Banner = () => {
 
           {/* Dealer Button */}
           <Link
-            to="/contact"
+            to="/findDealer"
             className="group relative px-7 py-3 bg-amber-500 text-white font-semibold tracking-wide overflow-hidden transition-all duration-300 hover:scale-105"
           >
             <span className="relative z-10">FIND DEALER</span>

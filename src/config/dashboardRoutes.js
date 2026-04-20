@@ -28,6 +28,8 @@ export const sidebarRoutesByRole = {
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
     { icon: Package, label: "Featured Products", href: "/dashboard/featured" },
+    { icon: Package, label: "Dealer Management", href: "/dashboard/dealers" },
+    { icon: Package, label: "Blog Management", href: "/dashboard/blogs" },
     { icon: Images, label: "Media Library", href: "/dashboard/media" },
     { icon: Users, label: "Customer A-Z", href: "/dashboard/users" },
     { icon: UserCog, label: "Authorized Persons", href: "/dashboard/authorized-persons" },
@@ -39,6 +41,9 @@ export const sidebarRoutesByRole = {
     { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
+    { icon: Package, label: "Featured Products", href: "/dashboard/featured" },
+    { icon: Package, label: "Dealer Management", href: "/dashboard/dealers" },
+    { icon: Package, label: "Blog Management", href: "/dashboard/blogs" },
     { icon: Images, label: "Media Library", href: "/dashboard/media" },
   ],
   customer: [
