@@ -403,21 +403,7 @@ export default function ProductsPage() {
                   {value === "all" ? "All Categories" : value}
                 </option>
               ))}
-            </select>
-            <select 
-              value={filterSubcategory} 
-              onChange={(e) => setFilterSubcategory(e.target.value)} 
-              disabled={filterCategory === "all"}
-              className={`w-[200px] rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-teal-500 ${
-                filterCategory === "all" ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {subcategoryOptions.map((value) => (
-                <option key={value} value={value}>
-                  {value === "all" ? "All Subcategories" : value}
-                </option>
-              ))}
-            </select>
+            </select> 
             <button
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
               className="inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-gray-700 hover:bg-gray-50 transition-colors"

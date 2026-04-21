@@ -19,9 +19,7 @@ const createSubcategory = (index = 0) => ({
 });
 
 const categoryTemplate = {
-  name: "New Category",
-  slug: "new-category",
-  icon: "📦",
+  name: "New Category", 
   description: "",
   displayOrder: 0,
   isActive: true,
@@ -402,7 +400,61 @@ export default function CategoriesPage() {
             </div>
           </div>
 
-          <div className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
+          <div className=" ">
+            <section className="space-y-6 rounded-2xl bg-white p-4 mb-6 shadow-sm border border-gray-100">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">Category form</h2>
+                  <p className="text-sm text-gray-700">Edit the category title, icon, and subcategories in plain fields.</p>
+                </div> 
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="space-y-2 text-sm">
+                  <span className="font-medium text-gray-700">Category name</span>
+                  <input value={editor.name || ""} onChange={(event) => updateField("name", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                </label>   
+              </div>
+
+              <label className="space-y-2 text-sm block">
+                <span className="font-medium text-gray-700">Description</span>
+                <textarea value={editor.description || ""} onChange={(event) => updateField("description", event.target.value)} rows={4} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+              </label>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="space-y-2 text-sm">
+                  <span className="font-medium text-gray-700">Image URL</span>
+                  <input value={editor.image?.url || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), url: event.target.value } }))} placeholder="https://res.cloudinary.com/.../image/upload/..." className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                </label>
+                <div className="space-y-2 text-sm">
+                  <span className="font-medium text-gray-700">Upload category image</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 hover:bg-gray-50">
+                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Upload image
+                      <input type="file" accept="image/*" onChange={handleCategoryImageUpload} className="hidden" />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => openMediaPicker({ type: "category", index: -1 })}
+                      className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 hover:bg-gray-50"
+                    >
+                      Select from Cloudinary Media
+                    </button>
+                  </div>
+                  {editor.image?.publicId ? <p className="text-xs text-gray-600">Public id: {editor.image.publicId}</p> : null}
+                </div>
+              </div>  
+
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  onClick={handleSave}
+                  disabled={saving || uploading}
+                  className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-white hover:bg-black disabled:opacity-70"
+                >
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {uploading ? "Uploading..." : "Save category"}
+                </button>
+              </div>
+            </section>
             <aside className="space-y-4 rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
               <div className="max-h-[70vh] space-y-3 overflow-y-auto pr-1">
                 {loading ? (
@@ -421,9 +473,7 @@ export default function CategoriesPage() {
                       >
                         <div className="flex items-start justify-between gap-3 cursor-pointer" onClick={() => handleSelect(category)}>
                           <div>
-                            <div className="text-lg font-semibold text-gray-900">{category.icon || "•"} {category.name}</div>
-                            <div className="text-sm text-gray-700">{category.subcategories?.length || 0} subcategories</div>
-                            <div className="text-xs text-gray-600 mt-1">Status: {category.isActive ? "Active" : "Inactive"}</div>
+                            <div className="text-lg font-semibold text-gray-900">{category.icon || "•"} {category.name}</div>  
                           </div>
                           <div className="text-xs rounded-full bg-gray-100 px-2 py-1 text-gray-700">{category.slug}</div>
                         </div>
@@ -474,193 +524,6 @@ export default function CategoriesPage() {
                 </div>
               </div>
             </aside>
-
-            <section className="space-y-6 rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Category form</h2>
-                  <p className="text-sm text-gray-700">Edit the category title, icon, and subcategories in plain fields.</p>
-                </div>
-                {isAdmin ? (
-                  <button onClick={handleDelete} className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-4 py-2 text-red-700 hover:bg-red-50">
-                    <Trash2 className="w-4 h-4" /> Delete
-                  </button>
-                ) : null}
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <label className="space-y-2 text-sm">
-                  <span className="font-medium text-gray-700">Category name</span>
-                  <input value={editor.name || ""} onChange={(event) => updateField("name", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                </label>
-                <label className="space-y-2 text-sm">
-                  <span className="font-medium text-gray-700">Slug</span>
-                  <input value={editor.slug || ""} onChange={(event) => updateField("slug", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                </label>
-                <label className="space-y-2 text-sm">
-                  <span className="font-medium text-gray-700">Icon</span>
-                  <input value={editor.icon || ""} onChange={(event) => updateField("icon", event.target.value)} placeholder="🚛" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                </label>
-                <label className="space-y-2 text-sm">
-                  <span className="font-medium text-gray-700">Display order</span>
-                  <input type="number" value={editor.displayOrder ?? 0} onChange={(event) => updateField("displayOrder", Number(event.target.value))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                </label>
-              </div>
-
-              <label className="space-y-2 text-sm block">
-                <span className="font-medium text-gray-700">Description</span>
-                <textarea value={editor.description || ""} onChange={(event) => updateField("description", event.target.value)} rows={4} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-              </label>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <label className="space-y-2 text-sm">
-                  <span className="font-medium text-gray-700">Image URL</span>
-                  <input value={editor.image?.url || ""} onChange={(event) => setEditor((current) => ({ ...current, image: { ...(current.image || {}), url: event.target.value } }))} placeholder="https://res.cloudinary.com/.../image/upload/..." className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                </label>
-                <div className="space-y-2 text-sm">
-                  <span className="font-medium text-gray-700">Upload category image</span>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 hover:bg-gray-50">
-                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Upload image
-                      <input type="file" accept="image/*" onChange={handleCategoryImageUpload} className="hidden" />
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => openMediaPicker({ type: "category", index: -1 })}
-                      className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 hover:bg-gray-50"
-                    >
-                      Select from Cloudinary Media
-                    </button>
-                  </div>
-                  {editor.image?.publicId ? <p className="text-xs text-gray-600">Public id: {editor.image.publicId}</p> : null}
-                </div>
-              </div>
-
-              <div className="space-y-2 text-sm rounded-xl border border-gray-200 p-4 bg-gray-50">
-                <span className="font-medium text-gray-700 block">Paste & Upload from URL</span>
-                <div className="flex gap-2">
-                  <input
-                    value={categoryUrlInput}
-                    onChange={(event) => setCategoryUrlInput(event.target.value)}
-                    placeholder="Paste image URL here..."
-                    className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleCategoryUrlUpload}
-                    disabled={uploading}
-                    className="inline-flex items-center gap-2 rounded-lg border border-teal-300 bg-teal-50 px-4 py-3 text-sm text-teal-700 hover:bg-teal-100 disabled:opacity-50 whitespace-nowrap"
-                  >
-                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Paste & Upload
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Subcategories</h3>
-                    <p className="text-sm text-gray-700">Each main category can contain multiple subcategories.</p>
-                  </div>
-                  <button onClick={addSubcategory} className="rounded-lg border text-gray-900 border-teal-200 bg-teal-50 px-4 py-2 text-sm hover:bg-teal-200">Add subcategory</button>
-                </div>
-
-                <div className="space-y-4">
-                  {(editor.subcategories || []).map((subcategory, index) => (
-                    <div key={`${subcategory.id || index}-${index}`} className="rounded-2xl border border-gray-200 p-4">
-                      <div className="mb-3 flex items-center justify-between gap-3">
-                        <strong className="text-sm text-gray-800">Subcategory {index + 1}</strong>
-                        <button onClick={() => removeSubcategory(index)} className="text-sm text-red-600 hover:text-red-700">Remove</button>
-                      </div>
-                      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                        <label className="space-y-2 text-sm">
-                          <span className="font-medium text-gray-700">ID</span>
-                          <input type="number" value={subcategory.id ?? index + 1} onChange={(event) => updateSubcategory(index, "id", Number(event.target.value))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                        </label>
-                        <label className="space-y-2 text-sm">
-                          <span className="font-medium text-gray-700">Name</span>
-                          <input value={subcategory.name || ""} onChange={(event) => updateSubcategory(index, "name", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                        </label>
-                        <label className="space-y-2 text-sm">
-                          <span className="font-medium text-gray-700">Slug</span>
-                          <input value={subcategory.slug || ""} onChange={(event) => updateSubcategory(index, "slug", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                        </label>
-                        <label className="space-y-2 text-sm md:col-span-2 lg:col-span-3">
-                          <span className="font-medium text-gray-700">Description</span>
-                          <input value={subcategory.description || ""} onChange={(event) => updateSubcategory(index, "description", event.target.value)} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                        </label>
-                        <label className="space-y-2 text-sm">
-                          <span className="font-medium text-gray-700">Display order</span>
-                          <input type="number" value={subcategory.displayOrder ?? index} onChange={(event) => updateSubcategory(index, "displayOrder", Number(event.target.value))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                        </label>
-                        <label className="flex items-center gap-2 self-end rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700">
-                          <input type="checkbox" checked={subcategory.isActive !== false} onChange={(event) => updateSubcategory(index, "isActive", event.target.checked)} />
-                          Active
-                        </label>
-                        <div className="space-y-2 text-sm lg:col-span-3">
-                          <span className="font-medium text-gray-700">Subcategory image</span>
-                          <div className="flex flex-wrap items-center gap-3">
-                            <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50">
-                              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Upload image
-                              <input type="file" accept="image/*" onChange={(event) => handleSubcategoryImageUpload(index, event)} className="hidden" />
-                            </label>
-                            <button
-                              type="button"
-                              onClick={() => openMediaPicker({ type: "subcategory", index })}
-                              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                            >
-                              Select from Cloudinary Media
-                            </button>
-                            {subcategory.image?.url ? (
-                              <button
-                                type="button"
-                                onClick={() => updateSubcategory(index, "image", { url: "", publicId: "" })}
-                                className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50"
-                              >
-                                Remove image
-                              </button>
-                            ) : null}
-                          </div>
-                          {subcategory.image?.url ? (
-                            <img src={subcategory.image.url} alt={subcategory.name || `subcategory-${index + 1}`} className="h-24 w-24 rounded-lg border border-gray-200 object-cover" />
-                          ) : null}
-                        </div>
-
-                        <div className="space-y-2 text-sm lg:col-span-3 rounded-xl border border-gray-200 p-3 bg-gray-50">
-                          <span className="font-medium text-gray-700 block">Paste & Upload from URL</span>
-                          <div className="flex gap-2">
-                            <input
-                              value={subcategoryUrlInputs[index] || ""}
-                              onChange={(event) => setSubcategoryUrlInputs((current) => ({ ...current, [index]: event.target.value }))}
-                              placeholder="Paste image URL here..."
-                              className="min-w-0 flex-1 rounded-xl border border-gray-200 px-3 py-2 outline-none focus:border-teal-500 bg-white text-sm"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleSubcategoryUrlUpload(index)}
-                              disabled={uploading}
-                              className="inline-flex items-center gap-1 rounded-lg border border-teal-300 bg-teal-50 px-3 py-2 text-sm text-teal-700 hover:bg-teal-100 disabled:opacity-50 whitespace-nowrap"
-                            >
-                              {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />} <span className="hidden sm:inline">Paste & Upload</span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3">
-                <button
-                  onClick={handleSave}
-                  disabled={saving || uploading}
-                  className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-white hover:bg-black disabled:opacity-70"
-                >
-                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {uploading ? "Uploading..." : "Save category"}
-                </button>
-              </div>
-            </section>
           </div>
 
           {mediaPickerOpen ? (

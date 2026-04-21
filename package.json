@@ -14,11 +14,16 @@
     "deploy:build-only": "npm run build"
   },
   "dependencies": {
+    "@tiptap/extension-link": "^3.22.4",
+    "@tiptap/extension-placeholder": "^3.22.4",
+    "@tiptap/react": "^3.22.4",
+    "@tiptap/starter-kit": "^3.22.4",
     "axios": "^1.15.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "critters": "^0.0.23",
     "daisyui": "^5.0.50",
+    "dompurify": "^3.4.0",
     "emailjs": "^4.0.3",
     "firebase": "^12.1.0",
     "framer-motion": "^12.23.12",
@@ -39,6 +44,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "autoprefixer": "^10.4.22",
