@@ -23,16 +23,16 @@ export const normalizeRole = (role) => {
 export const sidebarRoutesByRole = {
   admin: [
     { icon: LayoutDashboard, label: "Admin Dashboard", href: "/dashboard" },
-    { icon: FileText, label: "Created Invoices", href: "/dashboard/invoices" },
-    { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
+    // { icon: FileText, label: "Created Invoices", href: "/dashboard/invoices" },
+    // { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
     { icon: Package, label: "Featured Products", href: "/dashboard/featured" },
     { icon: Package, label: "Dealer Management", href: "/dashboard/dealers" },
     { icon: Package, label: "Blog Management", href: "/dashboard/blogs" },
     { icon: Images, label: "Media Library", href: "/dashboard/media" },
-    { icon: Users, label: "Customer A-Z", href: "/dashboard/users" },
-    { icon: UserCog, label: "Authorized Persons", href: "/dashboard/authorized-persons" },
+    { icon: Users, label: "Customers", href: "/dashboard/users" },
+    { icon: UserCog, label: "Administrators", href: "/dashboard/authorized-persons" },
 
   ],
   moderator: [

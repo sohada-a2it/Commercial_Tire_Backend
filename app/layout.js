@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar/Navbar";
+import FilterNavbar from "@/components/FilterNavbar/page";
 import Footer from "@/components/Footer/Footer";
 import FloatingWhatsApp from "@/components/shared/FloatingWhatsApp";
 import FloatingCartButton from "@/components/Cart/FloatingCartButton";
@@ -150,6 +151,7 @@ export default function RootLayout({ children }) {
                 {/* <ScrollToTop /> */}
                 <Toaster position="top-center" reverseOrder={false} />
                 <Navbar />
+                {/* <FilterNavbar /> */}
                 <Suspense fallback={<PageSkeleton />}>
                   <main>{children}</main>
                 </Suspense>

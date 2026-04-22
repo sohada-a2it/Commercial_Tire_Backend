@@ -4,11 +4,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { 
   Search, Filter, X, ChevronDown, Truck, Gauge, 
   ShoppingBag, Shield, Heart, Star, TrendingUp,
-  Battery, MapPin, Check, SlidersHorizontal, RotateCcw
+  Battery, MapPin, SlidersHorizontal, RotateCcw,
+  GitCompare, Check, BarChart3
 } from 'lucide-react';
 import { fetchProducts } from '@/services/catalogService';
 
@@ -20,6 +20,8 @@ export default function TiresClient() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [compareList, setCompareList] = useState([]); // New: Compare state
+  const [showCompareModal, setShowCompareModal] = useState(false); // New: Compare modal
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
@@ -49,8 +51,42 @@ export default function TiresClient() {
   
   // UI State
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [showAllBrands, setShowAllBrands] = useState(false);
-  const [showAllSizes, setShowAllSizes] = useState(false);
+
+  // Compare Functions
+  const addToCompare = (product) => {
+    const productId = getProductId(product);
+    
+    // Check if already in compare list
+    if (compareList.some(p => getProductId(p) === productId)) {
+      removeFromCompare(productId);
+      return;
+    }
+    
+    // Max 2 products
+    if (compareList.length >= 2) {
+      alert('You can compare up to 2 products at a time. Please remove one first.');
+      return;
+    }
+    
+    setCompareList([...compareList, product]);
+  };
+
+  const removeFromCompare = (productId) => {
+    setCompareList(compareList.filter(p => getProductId(p) !== productId));
+  };
+
+  const clearCompare = () => {
+    setCompareList([]);
+    setShowCompareModal(false);
+  };
+
+  const openCompareModal = () => {
+    if (compareList.length < 2) {
+      alert('Please select 2 products to compare');
+      return;
+    }
+    setShowCompareModal(true);
+  };
 
   // Fetch products
   const loadProducts = useCallback(async () => {
@@ -93,24 +129,6 @@ export default function TiresClient() {
       setLoading(false);
     }
   }, [pagination.page, pagination.limit, sortBy, searchQuery, selectedTireType, selectedVehicleType, selectedApplication, selectedBrand, selectedSize, selectedPattern]);
-
-  // Update URL when filters change
-  // useEffect(() => {
-  //   const params = new URLSearchParams();
-  //   if (searchQuery) params.set('search', searchQuery);
-  //   if (selectedTireType) params.set('tireType', selectedTireType);
-  //   if (selectedVehicleType) params.set('vehicleType', selectedVehicleType);
-  //   if (selectedApplication) params.set('application', selectedApplication);
-  //   if (selectedBrand) params.set('brand', selectedBrand);
-  //   if (selectedSize) params.set('tireSize', selectedSize);
-  //   if (selectedPattern) params.set('pattern', selectedPattern);
-  //   if (sortBy !== 'newest') params.set('sort', sortBy);
-  //   if (pagination.page > 1) params.set('page', pagination.page);
-    
-  //   const queryString = params.toString();
-  //   const url = queryString ? `/product?${queryString}` : '/product';
-  //   router.replace(url, { scroll: false });
-  // }, [searchQuery, selectedTireType, selectedVehicleType, selectedApplication, selectedBrand, selectedSize, selectedPattern, sortBy, pagination.page, router]);
 
   // Load products when dependencies change
   useEffect(() => {
@@ -157,7 +175,40 @@ export default function TiresClient() {
 
   const formatPrice = (price) => {
     if (!price) return 'Contact for price';
-    return `$${parseFloat(price).toLocaleString()}`;
+    const numericPrice = parseFloat(String(price).replace(/[^0-9.-]/g, ''));
+    if (isNaN(numericPrice)) return String(price);
+    return `$${numericPrice.toLocaleString()}`;
+  };
+
+  // Safe function to get product ID
+  const getProductId = (product) => {
+    return product?.id || product?._id || product?.sourceId;
+  };
+
+  // Safe function to get product image
+  const getProductImage = (product) => {
+    if (!product) return null;
+    if (product.image?.url) return product.image.url;
+    if (typeof product.image === 'string') return product.image;
+    if (product.images && product.images.length > 0) {
+      const firstImage = product.images[0];
+      if (typeof firstImage === 'string') return firstImage;
+      if (firstImage?.url) return firstImage.url;
+    }
+    return null;
+  };
+
+  // Safe function to get applications
+  const getApplications = (product) => {
+    return product?.applicationsList || 
+           product?.application || 
+           product?.applications || 
+           [];
+  };
+
+  // Safe function to get tire specs
+  const getTireSpecs = (product) => {
+    return product?.tireSpecs || {};
   };
 
   const getTireTypeIcon = (tireType) => {
@@ -173,31 +224,11 @@ export default function TiresClient() {
     if (type.includes('steer')) return 'bg-blue-100 text-blue-700 border-blue-200';
     if (type.includes('drive')) return 'bg-green-100 text-green-700 border-green-200';
     if (type.includes('trailer')) return 'bg-purple-100 text-purple-700 border-purple-200';
+    if (type.includes('all-position')) return 'bg-teal-100 text-teal-700 border-teal-200';
+    if (type.includes('off-road')) return 'bg-orange-100 text-orange-700 border-orange-200';
+    if (type.includes('mining')) return 'bg-red-100 text-red-700 border-red-200';
     return 'bg-gray-100 text-gray-700 border-gray-200';
   };
-
-  // Filter Button Component
-  const FilterButton = ({ label, value, isActive, onClick, icon: Icon }) => (
-    <button
-      onClick={onClick}
-      className={`
-        px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
-        flex items-center gap-2 whitespace-nowrap
-        ${isActive 
-          ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700' 
-          : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-400 hover:shadow-sm'
-        }
-      `}
-    >
-      {Icon && <Icon className="w-4 h-4" />}
-      {label}
-      {value && !isActive && (
-        <span className="ml-1 text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full">
-          {value}
-        </span>
-      )}
-    </button>
-  );
 
   // Active Filter Tag Component
   const ActiveFilterTag = ({ label, value, onRemove }) => (
@@ -210,153 +241,383 @@ export default function TiresClient() {
     </span>
   );
 
-  // Product Card Component
-  const ProductCard = ({ product }) => (
-    <Link href={`/products/${product.slug || product._id}`} className="block group">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-        {/* Image Section */}
-        <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-          {product.image?.url ? (
-            <img
-              src={product.image.url}
-              alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Truck className="w-16 h-16 text-gray-300" />
-            </div>
-          )}
-          
-          {/* Badges */}
-          <div className="absolute top-3 left-3 flex gap-2">
-            {product.isNewArrival && (
-              <span className="bg-green-500 text-white text-xs font-medium px-2.5 py-1 rounded-full shadow-md">
-                New
-              </span>
-            )}
-            {product.isBestSeller && (
-              <span className="bg-orange-500 text-white text-xs font-medium px-2.5 py-1 rounded-full shadow-md">
-                Best Seller
-              </span>
-            )}
-          </div>
+  // Product Card Component - WITH COMPARE BUTTON
+  const ProductCard = ({ product }) => {
+    if (!product) return null;
+    
+    const productId = getProductId(product);
+    if (!productId) {
+      console.warn('Product without ID:', product);
+      return null;
+    }
 
-          {/* Tire Type Badge */}
-          {product.tireType && (
-            <div className={`absolute bottom-3 left-3 ${getTireTypeColor(product.tireType)} border px-2.5 py-1 rounded-full text-xs font-medium shadow-sm`}>
-              <div className="flex items-center gap-1">
-                {getTireTypeIcon(product.tireType)}
-                <span>{product.tireType}</span>
+    const productImage = getProductImage(product);
+    const applications = getApplications(product);
+    const tireSpecs = getTireSpecs(product);
+    const isInCompare = compareList.some(p => getProductId(p) === productId);
+    
+    return (
+      <div className="group relative">
+        <Link href={`/product/${productId}`} className="block">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            {/* Image Section */}
+            <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+              {productImage ? (
+                <img
+                  src={productImage}
+                  alt={product.name || 'Tire product'}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.target.src = '/images/placeholder-tire.jpg';
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Truck className="w-16 h-16 text-gray-300" />
+                </div>
+              )}
+              
+              {/* Badges */}
+              <div className="absolute top-3 left-3 flex gap-2">
+                {product.isNewArrival && (
+                  <span className="bg-green-500 text-white text-xs font-medium px-2.5 py-1 rounded-full shadow-md">
+                    New
+                  </span>
+                )}
+                {product.isBestSeller && (
+                  <span className="bg-orange-500 text-white text-xs font-medium px-2.5 py-1 rounded-full shadow-md">
+                    Best Seller
+                  </span>
+                )}
+              </div>
+
+              {/* Tire Type Badge */}
+              {product.tireType && (
+                <div className={`absolute bottom-3 left-3 ${getTireTypeColor(product.tireType)} border px-2.5 py-1 rounded-full text-xs font-medium shadow-sm`}>
+                  <div className="flex items-center gap-1">
+                    {getTireTypeIcon(product.tireType)}
+                    <span className="capitalize">{product.tireType}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="absolute top-3 right-3 flex gap-2">
+                {/* Compare Button */}
+                <button 
+                  className={`bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-md transition-all ${
+                    isInCompare ? 'bg-blue-500 text-white' : 'hover:bg-white'
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addToCompare(product);
+                  }}
+                >
+                  <GitCompare className="w-4 h-4" /> 
+                </button> 
               </div>
             </div>
-          )}
 
-          {/* Wishlist Button */}
-          <button className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-md hover:bg-white transition-all opacity-0 group-hover:opacity-100">
-            <Heart className="w-4 h-4 text-gray-600 hover:text-red-500 transition-colors" />
-          </button>
-        </div>
-
-        {/* Content Section */}
-        <div className="p-4">
-          {/* Brand & Pattern */}
-          {(product.brand || product.pattern) && (
-            <div className="flex items-center gap-2 mb-2">
-              {product.brand && (
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  {product.brand}
-                </span>
+            {/* Content Section */}
+            <div className="p-4">
+              {/* Brand & Pattern */}
+              {(product.brand || product.pattern) && (
+                <div className="flex items-center gap-2 mb-2">
+                  {product.brand && (
+                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      {product.brand}
+                    </span>
+                  )}
+                  {product.pattern && product.brand && (
+                    <span className="text-gray-300">•</span>
+                  )}
+                  {product.pattern && (
+                    <span className="text-xs text-gray-500">
+                      {product.pattern}
+                    </span>
+                  )}
+                </div>
               )}
-              {product.pattern && product.brand && (
-                <span className="text-gray-300">•</span>
-              )}
-              {product.pattern && (
-                <span className="text-xs text-gray-500">
-                  {product.pattern}
-                </span>
-              )}
-            </div>
-          )}
 
-          {/* Product Name */}
-          <h3 className="font-bold text-gray-800 mb-2 line-clamp-2 min-h-[3rem] group-hover:text-blue-600 transition-colors text-base">
-            {product.name}
-          </h3>
+              {/* Product Name */}
+              <h3 className="font-bold text-gray-800 mb-2 line-clamp-2 min-h-[3rem] group-hover:text-blue-600 transition-colors text-base">
+                {product.name || 'Product Name'}
+              </h3>
 
-          {/* Size & Specs */}
-          {product.tireSpecs?.size && (
-            <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
-              <Gauge className="w-3.5 h-3.5" />
-              <span>{product.tireSpecs.size}</span>
-              {product.tireSpecs.loadIndex && (
-                <>
-                  <span className="text-gray-300">|</span>
-                  <span>Load: {product.tireSpecs.loadIndex}</span>
-                </>
+              {/* Size & Specs */}
+              {tireSpecs.size && (
+                <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
+                  <Gauge className="w-3.5 h-3.5" />
+                  <span>{tireSpecs.size}</span>
+                  {tireSpecs.loadIndex && (
+                    <>
+                      <span className="text-gray-300">|</span>
+                      <span>Load: {tireSpecs.loadIndex}</span>
+                    </>
+                  )}
+                  {tireSpecs.speedRating && (
+                    <>
+                      <span className="text-gray-300">|</span>
+                      <span>Speed: {tireSpecs.speedRating}</span>
+                    </>
+                  )}
+                </div>
               )}
-            </div>
-          )}
 
-          {/* Applications */}
-          {product.applicationsList && product.applicationsList.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-3">
-              {product.applicationsList.slice(0, 2).map((app) => (
-                <span key={app} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                  {app.replace('-', ' ')}
-                </span>
-              ))}
-              {product.applicationsList.length > 2 && (
-                <span className="text-xs text-gray-400">+{product.applicationsList.length - 2}</span>
+              {/* Applications */}
+              {applications && applications.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {applications.slice(0, 2).map((app, idx) => (
+                    <span key={idx} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                      {typeof app === 'string' ? app.replace(/-/g, ' ') : app}
+                    </span>
+                  ))}
+                  {applications.length > 2 && (
+                    <span className="text-xs text-gray-400">+{applications.length - 2}</span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
 
-          {/* Price */}
-          <div className="mb-3">
-            {product.offerPrice ? (
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-bold text-red-600">
-                  {formatPrice(product.offerPrice)}
-                </span>
-                <span className="text-sm text-gray-400 line-through">
-                  {formatPrice(product.price)}
-                </span>
+              {/* Price */}
+              <div className="mb-3">
+                {product.offerPrice ? (
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xl font-bold text-red-600">
+                      {formatPrice(product.offerPrice)}
+                    </span>
+                    <span className="text-sm text-gray-400 line-through">
+                      {formatPrice(product.price)}
+                    </span>
+                  </div>
+                ) : product.price ? (
+                  <span className="text-xl font-bold text-gray-800">
+                    {formatPrice(product.price)}
+                  </span>
+                ) : (
+                  <span className="text-sm font-semibold text-blue-600">Request Quote</span>
+                )}
               </div>
-            ) : product.price ? (
-              <span className="text-xl font-bold text-gray-800">
-                {formatPrice(product.price)}
-              </span>
-            ) : (
-              <span className="text-sm font-semibold text-blue-600">Request Quote</span>
-            )}
+
+              {/* CTA Button */}
+              <div className="w-full bg-gray-800 text-white py-2.5 rounded-lg hover:bg-amber-600 transition-all duration-300 font-medium text-sm flex items-center justify-center gap-2 group-hover:bg-amber-600">
+                View Details
+                <TrendingUp className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+              </div>
+            </div>
+          </div>
+        </Link>
+
+        {/* Compare Checkmark Overlay (if selected) */}
+        {isInCompare && (
+          <div className="absolute top-3 right-3 bg-blue-500 rounded-full p-1.5 shadow-lg">
+            <Check className="w-3 h-3 text-white" />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Compare Modal Component
+  const CompareModal = () => {
+    if (!showCompareModal || compareList.length !== 2) return null;
+
+    const [product1, product2] = compareList;
+    const specs1 = getTireSpecs(product1);
+    const specs2 = getTireSpecs(product2);
+
+    const compareFields = [
+      { label: 'Product Name', key: 'name', getValue: (p) => p.name || 'N/A' },
+      { label: 'Brand', key: 'brand', getValue: (p) => p.brand || 'N/A' },
+      { label: 'Pattern', key: 'pattern', getValue: (p) => p.pattern || 'N/A' },
+      { label: 'Tire Type', key: 'tireType', getValue: (p) => p.tireType || 'N/A' },
+      { label: 'Size', key: 'size', getValue: (p) => specs1.size || 'N/A' },
+      { label: 'Load Index', key: 'loadIndex', getValue: (p) => getTireSpecs(p).loadIndex || 'N/A' },
+      { label: 'Speed Rating', key: 'speedRating', getValue: (p) => getTireSpecs(p).speedRating || 'N/A' },
+      { label: 'Price', key: 'price', getValue: (p) => formatPrice(p.price) },
+      { label: 'Offer Price', key: 'offerPrice', getValue: (p) => p.offerPrice ? formatPrice(p.offerPrice) : 'N/A' },
+      { label: 'Applications', key: 'applications', getValue: (p) => getApplications(p).join(', ') || 'N/A' },
+    ];
+
+    return (
+      <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+          {/* Modal Header */}
+          <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-6 h-6 text-blue-600" />
+              <h2 className="text-2xl font-bold text-gray-800">Compare Products</h2>
+            </div>
+            <button
+              onClick={() => setShowCompareModal(false)}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* CTA Button */}
-          <button className="w-full bg-gray-600 text-white py-2.5 rounded-lg hover:bg-amber-600 transition-all duration-300 font-medium text-sm flex items-center justify-center gap-2 group-hover:bg-amber-600">
-            View Details
-            <TrendingUp className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-          </button>
+          {/* Compare Table */}
+          <div className="p-6">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b-2 border-gray-200">
+                    <th className="p-4 text-left w-1/4 bg-gray-50">Feature</th>
+                    <th className="p-4 text-center w-1/3 bg-gray-50">
+                      <div className="relative">
+                        <img
+                          src={getProductImage(product1) || '/images/placeholder-tire.jpg'}
+                          alt={product1.name}
+                          className="w-32 h-32 object-contain mx-auto mb-3 rounded-lg"
+                        />
+                        <h3 className="font-bold text-gray-800">{product1.name}</h3>
+                        <button
+                          onClick={() => removeFromCompare(getProductId(product1))}
+                          className="absolute top-0 right-0 p-1 hover:bg-gray-100 rounded-full"
+                        >
+                          <X className="w-4 h-4 text-gray-500" />
+                        </button>
+                      </div>
+                    </th>
+                    <th className="p-4 text-center w-1/3 bg-gray-50">
+                      <div className="relative">
+                        <img
+                          src={getProductImage(product2) || '/images/placeholder-tire.jpg'}
+                          alt={product2.name}
+                          className="w-32 h-32 object-contain mx-auto mb-3 rounded-lg"
+                        />
+                        <h3 className="font-bold text-gray-800">{product2.name}</h3>
+                        <button
+                          onClick={() => removeFromCompare(getProductId(product2))}
+                          className="absolute top-0 right-0 p-1 hover:bg-gray-100 rounded-full"
+                        >
+                          <X className="w-4 h-4 text-gray-500" />
+                        </button>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {compareFields.map((field, idx) => (
+                    <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <td className="p-4 font-semibold text-gray-700 bg-gray-50">
+                        {field.label}
+                      </td>
+                      <td className="p-4 text-center text-gray-600">
+                        {field.getValue(product1)}
+                      </td>
+                      <td className="p-4 text-center text-gray-600">
+                        {field.getValue(product2)}
+                      </td>
+                    </tr>
+                  ))}
+                  
+                  {/* Highlight differences */}
+                  <tr className="bg-blue-50">
+                    <td className="p-4 font-semibold text-blue-700">Key Difference</td>
+                    <td className="p-4 text-center text-blue-600" colSpan={2}>
+                      {specs1.size !== specs2.size && (
+                        <span className="inline-block mr-2">📏 Different Sizes</span>
+                      )}
+                      {specs1.loadIndex !== specs2.loadIndex && (
+                        <span className="inline-block mr-2">⚖️ Different Load Capacity</span>
+                      )}
+                      {product1.brand !== product2.brand && (
+                        <span className="inline-block mr-2">🏭 Different Brands</span>
+                      )}
+                      {product1.price !== product2.price && (
+                        <span className="inline-block">💰 Price Difference: {Math.abs(parseFloat(product1.price || 0) - parseFloat(product2.price || 0)).toLocaleString()}</span>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 mt-6 pt-6 border-t">
+              <Link
+                href={`/compare?ids=${getProductId(product1)},${getProductId(product2)}`}
+                className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors text-center"
+              >
+                View Detailed Comparison
+              </Link>
+              <button
+                onClick={clearCompare}
+                className="px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                Clear Both
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </Link>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Compare Bar - Fixed at bottom */}
+      {compareList.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-40 transform transition-transform">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <span className="font-semibold text-gray-700">
+                  Compare ({compareList.length}/2)
+                </span>
+                <div className="flex gap-3">
+                  {compareList.map(product => (
+                    <div key={getProductId(product)} className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-1">
+                      <span className="text-sm text-gray-600 truncate max-w-[150px]">
+                        {product.name}
+                      </span>
+                      <button
+                        onClick={() => removeFromCompare(getProductId(product))}
+                        className="hover:bg-gray-200 rounded-full p-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={clearCompare}
+                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+                >
+                  Clear All
+                </button>
+                <button
+                  onClick={openCompareModal}
+                  disabled={compareList.length < 2}
+                  className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
+                    compareList.length === 2
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  Compare Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white">
         <div className="container mx-auto px-4 py-12">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">Commercial Tires</h1>
-          <p className="text-blue-100 text-lg max-w-2xl">
+          <p className="text-amber-100 text-lg max-w-2xl">
             Premium quality tires for trucks, trailers, and commercial vehicles. 
             Engineered for durability, safety, and maximum fuel efficiency.
           </p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pb-24">
         {/* Search Bar */}
         <div className="mb-6">
           <div className="relative max-w-md">
@@ -401,270 +662,101 @@ export default function TiresClient() {
           <div className="flex flex-wrap gap-3">
             {/* Tire Type Filter */}
             {availableFilters.tireTypes?.length > 0 && (
-              <div className="relative group">
-                <button
-                  onClick={() => {
-                    const nextValue = selectedTireType ? '' : availableFilters.tireTypes[0];
-                    setSelectedTireType(nextValue);
-                    setPagination(prev => ({ ...prev, page: 1 }));
-                  }}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2
-                    ${selectedTireType 
-                      ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }
-                  `}
-                >
-                  <Truck className="w-4 h-4" />
-                  Tire Type
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </button>
-                
-                {/* Dropdown */}
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                  <div className="p-2">
-                    <button
-                      onClick={() => {
-                        setSelectedTireType('');
-                        setPagination(prev => ({ ...prev, page: 1 }));
-                      }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg"
-                    >
-                      All Types
-                    </button>
-                    {availableFilters.tireTypes.map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => {
-                          setSelectedTireType(type);
-                          setPagination(prev => ({ ...prev, page: 1 }));
-                        }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg capitalize ${
-                          selectedTireType === type ? 'bg-blue-50 text-blue-600 font-medium' : ''
-                        }`}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <select
+                value={selectedTireType}
+                onChange={(e) => {
+                  setSelectedTireType(e.target.value);
+                  setPagination(prev => ({ ...prev, page: 1 }));
+                }}
+                className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Tire Types</option>
+                {availableFilters.tireTypes.map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
             )}
 
             {/* Vehicle Type Filter */}
             {availableFilters.vehicleTypesLists?.length > 0 && (
-              <div className="relative group">
-                <button
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2
-                    ${selectedVehicleType 
-                      ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }
-                  `}
-                >
-                  <Truck className="w-4 h-4" />
-                  Vehicle Type
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </button>
-                
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                  <div className="p-2">
-                    <button
-                      onClick={() => {
-                        setSelectedVehicleType('');
-                        setPagination(prev => ({ ...prev, page: 1 }));
-                      }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg"
-                    >
-                      All Vehicles
-                    </button>
-                    {availableFilters.vehicleTypesLists.map((type) => (
-                      <button
-                        key={type}
-                        onClick={() => {
-                          setSelectedVehicleType(type);
-                          setPagination(prev => ({ ...prev, page: 1 }));
-                        }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg capitalize ${
-                          selectedVehicleType === type ? 'bg-blue-50 text-blue-600 font-medium' : ''
-                        }`}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <select
+                value={selectedVehicleType}
+                onChange={(e) => {
+                  setSelectedVehicleType(e.target.value);
+                  setPagination(prev => ({ ...prev, page: 1 }));
+                }}
+                className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Vehicles</option>
+                {availableFilters.vehicleTypesLists.map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
             )}
 
             {/* Application Filter */}
             {availableFilters.applicationsLists?.length > 0 && (
-              <div className="relative group">
-                <button
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2
-                    ${selectedApplication 
-                      ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }
-                  `}
-                >
-                  <MapPin className="w-4 h-4" />
-                  Application
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </button>
-                
-                <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                  <div className="p-2">
-                    <button
-                      onClick={() => {
-                        setSelectedApplication('');
-                        setPagination(prev => ({ ...prev, page: 1 }));
-                      }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg"
-                    >
-                      All Applications
-                    </button>
-                    {availableFilters.applicationsLists.map((app) => (
-                      <button
-                        key={app}
-                        onClick={() => {
-                          setSelectedApplication(app);
-                          setPagination(prev => ({ ...prev, page: 1 }));
-                        }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg capitalize ${
-                          selectedApplication === app ? 'bg-blue-50 text-blue-600 font-medium' : ''
-                        }`}
-                      >
-                        {app.replace('-', ' ')}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <select
+                value={selectedApplication}
+                onChange={(e) => {
+                  setSelectedApplication(e.target.value);
+                  setPagination(prev => ({ ...prev, page: 1 }));
+                }}
+                className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Applications</option>
+                {availableFilters.applicationsLists.map((app) => (
+                  <option key={app} value={app}>{app.replace(/-/g, ' ')}</option>
+                ))}
+              </select>
             )}
 
             {/* Brand Filter */}
             {availableFilters.brands?.length > 0 && (
-              <div className="relative group">
-                <button
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2
-                    ${selectedBrand 
-                      ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }
-                  `}
-                >
-                  <Star className="w-4 h-4" />
-                  Brand
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </button>
-                
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                  <div className="p-2 max-h-64 overflow-y-auto">
-                    <button
-                      onClick={() => {
-                        setSelectedBrand('');
-                        setPagination(prev => ({ ...prev, page: 1 }));
-                      }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg"
-                    >
-                      All Brands
-                    </button>
-                    {availableFilters.brands.map((brand) => (
-                      <button
-                        key={brand}
-                        onClick={() => {
-                          setSelectedBrand(brand);
-                          setPagination(prev => ({ ...prev, page: 1 }));
-                        }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg ${
-                          selectedBrand === brand ? 'bg-blue-50 text-blue-600 font-medium' : ''
-                        }`}
-                      >
-                        {brand}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <select
+                value={selectedBrand}
+                onChange={(e) => {
+                  setSelectedBrand(e.target.value);
+                  setPagination(prev => ({ ...prev, page: 1 }));
+                }}
+                className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Brands</option>
+                {availableFilters.brands.map((brand) => (
+                  <option key={brand} value={brand}>{brand}</option>
+                ))}
+              </select>
             )}
 
             {/* Tire Size Filter */}
             {availableFilters.tireSizes?.length > 0 && (
-              <div className="relative group">
-                <button
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2
-                    ${selectedSize 
-                      ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }
-                  `}
-                >
-                  <Gauge className="w-4 h-4" />
-                  Size
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </button>
-                
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                  <div className="p-2 max-h-64 overflow-y-auto">
-                    <button
-                      onClick={() => {
-                        setSelectedSize('');
-                        setPagination(prev => ({ ...prev, page: 1 }));
-                      }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg"
-                    >
-                      All Sizes
-                    </button>
-                    {availableFilters.tireSizes.map((size) => (
-                      <button
-                        key={size}
-                        onClick={() => {
-                          setSelectedSize(size);
-                          setPagination(prev => ({ ...prev, page: 1 }));
-                        }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg ${
-                          selectedSize === size ? 'bg-blue-50 text-blue-600 font-medium' : ''
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <select
+                value={selectedSize}
+                onChange={(e) => {
+                  setSelectedSize(e.target.value);
+                  setPagination(prev => ({ ...prev, page: 1 }));
+                }}
+                className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Sizes</option>
+                {availableFilters.tireSizes.map((size) => (
+                  <option key={size} value={size}>{size}</option>
+                ))}
+              </select>
             )}
 
             {/* Sort Dropdown */}
-            <div className="relative group ml-auto">
-              <button className="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                Sort: {sortBy === 'newest' ? 'Newest' : sortBy === 'name-asc' ? 'Name A-Z' : sortBy === 'name-desc' ? 'Name Z-A' : 'Brand'}
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-              
-              <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
-                <div className="p-2">
-                  {[
-                    { value: 'newest', label: 'Newest First' },
-                    { value: 'name-asc', label: 'Name A-Z' },
-                    { value: 'name-desc', label: 'Name Z-A' },
-                    { value: 'brand-asc', label: 'Brand A-Z' },
-                    { value: 'brand-desc', label: 'Brand Z-A' },
-                  ].map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setSortBy(option.value)}
-                      className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg ${
-                        sortBy === option.value ? 'bg-blue-50 text-blue-600 font-medium' : ''
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-auto"
+            >
+              <option value="newest">Newest First</option>
+              <option value="name-asc">Name A-Z</option>
+              <option value="name-desc">Name Z-A</option>
+              <option value="brand-asc">Brand A-Z</option>
+              <option value="brand-desc">Brand Z-A</option>
+            </select>
           </div>
 
           {/* Active Filters Tags */}
@@ -687,7 +779,7 @@ export default function TiresClient() {
               {selectedApplication && (
                 <ActiveFilterTag 
                   label="Application" 
-                  value={selectedApplication.replace('-', ' ')} 
+                  value={selectedApplication.replace(/-/g, ' ')} 
                   onRemove={() => removeFilter('application')}
                 />
               )}
@@ -757,7 +849,6 @@ export default function TiresClient() {
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-xl p-12 text-center">
-            {/* <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" /> */}
             <p className="text-red-600 mb-4">{error}</p>
             <button onClick={loadProducts} className="bg-blue-600 text-white px-6 py-2 rounded-lg">
               Try Again
@@ -775,8 +866,8 @@ export default function TiresClient() {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <ProductCard key={product._id} product={product} />
+              {products.map((product, index) => (
+                <ProductCard key={product.id || product._id || index} product={product} />
               ))}
             </div>
 
@@ -833,6 +924,9 @@ export default function TiresClient() {
         )}
       </div>
 
+      {/* Compare Modal */}
+      <CompareModal />
+
       {/* Mobile Filter Modal */}
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
@@ -845,7 +939,6 @@ export default function TiresClient() {
               </button>
             </div>
             <div className="p-4 space-y-4">
-              {/* Mobile filter options here - simplified version */}
               <div>
                 <label className="font-medium text-gray-700 block mb-2">Tire Type</label>
                 <select
@@ -859,7 +952,58 @@ export default function TiresClient() {
                   ))}
                 </select>
               </div>
-              {/* Add other filter selects similarly */}
+              <div>
+                <label className="font-medium text-gray-700 block mb-2">Vehicle Type</label>
+                <select
+                  value={selectedVehicleType}
+                  onChange={(e) => setSelectedVehicleType(e.target.value)}
+                  className="w-full p-2 border rounded-lg"
+                >
+                  <option value="">All Vehicles</option>
+                  {availableFilters.vehicleTypesLists?.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="font-medium text-gray-700 block mb-2">Application</label>
+                <select
+                  value={selectedApplication}
+                  onChange={(e) => setSelectedApplication(e.target.value)}
+                  className="w-full p-2 border rounded-lg"
+                >
+                  <option value="">All Applications</option>
+                  {availableFilters.applicationsLists?.map(app => (
+                    <option key={app} value={app}>{app.replace(/-/g, ' ')}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="font-medium text-gray-700 block mb-2">Brand</label>
+                <select
+                  value={selectedBrand}
+                  onChange={(e) => setSelectedBrand(e.target.value)}
+                  className="w-full p-2 border rounded-lg"
+                >
+                  <option value="">All Brands</option>
+                  {availableFilters.brands?.map(brand => (
+                    <option key={brand} value={brand}>{brand}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="font-medium text-gray-700 block mb-2">Tire Size</label>
+                <select
+                  value={selectedSize}
+                  onChange={(e) => setSelectedSize(e.target.value)}
+                  className="w-full p-2 border rounded-lg"
+                >
+                  <option value="">All Sizes</option>
+                  {availableFilters.tireSizes?.map(size => (
+                    <option key={size} value={size}>{size}</option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="p-4 border-t">
               <button

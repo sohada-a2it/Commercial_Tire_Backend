@@ -168,6 +168,9 @@ const Navbar = () => {
 
         {/* Right side text */}
         <div className="hidden lg:flex items-center space-x-4">
+          <Link to="/findDealer"  className={getLinkClasses("/findDealer")} >
+            <p className="bg-amber-500 px-3 py-1 rounded-md text-white">Find a Dealer</p>
+          </Link> 
           {/* Profile/Login Section */}
           {user ? (
             <div className="relative" ref={profileDropdownRef}>

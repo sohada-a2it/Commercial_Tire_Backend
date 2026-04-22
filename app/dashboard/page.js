@@ -139,7 +139,7 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <section className="overflow-hidden rounded-[2rem] bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-500 p-8 shadow-2xl shadow-teal-500/20 text-white">
+        <section className="overflow-hidden rounded-[2rem] bg-gradient-to-r from-amber-500 via-amber-600 to-gray-500 p-8 shadow-2xl shadow-teal-500/20 text-white">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <p className="text-sm uppercase tracking-[0.35em] text-teal-100/90">
@@ -151,24 +151,7 @@ export default function DashboardPage() {
               <p className="mt-3 text-sm text-cyan-100/90">
                 A comprehensive view of your business activity, recent orders, and performance metrics.
               </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {statCards.slice(0, 4).map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={index} className="rounded-3xl bg-white/15 p-4 backdrop-blur-sm ring-1 ring-white/20">
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs uppercase tracking-[0.3em] text-cyan-100/80">{stat.label}</p>
-                      <div className={`${stat.color} rounded-2xl p-2`}>
-                        <Icon className="w-4 h-4 text-white" />
-                      </div>
-                    </div>
-                    <p className="mt-4 text-2xl font-semibold">{loading ? "..." : stat.value}</p>
-                  </div>
-                );
-              })}
-            </div>
+            </div> 
           </div>
         </section>
 

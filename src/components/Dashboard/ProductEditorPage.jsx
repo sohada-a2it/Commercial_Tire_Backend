@@ -966,6 +966,10 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
                   <h3 className="text-md font-semibold text-gray-900 mb-4">Technical Specifications</h3>
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     <label className="space-y-2 text-sm">
+                      <span className="font-medium text-gray-700">Load Index</span>
+                      <input value={editor.tireSpecs?.loadIndex || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, loadIndex: event.target.value } }))} placeholder="e.g., 152" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
+                    </label>
+                    <label className="space-y-2 text-sm">
                       <span className="font-medium text-gray-700">Tire Size</span>
                       <input value={editor.tireSpecs?.size || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, size: event.target.value } }))} placeholder="e.g., 12R22.5" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                     </label>
@@ -1181,7 +1185,7 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
                   <input value={editor.videoUrl || ""} onChange={(event) => updateField("videoUrl", event.target.value)} placeholder="https://www.youtube.com/watch?v=..." className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                 </div>
 
-                <div className="space-y-3">
+                {/* <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
                     <h3 className="text-md font-medium text-gray-900">360° View Images</h3>
                     <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
@@ -1206,13 +1210,13 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
                       </div>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
           </div>
 
           {/* ===== SECTION 8: DOWNLOADABLE RESOURCES ===== */}
-          <div>
+          {/* <div>
             <SectionHeader title="Downloadable Resources" icon={FileText} section="resources" description="Brochures, datasheets, and certificates" />
             {!sectionsCollapsed.resources && (
               <div className="pt-4 grid gap-4 md:grid-cols-2">
@@ -1232,10 +1236,10 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
                 ))}
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* ===== SECTION 9: SEO & METADATA ===== */}
-          <div>
+          {/* <div>
             <SectionHeader title="SEO & Metadata" icon={Box} section="seo" description="Search engine optimization and product status" />
             {!sectionsCollapsed.seo && (
               <div className="pt-4 space-y-6">
@@ -1273,7 +1277,7 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Save Button */}
           <div className="flex items-center justify-end border-t border-gray-200 pt-6 mt-4">

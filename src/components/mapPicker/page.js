@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet-control-geocoder/dist/Control.Geocoder.css";
+import LeafletControlGeocoder from "leaflet-control-geocoder";
 
-// Fix for default marker icons in Leaflet with Next.js
+// Fix for default markers
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
@@ -13,47 +15,84 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-function LocationMarker({ lat, lng, onLocationSelect }) {
-  const map = useMapEvents({
+function LocationMarker({ form, setForm }) {
+  const [position, setPosition] = useState(
+    form.lat && form.lng ? [form.lat, form.lng] : [20, 0]
+  );
+
+  useMapEvents({
     click(e) {
       const { lat, lng } = e.latlng;
-      onLocationSelect(lat, lng);
-      map.flyTo(e.latlng, map.getZoom());
+      setPosition([lat, lng]);
+      setForm({ ...form, lat: lat, lng: lng });
     },
   });
 
-  return lat && lng ? <Marker position={[lat, lng]}></Marker> : null;
+  return position ? <Marker position={position}></Marker> : null;
 }
 
-export default function MapPicker({ lat, lng, onLocationSelect }) {
-  const [position, setPosition] = useState([lat || 23.8103, lng || 90.4125]);
+function SearchControl({ setForm, form }) {
+  const map = useMapEvents({});
 
   useEffect(() => {
-    setPosition([lat || 23.8103, lng || 90.4125]);
-  }, [lat, lng]);
+    if (!map) return;
 
-  const handleLocationSelect = (newLat, newLng) => {
-    setPosition([newLat, newLng]);
-    if (onLocationSelect) {
-      onLocationSelect(newLat, newLng);
-    }
-  };
+    const geocoder = new LeafletControlGeocoder({
+      defaultMarkGeocode: true,
+      position: "topleft",
+      placeholder: "🔍 Search location or address...",
+      errorMessage: "Location not found",
+      suggestMinLength: 2,
+      suggestTimeout: 250,
+    });
+
+    geocoder.on("markgeocode", function (e) {
+      const center = e.geocode.center;
+      const lat = center.lat;
+      const lng = center.lng;
+
+      console.log(`📍 Location found: ${e.geocode.name}`);
+      console.log(`Coordinates: [${lat.toFixed(4)}, ${lng.toFixed(4)}]`);
+
+      map.setView(center, 12);
+      setForm({ ...form, lat: lat, lng: lng });
+    });
+
+    geocoder.addTo(map);
+
+    return () => {
+      map.removeControl(geocoder);
+    };
+  }, [map, form, setForm]);
+
+  return null;
+}
+
+export default function MapPicker({ form, setForm }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return <div className="h-full w-full bg-gray-100 flex items-center justify-center">Loading map...</div>;
+  }
 
   return (
     <MapContainer
-      center={position}
-      zoom={13}
+      center={[form.lat || 20, form.lng || 0]}
+      zoom={2}
       style={{ height: "100%", width: "100%" }}
+      scrollWheelZoom={true}
+      zoomControl={true}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <LocationMarker
-        lat={position[0]}
-        lng={position[1]}
-        onLocationSelect={handleLocationSelect}
-      />
+      <LocationMarker form={form} setForm={setForm} />
+      <SearchControl form={form} setForm={setForm} />
     </MapContainer>
   );
 }
