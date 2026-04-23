@@ -3,9 +3,7 @@ import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar/Navbar";
 import FilterNavbar from "@/components/FilterNavbar/page";
 import Footer from "@/components/Footer/Footer";
-import FloatingWhatsApp from "@/components/shared/FloatingWhatsApp";
-import FloatingCartButton from "@/components/Cart/FloatingCartButton";
-import CartSidebar from "@/components/Cart/CartSidebar";
+// import FloatingWhatsApp from "@/components/shared/FloatingWhatsApp";
 import { CartProvider } from "@/context/CartContext";
 import { DataProvider } from "@/context/DataContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -104,17 +102,17 @@ export default function RootLayout({ children }) {
         {/* Preconnect to external domains */}
         <link rel="preconnect" href="https://www.clarity.ms" />
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
-        
+
         {/* Preload critical assets */}
-        <link 
-          rel="preload" 
-          href="/assets/banner-bg.webp" 
+        <link
+          rel="preload"
+          href="/assets/banner-bg.webp"
           as="image"
           type="image/webp"
         />
-        <link 
-          rel="preload" 
-          href="/1.webp" 
+        <link
+          rel="preload"
+          href="/1.webp"
           as="image"
           type="image/webp"
         />
@@ -125,23 +123,7 @@ export default function RootLayout({ children }) {
             __html: JSON.stringify(organizationSchema),
           }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-        />
-        {/* Microsoft Clarity */}
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "ta1fgz6ov8");
-            `,
-          }}
-        />
+
       </head>
       <body>
         <ErrorBoundary>
@@ -156,12 +138,10 @@ export default function RootLayout({ children }) {
                   <main>{children}</main>
                 </Suspense>
                 <Footer />
-                <FloatingWhatsApp
+                {/* <FloatingWhatsApp
                   phoneNumber="14379003996"
                   message="Hello! How can I help you?"
-                />
-                <FloatingCartButton />
-                <CartSidebar />
+                /> */}
               </CartProvider>
             </DataProvider>
           </AuthProvider>

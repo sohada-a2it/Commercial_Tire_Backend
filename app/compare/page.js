@@ -1,13 +1,14 @@
 // app/compare/page.jsx
 'use client';
-
+import React from 'react'
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   X, Truck, Gauge, Battery, Shield, TrendingUp, 
   ShoppingBag, AlertCircle, ChevronLeft, GitCompare,
-  Check, XCircle, ArrowLeft
+  Check, XCircle, ArrowLeft, Ruler, Weight,
+  Gauge as SpeedGauge, Zap, HardDrive, Wind
 } from 'lucide-react';
 import { fetchProduct, compareTires } from '@/services/catalogService';
 
@@ -21,7 +22,7 @@ export default function ComparePage() {
   const [error, setError] = useState(null);
   const [comparisonData, setComparisonData] = useState(null);
 
-  // Fetch products using existing catalogService
+  // Fetch products
   useEffect(() => {
     if (!idsParam) {
       setError('No products selected for comparison');
@@ -30,8 +31,14 @@ export default function ComparePage() {
     }
 
     const productIds = idsParam.split(',');
-    if (productIds.length !== 2) {
-      setError('Please select exactly 2 products to compare');
+    if (productIds.length < 2) {
+      setError('Please select at least 2 products to compare');
+      setLoading(false);
+      return;
+    }
+
+    if (productIds.length > 4) {
+      setError('Maximum 4 products can be compared at once');
       setLoading(false);
       return;
     }
@@ -41,14 +48,13 @@ export default function ComparePage() {
       setError(null);
       
       try {
-        // Fetch both products using your existing fetchProduct function
         const productPromises = productIds.map(id => fetchProduct(id));
         const results = await Promise.all(productPromises);
         
         const validProducts = results.filter(result => result.success && result.product);
         
-        if (validProducts.length !== 2) {
-          setError(`Could not fetch both products. Found ${validProducts.length} of 2.`);
+        if (validProducts.length !== productIds.length) {
+          setError(`Could not fetch all products. Found ${validProducts.length} of ${productIds.length}.`);
           setLoading(false);
           return;
         }
@@ -56,10 +62,14 @@ export default function ComparePage() {
         const fetchedProducts = validProducts.map(result => result.product);
         setProducts(fetchedProducts);
         
-        // Optional: Use your compareTires API for enhanced comparison
-        const compareResult = await compareTires(productIds);
-        if (compareResult.success) {
-          setComparisonData(compareResult.comparison);
+        // Use compareTires API if available
+        try {
+          const compareResult = await compareTires(productIds);
+          if (compareResult.success) {
+            setComparisonData(compareResult.comparison);
+          }
+        } catch (err) {
+          console.log('Compare API not available, using local comparison');
         }
         
       } catch (err) {
@@ -89,62 +99,173 @@ export default function ComparePage() {
     return product?.id || product?._id || product?.sourceId;
   };
 
+  // Get tire specifications (handles both array and object)
+  const getTireSpec = (product) => {
+    const specs = product?.tireSpecs;
+    if (!specs) return {};
+    if (Array.isArray(specs) && specs.length > 0) return specs[0];
+    if (typeof specs === 'object') return specs;
+    return {};
+  };
+
   const getTireTypeIcon = (tireType) => {
     const type = tireType?.toLowerCase() || '';
     if (type.includes('steer')) return <Truck className="w-5 h-5" />;
-    if (type.includes('drive')) return <Battery className="w-5 h-5" />;
+    if (type.includes('drive')) return <Zap className="w-5 h-5" />;
     if (type.includes('trailer')) return <ShoppingBag className="w-5 h-5" />;
     return <Shield className="w-5 h-5" />;
   };
 
   const getTireTypeColor = (tireType) => {
     const type = tireType?.toLowerCase() || '';
-    if (type.includes('steer')) return 'bg-blue-100 text-blue-700';
-    if (type.includes('drive')) return 'bg-green-100 text-green-700';
-    if (type.includes('trailer')) return 'bg-purple-100 text-purple-700';
+    if (type.includes('steer')) return 'bg-amber-100 text-amber-700';
+    if (type.includes('drive')) return 'bg-amber-100 text-amber-700';
+    if (type.includes('trailer')) return 'bg-amber-100 text-amber-700';
+    if (type.includes('all-position')) return 'bg-teal-100 text-teal-700';
+    if (type.includes('off-road')) return 'bg-amber-100 text-amber-700';
+    if (type.includes('mining')) return 'bg-red-100 text-red-700';
     return 'bg-gray-100 text-gray-700';
   };
 
   const formatPrice = (price) => {
-    if (!price) return 'Contact for price';
+    if (!price) return 'Contact';
     const numericPrice = parseFloat(String(price).replace(/[^0-9.-]/g, ''));
     if (isNaN(numericPrice)) return String(price);
     return `$${numericPrice.toLocaleString()}`;
   };
 
-  const getValueByKey = (product, key) => {
-    switch(key) {
-      case 'price':
-        return formatPrice(product.price);
-      case 'offerPrice':
-        return product.offerPrice ? formatPrice(product.offerPrice) : 'N/A';
-      case 'tireSize':
-        return product.tireSpecs?.size || 'N/A';
-      case 'loadIndex':
-        return product.tireSpecs?.loadIndex || 'N/A';
-      case 'speedRating':
-        return product.tireSpecs?.speedRating || 'N/A';
-      case 'treadDepth':
-        return product.tireSpecs?.treadDepth || 'N/A';
-      case 'applications': {
-        const apps = product.applicationsList || product.application || [];
-        return Array.isArray(apps) ? apps.join(', ') : 'N/A';
-      }
-      default:
-        return product[key] || 'N/A';
-    }
+  // Get value by key from product
+  const getProductValue = (product, key) => {
+    const spec = getTireSpec(product);
+    
+    const valueMap = {
+      'name': product?.name || 'N/A',
+      'brand': product?.brand || 'N/A',
+      'pattern': product?.pattern || 'N/A',
+      'modelNumber': product?.modelNumber || 'N/A',
+      'category': product?.categoryName || 'N/A',
+      'tireType': product?.tireType || 'N/A',
+      'price': formatPrice(product?.price),
+      'offerPrice': product?.offerPrice ? formatPrice(product.offerPrice) : 'N/A',
+      
+      // Tire specifications
+      'size': spec?.size || 'N/A',
+      'loadRange': spec?.loadRange || 'N/A',
+      'plyRating': spec?.plyRating || 'N/A',
+      'loadIndex': spec?.loadIndex || 'N/A',
+      'speedRating': spec?.speedRating || spec?.speedSymbol || 'N/A',
+      'overallDiameter': spec?.overallDiameter || 'N/A',
+      'sectionWidth': spec?.sectionWidth || 'N/A',
+      'treadDepth': spec?.treadDepth || 'N/A',
+      'stdRim': spec?.stdRim || 'N/A',
+      'singleMaxLoad': spec?.singleMaxLoad || spec?.maxLoad || 'N/A',
+      'singleMaxPressure': spec?.singleMaxPressure || spec?.maxInflation || 'N/A',
+      'dualMaxLoad': spec?.dualMaxLoad || 'N/A',
+      'dualMaxPressure': spec?.dualMaxPressure || 'N/A',
+      'staticLoadRadius': spec?.staticLoadRadius || 'N/A',
+      'revsPerKm': spec?.revsPerKm || spec?.revsPerMile || 'N/A',
+      'weight': spec?.weight ? `${spec.weight} ${spec.weightUnit || 'lbs'}` : 'N/A',
+      'construction': spec?.constructionType === 'TL' ? 'Tubeless' : 
+                       spec?.constructionType === 'TT' ? 'Tube Type' : 
+                       spec?.constructionType || 'N/A',
+      
+      // Lists
+      'applications': product?.applicationsList?.join(', ') || 
+                      product?.application?.join(', ') || 
+                      'N/A',
+      'vehicleTypes': product?.vehicleTypesList?.join(', ') || 
+                      product?.vehicleType?.join(', ') || 
+                      'N/A',
+    };
+    
+    return valueMap[key] || 'N/A';
   };
 
-  const isDifferent = (product1, product2, key) => {
-    if (!product1 || !product2) return false;
-    return getValueByKey(product1, key) !== getValueByKey(product2, key);
+  const isDifferent = (idx, key) => {
+    if (products.length < 2) return false;
+    const firstValue = getProductValue(products[0], key);
+    const currentValue = getProductValue(products[idx], key);
+    return firstValue !== currentValue;
   };
+
+  // Get a product's display class based on index
+  const getProductClass = (idx) => {
+    const classes = ['border-amber-200', 'border-amber-200', 'border-amber-200', 'border-amber-200'];
+    return classes[idx % classes.length];
+  };
+
+  // Define all comparison sections with complete fields
+  const comparisonSections = [
+    {
+      title: 'Basic Information',
+      icon: <Shield className="w-5 h-5" />,
+      fields: [
+        { label: 'Product Name', key: 'name' },
+        { label: 'Brand', key: 'brand' },
+        { label: 'Pattern', key: 'pattern' },
+        { label: 'Model Number', key: 'modelNumber' },
+        { label: 'Category', key: 'category' },
+        { label: 'Tire Type', key: 'tireType' },
+      ]
+    },
+    {
+      title: 'Dimensions & Physical',
+      icon: <Ruler className="w-5 h-5" />,
+      fields: [
+        { label: 'Tire Size', key: 'size' },
+        { label: 'Overall Diameter', key: 'overallDiameter', unit: 'inch' },
+        { label: 'Section Width', key: 'sectionWidth', unit: 'inch' },
+        { label: 'Standard Rim', key: 'stdRim' },
+        { label: 'Static Load Radius', key: 'staticLoadRadius', unit: 'inch' },
+        { label: 'Weight', key: 'weight' },
+      ]
+    },
+    {
+      title: 'Performance Ratings',
+      icon: <SpeedGauge className="w-5 h-5" />,
+      fields: [
+        { label: 'Load Range', key: 'loadRange' },
+        { label: 'Ply Rating', key: 'plyRating' },
+        { label: 'Load Index', key: 'loadIndex' },
+        { label: 'Speed Rating', key: 'speedRating' },
+        { label: 'Tread Depth', key: 'treadDepth', unit: '32nds' },
+        { label: 'Revs per km', key: 'revsPerKm' },
+      ]
+    },
+    {
+      title: 'Load & Pressure',
+      icon: <Weight className="w-5 h-5" />,
+      fields: [
+        { label: 'Single Max Load', key: 'singleMaxLoad' },
+        { label: 'Single Max Pressure', key: 'singleMaxPressure', unit: 'psi' },
+        { label: 'Dual Max Load', key: 'dualMaxLoad' },
+        { label: 'Dual Max Pressure', key: 'dualMaxPressure', unit: 'psi' },
+      ]
+    },
+    {
+      title: 'Applications & Usage',
+      icon: <Truck className="w-5 h-5" />,
+      fields: [
+        { label: 'Applications', key: 'applications' },
+        { label: 'Vehicle Types', key: 'vehicleTypes' },
+        { label: 'Construction', key: 'construction' },
+      ]
+    },
+    {
+      title: 'Pricing',
+      icon: <ShoppingBag className="w-5 h-5" />,
+      fields: [
+        { label: 'Regular Price', key: 'price' },
+        { label: 'Offer Price', key: 'offerPrice' },
+      ]
+    },
+  ];
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading comparison data...</p>
         </div>
       </div>
@@ -167,7 +288,7 @@ export default function ComparePage() {
             </button>
             <Link
               href="/tires"
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
             >
               Browse Tires
             </Link>
@@ -177,46 +298,42 @@ export default function ComparePage() {
     );
   }
 
-  if (products.length !== 2) {
+  if (products.length < 2) {
     return null;
   }
 
-  const [product1, product2] = products;
+  // Calculate column width based on number of products
+  const getColumnWidth = () => {
+    const count = products.length;
+    if (count === 2) return 'w-1/3';
+    if (count === 3) return 'w-1/4';
+    return 'w-1/5';
+  };
 
-  // Define comparison fields
-  const basicFields = [
-    { label: 'Brand', key: 'brand' },
-    { label: 'Pattern', key: 'pattern' },
-    { label: 'Model Number', key: 'modelNumber' },
-    { label: 'Tire Type', key: 'tireType' },
-  ];
-
-  const technicalFields = [
-    { label: 'Tire Size', key: 'tireSize' },
-    { label: 'Load Index', key: 'loadIndex' },
-    { label: 'Speed Rating', key: 'speedRating' },
-    { label: 'Tread Depth', key: 'treadDepth' },
-    { label: 'Applications', key: 'applications' },
-    { label: 'Price', key: 'price' },
-    { label: 'Offer Price', key: 'offerPrice' },
-  ];
+  // Get color for product card
+  const getProductCardColor = (idx) => {
+    const colors = ['from-amber-500 to-amber-600', 'from-amber-500 to-amber-600', 'from-amber-500 to-amber-600', 'from-amber-500 to-amber-600'];
+    return colors[idx % colors.length];
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white sticky top-0 z-10 shadow-lg">
+      <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white sticky top-0 z-10 shadow-lg">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => router.back()}
-                className="p-2 hover:bg-blue-500 rounded-lg transition-colors"
+                className="p-2 hover:bg-amber-500 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
               <div className="flex items-center gap-2">
                 <GitCompare className="w-6 h-6" />
-                <h1 className="text-xl md:text-2xl font-bold">Compare Products</h1>
+                <h1 className="text-xl md:text-2xl font-bold">
+                  Compare Products ({products.length}/{products.length === 2 ? '2' : products.length === 3 ? '3' : '4'})
+                </h1>
               </div>
             </div>
             <Link
@@ -231,259 +348,263 @@ export default function ComparePage() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Product Summary Cards */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          {/* Product 1 */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
-            <div className="relative h-64 bg-gradient-to-br from-gray-50 to-gray-100">
-              <img
-                src={getProductImage(product1) || 'https://via.placeholder.com/400x400?text=No+Image'}
-                alt={product1.name}
-                className="w-full h-full object-contain p-4"
-              />
-              {product1.tireType && (
-                <div className={`absolute top-4 left-4 ${getTireTypeColor(product1.tireType)} px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2`}>
-                  {getTireTypeIcon(product1.tireType)}
-                  <span className="capitalize">{product1.tireType}</span>
+        <div className={`grid gap-6 mb-8 ${
+          products.length === 2 ? 'md:grid-cols-2' : 
+          products.length === 3 ? 'md:grid-cols-3' : 
+          'md:grid-cols-2 lg:grid-cols-4'
+        }`}>
+          {products.map((product, idx) => {
+            const spec = getTireSpec(product);
+            return (
+              <div key={idx} className={`bg-white rounded-2xl shadow-lg overflow-hidden border-2 ${getProductClass(idx)}`}>
+                <div className={`relative h-56 bg-gradient-to-br ${getProductCardColor(idx)}/10`}>
+                  <img
+                    src={getProductImage(product) || 'https://via.placeholder.com/400x400?text=No+Image'}
+                    alt={product.name}
+                    className="w-full h-full object-contain p-4"
+                  />
+                  {product.tireType && (
+                    <div className={`absolute top-4 left-4 ${getTireTypeColor(product.tireType)} px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2 shadow-md`}>
+                      {getTireTypeIcon(product.tireType)}
+                      <span className="capitalize">{product.tireType}</span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => {
+                      const newIds = products.filter((_, i) => i !== idx).map(p => getProductId(p));
+                      router.push(`/compare?ids=${newIds.join(',')}`);
+                    }}
+                    className="absolute top-4 right-4 p-1.5 bg-white/90 rounded-full hover:bg-red-100 transition-colors shadow-md"
+                  >
+                    <X className="w-4 h-4 text-gray-600 hover:text-red-600" />
+                  </button>
                 </div>
-              )}
-            </div>
-            <div className="p-6">
-              <div className="mb-4">
-                <div className="flex items-center gap-2 mb-2">
-                  {product1.brand && (
-                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      {product1.brand}
-                    </span>
-                  )}
-                  {product1.pattern && product1.brand && (
-                    <span className="text-gray-300">•</span>
-                  )}
-                  {product1.pattern && (
-                    <span className="text-xs text-gray-500">{product1.pattern}</span>
-                  )}
-                </div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">{product1.name}</h2>
-                <div className="flex items-baseline gap-2">
-                  {product1.offerPrice ? (
-                    <>
-                      <span className="text-3xl font-bold text-red-600">
-                        {formatPrice(product1.offerPrice)}
+                <div className="p-5">
+                  <div className="mb-3">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      {product.brand && (
+                        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                          {product.brand}
+                        </span>
+                      )}
+                      {product.pattern && product.brand && (
+                        <span className="text-gray-300">•</span>
+                      )}
+                      {product.pattern && (
+                        <span className="text-xs text-gray-500">{product.pattern}</span>
+                      )}
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2">
+                      {product.name}
+                    </h2>
+                    {spec.size && (
+                      <div className="inline-flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-lg">
+                        <Gauge className="w-3.5 h-3.5 text-amber-600" />
+                        <span className="text-sm font-semibold text-gray-700">{spec.size}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-baseline gap-2 mb-4">
+                    {product.offerPrice ? (
+                      <>
+                        <span className="text-2xl font-bold text-red-600">
+                          {formatPrice(product.offerPrice)}
+                        </span>
+                        <span className="text-sm text-gray-400 line-through">
+                          {formatPrice(product.price)}
+                        </span>
+                      </>
+                    ) : product.price ? (
+                      <span className="text-2xl font-bold text-gray-800">
+                        {formatPrice(product.price)}
                       </span>
-                      <span className="text-lg text-gray-400 line-through">
-                        {formatPrice(product1.price)}
-                      </span>
-                    </>
-                  ) : product1.price ? (
-                    <span className="text-3xl font-bold text-gray-800">
-                      {formatPrice(product1.price)}
-                    </span>
-                  ) : (
-                    <span className="text-lg font-semibold text-blue-600">Request Quote</span>
-                  )}
+                    ) : (
+                      <span className="text-sm font-semibold text-amber-600">Request Quote</span>
+                    )}
+                  </div>
+                  <Link
+                    href={`/product/${getProductId(product)}`}
+                    className="block w-full bg-amber-600 text-white text-center py-2.5 rounded-xl font-semibold hover:bg-amber-700 transition-colors text-sm"
+                  >
+                    View Full Details
+                  </Link>
                 </div>
               </div>
-              <Link
-                href={`/product/${getProductId(product1)}`}
-                className="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-              >
-                View Full Details
-              </Link>
-            </div>
-          </div>
-
-          {/* Product 2 */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
-            <div className="relative h-64 bg-gradient-to-br from-gray-50 to-gray-100">
-              <img
-                src={getProductImage(product2) || 'https://via.placeholder.com/400x400?text=No+Image'}
-                alt={product2.name}
-                className="w-full h-full object-contain p-4"
-              />
-              {product2.tireType && (
-                <div className={`absolute top-4 left-4 ${getTireTypeColor(product2.tireType)} px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-2`}>
-                  {getTireTypeIcon(product2.tireType)}
-                  <span className="capitalize">{product2.tireType}</span>
-                </div>
-              )}
-            </div>
-            <div className="p-6">
-              <div className="mb-4">
-                <div className="flex items-center gap-2 mb-2">
-                  {product2.brand && (
-                    <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      {product2.brand}
-                    </span>
-                  )}
-                  {product2.pattern && product2.brand && (
-                    <span className="text-gray-300">•</span>
-                  )}
-                  {product2.pattern && (
-                    <span className="text-xs text-gray-500">{product2.pattern}</span>
-                  )}
-                </div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">{product2.name}</h2>
-                <div className="flex items-baseline gap-2">
-                  {product2.offerPrice ? (
-                    <>
-                      <span className="text-3xl font-bold text-red-600">
-                        {formatPrice(product2.offerPrice)}
-                      </span>
-                      <span className="text-lg text-gray-400 line-through">
-                        {formatPrice(product2.price)}
-                      </span>
-                    </>
-                  ) : product2.price ? (
-                    <span className="text-3xl font-bold text-gray-800">
-                      {formatPrice(product2.price)}
-                    </span>
-                  ) : (
-                    <span className="text-lg font-semibold text-blue-600">Request Quote</span>
-                  )}
-                </div>
-              </div>
-              <Link
-                href={`/product/${getProductId(product2)}`}
-                className="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-              >
-                View Full Details
-              </Link>
-            </div>
-          </div>
+            );
+          })}
         </div>
 
         {/* Detailed Comparison Table */}
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
             <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-              <GitCompare className="w-5 h-5 text-blue-600" />
+              <GitCompare className="w-5 h-5 text-amber-600" />
               Detailed Specifications Comparison
             </h3>
+            <p className="text-sm text-gray-500 mt-1">
+              Comparing {products.length} products side by side
+            </p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[800px]">
               <tbody>
-                {/* Basic Information Section */}
-                <tr className="bg-gray-50">
-                  <td colSpan={3} className="px-6 py-4">
-                    <h4 className="font-bold text-gray-800 text-lg">Basic Information</h4>
-                  </td>
-                </tr>
-                
-                {basicFields.map((field) => {
-                  const different = isDifferent(product1, product2, field.key);
-                  const value1 = getValueByKey(product1, field.key);
-                  const value2 = getValueByKey(product2, field.key);
-                  
-                  return (
-                    <tr key={field.key} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-semibold text-gray-700 w-1/4 bg-gray-50/50">
-                        {field.label}
-                      </td>
-                      <td className={`px-6 py-4 w-[37.5%] ${different ? 'bg-yellow-50' : ''}`}>
+                {comparisonSections.map((section, sectionIdx) => (
+                  <>
+                    {/* Section Header */}
+                    <tr key={`section-${sectionIdx}`} className="bg-gray-100">
+                      <td className="px-6 py-4 font-bold text-gray-800 sticky left-0 bg-gray-100 min-w-[200px]">
                         <div className="flex items-center gap-2">
-                          {different && <AlertCircle className="w-4 h-4 text-yellow-500 flex-shrink-0" />}
-                          <span className={different ? 'font-semibold text-gray-900' : 'text-gray-600'}>
-                            {value1}
-                          </span>
+                          {section.icon}
+                          {section.title}
                         </div>
                       </td>
-                      <td className={`px-6 py-4 w-[37.5%] ${different ? 'bg-yellow-50' : ''}`}>
-                        <div className="flex items-center gap-2">
-                          {different && <AlertCircle className="w-4 h-4 text-yellow-500 flex-shrink-0" />}
-                          <span className={different ? 'font-semibold text-gray-900' : 'text-gray-600'}>
-                            {value2}
-                          </span>
-                        </div>
-                      </td>
+                      {products.map((_, idx) => (
+                        <td key={`section-header-${idx}`} className="px-6 py-4 font-semibold text-gray-600 text-center">
+                          Product {idx + 1}
+                        </td>
+                      ))}
                     </tr>
-                  );
-                })}
-
-                {/* Technical Specifications Section */}
-                <tr className="bg-gray-50">
-                  <td colSpan={3} className="px-6 py-4">
-                    <h4 className="font-bold text-gray-800 text-lg">Technical Specifications</h4>
-                  </td>
-                </tr>
-                
-                {technicalFields.map((field) => {
-                  const different = isDifferent(product1, product2, field.key);
-                  const value1 = getValueByKey(product1, field.key);
-                  const value2 = getValueByKey(product2, field.key);
-                  
-                  return (
-                    <tr key={field.key} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-semibold text-gray-700 w-1/4 bg-gray-50/50">
-                        {field.label}
-                      </td>
-                      <td className={`px-6 py-4 w-[37.5%] ${different ? 'bg-yellow-50' : ''}`}>
-                        <div className="flex items-center gap-2">
-                          {different && <AlertCircle className="w-4 h-4 text-yellow-500 flex-shrink-0" />}
-                          <span className={different ? 'font-semibold text-gray-900' : 'text-gray-600'}>
-                            {value1}
-                          </span>
-                        </div>
-                      </td>
-                      <td className={`px-6 py-4 w-[37.5%] ${different ? 'bg-yellow-50' : ''}`}>
-                        <div className="flex items-center gap-2">
-                          {different && <AlertCircle className="w-4 h-4 text-yellow-500 flex-shrink-0" />}
-                          <span className={different ? 'font-semibold text-gray-900' : 'text-gray-600'}>
-                            {value2}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                    
+                    {/* Section Fields */}
+                    {section.fields.map((field, fieldIdx) => {
+                      const isAnyDifferent = products.some((_, idx) => isDifferent(idx, field.key));
+                      return (
+                        <tr key={`field-${sectionIdx}-${fieldIdx}`} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 font-medium text-gray-700 sticky left-0 bg-white min-w-[200px]">
+                            {field.label}
+                          </td>
+                          {products.map((product, idx) => {
+                            const different = isDifferent(idx, field.key);
+                            const value = getProductValue(product, field.key);
+                            return (
+                              <td 
+                                key={`value-${idx}`} 
+                                className={`px-6 py-4 text-center ${different && isAnyDifferent ? 'bg-yellow-50' : ''}`}
+                              >
+                                <div className="flex items-center justify-center gap-2">
+                                  {different && isAnyDifferent && (
+                                    <AlertCircle className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                                  )}
+                                  <span className={`${different && isAnyDifferent ? 'font-semibold text-gray-900' : 'text-gray-600'} text-sm`}>
+                                    {value}
+                                  </span>
+                                </div>
+                               </td>
+                            );
+                          })}
+                         </tr>
+                      );
+                    })}
+                  </>
+                ))}
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Recommendation Section */}
-        <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-          <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-blue-600" />
+        {/* Recommendation & Summary Section */}
+        <div className="mt-8 bg-gradient-to-r from-amber-50 to-indigo-50 rounded-2xl p-6 border border-amber-200">
+          <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-amber-600" />
             Comparison Summary
           </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-4">
-              <div className="font-semibold text-gray-800 mb-2">Key Differences:</div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Key Differences */}
+            <div className="bg-white rounded-xl p-5 shadow-sm">
+              <div className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-amber-500" />
+                Key Differences
+              </div>
               <ul className="space-y-2 text-sm text-gray-600">
-                {product1.tireSpecs?.size !== product2.tireSpecs?.size && (
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500">•</span>
-                    <span>Different tire sizes: <strong>{product1.tireSpecs?.size || 'N/A'}</strong> vs <strong>{product2.tireSpecs?.size || 'N/A'}</strong></span>
-                  </li>
+                {products.length >= 2 && (
+                  <>
+                    {products.some((p, i) => i > 0 && getTireSpec(p).size !== getTireSpec(products[0]).size) && (
+                      <li className="flex items-start gap-2">
+                        <span className="text-amber-500">•</span>
+                        <span><strong>Different tire sizes:</strong> {products.map((p, i) => `${getTireSpec(p).size || 'N/A'}`).join(' vs ')}</span>
+                      </li>
+                    )}
+                    {products.some((p, i) => i > 0 && p.brand !== products[0].brand) && (
+                      <li className="flex items-start gap-2">
+                        <span className="text-amber-500">•</span>
+                        <span><strong>Different brands:</strong> {products.map(p => p.brand || 'N/A').join(' vs ')}</span>
+                      </li>
+                    )}
+                    {products.some((p, i) => i > 0 && getTireSpec(p).loadIndex !== getTireSpec(products[0]).loadIndex) && (
+                      <li className="flex items-start gap-2">
+                        <span className="text-amber-500">•</span>
+                        <span><strong>Different load capacity:</strong> {products.map(p => getTireSpec(p).loadIndex || 'N/A').join(' vs ')}</span>
+                      </li>
+                    )}
+                    {products.some((p, i) => i > 0 && getTireSpec(p).speedRating !== getTireSpec(products[0]).speedRating) && (
+                      <li className="flex items-start gap-2">
+                        <span className="text-amber-500">•</span>
+                        <span><strong>Different speed ratings:</strong> {products.map(p => getTireSpec(p).speedRating || 'N/A').join(' vs ')}</span>
+                      </li>
+                    )}
+                    {products.some((p, i) => i > 0 && p.tireType !== products[0].tireType) && (
+                      <li className="flex items-start gap-2">
+                        <span className="text-amber-500">•</span>
+                        <span><strong>Different tire types:</strong> {products.map(p => p.tireType || 'N/A').join(' vs ')}</span>
+                      </li>
+                    )}
+                  </>
                 )}
-                {product1.brand !== product2.brand && (
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500">•</span>
-                    <span>Different brands: <strong>{product1.brand || 'N/A'}</strong> vs <strong>{product2.brand || 'N/A'}</strong></span>
-                  </li>
-                )}
-                {product1.tireSpecs?.loadIndex !== product2.tireSpecs?.loadIndex && (
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500">•</span>
-                    <span>Different load capacity: <strong>{product1.tireSpecs?.loadIndex || 'N/A'}</strong> vs <strong>{product2.tireSpecs?.loadIndex || 'N/A'}</strong></span>
-                  </li>
-                )}
-                {product1.tireSpecs?.speedRating !== product2.tireSpecs?.speedRating && (
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500">•</span>
-                    <span>Different speed ratings: <strong>{product1.tireSpecs?.speedRating || 'N/A'}</strong> vs <strong>{product2.tireSpecs?.speedRating || 'N/A'}</strong></span>
-                  </li>
+                {!products.some((p, i) => i > 0 && getTireSpec(p).size !== getTireSpec(products[0]).size) && 
+                 !products.some((p, i) => i > 0 && p.brand !== products[0].brand) && 
+                 !products.some((p, i) => i > 0 && getTireSpec(p).loadIndex !== getTireSpec(products[0]).loadIndex) && (
+                  <li className="text-gray-500">No major differences found. Products have similar specifications.</li>
                 )}
               </ul>
             </div>
-            <div className="bg-white rounded-xl p-4">
-              <div className="font-semibold text-gray-800 mb-2">Recommendation:</div>
-              <p className="text-sm text-gray-600">
-                Based on your comparison, choose the tire that best fits your specific needs. 
-                Consider factors like load requirements, road conditions, and budget.
+            
+            {/* Recommendation */}
+            <div className="bg-white rounded-xl p-5 shadow-sm">
+              <div className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-amber-500" />
+                Recommendation
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Based on your comparison:
               </p>
+              <ul className="mt-3 space-y-2 text-sm text-gray-600">
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <span>For <strong>heavy loads</strong>, choose the tire with higher load index</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <span>For <strong>highway driving</strong>, consider speed rating and fuel efficiency</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <span>For <strong>off-road use</strong>, look at tread depth and construction type</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <span>For <strong>budget-conscious</strong>, compare offer prices and volume discounts</span>
+                </li>
+              </ul>
             </div>
+          </div>
+          
+          {/* Share Comparison Link */}
+          <div className="mt-6 pt-4 border-t border-amber-200 flex justify-between items-center flex-wrap gap-3">
+            <p className="text-xs text-gray-500">
+              Share this comparison with your team
+            </p>
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/compare?ids=${idsParam}`;
+                navigator.clipboard.writeText(url);
+                alert('Comparison link copied to clipboard!');
+              }}
+              className="px-4 py-2 bg-white text-amber-600 rounded-lg text-sm font-medium hover:bg-amber-50 transition-colors border border-amber-200"
+            >
+              Copy Comparison Link
+            </button>
           </div>
         </div>
       </div>

@@ -268,7 +268,8 @@ export const fetchFeaturedProducts = async (limit = 10) => {
 };
  
 
-/** 
+ 
+/**
  * @param {Object} filters - Filter parameters
  * @param {number} filters.page - Page number (default: 1)
  * @param {number} filters.limit - Items per page (default: 20, max: 100)
@@ -305,7 +306,7 @@ export const fetchProducts = async (filters = {}) => {
   if (filters.brand) params.append('brand', filters.brand);
   if (filters.pattern) params.append('pattern', filters.pattern);
   
-  // Tire-specific filters
+  // Tire-specific filters - ✅ সঠিক ফিল্ড নাম ব্যবহার করুন
   if (filters.tireType) params.append('tireType', filters.tireType);
   if (filters.vehicleType) params.append('vehicleTypesList', filters.vehicleType);
   if (filters.application) params.append('applicationsList', filters.application);
@@ -324,13 +325,23 @@ export const fetchProducts = async (filters = {}) => {
   
   const data = await parseResponse(response);
   
+  // ✅ প্রোডাক্টের tireSpecs নরমালাইজ করুন
+  const normalizedProducts = (data.products || []).map(product => ({
+    ...product,
+    tireSpecs: Array.isArray(product.tireSpecs) ? product.tireSpecs : 
+               (product.tireSpecs ? [product.tireSpecs] : []),
+    mainTireSize: Array.isArray(product.tireSpecs) && product.tireSpecs.length > 0 
+                  ? product.tireSpecs[0].size 
+                  : null
+  }));
+  
   return {
     success: true,
-    products: data.products || [],
+    products: normalizedProducts,
     pagination: data.pagination || {
       page: Number(filters.page || 1),
       limit: Number(filters.limit || 20),
-      total: data.products?.length || 0,
+      total: normalizedProducts.length,
       totalPages: 1,
       hasNextPage: false,
       hasPrevPage: false,
@@ -390,11 +401,14 @@ export const fetchProductDetails = async (productId, options = {}) => {
  * Get product quick view data for modals
  * @param {string} productId - Product ID or Source ID
  * @returns {Promise<Object>} Quick view product data
- */
+ */ 
+/**
+ * Get product quick view data for modals
+ * @param {string} productId - Product ID or Source ID
+ * @returns {Promise<Object>} Quick view product data
+ */ 
 export const fetchProductQuickView = async (productId) => {
-  if (!productId) {
-    throw new Error("Product ID is required");
-  }
+  if (!productId) throw new Error("Product ID is required");
 
   const headers = await buildAuthHeaders();
   const response = await fetch(
@@ -403,10 +417,42 @@ export const fetchProductQuickView = async (productId) => {
   );
   
   const data = await parseResponse(response);
+  const product = data.product;
+  
+  // ✅ সঠিকভাবে tireSpecs থেকে ডাটা নেওয়া
+  const tireSpecsArray = Array.isArray(product?.tireSpecs) ? product.tireSpecs : [];
+  const firstSpec = tireSpecsArray.length > 0 ? tireSpecsArray[0] : {};
   
   return {
     success: true,
-    product: data.product
+    product: {
+      id: product.id,
+      sourceId: product.sourceId,
+      name: product.name,
+      brand: product.brand,
+      pattern: product.pattern,
+      modelNumber: product.modelNumber,
+      price: product.price,
+      offerPrice: product.offerPrice,
+      discountPercentage: product.discountPercentage || calculateDiscount(product.price, product.offerPrice),
+      image: product.image,
+      shortDescription: product.shortDescription,
+      // ✅ tireSpecs থেকে সঠিকভাবে নেওয়া
+      tireSize: firstSpec.size || null,
+      loadIndex: firstSpec.loadIndex || null,
+      speedRating: firstSpec.speedRating || null,
+      treadDepth: firstSpec.treadDepth || null,
+      plyRating: firstSpec.plyRating || null,
+      loadRange: firstSpec.loadRange || null,
+      constructionType: firstSpec.constructionType || null,
+      availableSizes: tireSpecsArray.length,
+      averageRating: product.averageRating || 0,
+      totalReviews: product.totalReviews || 0,
+      inStock: product.isActive !== false,
+      isNewArrival: product.isNewArrival || false,
+      isBestSeller: product.isBestSeller || false,
+      isFeatured: product.isFeatured || false
+    }
   };
 };
 
@@ -547,9 +593,7 @@ export const fetchProductPricing = async (productId, quantity = 1) => {
  * @returns {Promise<Object>} SEO metadata including structured data
  */
 export const fetchProductSEO = async (productId) => {
-  if (!productId) {
-    throw new Error("Product ID is required");
-  }
+  if (!productId) throw new Error("Product ID is required");
 
   const headers = await buildAuthHeaders();
   const response = await fetch(
@@ -558,6 +602,12 @@ export const fetchProductSEO = async (productId) => {
   );
   
   const data = await parseResponse(response);
+  
+  // ✅ SEO ডাটাতে tireSize ঠিক করুন
+  const seo = data.seo;
+  if (seo && seo.title) {
+    // backend ইতিমধ্যে ঠিক করে দেবে, তাই আলাদা কিছু করার দরকার নেই
+  }
   
   return {
     success: true,

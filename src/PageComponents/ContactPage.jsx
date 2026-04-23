@@ -85,7 +85,7 @@ const ContactPage = () => {
   };
 
   const contactInfo = [
-    { icon: FaMapMarkerAlt, title: "Location", details: ["63/16 Soi Chumchon Talat Tha Ruea", "Khlong Toei, Bangkok 10110, Thailand"], color: "text-amber-600" },
+    { icon: FaMapMarkerAlt, title: "Location", details: ["406 East Huntington Drive", "Suite 200", "Monrovia", "CA 91016"], color: "text-amber-600" },
     { icon: FaPhone, title: "Phone", details: ["+1 437-900-3996"], link: "tel:+14379003996", color: "text-amber-600" },
     { icon: FaEnvelope, title: "Email", details: ["info@asianimportexport.com"], link: "mailto:info@asianimportexport.com", color: "text-amber-600" },
     { icon: FaClock, title: "Business Hours", details: ["Mon-Fri: 9:00 AM - 6:00 PM", "Sat: 10:00 AM - 4:00 PM"], color: "text-amber-600" },

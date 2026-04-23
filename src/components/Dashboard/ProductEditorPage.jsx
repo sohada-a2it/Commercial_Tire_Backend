@@ -1,4 +1,5 @@
-// Updated ProductEditorPage.tsx (frontend) - Single Page Version
+// Updated ProductEditorPage.tsx (with Multiple Tire Sizes Support)
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -7,7 +8,7 @@ import DashboardLayout from "@/components/Dashboard/DashboardLayout";
 import { useAuth } from "@/context/AuthContext";
 import { normalizeRole } from "@/config/dashboardRoutes";
 import { fetchCategories, fetchMedia, fetchProduct, saveProduct, uploadMedia, uploadMediaFromUrl } from "@/services/catalogService";
-import { ArrowLeft, Loader2, Save, Upload, FileText, Video, Box, Settings } from "lucide-react";
+import { ArrowLeft, Loader2, Save, Upload, FileText, Box, Settings, Plus, Trash2, Copy } from "lucide-react";
 import toast from "react-hot-toast";
 
 const createPricingTier = (index = 0) => ({
@@ -35,8 +36,10 @@ const createImage = (index = 0) => ({
 
 const createAttribute = () => ({ key: "", value: "" });
 
-// Tire specification defaults
-const defaultTireSpecs = {
+// ✅ Tire specification for a single size
+const createTireSpec = (index = 0) => ({
+  id: Date.now() + index,
+  productCode: "",  // ✅ যোগ করুন
   size: "",
   loadIndex: "",
   speedRating: "",
@@ -58,7 +61,10 @@ const defaultTireSpecs = {
   weight: "",
   weightUnit: "lbs",
   constructionType: "TL",
-};
+});
+
+// Default first spec
+const defaultTireSpecs = [createTireSpec(0)];
 
 const defaultResources = {
   brochure: { url: "", publicId: "", alt: "" },
@@ -97,7 +103,7 @@ const productTemplate = {
   tireType: "all-position",
   vehicleType: ["truck"],
   application: ["highway"],
-  tireSpecs: { ...defaultTireSpecs },
+  tireSpecs: defaultTireSpecs, // ✅ Now an array!
   resources: { ...defaultResources },
   videoUrl: "",
   threeSixtyImages: [],
@@ -147,36 +153,28 @@ const APPLICATION_OPTIONS = [
 ];
 
 const SPEED_RATING_OPTIONS = [
-  { value: "A1", label: "A1 (5 km/h)" },
-  { value: "A2", label: "A2 (10 km/h)" },
-  { value: "A3", label: "A3 (15 km/h)" },
-  { value: "A4", label: "A4 (25 km/h)" },
-  { value: "A5", label: "A5 (30 km/h)" },
-  { value: "A6", label: "A6 (35 km/h)" },
-  { value: "A7", label: "A7 (40 km/h)" },
-  { value: "A8", label: "A8 (50 km/h)" },
-  { value: "B", label: "B (50 km/h)" },
-  { value: "C", label: "C (60 km/h)" },
-  { value: "D", label: "D (65 km/h)" },
-  { value: "E", label: "E (70 km/h)" },
-  { value: "F", label: "F (80 km/h)" },
-  { value: "G", label: "G (90 km/h)" },
-  { value: "J", label: "J (100 km/h)" },
-  { value: "K", label: "K (110 km/h)" },
-  { value: "L", label: "L (120 km/h)" },
-  { value: "M", label: "M (130 km/h)" },
-  { value: "N", label: "N (140 km/h)" },
-  { value: "P", label: "P (150 km/h)" },
-  { value: "Q", label: "Q (160 km/h)" },
-  { value: "R", label: "R (170 km/h)" },
-  { value: "S", label: "S (180 km/h)" },
-  { value: "T", label: "T (190 km/h)" },
-  { value: "U", label: "U (200 km/h)" },
-  { value: "H", label: "H (210 km/h)" },
-  { value: "V", label: "V (240 km/h)" },
-  { value: "W", label: "W (270 km/h)" },
-  { value: "Y", label: "Y (300 km/h)" },
-  { value: "Z", label: "Z (240+ km/h)" },
+  { value: "A1", label: "A1 (5 km/h)" }, { value: "A2", label: "A2 (10 km/h)" },
+  { value: "A3", label: "A3 (15 km/h)" }, { value: "A4", label: "A4 (25 km/h)" },
+  { value: "A5", label: "A5 (30 km/h)" }, { value: "A6", label: "A6 (35 km/h)" },
+  { value: "A7", label: "A7 (40 km/h)" }, { value: "A8", label: "A8 (50 km/h)" },
+  { value: "B", label: "B (50 km/h)" }, { value: "C", label: "C (60 km/h)" },
+  { value: "D", label: "D (65 km/h)" }, { value: "E", label: "E (70 km/h)" },
+  { value: "F", label: "F (80 km/h)" }, { value: "G", label: "G (90 km/h)" },
+  { value: "J", label: "J (100 km/h)" }, { value: "K", label: "K (110 km/h)" },
+  { value: "L", label: "L (120 km/h)" }, { value: "M", label: "M (130 km/h)" },
+  { value: "N", label: "N (140 km/h)" }, { value: "P", label: "P (150 km/h)" },
+  { value: "Q", label: "Q (160 km/h)" }, { value: "R", label: "R (170 km/h)" },
+  { value: "S", label: "S (180 km/h)" }, { value: "T", label: "T (190 km/h)" },
+  { value: "U", label: "U (200 km/h)" }, { value: "H", label: "H (210 km/h)" },
+  { value: "V", label: "V (240 km/h)" }, { value: "W", label: "W (270 km/h)" },
+  { value: "Y", label: "Y (300 km/h)" }, { value: "Z", label: "Z (240+ km/h)" },
+];
+
+const LOAD_RANGE_OPTIONS = [
+  { value: "A", label: "A" }, { value: "B", label: "B" }, { value: "C", label: "C" },
+  { value: "D", label: "D" }, { value: "E", label: "E" }, { value: "F", label: "F" },
+  { value: "G", label: "G" }, { value: "H", label: "H" }, { value: "J", label: "J" },
+  { value: "L", label: "L" },
 ];
 
 export default function ProductEditorPage({ mode = "create", productId = "", returnUrl = "" }) {
@@ -220,6 +218,41 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
     setSectionsCollapsed(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
+  // ✅ Helper to convert backend array to frontend format
+  const normalizeTireSpecsFromBackend = (backendSpecs) => {
+  if (!backendSpecs || !Array.isArray(backendSpecs)) {
+    return defaultTireSpecs;
+  }
+  if (backendSpecs.length === 0) {
+    return [createTireSpec(0)];
+  }
+  return backendSpecs.map((spec, idx) => ({
+    id: spec.id || Date.now() + idx,
+    productCode: spec.productCode || "",
+    size: spec.size || "",
+    loadIndex: spec.loadIndex || "",
+    speedRating: spec.speedRating || "",  // ✅ Changed from speedSymbol
+    treadPattern: spec.treadPattern || "",
+    plyRating: spec.plyRating || "",
+    stdRim: spec.stdRim || "",
+    overallDiameter: spec.overallDiameter || "",
+    sectionWidth: spec.sectionWidth || "",
+    maxLoad: spec.maxLoad || "",  // ✅ Added
+    maxInflation: spec.maxInflation || "",  // ✅ Added
+    treadDepth: spec.treadDepth || "",
+    revsPerKm: spec.revsPerKm || "",  // ✅ Changed from revsPerMile
+    loadRange: spec.loadRange || "",
+    singleMaxLoad: spec.singleMaxLoad || "",
+    singleMaxPressure: spec.singleMaxPressure || "",
+    dualMaxLoad: spec.dualMaxLoad || "",
+    dualMaxPressure: spec.dualMaxPressure || "",
+    staticLoadRadius: spec.staticLoadRadius || "",
+    weight: spec.weight || "",
+    weightUnit: spec.weightUnit || "lbs",
+    constructionType: spec.constructionType || "TL",
+  }));
+};
+
   const applyProductToEditor = (selected) => {
     const mergedImages = [selected.image, ...(selected.images || [])].filter((item) => item?.url || item?.publicId);
     const packagingAndDelivery = selected.packagingAndDelivery || { packaging: "", delivery: "" };
@@ -240,9 +273,9 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
         deliveryTime: normalizedDelivery,
       },
       tireType: selected.tireType || "all-position",
-      vehicleType: Array.isArray(selected.vehicleType) ? selected.vehicleType : [selected.vehicleType || "truck"],
-      application: Array.isArray(selected.application) ? selected.application : [selected.application || "highway"],
-      tireSpecs: { ...defaultTireSpecs, ...(selected.tireSpecs || {}) },
+      vehicleType: Array.isArray(selected.vehicleType) ? selected.vehicleType : (selected.vehicleTypesList || ["truck"]),
+      application: Array.isArray(selected.application) ? selected.application : (selected.applicationsList || ["highway"]),
+      tireSpecs: normalizeTireSpecsFromBackend(selected.tireSpecs), // ✅ Convert array
       resources: { ...defaultResources, ...(selected.resources || {}) },
       videoUrl: selected.videoUrl || "",
       threeSixtyImages: selected.threeSixtyImages || [],
@@ -325,6 +358,44 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
 
   const removeArrayItem = (field, index) => {
     setEditor((current) => ({ ...current, [field]: (current[field] || []).filter((_item, itemIndex) => itemIndex !== index) }));
+  };
+
+  // ✅ Tire Spec specific functions
+  const addTireSpec = () => {
+    const newSpec = createTireSpec(editor.tireSpecs.length);
+    setEditor((current) => ({
+      ...current,
+      tireSpecs: [...current.tireSpecs, newSpec]
+    }));
+  };
+
+  const updateTireSpec = (index, field, value) => {
+    setEditor((current) => {
+      const specs = [...current.tireSpecs];
+      specs[index] = { ...specs[index], [field]: value };
+      return { ...current, tireSpecs: specs };
+    });
+  };
+
+  const removeTireSpec = (index) => {
+    if (editor.tireSpecs.length <= 1) {
+      toast.error("At least one tire size is required");
+      return;
+    }
+    setEditor((current) => ({
+      ...current,
+      tireSpecs: current.tireSpecs.filter((_, i) => i !== index)
+    }));
+  };
+
+  const duplicateTireSpec = (index) => {
+    const specToDuplicate = editor.tireSpecs[index];
+    const newSpec = { ...specToDuplicate, id: Date.now() };
+    setEditor((current) => ({
+      ...current,
+      tireSpecs: [...current.tireSpecs, newSpec]
+    }));
+    toast.success("Size duplicated");
   };
 
   const updateKeyAttribute = (index, field, value) => {
@@ -489,138 +560,141 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
     toast.success("Image selected from Cloudinary media");
   };
 
-  const buildPayload = () => {
-    const normalizedGallery = cleanImages(editor.images || []);
-    const mainImage = normalizedGallery[0] || { url: "", publicId: "", alt: "" };
-    const otherImages = normalizedGallery.slice(1);
+ const buildPayload = () => {
+  const normalizedGallery = cleanImages(editor.images || []);
+  const mainImage = normalizedGallery[0] || { url: "", publicId: "", alt: "" };
+  const otherImages = normalizedGallery.slice(1);
 
-    const cleanPricingTiers = (editor.pricingTiers || [])
-      .map((tier) => ({
-        minQuantity: tier.minQuantity === "" ? 0 : Number(tier.minQuantity ?? 0),
-        maxQuantity: tier.maxQuantity === "" ? null : Number(tier.maxQuantity),
-        pricePerTire: String(tier.pricePerTire || "").trim(),
-        note: String(tier.note || "").trim(),
-      }))
-      .filter((tier) => tier.pricePerTire || tier.note || tier.minQuantity || tier.maxQuantity !== null);
+  const cleanPricingTiers = (editor.pricingTiers || [])
+    .map((tier) => ({
+      minQuantity: tier.minQuantity === "" ? 0 : Number(tier.minQuantity ?? 0),
+      maxQuantity: tier.maxQuantity === "" ? null : Number(tier.maxQuantity),
+      pricePerTire: String(tier.pricePerTire || "").trim(),
+      note: String(tier.note || "").trim(),
+    }))
+    .filter((tier) => tier.pricePerTire || tier.note || tier.minQuantity || tier.maxQuantity !== null);
 
-    const cleanReviews = (editor.userReviews || [])
-      .map((review) => ({
-        username: String(review.username || "").trim(),
-        location: String(review.location || "").trim(),
-        rating: Number(review.rating || 0),
-        date: String(review.date || "").trim(),
-        title: String(review.title || "").trim(),
-        text: String(review.text || "").trim(),
-        verified: Boolean(review.verified),
-      }))
-      .filter((review) => review.username || review.text || review.title);
+  const cleanReviews = (editor.userReviews || [])
+    .map((review) => ({
+      username: String(review.username || "").trim(),
+      location: String(review.location || "").trim(),
+      rating: Number(review.rating || 0),
+      date: String(review.date || "").trim(),
+      title: String(review.title || "").trim(),
+      text: String(review.text || "").trim(),
+      verified: Boolean(review.verified),
+    }))
+    .filter((review) => review.username || review.text || review.title);
 
-    const payloadPattern = showPatternField ? String(editor.pattern || "").trim() : "";
+  const payloadPattern = showPatternField ? String(editor.pattern || "").trim() : "";
 
-    const packagingAndDelivery = { ...(editor.packagingAndDelivery || {}) };
-    const deliveryText = String(packagingAndDelivery.delivery || packagingAndDelivery.deliveryTime || "").trim();
-    if (deliveryText) {
-      packagingAndDelivery.delivery = deliveryText;
-      packagingAndDelivery.deliveryTime = deliveryText;
+  const packagingAndDelivery = { ...(editor.packagingAndDelivery || {}) };
+  const deliveryText = String(packagingAndDelivery.delivery || packagingAndDelivery.deliveryTime || "").trim();
+  if (deliveryText) {
+    packagingAndDelivery.delivery = deliveryText;
+    packagingAndDelivery.deliveryTime = deliveryText;
+  }
+
+  const cleanResources = {};
+  Object.keys(editor.resources || {}).forEach(key => {
+    const resource = editor.resources[key];
+    if (resource?.url || resource?.publicId) {
+      cleanResources[key] = {
+        url: String(resource.url || "").trim(),
+        publicId: String(resource.publicId || "").trim(),
+        alt: String(resource.alt || key).trim(),
+      };
+    } else {
+      cleanResources[key] = { url: "", publicId: "", alt: "" };
     }
+  });
 
-    const cleanResources = {};
-    Object.keys(editor.resources || {}).forEach(key => {
-      const resource = editor.resources[key];
-      if (resource?.url || resource?.publicId) {
-        cleanResources[key] = {
-          url: String(resource.url || "").trim(),
-          publicId: String(resource.publicId || "").trim(),
-          alt: String(resource.alt || key).trim(),
-        };
-      } else {
-        cleanResources[key] = { url: "", publicId: "", alt: "" };
-      }
-    });
-
-    const getPrimaryValue = (value, defaultValue) => {
-      if (Array.isArray(value) && value.length > 0) {
-        return value[0];
-      }
-      if (typeof value === 'string' && value) {
-        return value;
-      }
-      return defaultValue;
-    };
-
-    const ensureArray = (value, defaultValue) => {
-      if (Array.isArray(value) && value.length > 0) {
-        return value.filter(v => v);
-      }
-      if (typeof value === 'string' && value) {
-        return [value];
-      }
-      return defaultValue;
-    };
-
-    return {
-      ...editor,
-      modelNumber: String(editor.modelNumber || "").trim(),
-      category: categoryId || editor.category || "",
-      mainCategory: selectedCategory?.name || editor.mainCategory || "",
-      subCategory: selectedSubcategory?.name || editor.subCategory || "",
-      categoryName: selectedCategory?.name || editor.categoryName || "",
-      categoryIcon: selectedCategory?.icon || editor.categoryIcon || "",
-      subcategoryId: subcategoryId ? Number(subcategoryId) : Number(editor.subcategoryId || 0),
-      subcategoryName: selectedSubcategory?.name || editor.subcategoryName || "", 
-      pattern: payloadPattern,
-      pricingTiers: cleanPricingTiers,
-      customizationOptions: cleanStringArray(editor.customizationOptions || []),
-      image: mainImage,
-      images: otherImages,
-      tags: cleanStringArray(editor.tags || []),
-      userReviews: cleanReviews,
-      keyAttributes: keyAttributes.reduce((accumulator, item) => {
-        const key = String(item.key || "").trim();
-        if (!key) return accumulator;
-        if (!showPatternField && key.toLowerCase() === "pattern") return accumulator;
-        accumulator[key] = String(item.value ?? "").trim();
-        return accumulator;
-      }, {}),
-      packagingAndDelivery,
-      isFeatured: Boolean(editor.isFeatured),
-      isActive: editor.isActive !== false,
-      isNewArrival: Boolean(editor.isNewArrival),
-      isBestSeller: Boolean(editor.isBestSeller),
-      shortDescription: String(editor.shortDescription || "").trim(),
-      tireType: editor.tireType || "all-position",
-      vehicleType: getPrimaryValue(editor.vehicleType, "truck"),
-      application: getPrimaryValue(editor.application, "highway"),
-      vehicleTypesList: ensureArray(editor.vehicleType, ["truck"]),
-      applicationsList: ensureArray(editor.application, ["highway"]),
-      tireSpecs: {
-        size: String(editor.tireSpecs?.size || "").trim(),
-        loadIndex: String(editor.tireSpecs?.loadIndex || "").trim(),
-        speedRating: String(editor.tireSpecs?.speedRating || "").trim(),
-        treadPattern: String(editor.tireSpecs?.treadPattern || "").trim(),
-        plyRating: String(editor.tireSpecs?.plyRating || "").trim(),
-        stdRim: String(editor.tireSpecs?.stdRim || "").trim(),
-        overallDiameter: String(editor.tireSpecs?.overallDiameter || "").trim(),
-        sectionWidth: String(editor.tireSpecs?.sectionWidth || "").trim(),
-        maxLoad: String(editor.tireSpecs?.maxLoad || "").trim(),
-        maxInflation: String(editor.tireSpecs?.maxInflation || "").trim(),
-        treadDepth: String(editor.tireSpecs?.treadDepth || "").trim(),
-        revsPerKm: String(editor.tireSpecs?.revsPerKm || "").trim(),
-        loadRange: String(editor.tireSpecs?.loadRange || "").trim(),
-        singleMaxLoad: String(editor.tireSpecs?.singleMaxLoad || "").trim(),
-        singleMaxPressure: String(editor.tireSpecs?.singleMaxPressure || "").trim(),
-        dualMaxLoad: String(editor.tireSpecs?.dualMaxLoad || "").trim(),
-        dualMaxPressure: String(editor.tireSpecs?.dualMaxPressure || "").trim(),
-        staticLoadRadius: String(editor.tireSpecs?.staticLoadRadius || "").trim(),
-        weight: String(editor.tireSpecs?.weight || "").trim(),
-        weightUnit: editor.tireSpecs?.weightUnit || "lbs",
-        constructionType: editor.tireSpecs?.constructionType || "TL",
-      },
-      resources: cleanResources,
-      videoUrl: String(editor.videoUrl || "").trim(),
-      threeSixtyImages: cleanImages(editor.threeSixtyImages || []),
-    };
+  const getPrimaryValue = (value, defaultValue) => {
+    if (Array.isArray(value) && value.length > 0) {
+      return value[0];
+    }
+    if (typeof value === 'string' && value) {
+      return value;
+    }
+    return defaultValue;
   };
+
+  const ensureArray = (value, defaultValue) => {
+    if (Array.isArray(value) && value.length > 0) {
+      return value.filter(v => v);
+    }
+    if (typeof value === 'string' && value) {
+      return [value];
+    }
+    return defaultValue;
+  };
+
+  // ✅ Build tireSpecs array for backend - FULLY CORRECTED
+  const tireSpecsArray = editor.tireSpecs.map(spec => ({
+    productCode: String(spec.productCode || "").trim(),
+    size: String(spec.size || "").trim(),
+    plyRating: String(spec.plyRating || "").trim(),
+    loadRange: String(spec.loadRange || "").trim(),
+    loadIndex: String(spec.loadIndex || "").trim(),
+    speedRating: String(spec.speedRating || "").trim(),
+    overallDiameter: String(spec.overallDiameter || "").trim(),
+    sectionWidth: String(spec.sectionWidth || "").trim(),
+    treadDepth: String(spec.treadDepth || "").trim(),
+    stdRim: String(spec.stdRim || "").trim(),
+    maxLoad: String(spec.maxLoad || "").trim(),
+    maxInflation: String(spec.maxInflation || "").trim(),
+    singleMaxLoad: String(spec.singleMaxLoad || "").trim(),
+    singleMaxPressure: String(spec.singleMaxPressure || "").trim(),
+    dualMaxLoad: String(spec.dualMaxLoad || "").trim(),
+    dualMaxPressure: String(spec.dualMaxPressure || "").trim(),
+    staticLoadRadius: String(spec.staticLoadRadius || "").trim(),
+    revsPerKm: String(spec.revsPerKm || "").trim(),
+    weight: String(spec.weight || "").trim(),
+    weightUnit: spec.weightUnit || "lbs",
+    constructionType: spec.constructionType || "TL",
+  }));
+
+  return {
+    ...editor,
+    modelNumber: String(editor.modelNumber || "").trim(),
+    category: categoryId || editor.category || "",
+    mainCategory: selectedCategory?.name || editor.mainCategory || "",
+    subCategory: selectedSubcategory?.name || editor.subCategory || "",
+    categoryName: selectedCategory?.name || editor.categoryName || "",
+    categoryIcon: selectedCategory?.icon || editor.categoryIcon || "",
+    subcategoryId: subcategoryId ? Number(subcategoryId) : Number(editor.subcategoryId || 0),
+    subcategoryName: selectedSubcategory?.name || editor.subcategoryName || "", 
+    pattern: payloadPattern,
+    pricingTiers: cleanPricingTiers,
+    customizationOptions: cleanStringArray(editor.customizationOptions || []),
+    image: mainImage,
+    images: otherImages,
+    tags: cleanStringArray(editor.tags || []),
+    userReviews: cleanReviews,
+    keyAttributes: keyAttributes.reduce((accumulator, item) => {
+      const key = String(item.key || "").trim();
+      if (!key) return accumulator;
+      if (!showPatternField && key.toLowerCase() === "pattern") return accumulator;
+      accumulator[key] = String(item.value ?? "").trim();
+      return accumulator;
+    }, {}),
+    packagingAndDelivery,
+    isFeatured: Boolean(editor.isFeatured),
+    isActive: editor.isActive !== false,
+    isNewArrival: Boolean(editor.isNewArrival),
+    isBestSeller: Boolean(editor.isBestSeller),
+    shortDescription: String(editor.shortDescription || "").trim(),
+    tireType: editor.tireType || "all-position",
+    vehicleType: getPrimaryValue(editor.vehicleType, "truck"),
+    application: getPrimaryValue(editor.application, "highway"),
+    vehicleTypesList: ensureArray(editor.vehicleType, ["truck"]),
+    applicationsList: ensureArray(editor.application, ["highway"]),
+    tireSpecs: tireSpecsArray,
+    resources: cleanResources,
+    videoUrl: String(editor.videoUrl || "").trim(),
+    threeSixtyImages: cleanImages(editor.threeSixtyImages || []),
+  };
+};
 
   const handleSave = async () => {
     setSaving(true);
@@ -668,7 +742,6 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
     );
   }
 
-  // Section header component
   const SectionHeader = ({ title, icon: Icon, section, description }) => (
     <button
       onClick={() => toggleSection(section)}
@@ -710,11 +783,12 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
         </div>
 
         <section className="space-y-4 rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
-          {/* ===== SECTION 1: BASIC INFORMATION ===== */}
+          {/* SECTION 1: BASIC INFORMATION - Same as before */}
           <div>
             <SectionHeader title="Basic Information" icon={Box} section="basic" description="Product name, category, pricing, and description" />
             {!sectionsCollapsed.basic && (
               <div className="pt-4 space-y-6">
+                {/* ... keep existing basic info form ... */}
                 <div className="grid gap-4 md:grid-cols-2">
                   <label className="space-y-2 text-sm">
                     <span className="font-medium text-gray-700">Category</span>
@@ -808,7 +882,7 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
             )}
           </div>
 
-          {/* ===== SECTION 2: PRICING TIERS ===== */}
+          {/* SECTION 2: PRICING TIERS - Same */}
           <div>
             <SectionHeader title="Pricing Tiers" icon={Box} section="pricing" description="Quantity-based pricing for bulk buyers" />
             {!sectionsCollapsed.pricing && (
@@ -847,70 +921,12 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
             )}
           </div>
 
-          {/* ===== SECTION 3: CUSTOMIZATION & TAGS ===== */}
+          {/* SECTION 3: TIRE SPECIFICATIONS - UPDATED WITH MULTIPLE SIZES */}
           <div>
-            <SectionHeader title="Customization & Tags" icon={Box} section="attributes" description="Product options and search tags" />
-            {!sectionsCollapsed.attributes && (
-              <div className="pt-4 grid gap-6 lg:grid-cols-2">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="text-md font-medium text-gray-900">Customization options</h3>
-                    <button onClick={() => addArrayItem("customizationOptions", () => "")} className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-50">Add option</button>
-                  </div>
-                  <div className="space-y-3">
-                    {(editor.customizationOptions || []).map((option, index) => (
-                      <div key={`option-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
-                        <input value={option || ""} onChange={(event) => updateArrayField("customizationOptions", index, event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Custom engraving, private label, etc." />
-                        <button onClick={() => removeArrayItem("customizationOptions", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="text-md font-medium text-gray-900">Tags</h3>
-                    <button onClick={() => addArrayItem("tags", () => "")} className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-50">Add tag</button>
-                  </div>
-                  <div className="space-y-3">
-                    {(editor.tags || []).map((tag, index) => (
-                      <div key={`tag-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
-                        <input value={tag || ""} onChange={(event) => updateArrayField("tags", index, event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Industrial, export, heavy-duty" />
-                        <button onClick={() => removeArrayItem("tags", index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* ===== SECTION 4: KEY ATTRIBUTES ===== */}
-          <div>
-            <SectionHeader title="Key Attributes" icon={Settings} section="attributes" description="Product specifications as key-value pairs" />
-            {!sectionsCollapsed.attributes && (
-              <div className="pt-4 space-y-3">
-                <div className="flex justify-end">
-                  <button onClick={handleKeyAttributeAdd} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add attribute</button>
-                </div>
-                <div className="space-y-3">
-                  {keyAttributes.map((attribute, index) => (
-                    <div key={`attribute-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
-                      <input value={attribute.key || ""} onChange={(event) => updateKeyAttribute(index, "key", event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Material" />
-                      <input value={attribute.value || ""} onChange={(event) => updateKeyAttribute(index, "value", event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Stainless steel" />
-                      <button onClick={() => handleKeyAttributeRemove(index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* ===== SECTION 5: TIRE SPECIFICATIONS ===== */}
-          <div>
-            <SectionHeader title="Tire Specifications" icon={Settings} section="tireSpecs" description="Technical specifications for tires" />
+            <SectionHeader title="Tire Specifications" icon={Settings} section="tireSpecs" description="Technical specifications for tires - multiple sizes supported" />
             {!sectionsCollapsed.tireSpecs && (
               <div className="pt-4 space-y-6">
+                {/* Common fields (not size-specific) */}
                 <div className="grid gap-4 md:grid-cols-2">
                   <label className="space-y-2 text-sm">
                     <span className="font-medium text-gray-700">Tire Type</span>
@@ -962,129 +978,272 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
                   </label>
                 </div>
 
+                {/* Multiple Tire Sizes Section */}
                 <div className="border-t border-gray-200 pt-4">
-                  <h3 className="text-md font-semibold text-gray-900 mb-4">Technical Specifications</h3>
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Load Index</span>
-                      <input value={editor.tireSpecs?.loadIndex || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, loadIndex: event.target.value } }))} placeholder="e.g., 152" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Tire Size</span>
-                      <input value={editor.tireSpecs?.size || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, size: event.target.value } }))} placeholder="e.g., 12R22.5" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Load Range</span>
-                      <select value={editor.tireSpecs?.loadRange || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, loadRange: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
-                        <option value="">Select Load Range</option>
-                        <option value="A">A</option><option value="B">B</option><option value="C">C</option>
-                        <option value="D">D</option><option value="E">E</option><option value="F">F</option>
-                        <option value="G">G</option><option value="H">H</option><option value="J">J</option>
-                        <option value="L">L</option>
-                      </select>
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Speed Rating</span>
-                      <select value={editor.tireSpecs?.speedRating || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, speedRating: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
-                        <option value="">Select speed rating</option>
-                        {SPEED_RATING_OPTIONS.map(opt => (<option key={opt.value} value={opt.value}>{opt.label}</option>))}
-                      </select>
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Tread Pattern</span>
-                      <input value={editor.tireSpecs?.treadPattern || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, treadPattern: event.target.value } }))} placeholder="e.g., RLB400" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Ply Rating</span>
-                      <input value={editor.tireSpecs?.plyRating || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, plyRating: event.target.value } }))} placeholder="e.g., 18 PR" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Standard Rim</span>
-                      <input value={editor.tireSpecs?.stdRim || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, stdRim: event.target.value } }))} placeholder="e.g., 9.00" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Overall Diameter</span>
-                      <input value={editor.tireSpecs?.overallDiameter || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, overallDiameter: event.target.value } }))} placeholder="e.g., 1080 mm" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Section Width</span>
-                      <input value={editor.tireSpecs?.sectionWidth || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, sectionWidth: event.target.value } }))} placeholder="e.g., 300 mm" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Max Load</span>
-                      <input value={editor.tireSpecs?.maxLoad || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, maxLoad: event.target.value } }))} placeholder="e.g., 3750 kg" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Max Inflation</span>
-                      <input value={editor.tireSpecs?.maxInflation || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, maxInflation: event.target.value } }))} placeholder="e.g., 120 psi" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Tread Depth</span>
-                      <input value={editor.tireSpecs?.treadDepth || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, treadDepth: event.target.value } }))} placeholder="e.g., 18 mm" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Revolutions per km</span>
-                      <input value={editor.tireSpecs?.revsPerKm || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, revsPerKm: event.target.value } }))} placeholder="e.g., 492" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Single Max Load / Pressure</span>
-                      <div className="flex gap-2">
-                        <input value={editor.tireSpecs?.singleMaxLoad || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, singleMaxLoad: event.target.value } }))} placeholder="e.g., 4080lbs" className="flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                        <input value={editor.tireSpecs?.singleMaxPressure || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, singleMaxPressure: event.target.value } }))} placeholder="psi" className="w-24 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                      </div>
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Dual Max Load / Pressure</span>
-                      <div className="flex gap-2">
-                        <input value={editor.tireSpecs?.dualMaxLoad || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, dualMaxLoad: event.target.value } }))} placeholder="e.g., 3640lb" className="flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                        <input value={editor.tireSpecs?.dualMaxPressure || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, dualMaxPressure: event.target.value } }))} placeholder="psi" className="w-24 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                      </div>
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Static Load Radius (inch)</span>
-                      <input value={editor.tireSpecs?.staticLoadRadius || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, staticLoadRadius: event.target.value } }))} placeholder="e.g., 14" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Weight</span>
-                      <div className="flex gap-2">
-                        <input value={editor.tireSpecs?.weight || ""} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, weight: event.target.value } }))} placeholder="e.g., 54" className="flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                        <select value={editor.tireSpecs?.weightUnit || "lbs"} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, weightUnit: event.target.value } }))} className="w-24 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
-                          <option value="lbs">lbs</option>
-                          <option value="kg">kg</option>
-                        </select>
-                      </div>
-                    </label>
-
-                    <label className="space-y-2 text-sm">
-                      <span className="font-medium text-gray-700">Construction Type</span>
-                      <select value={editor.tireSpecs?.constructionType || "TL"} onChange={(event) => setEditor(current => ({ ...current, tireSpecs: { ...current.tireSpecs, constructionType: event.target.value } }))} className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500">
-                        <option value="TL">TL (Tubeless)</option>
-                        <option value="TT">TT (Tube Type)</option>
-                        <option value="Both">Both</option>
-                      </select>
-                    </label>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-md font-semibold text-gray-900">Available Sizes & Specifications</h3>
+                    <button
+                      type="button"
+                      onClick={addTireSpec}
+                      className="inline-flex items-center gap-2 rounded-lg border border-teal-300 bg-teal-50 px-4 py-2 text-sm text-teal-700 hover:bg-teal-100"
+                    >
+                      <Plus className="w-4 h-4" /> Add Size
+                    </button>
                   </div>
+                  
+                  <div className="space-y-4">
+                    {editor.tireSpecs.map((spec, index) => (
+                      <div key={spec.id || index} className="rounded-2xl border border-gray-200 p-4 bg-gray-50/30">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-medium text-gray-900">
+                            Size {index + 1}: {spec.size || "Not specified"}
+                          </h4>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => duplicateTireSpec(index)}
+                              className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                            >
+                              <Copy className="w-3.5 h-3.5 inline mr-1" /> Duplicate
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeTireSpec(index)}
+                              className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-3.5 h-3.5 inline mr-1" /> Remove
+                            </button>
+                          </div>
+                        </div>
+                        
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Tire Size *</span>
+                            <input 
+                              value={spec.size || ""} 
+                              onChange={(e) => updateTireSpec(index, "size", e.target.value)} 
+                              placeholder="e.g., 11R22.5, 295/75R22.5"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+                          
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Product Code</span>
+                            <input 
+                              value={spec.productCode || ""} 
+                              onChange={(e) => updateTireSpec(index, "productCode", e.target.value)} 
+                              placeholder="e.g., 1133751255"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Ply Rating</span>
+                            <input 
+                              value={spec.plyRating || ""} 
+                              onChange={(e) => updateTireSpec(index, "plyRating", e.target.value)} 
+                              placeholder="e.g., 14, 16"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Load Range</span>
+                            <select 
+                              value={spec.loadRange || ""} 
+                              onChange={(e) => updateTireSpec(index, "loadRange", e.target.value)}
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white"
+                            >
+                              <option value="">Select Load Range</option>
+                              {LOAD_RANGE_OPTIONS.map(opt => (
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                              ))}
+                            </select>
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Load Index</span>
+                            <input 
+                              value={spec.loadIndex || ""} 
+                              onChange={(e) => updateTireSpec(index, "loadIndex", e.target.value)} 
+                              placeholder="e.g., 144/142"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                         <label className="space-y-2 text-sm">
+  <span className="font-medium text-gray-700">Speed Rating</span>  
+  <select 
+    value={spec.speedRating || ""}  
+    onChange={(e) => updateTireSpec(index, "speedRating", e.target.value)}  
+    className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white"
+  >
+    <option value="">Select Speed Rating</option>
+    {SPEED_RATING_OPTIONS.map(opt => (
+      <option key={opt.value} value={opt.value}>{opt.label}</option>
+    ))}
+  </select>
+</label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Overall Diameter (inch)</span>
+                            <input 
+                              value={spec.overallDiameter || ""} 
+                              onChange={(e) => updateTireSpec(index, "overallDiameter", e.target.value)} 
+                              placeholder="e.g., 41.0"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Section Width (inch)</span>
+                            <input 
+                              value={spec.sectionWidth || ""} 
+                              onChange={(e) => updateTireSpec(index, "sectionWidth", e.target.value)} 
+                              placeholder="e.g., 10.9"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Tread Depth (32nds)</span>
+                            <input 
+                              value={spec.treadDepth || ""} 
+                              onChange={(e) => updateTireSpec(index, "treadDepth", e.target.value)} 
+                              placeholder="e.g., 12"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Standard Rim</span>
+                            <input 
+                              value={spec.stdRim || ""} 
+                              onChange={(e) => updateTireSpec(index, "stdRim", e.target.value)} 
+                              placeholder="e.g., 8.25"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Single Max Load</span>
+                            <input 
+                              value={spec.singleMaxLoad || ""} 
+                              onChange={(e) => updateTireSpec(index, "singleMaxLoad", e.target.value)} 
+                              placeholder="e.g., 6175lb"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Single Max Pressure (psi)</span>
+                            <input 
+                              value={spec.singleMaxPressure || ""} 
+                              onChange={(e) => updateTireSpec(index, "singleMaxPressure", e.target.value)} 
+                              placeholder="e.g., 105"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Dual Max Load</span>
+                            <input 
+                              value={spec.dualMaxLoad || ""} 
+                              onChange={(e) => updateTireSpec(index, "dualMaxLoad", e.target.value)} 
+                              placeholder="e.g., 5840lb"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Dual Max Pressure (psi)</span>
+                            <input 
+                              value={spec.dualMaxPressure || ""} 
+                              onChange={(e) => updateTireSpec(index, "dualMaxPressure", e.target.value)} 
+                              placeholder="e.g., 105"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Static Load Radius (inch)</span>
+                            <input 
+                              value={spec.staticLoadRadius || ""} 
+                              onChange={(e) => updateTireSpec(index, "staticLoadRadius", e.target.value)} 
+                              placeholder="e.g., 19.5"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label>
+
+                          <label className="space-y-2 text-sm">
+  <span className="font-medium text-gray-700">Revs per Km</span>  
+  <input 
+    value={spec.revsPerKm || ""}  
+    onChange={(e) => updateTireSpec(index, "revsPerKm", e.target.value)}  
+    placeholder="e.g., 500"
+    className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+  />
+</label>
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Weight (lbs)</span>
+                            <input 
+                              value={spec.weight || ""} 
+                              onChange={(e) => updateTireSpec(index, "weight", e.target.value)} 
+                              placeholder="e.g., 109"
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white" 
+                            />
+                          </label> 
+
+                          <label className="space-y-2 text-sm">
+                            <span className="font-medium text-gray-700">Construction Type</span>
+                            <select 
+                              value={spec.tireType || "TL"} 
+                              onChange={(e) => updateTireSpec(index, "tireType", e.target.value)}
+                              className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500 bg-white"
+                            >
+                              <option value="TL">TL (Tubeless)</option>
+                              <option value="TT">TT (Tube Type)</option>
+                              <option value="Both">Both</option>
+                            </select>
+                          </label>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {editor.tireSpecs.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      No sizes added. Click "Add Size" to add tire specifications.
+                    </div>
+                  )}
                 </div>
               </div>
             )}
           </div>
 
-          {/* ===== SECTION 6: USER REVIEWS ===== */}
+          {/* SECTION 4: KEY ATTRIBUTES */}
+          <div>
+            <SectionHeader title="Key Attributes" icon={Settings} section="attributes" description="Product specifications as key-value pairs" />
+            {!sectionsCollapsed.attributes && (
+              <div className="pt-4 space-y-3">
+                <div className="flex justify-end">
+                  <button onClick={handleKeyAttributeAdd} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Add attribute</button>
+                </div>
+                <div className="space-y-3">
+                  {keyAttributes.map((attribute, index) => (
+                    <div key={`attribute-${index}`} className="flex gap-3 rounded-2xl border border-gray-200 p-4">
+                      <input value={attribute.key || ""} onChange={(event) => updateKeyAttribute(index, "key", event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Material" />
+                      <input value={attribute.value || ""} onChange={(event) => updateKeyAttribute(index, "value", event.target.value)} className="min-w-0 flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" placeholder="Stainless steel" />
+                      <button onClick={() => handleKeyAttributeRemove(index)} className="rounded-lg border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">Remove</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* SECTION 5: USER REVIEWS */}
           <div>
             <SectionHeader title="User Reviews" icon={Box} section="reviews" description="Customer reviews and testimonials" />
             {!sectionsCollapsed.reviews && (
@@ -1135,7 +1294,7 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
             )}
           </div>
 
-          {/* ===== SECTION 7: MEDIA & IMAGES ===== */}
+          {/* SECTION 6: MEDIA & IMAGES */}
           <div>
             <SectionHeader title="Media & Images" icon={FileText} section="media" description="Product images, videos, and 360° views" />
             {!sectionsCollapsed.media && (
@@ -1184,103 +1343,15 @@ export default function ProductEditorPage({ mode = "create", productId = "", ret
                   <h3 className="text-md font-medium text-gray-900">Product Video</h3>
                   <input value={editor.videoUrl || ""} onChange={(event) => updateField("videoUrl", event.target.value)} placeholder="https://www.youtube.com/watch?v=..." className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
                 </div>
-
-                {/* <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="text-md font-medium text-gray-900">360° View Images</h3>
-                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                      <Upload className="w-4 h-4" /> Upload 360 images
-                      <input type="file" accept="image/*" multiple onChange={async (event) => {
-                        const files = Array.from(event.target.files || []);
-                        if (!files.length) return;
-                        setUploading(true);
-                        try {
-                          const uploads = await Promise.all(files.map((file) => uploadMedia(file, { relatedType: "product-360" })));
-                          setEditor((current) => ({ ...current, threeSixtyImages: [...(current.threeSixtyImages || []), ...uploads.map((result, idx) => ({ url: result.media.optimizedUrl || result.media.url, publicId: result.media.publicId, alt: `${current.name || "Product"} 360° ${idx + 1}` }))] }));
-                          toast.success("360° images uploaded");
-                        } catch (error) { toast.error(error.message || "Upload failed"); } finally { setUploading(false); event.target.value = ""; }
-                      }} className="hidden" />
-                    </label>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {(editor.threeSixtyImages || []).map((image, index) => (
-                      <div key={`360-${index}`} className="relative rounded-xl border border-gray-200 p-2">
-                        <img src={image.url} alt={image.alt} className="h-24 w-full rounded-lg object-cover" />
-                        <button onClick={() => { setEditor(current => ({ ...current, threeSixtyImages: current.threeSixtyImages.filter((_, i) => i !== index) })); }} className="absolute top-1 right-1 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg></button>
-                      </div>
-                    ))}
-                  </div>
-                </div> */}
               </div>
             )}
           </div>
 
-          {/* ===== SECTION 8: DOWNLOADABLE RESOURCES ===== */}
-          {/* <div>
-            <SectionHeader title="Downloadable Resources" icon={FileText} section="resources" description="Brochures, datasheets, and certificates" />
-            {!sectionsCollapsed.resources && (
-              <div className="pt-4 grid gap-4 md:grid-cols-2">
-                {[
-                  { key: "brochure", label: "Product Brochure" },
-                  { key: "datasheet", label: "Technical Datasheet" },
-                  { key: "warrantyDoc", label: "Warranty Document" },
-                  { key: "certificate", label: "Quality Certificate" }
-                ].map(({ key, label }) => (
-                  <div key={key} className="space-y-2">
-                    <label className="font-medium text-gray-700 flex items-center gap-2"><FileText className="w-4 h-4" /> {label}</label>
-                    <div className="flex gap-2">
-                      <input value={editor.resources?.[key]?.url || ""} onChange={(event) => setEditor(current => ({ ...current, resources: { ...current.resources, [key]: { ...current.resources?.[key], url: event.target.value } } }))} placeholder="PDF URL" className="flex-1 rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                      <label className="cursor-pointer rounded-lg bg-teal-50 px-4 py-3 text-sm text-teal-700 hover:bg-teal-100">Upload<input type="file" accept=".pdf" onChange={(e) => handleResourceUpload(e, key)} className="hidden" /></label>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div> */}
-
-          {/* ===== SECTION 9: SEO & METADATA ===== */}
-          {/* <div>
-            <SectionHeader title="SEO & Metadata" icon={Box} section="seo" description="Search engine optimization and product status" />
-            {!sectionsCollapsed.seo && (
-              <div className="pt-4 space-y-6">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <label className="space-y-2 text-sm">
-                    <span className="font-medium text-gray-700">SEO Title</span>
-                    <input value={editor.metadata?.seoTitle || ""} onChange={(event) => setEditor(current => ({ ...current, metadata: { ...current.metadata, seoTitle: event.target.value } }))} placeholder="Custom title for search engines" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                  </label>
-                  <label className="space-y-2 text-sm">
-                    <span className="font-medium text-gray-700">SEO Description</span>
-                    <textarea value={editor.metadata?.seoDescription || ""} onChange={(event) => setEditor(current => ({ ...current, metadata: { ...current.metadata, seoDescription: event.target.value } }))} rows={3} placeholder="Meta description for search results (max 160 chars)" className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-teal-500" />
-                  </label>
-                </div>
-
-                <div className="border-t border-gray-200 pt-4">
-                  <h3 className="text-md font-semibold text-gray-900 mb-4">Product Status</h3>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700">
-                      <input type="checkbox" checked={Boolean(editor.isFeatured)} onChange={(event) => updateField("isFeatured", event.target.checked)} />
-                      Featured product (shows on homepage)
-                    </label>
-                    <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700">
-                      <input type="checkbox" checked={editor.isActive !== false} onChange={(event) => updateField("isActive", event.target.checked)} />
-                      Active (visible on website)
-                    </label>
-                    <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700">
-                      <input type="checkbox" checked={Boolean(editor.isNewArrival)} onChange={(event) => updateField("isNewArrival", event.target.checked)} />
-                      New Arrival (shows "New" badge)
-                    </label>
-                    <label className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700">
-                      <input type="checkbox" checked={Boolean(editor.isBestSeller)} onChange={(event) => updateField("isBestSeller", event.target.checked)} />
-                      Best Seller (shows bestseller badge)
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div> */}
-
           {/* Save Button */}
-          <div className="flex items-center justify-end border-t border-gray-200 pt-6 mt-4">
+          <div className="flex items-center justify-between border-t border-gray-200 pt-6 mt-4">
+            <div className="text-sm text-gray-500">
+              {editor.tireSpecs.length} tire size(s) configured
+            </div>
             <button onClick={handleSave} disabled={saving || uploading} className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-white hover:bg-black disabled:opacity-70">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} {uploading ? "Uploading..." : "Save product"}
             </button>

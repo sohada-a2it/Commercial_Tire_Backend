@@ -5,7 +5,11 @@ import { useNavigate, useLocation, useParams } from "@/lib/navigation";
 import SearchSuggestion from "../Search/SearchSuggestion.jsx";
 import dataService from "@/services/dataService";
 import { CategoryCardSkeleton, ProductCardSkeleton } from "../shared/SkeletonLoader";
-import ProductCard from "../Product/ProductCard"; // You'll need to create this component
+import ProductCard from "../Product/ProductCard";
+
+const DEFAULT_IMAGE =
+  "https://images.unsplash.com/photo-1605650849871-14b8f5b9c8b5?auto=format&fit=crop&w=1200&q=80";
+// (commercial tire / automotive workshop feel)
 
 const ProductCatalog = ({ isHomePage = false }) => {
   const [categories, setCategories] = useState([]);
@@ -13,26 +17,14 @@ const ProductCatalog = ({ isHomePage = false }) => {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchSuggestions, setSearchSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const searchTimeoutRef = useRef(null);
 
   const navigate = useNavigate();
-  const location = useLocation();
   const params = useParams();
   const categorySlug = params?.category;
 
-  // Fetch categories or products based on URL
   useEffect(() => {
-    if (categorySlug) {
-      // We're on a category page - fetch products for this category
-      fetchCategoryAndProducts();
-    } else {
-      // We're on the main catalog page - fetch all categories
-      fetchCategories();
-    }
+    if (categorySlug) fetchCategoryAndProducts();
+    else fetchCategories();
   }, [categorySlug]);
 
   const fetchCategories = async () => {
@@ -40,191 +32,126 @@ const ProductCatalog = ({ isHomePage = false }) => {
       setLoading(true);
       const data = await dataService.getCategories();
       setCategories(data);
-      setCurrentCategory(null);
-    } catch (err) {
-      console.error("Error fetching categories:", err);
-      setError("Failed to load product categories. Please try again later.");
+    } catch {
+      setError("Failed to load categories");
     } finally {
       setLoading(false);
     }
   };
 
   const fetchCategoryAndProducts = async () => {
-  try {
-    setLoading(true);
-    console.log("Category slug:", categorySlug);
-    
-    // প্রথমে সব ক্যাটাগরি ফেচ করুন
-    const allCategories = await dataService.getCategories();
-    console.log("All categories:", allCategories);
-    
-    // স্লাগ দ্বারা ক্যাটাগরি ম্যাচ করুন
-    const matchedCategory = allCategories.find(
-      cat => nameToSlug(cat.name) === categorySlug
-    );
-    
-    console.log("Matched category:", matchedCategory);
-    
-    if (matchedCategory) {
-      setCurrentCategory(matchedCategory);
-      
-      // আপডেটেড মেথড ব্যবহার করুন - ক্যাটাগরি আইডি দ্বারা
-      const result = await dataService.getProductsByCategoryId(matchedCategory.id);
-      console.log("Products result:", result);
-      
-      // প্রোডাক্ট সেট করুন (result.products হচ্ছে array)
-      const productsList = result.products || [];
-      console.log("Products count:", productsList.length);
-      
-      setProducts(productsList);
-      
-      // যদি কোনো প্রোডাক্ট না থাকে
-      if (productsList.length === 0) {
-        console.log("No products found for this category");
-      }
-    } else {
-      setError("Category not found");
-    }
-  } catch (err) {
-    console.error("Error fetching category products:", err);
-    setError("Failed to load products. Please try again later.");
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
 
-  const nameToSlug = (name) => {
-    return String(name || "")
+      const allCategories = await dataService.getCategories();
+
+      const matchedCategory = allCategories.find(
+        (c) => nameToSlug(c.name) === categorySlug
+      );
+
+      if (!matchedCategory) {
+        setError("Category not found");
+        return;
+      }
+
+      setCurrentCategory(matchedCategory);
+
+      const result = await dataService.getProductsByCategoryId(matchedCategory.id);
+
+      setProducts(result.products || []);
+    } catch {
+      setError("Failed to load products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const nameToSlug = (name) =>
+    String(name || "")
       .toLowerCase()
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9-]/g, "");
-  };
 
-  const resolveImageUrl = (image) => {
-    if (!image) return "";
-    if (typeof image === "string") return image.trim();
-    if (typeof image === "object") {
-      return String(image.url || image.optimizedUrl || image.secure_url || image.src || "").trim();
+  const getImage = (img) => {
+    if (!img) return DEFAULT_IMAGE;
+    if (typeof img === "string") return img;
+    if (typeof img === "object") {
+      return img.url || img.secure_url || img.src || DEFAULT_IMAGE;
     }
-    return "";
+    return DEFAULT_IMAGE;
   };
 
-  const getCategoryImage = (category) => {
-    return (
-      resolveImageUrl(category?.image) ||
-      "/assets/placeholder.png"
-    );
+  const handleCategoryClick = (cat) => {
+    navigate(`/products/c/${nameToSlug(cat.name)}/`);
   };
 
-  const handleCategoryClick = (category) => {
-    const categorySlug = nameToSlug(category.name);
-    navigate(`/products/c/${categorySlug}/`);
-  };
+  const handleBack = () => navigate("/products");
 
-  const handleBackToCategories = () => {
-    navigate('/products');
-  };
+  const handleProductClick = (p) => navigate(`/product/${p.id}`);
 
-  const handleProductClick = (product) => {
-    navigate(`/product/${product.id}`);
-  };
-
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    if (query.trim() === "") {
-      setSearchSuggestions([]);
-      setShowSuggestions(false);
-      setSearchLoading(false);
-      return;
-    }
-
-    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-
-    searchTimeoutRef.current = setTimeout(async () => {
-      try {
-        setSearchLoading(true);
-        const results = await dataService.searchProducts(query, { page: 1, limit: 5 });
-        setSearchSuggestions(results);
-        setShowSuggestions(true);
-      } catch (_error) {
-        setSearchSuggestions([]);
-        setShowSuggestions(false);
-      } finally {
-        setSearchLoading(false);
-      }
-    }, 200);
-  };
-
-  const handleSuggestionClick = (suggestion) => {
-    setShowSuggestions(false);
-    setSearchQuery("");
-    navigate(`/product/${suggestion.id}`);
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      setShowSuggestions(false);
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
-  // Render products page for specific category
+  /* ================= CATEGORY PAGE ================= */
   if (categorySlug && !loading && currentCategory) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-          {/* Back Button */}
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+
+        <div className="max-w-7xl mx-auto px-6 py-12">
+
+          {/* Back */}
           <button
-            onClick={handleBackToCategories}
-            className="mb-6 flex items-center gap-2 text-gray-600 hover:text-amber-600 transition-colors duration-300 group"
+            onClick={handleBack}
+            className="mb-8 text-sm font-medium text-gray-600 hover:text-amber-500 transition"
           >
-            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Categories
+            ← Back to categories
           </button>
 
-          {/* Category Header */}
+          {/* Header */}
           <div className="mb-10">
-            <div className="flex items-center gap-4 mb-4">
-              {currentCategory.icon && (
-                <div className="text-4xl">{currentCategory.icon}</div>
-              )}
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-                {currentCategory.name}
-              </h1>
-            </div>
-            {currentCategory.description && (
-              <p className="text-gray-600 text-lg">{currentCategory.description}</p>
-            )}
-            <div className="w-20 h-1 bg-amber-500 mt-3 rounded-full"></div>
+            <h1 className="text-4xl font-extrabold text-gray-800">
+              {currentCategory.name}
+            </h1>
+
+            <p className="text-gray-500 mt-2 max-w-2xl">
+              {currentCategory.description}
+            </p>
+
+            {/* AMBER BRAND LINE */}
+            <div className="w-28 h-[3px] mt-4 rounded-full bg-amber-500 shadow-sm" />
           </div>
 
-          {/* Products Grid */}
+          {/* PRODUCTS */}
           {products.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onClick={() => handleProductClick(product)}
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+              {products.map((p) => (
+                <div
+                  key={p.id}
+                  onClick={() => handleProductClick(p)}
+                  className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+                >
+                  <div className="h-52 bg-gray-100 overflow-hidden">
+                    <img
+                      src={getImage(p.image)}
+                      onError={(e) => (e.target.src = DEFAULT_IMAGE)}
+                      className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                    />
+                  </div>
+
+                  <div className="p-4">
+                    <h3 className="font-semibold text-gray-800 group-hover:text-amber-500 transition">
+                      {p.name}
+                    </h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      View details →
+                    </p>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">📦</div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">No Products Found</h3>
-              <p className="text-gray-500">No products available in this category yet.</p>
-              <button
-                onClick={handleBackToCategories}
-                className="mt-6 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all duration-300"
-              >
-                Browse Other Categories
-              </button>
+            <div className="text-center py-24">
+              <div className="text-6xl mb-4">🛞</div>
+              <p className="text-gray-500">
+                No products available in this tire category
+              </p>
             </div>
           )}
         </div>
@@ -232,130 +159,59 @@ const ProductCatalog = ({ isHomePage = false }) => {
     );
   }
 
-  // Render loading state
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8">
-        <div className="container mx-auto px-4 max-w-7xl">
-          {isHomePage && (
-            <div className="max-w-2xl mx-auto mb-10">
-              <div className="h-12 bg-gray-200 rounded-full animate-pulse"></div>
-            </div>
-          )}
-          
-          <div className="text-center mb-10">
-            <div className="h-10 w-64 bg-gray-200 rounded-lg mx-auto mb-3 animate-pulse"></div>
-            <div className="w-20 h-1 bg-gray-200 mx-auto rounded-full"></div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <CategoryCardSkeleton key={i} />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Render error state
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-4">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-lg max-w-md">
-          <div className="text-6xl mb-4">😔</div>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all duration-300 font-medium shadow-md hover:shadow-lg"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Render categories grid (main catalog page)
+  /* ================= CATEGORY GRID ================= */
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100">
+
+      <div className="max-w-7xl mx-auto px-6 py-14">
+
+        {/* HEADER */}
+        <div className="text-center mb-14">
+          <h1 className="text-4xl font-black text-gray-800">
             Product Categories
           </h1>
-          <div className="w-20 h-1 bg-amber-500 mx-auto rounded-full"></div>
-          <p className="text-gray-500 mt-3">Browse our collection by category</p>
+          <p className="text-gray-500 mt-2">
+            Explore commercial tire & automotive collections
+          </p>
+
+          <div className="w-24 h-[3px] bg-amber-500 mx-auto mt-4 rounded-full" />
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((category) => {
-            const categoryImage = getCategoryImage(category);
-            const subcategoryCount = category.subcategories?.length || 0;
+        {/* GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
-            return (
-              <div
-                key={category.id}
-                id={nameToSlug(category.name)}
-                onClick={() => handleCategoryClick(category)}
-                className="group cursor-pointer bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden border border-gray-100"
-              >
-                {/* Category Image */}
-                <div className="relative h-48 overflow-hidden bg-gradient-to-br from-amber-50 to-gray-100">
-                  <img
-                    src={categoryImage}
-                    alt={category.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
-                  {category.icon && (
-                    <div className="absolute top-3 right-3 text-3xl drop-shadow-lg">
-                      {category.icon}
-                    </div>
-                  )}
-                </div>
-
-                {/* Category Info */}
-                <div className="p-5">
-                  <h3 className="text-xl font-bold text-gray-800 group-hover:text-amber-600 transition-colors duration-300 mb-2">
-                    {category.name}
-                  </h3>
-                  
-                  {subcategoryCount > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {category.subcategories?.slice(0, 3).map((sub, idx) => (
-                        <span
-                          key={sub.id}
-                          className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full"
-                        >
-                          {sub.name}
-                        </span>
-                      ))}
-                      {subcategoryCount > 3 && (
-                        <span className="text-xs text-amber-600 font-medium">
-                          +{subcategoryCount - 3} more
-                        </span>
-                      )}
-                    </div>
-                  )} 
-                </div>
+          {categories.map((c) => (
+            <div
+              key={c.id}
+              onClick={() => handleCategoryClick(c)}
+              className="group cursor-pointer bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
+            >
+              {/* IMAGE */}
+              <div className="h-48 bg-gray-100 overflow-hidden">
+                <img
+                  src={getImage(c.image)}
+                  onError={(e) => (e.target.src = DEFAULT_IMAGE)}
+                  className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                />
               </div>
-            );
-          })}
-        </div>
 
-        {/* Empty State */}
-        {categories.length === 0 && !loading && (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">📦</div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Categories Found</h3>
-            <p className="text-gray-500">Please check back later for our product categories.</p>
-          </div>
-        )}
+              {/* CONTENT */}
+              <div className="p-5">
+                <h3 className="text-lg font-bold text-gray-800 group-hover:text-amber-500 transition">
+                  {c.name}
+                </h3>
+
+                <p className="text-xs text-gray-500 mt-1">
+                  Explore tire collection →
+                </p>
+              </div>
+
+              {/* HOVER ACCENT */}
+              <div className="h-[3px] w-0 group-hover:w-full bg-amber-500 transition-all duration-300" />
+            </div>
+          ))}
+
+        </div>
       </div>
     </div>
   );
