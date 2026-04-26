@@ -22,34 +22,26 @@ export const normalizeRole = (role) => {
 
 export const sidebarRoutesByRole = {
   admin: [
-    { icon: LayoutDashboard, label: "Admin Dashboard", href: "/dashboard" },
-    // { icon: FileText, label: "Created Invoices", href: "/dashboard/invoices" },
-    // { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
+    { icon: LayoutDashboard, label: "Admin Dashboard", href: "/dashboard" },  
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
     { icon: Package, label: "Featured Products", href: "/dashboard/featured" },
     { icon: Package, label: "Dealer Management", href: "/dashboard/dealers" },
-    { icon: Package, label: "Blog Management", href: "/dashboard/blogs" },
-    { icon: Images, label: "Media Library", href: "/dashboard/media" },
+    { icon: Package, label: "Blog Management", href: "/dashboard/blogs" }, 
     { icon: Users, label: "Customers", href: "/dashboard/users" },
     { icon: UserCog, label: "Administrators", href: "/dashboard/authorized-persons" },
 
   ],
   moderator: [
-    { icon: LayoutDashboard, label: "Moderator Dashboard", href: "/dashboard" },
-    { icon: FileText, label: "Invoice List", href: "/dashboard/invoices" },
-    { icon: ClipboardList, label: "All Inquiries", href: "/dashboard/inquiries" },
+    { icon: LayoutDashboard, label: "Moderator Dashboard", href: "/dashboard" }, 
     { icon: Shapes, label: "Category Management", href: "/dashboard/categories" },
     { icon: Package, label: "Product Management", href: "/dashboard/products" },
     { icon: Package, label: "Featured Products", href: "/dashboard/featured" },
     { icon: Package, label: "Dealer Management", href: "/dashboard/dealers" },
-    { icon: Package, label: "Blog Management", href: "/dashboard/blogs" },
-    { icon: Images, label: "Media Library", href: "/dashboard/media" },
+    { icon: Package, label: "Blog Management", href: "/dashboard/blogs" }, 
   ],
   customer: [
-    { icon: LayoutDashboard, label: "Customer Dashboard", href: "/dashboard" },
-    { icon: ClipboardList, label: "My Inquiries", href: "/dashboard/my-inquiries" },
-    { icon: FileText, label: "My Invoices", href: "/dashboard/my-invoices" },
+    { icon: LayoutDashboard, label: "Customer Dashboard", href: "/dashboard" },  
     { icon: Settings, label: "Settings", href: "/dashboard/settings" },
   ],
 };

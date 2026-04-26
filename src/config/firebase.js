@@ -14,12 +14,12 @@ import {
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCAdB3Ma9BC4xFLNRqlE-by2iHskwapVJs",
-  authDomain: "asian-import-export.firebaseapp.com",
-  projectId: "asian-import-export",
-  storageBucket: "asian-import-export.firebasestorage.app",
-  messagingSenderId: "847248802363",
-  appId: "1:847248802363:web:ea669f52e53530ab12521e",
+  apiKey: "AIzaSyCcZNdRzoBgIyY4ytAjQf1TUR1rgLgRGMI",
+  authDomain: "tire-7a034.firebaseapp.com",
+  projectId: "tire-7a034",
+  storageBucket: "tire-7a034.firebasestorage.app",
+  messagingSenderId: "851098924155",
+  appId: "1:851098924155:web:7e97817cced7c535735ede",
 };
 
 // Initialize Firebase

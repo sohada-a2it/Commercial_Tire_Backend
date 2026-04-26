@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Enable static export for production deployment
-  // output: "export",
+  output: "export",
 
   // Enable trailing slashes for static hosting compatibility
   trailingSlash: true,
@@ -38,7 +38,7 @@ const nextConfig = {
   compress: true,
 
   // Optimize production builds
-  swcMinify: true,
+  // swcMinify: true, // Deprecated in Next.js 16, always enabled
 
   // Reduce bundle size
   reactStrictMode: true,

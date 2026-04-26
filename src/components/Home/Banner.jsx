@@ -41,7 +41,7 @@ const Banner = () => {
             />
 
             {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/40"></div>
 
             {/* Subtle amber glow */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,rgba(245,158,11,0.12),transparent_60%)]"></div>
@@ -60,10 +60,10 @@ const Banner = () => {
 
               {/* Heading */}
               <h1 className="text-2xl md:text-5xl font-extrabold text-white leading-tight tracking-tight animate-fadeUp delay-150">
-                BUILT FOR
+              High Performance Tires for 
                 <br />
                 <span className="text-amber-500">
-                  EXTREME PERFORMANCE
+                  Commercial Use
                 </span>
               </h1>
 
@@ -90,7 +90,7 @@ const Banner = () => {
               className="object-cover scale-110 animate-[zoomSlow_10s_ease-in-out_forwards]"
             />
 
-            <div className="absolute inset-0 bg-black/80"></div>
+            <div className="absolute inset-0 bg-black/50"></div>
 
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
 

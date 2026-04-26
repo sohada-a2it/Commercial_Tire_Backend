@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState, useRef, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -172,7 +172,7 @@ const SizeSelector = ({ sizes, selectedSize, onSelect }) => {
   );
 };
 
-// Specifications Table Component - UPDATED with all backend fields
+// Specifications Table Component
 const SpecificationsTable = ({ tireSpecs }) => {
   const [copiedIndex, setCopiedIndex] = useState(null);
 
@@ -198,7 +198,7 @@ const SpecificationsTable = ({ tireSpecs }) => {
             <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600">OD (inch)</th>
             <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600">Section Width</th>
             <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600">Tread Depth</th>
-            <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600">Std Rim</th> 
+            <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600">Std Rim</th>
             <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600">Single Load</th>
             <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600">Single Pressure</th>
             <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600">Dual Load</th>
@@ -222,7 +222,7 @@ const SpecificationsTable = ({ tireSpecs }) => {
               <td className="px-3 py-2 text-xs text-gray-600">{spec.overallDiameter || "—"}</td>
               <td className="px-3 py-2 text-xs text-gray-600">{spec.sectionWidth || "—"}</td>
               <td className="px-3 py-2 text-xs text-gray-600">{spec.treadDepth || "—"}</td>
-              <td className="px-3 py-2 text-xs text-gray-600">{spec.stdRim || "—"}</td> 
+              <td className="px-3 py-2 text-xs text-gray-600">{spec.stdRim || "—"}</td>
               <td className="px-3 py-2 text-xs text-gray-600">{spec.singleMaxLoad || "—"}</td>
               <td className="px-3 py-2 text-xs text-gray-600">{spec.singleMaxPressure || "—"}</td>
               <td className="px-3 py-2 text-xs text-gray-600">{spec.dualMaxLoad || "—"}</td>
@@ -254,10 +254,11 @@ const SpecificationsTable = ({ tireSpecs }) => {
   );
 };
 
-// Main Component
-export default function ProductDetailsPage() {
-  const { id } = useParams();
+// Main Product Details Component (uses query params)
+function ProductDetailsContent() {
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const productId = searchParams.get('id');
   const { addToCart } = useCart();
 
   // State
@@ -282,12 +283,15 @@ export default function ProductDetailsPage() {
 
   // Fetch all product data
   useEffect(() => {
-    if (!id) return;
+    if (!productId) {
+      router.push('/products');
+      return;
+    }
 
     const loadProductData = async () => {
       setLoading(true);
       try {
-        const detailsRes = await fetchProductDetails(id, { includeRelated: true, limit: 6 });
+        const detailsRes = await fetchProductDetails(productId, { includeRelated: true, limit: 6 });
 
         setProduct(detailsRes.product);
         setRelatedProducts(detailsRes.relatedProducts || []);
@@ -303,8 +307,8 @@ export default function ProductDetailsPage() {
 
         // Load reviews and pricing
         const [reviewsRes, pricingRes] = await Promise.all([
-          fetchProductReviews(id, { page: 1, limit: 10 }),
-          fetchProductPricing(id, quantity),
+          fetchProductReviews(productId, { page: 1, limit: 10 }),
+          fetchProductPricing(productId, quantity),
         ]);
 
         setReviews(reviewsRes.reviews || []);
@@ -317,17 +321,17 @@ export default function ProductDetailsPage() {
     };
 
     loadProductData();
-  }, [id]);
+  }, [productId, router]);
 
   // Update pricing when quantity changes
   useEffect(() => {
-    if (!id || quantity < 1) return;
+    if (!productId || quantity < 1) return;
     const updatePricing = async () => {
-      const pricingRes = await fetchProductPricing(id, quantity);
+      const pricingRes = await fetchProductPricing(productId, quantity);
       setPricing(pricingRes.pricing);
     };
     updatePricing();
-  }, [quantity, id]);
+  }, [quantity, productId]);
 
   const handleQuantityChange = (delta) => {
     setQuantity(Math.max(1, quantity + delta));
@@ -346,6 +350,12 @@ export default function ProductDetailsPage() {
     });
   };
 
+  const handleRequestQuote = () => {
+    const productName = encodeURIComponent(product.name);
+    const productModel = product.modelNumber ? encodeURIComponent(product.modelNumber) : "";
+    router.push(`/inquiry?product=${productId}&name=${productName}&model=${productModel}`);
+  };
+
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     if (!reviewForm.username || !reviewForm.text) {
@@ -354,9 +364,9 @@ export default function ProductDetailsPage() {
     }
     setSubmittingReview(true);
     try {
-      const result = await submitProductReview(id, reviewForm);
+      const result = await submitProductReview(productId, reviewForm);
       if (result.success) {
-        const reviewsRes = await fetchProductReviews(id);
+        const reviewsRes = await fetchProductReviews(productId);
         setReviews(reviewsRes.reviews);
         setReviewForm({ username: "", rating: 5, text: "", location: "" });
         alert("Review submitted successfully!");
@@ -366,12 +376,6 @@ export default function ProductDetailsPage() {
     } finally {
       setSubmittingReview(false);
     }
-  };
-
-  const handleRequestQuote = () => {
-    const productName = encodeURIComponent(product.name);
-    const productModel = product.modelNumber ? encodeURIComponent(product.modelNumber) : "";
-    router.push(`/inquiry?product=${product.id}&name=${productName}&model=${productModel}`);
   };
 
   if (loading) {
@@ -498,7 +502,7 @@ export default function ProductDetailsPage() {
                   {product.modelNumber && (
                     <p className="text-sm text-gray-500 font-mono">Model: {product.modelNumber}</p>
                   )}
-                </div> 
+                </div>
               </div>
 
               {/* Short Description */}
@@ -627,7 +631,7 @@ export default function ProductDetailsPage() {
                   >
                     <FaEnvelope className="w-4 h-4" />
                     Request Quote
-                  </button> 
+                  </button>
                 </div>
               </div>
 
@@ -713,10 +717,10 @@ export default function ProductDetailsPage() {
                     </div>
                   )}
 
-                  {/* Current Size Detailed Specs - UPDATED with all fields */}
+                  {/* Current Size Detailed Specs */}
                   {currentSpec && (
                     <div>
-                      <div className="flex items-center justify-between mb-3 ">
+                      <div className="flex items-center justify-between mb-3">
                         <h3 className="text-base font-bold text-gray-800 flex items-center gap-2">
                           <span className="w-1 h-5 bg-teal-500 rounded-full"></span>
                           Specifications for {currentSpec.size}
@@ -730,7 +734,7 @@ export default function ProductDetailsPage() {
                           </button>
                         )}
                       </div>
-                      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden ">
+                      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                         <div className="divide-y divide-gray-100 ml-6">
                           <SpecRow label="Tire Size" value={currentSpec.size} />
                           <SpecRow label="Product Code" value={currentSpec.productCode} />
@@ -935,7 +939,7 @@ export default function ProductDetailsPage() {
               {relatedProducts.map((related) => (
                 <Link
                   key={related.id}
-                  href={`/products/${related.id}`}
+                  href={`/products?id=${related.id}`}
                   className="bg-white rounded-xl p-2 hover:shadow-lg transition-all border border-gray-100 group"
                 >
                   <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden mb-2">
@@ -983,5 +987,21 @@ export default function ProductDetailsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+// Main export with Suspense
+export default function ProductDetailsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading product details...</p>
+        </div>
+      </div>
+    }>
+      <ProductDetailsContent />
+    </Suspense>
   );
 }

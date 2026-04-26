@@ -180,7 +180,7 @@ const handleSubmit = async (e) => {
 
   const handleCloseSuccess = () => {
     setShowSuccess(false);
-    router.push("/products");
+    router.push("/productList");
   };
 
   return (
@@ -396,7 +396,7 @@ const handleSubmit = async (e) => {
         </div>
 
         {/* Contact Info */}
-        <div className="mt-6 grid md:grid-cols-2 gap-4">
+        {/* <div className="mt-6 grid md:grid-cols-2 gap-4">
           <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
             <FaWhatsapp className="w-5 h-5 text-green-500 mx-auto mb-2" />
             <p className="text-sm text-gray-500">Chat with us on</p>
@@ -411,7 +411,7 @@ const handleSubmit = async (e) => {
               +1 (234) 567-8900
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {showSuccess && (

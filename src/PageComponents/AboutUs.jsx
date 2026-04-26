@@ -52,12 +52,12 @@ function AnimatedCounter({ target, suffix = "", prefix = "" }) {
 export default function AboutUs() {
   const [selectedImage, setSelectedImage] = useState(0);
 
-  const factoryImages = [
-    { src: "/factory-1.jpg", alt: "Factory Exterior", label: "Main Production Facility" },
-    { src: "/factory-2.jpg", alt: "Production Line", label: "Automated Assembly Line" },
-    { src: "/factory-3.jpg", alt: "Quality Control", label: "Quality Testing Lab" },
-    { src: "/factory-4.jpg", alt: "Warehouse", label: "Finished Goods Storage" },
-  ];
+  // const factoryImages = [
+  //   { src: "/factory-1.jpg", alt: "Factory Exterior", label: "Main Production Facility" },
+  //   { src: "/factory-2.jpg", alt: "Production Line", label: "Automated Assembly Line" },
+  //   { src: "/factory-3.jpg", alt: "Quality Control", label: "Quality Testing Lab" },
+  //   { src: "/factory-4.jpg", alt: "Warehouse", label: "Finished Goods Storage" },
+  // ];
 
   const certifications = [
     { name: "ISO 9001:2024", icon: "fas fa-certificate", desc: "Quality Management" },
@@ -103,15 +103,11 @@ export default function AboutUs() {
               <div className="w-12 h-1 bg-amber-600 mb-4" />
               <h3 className="text-2xl font-bold text-gray-900">Company Overview</h3>
             </div>
+            <h1 className="font-bold text-amber-500">Connecting Manufacturing Excellence to Customer Satisfaction</h1>
             <p className="text-gray-600 leading-relaxed">
-              Founded in <span className="text-amber-600 font-semibold">1985</span>, HeavyDuty Tires has grown to become 
-              a global leader in commercial vehicle tire manufacturing. With over <span className="text-amber-600 font-semibold">3 million tires</span> 
-              produced annually, we serve customers across 100+ countries.
-            </p>
-            <p className="text-gray-500 leading-relaxed">
-              Our state-of-the-art manufacturing facility spans <span className="text-gray-900 font-semibold">500,000 sq. meters</span> and employs 
-              over <span className="text-gray-900 font-semibold">2,500 skilled professionals</span>. We combine German engineering, 
-              Japanese precision, and American durability to deliver tires that perform under extreme conditions.
+               We say, “The Smart Money is on Double Coin.” Why? Because when it comes to investing in quality and performance, Double Coin is a trusted and intelligent option in the tire market. We are a global tire brand, offering a comprehensive number of TBR and OTR tire SKUs, distributed from our strategically located warehouses across North America.
+ 
+Double Coin stands for quality, performance, service, exceptional value and trust. This means we are dedicated to offering an innovative product line and providing unwavering support. Our goal is to be your preferred tire partner, year after year, and to earn and keep your trust for the life of your tires.
             </p>
             
             {/* Key Highlights */}
@@ -224,16 +220,16 @@ export default function AboutUs() {
 
         {/* Factory Images Gallery */}
         <div className="mb-20">
-          <div className="text-center mb-10">
+          {/* <div className="text-center mb-10">
             <div className="inline-block">
               <div className="w-12 h-1 bg-amber-600 mx-auto mb-4" />
               <h3 className="text-2xl font-bold text-gray-900">Manufacturing Excellence</h3>
               <p className="text-gray-500 mt-2">State-of-the-art production facility</p>
             </div>
-          </div>
+          </div> */}
 
           {/* Main Featured Image */}
-          <div className="relative w-full h-[400px] rounded-2xl overflow-hidden mb-4 group shadow-lg">
+          {/* <div className="relative w-full h-[400px] rounded-2xl overflow-hidden mb-4 group shadow-lg">
             <Image
               src={factoryImages[selectedImage].src}
               alt={factoryImages[selectedImage].alt}
@@ -244,10 +240,10 @@ export default function AboutUs() {
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <p className="text-white font-semibold text-xl">{factoryImages[selectedImage].label}</p>
             </div>
-          </div>
+          </div> */}
 
           {/* Thumbnail Grid */}
-          <div className="grid grid-cols-4 gap-3">
+          {/* <div className="grid grid-cols-4 gap-3">
             {factoryImages.map((img, idx) => (
               <button
                 key={idx}
@@ -267,7 +263,7 @@ export default function AboutUs() {
                 />
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
 
         {/* Certifications Section */}

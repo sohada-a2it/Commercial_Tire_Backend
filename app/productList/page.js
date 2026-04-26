@@ -410,7 +410,7 @@ export default function TiresClient() {
 
     return (
       <div className="group relative h-[450px]">
-        <Link href={`/product/${productId}`} className="block h-full">
+        <Link href={`/product?id=${productId}`} className="block h-full">
           <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 h-full flex flex-col">
 
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />

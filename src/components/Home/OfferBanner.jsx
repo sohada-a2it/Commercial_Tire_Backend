@@ -59,7 +59,7 @@ const WhyChooseUsSimple = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url('/vehicle-banner.webp')` }}
       />
-      <div className="absolute inset-0 bg-black/70" />
+      <div className="absolute inset-0 bg-black/50" />
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 max-w-6xl">

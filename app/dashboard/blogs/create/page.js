@@ -1,6 +1,7 @@
 'use client';
 
-import RichTextEditor from '@/components/blog/richTextEditor';
+import dynamic from 'next/dynamic';
+import EditorQuickReference from '@/components/blog/EditorQuickReference';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/Dashboard/DashboardLayout';
@@ -16,13 +17,28 @@ import {
   FaTag,
   FaFolder,
   FaUpload,
-  FaArrowLeft
+  FaArrowLeft,
+  FaSave
 } from 'react-icons/fa';
 import { createBlog } from '@/services/blogService';
+
+// Dynamically import the rich text editor wrapper
+const RichTextEditorWrapper = dynamic(
+  () => import('@/components/blog/richTextEditor'),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="border border-gray-300 rounded-xl overflow-hidden">
+        <div className="h-[450px] bg-gray-50 animate-pulse" />
+      </div>
+    )
+  }
+);
 
 export default function CreateBlogPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [savingDraft, setSavingDraft] = useState(false);
   const [errors, setErrors] = useState({});
   const [activeMediaTab, setActiveMediaTab] = useState('image');
   
@@ -229,16 +245,62 @@ export default function CreateBlogPage() {
     return submitData;
   };
 
+  const saveAsDraft = async () => {
+    setSavingDraft(true);
+    try {
+      // Trigger manual save from rich text editor
+      if (typeof window !== 'undefined' && window.__richTextEditorSave) {
+        const savedContent = window.__richTextEditorSave();
+        if (savedContent) {
+          setFormData(prev => ({ ...prev, content: savedContent }));
+        }
+      }
+      
+      const formDataToSend = prepareFormData();
+      formDataToSend.set('status', 'draft');
+      formDataToSend.set('isPublished', 'false');
+      
+      const result = await createBlog(formDataToSend);
+      if (result.success) {
+        alert('Draft saved successfully!');
+        router.push('/dashboard/blogs');
+      } else {
+        alert('Failed to save draft: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Error saving draft:', error);
+      alert('Failed to save draft: ' + error.message);
+    } finally {
+      setSavingDraft(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      // Scroll to first error
+      const firstError = document.querySelector('.border-red-500');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    
     setLoading(true);
     try {
+      // Trigger manual save from rich text editor
+      if (typeof window !== 'undefined' && window.__richTextEditorSave) {
+        const savedContent = window.__richTextEditorSave();
+        if (savedContent) {
+          setFormData(prev => ({ ...prev, content: savedContent }));
+        }
+      }
+      
       const formDataToSend = prepareFormData();
       const result = await createBlog(formDataToSend);
       if (result.success) {
-        alert('Blog created successfully!');
+        alert('Blog published successfully!');
         router.push('/dashboard/blogs');
+      } else {
+        alert('Failed to publish blog: ' + result.message);
       }
     } catch (error) {
       console.error('Error creating blog:', error);
@@ -251,10 +313,11 @@ export default function CreateBlogPage() {
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-7xl mx-auto ">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           {/* Header */}
           <div className="mb-6">
             <button
+              type="button"
               onClick={() => router.back()}
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
             >
@@ -263,7 +326,7 @@ export default function CreateBlogPage() {
             </button>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Create New Blog</h1>
-              <p className="text-gray-600 mt-1">Create and manage your blog content</p>
+              <p className="text-gray-600 mt-1">Create and manage your blog content with rich formatting, images, tables, and more!</p>
             </div>
           </div>
 
@@ -291,11 +354,20 @@ export default function CreateBlogPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Content <span className="text-red-500">*</span>
                   </label>
+                  <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-xs text-blue-700 flex items-center gap-2">
+                      <span className="font-semibold">💡 Tip:</span>
+                      Use the rich editor below to format your content with colors, images, links, tables, and more! Content auto-saves every 2 seconds.
+                    </p>
+                  </div>
                   <div className="border border-gray-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-teal-500 transition-all">
-                    <RichTextEditor
+                    <RichTextEditorWrapper
                       value={formData.content}
-                      onChange={(html) => setFormData({ ...formData, content: html })}
-                      placeholder="Write your amazing blog content here..."
+                      onChange={(html) => {
+                        console.log('Content updated, auto-saving...');
+                        setFormData({ ...formData, content: html });
+                      }}
+                      placeholder="Write your amazing blog content here... Add images, links, colored text, tables, and more!"
                     />
                   </div>
                   {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content}</p>}
@@ -718,7 +790,28 @@ export default function CreateBlogPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 mt-8 pt-4 flex justify-end gap-3 rounded-lg">
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 mt-8 pt-4 pb-4 flex justify-end gap-3 rounded-lg shadow-lg">
+              <button
+                type="button"
+                onClick={saveAsDraft}
+                disabled={savingDraft}
+                className="px-6 py-2.5 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium flex items-center gap-2"
+              >
+                {savingDraft ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <FaSave className="w-4 h-4" />
+                    Save as Draft
+                  </>
+                )}
+              </button>
               <button
                 type="button"
                 onClick={() => router.back()}
@@ -737,16 +830,17 @@ export default function CreateBlogPage() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Creating...
+                    Publishing...
                   </>
                 ) : (
-                  'Create Blog'
+                  'Publish Blog'
                 )}
               </button>
             </div>
           </form>
         </div>
       </div>
+      <EditorQuickReference />
     </DashboardLayout>
   );
 }

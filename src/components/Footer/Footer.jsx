@@ -1,6 +1,7 @@
+// Footer Component (updated)
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -17,6 +18,7 @@ import {
   FaShieldAlt,
   FaClock,
 } from "react-icons/fa";
+import dataService from "@/services/dataService";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -26,39 +28,70 @@ export default function Footer() {
 
   const [showMoreLinks, setShowMoreLinks] = useState(false);
   const [showMoreProducts, setShowMoreProducts] = useState(false);
+  const [productCategories, setProductCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
 
   // Quick Links
   const quickLinks = [
     { label: "Home", to: "/" },
-    { label: "About Us", to: "/about" }, 
-    { label: "News & Blog", to: "/news" }, 
-    { label: "Contact Us", to: "/contact" }, 
+    { label: "About Us", to: "/aboutUs/" }, 
+    { label: "Blog", to: "/blog/" }, 
+    { label: "Contact Us", to: "/contact/" }, 
   ];
 
-  // Product Categories (Tire specific)
-  const productCategories = [
-    { name: "Truck Tires", link: "/products/truck" },
-    { name: "Bus Tires", link: "/products/bus" },
-    { name: "OTR Tires", link: "/products/otr" },
-    { name: "Industrial Tires", link: "/products/industrial" }, 
-  ];
+  // Fetch categories dynamically
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoadingCategories(true);
+        const categories = await dataService.getCategories();
+        // Transform categories to product links format
+        const formattedCategories = categories.map(cat => ({
+          name: cat.name,
+          link: `/products/c/${nameToSlug(cat.name)}/`,
+          id: cat.id
+        }));
+        setProductCategories(formattedCategories);
+      } catch (error) {
+        console.error("Failed to load categories:", error);
+        // Fallback to default categories if API fails
+        setProductCategories([
+          { name: "Truck Tires", link: "/products/truck" },
+          { name: "Bus Tires", link: "/products/bus" },
+          { name: "OTR Tires", link: "/products/otr" },
+          { name: "Industrial Tires", link: "/products/industrial" },
+        ]);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Helper function to convert name to slug
+  const nameToSlug = (name) =>
+    String(name || "")
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
 
   // Contact Information
   const contactInfo = [
     {
       icon: <FaMapMarkerAlt className="text-amber-500 text-lg" />,
-      text: "63/16 Soi Chumchon Talat Tha Ruea, Khlong Toei, Bangkok 10110, Thailand",
+      text: "406 East Huntington Drive, Suite 200, Monrovia, CA 91016",
       link: "https://maps.google.com/?q=63/16+Soi+Chumchon+Talat+Tha+Ruea+Khlong+Toei+Bangkok",
     },
     {
       icon: <FaPhone className="text-amber-500 text-lg" />,
-      text: "+66 2105 5786",
-      link: "tel:+6621055786",
+      text: "(666) xxx-xxxx",
+      link: "#",
     }, 
     {
       icon: <FaEnvelope className="text-amber-500 text-lg" />,
-      text: "info@heavydutytires.com",
-      link: "mailto:info@heavydutytires.com",
+      text: "info@doublecoin.com",
+      link: "mailto:info@doublecoin.com",
     },
   ];
 
@@ -78,8 +111,12 @@ export default function Footer() {
     { icon: <FaClock />, text: "24/7 Support" },
   ];
 
+  // Determine which categories to show
+  const displayedCategories = showMoreProducts ? productCategories : productCategories.slice(0, 4);
+  const hasMoreCategories = productCategories.length > 4;
+
   return (
-    <footer className="relative bg-gray-600 border-t border-gray-800">
+    <footer className="relative bg-black/80 backdrop-blur-xl border-b border-white/10 shadow-lg">
       
       {/* Decorative Top Line */}
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-amber-600 to-transparent" />
@@ -93,11 +130,11 @@ export default function Footer() {
           {/* Column 1: Brand & Company Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center">
-                 <img src="/logo (2).png" alt="" />
+              <div className="w-15 h-10 rounded-lg flex items-center justify-center">
+                 <img src="/double.png" alt="Logo" />
               </div>
               <div>
-                <h3 className="text-white font-bold text-xl">Commercial<span className="text-amber-500">Tire</span></h3>
+                <h3 className="text-white font-bold text-xl">Double<span className="text-amber-500">Coin</span></h3>
                 <p className="text-gray-500 text-xs">Tires Manufacturer</p>
               </div>
             </div>
@@ -106,19 +143,19 @@ export default function Footer() {
               Premium commercial vehicle tires for trucks, buses, OTR, and industrial applications. 
               Trusted by fleet operators in 100+ countries.
             </p>   
-              <div className="flex gap-3 justify-center">
-                {socialLinks.map((social, idx) => (
-                  <a
-                    key={idx}
-                    href={social.to}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-9 h-9 bg-gray-900 hover:bg-amber-600 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all duration-200"
-                    aria-label={social.label}
-                  >
-                    {social.icon}
-                  </a>
-                ))} 
+            <div className="flex gap-3 justify-center">
+              {socialLinks.map((social, idx) => (
+                <a
+                  key={idx}
+                  href={social.to}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gray-900 hover:bg-amber-600 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all duration-200"
+                  aria-label={social.label}
+                >
+                  {social.icon}
+                </a>
+              ))} 
             </div>
           </div>
 
@@ -139,27 +176,61 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-            </ul> 
+            </ul>
+            {quickLinks.length > 6 && (
+              <button
+                onClick={() => setShowMoreLinks(!showMoreLinks)}
+                className="mt-4 text-amber-500 hover:text-amber-400 text-sm font-medium transition"
+              >
+                {showMoreLinks ? "Show Less ↑" : "Show More ↓"}
+              </button>
+            )}
           </div>
 
-          {/* Column 3: Products */}
+          {/* Column 3: Products - Dynamically loaded categories */}
           <div>
             <h4 className="text-white font-semibold text-lg mb-5 pb-2 border-b border-gray-800 inline-block">
               Our Products
             </h4>
-            <ul className="space-y-4">
-              {(showMoreProducts ? productCategories : productCategories.slice(0, 4)).map((product, idx) => (
-                <li key={idx}>
-                  <Link
-                    href={product.link}
-                    className="text-gray-400 hover:text-amber-500 text-sm transition-colors duration-200 flex items-center gap-2 group"
+            
+            {loadingCategories ? (
+              // Loading skeleton
+              <div className="space-y-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="h-8 bg-gray-800 rounded animate-pulse"></div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <ul className="space-y-4">
+                  {displayedCategories.map((product, idx) => (
+                    <li key={product.id || idx}>
+                      <Link
+                        href={product.link}
+                        className="text-gray-400 hover:text-amber-500 text-sm transition-colors duration-200 flex items-center gap-2 group"
+                      >
+                        <span className="w-1 h-1 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition" />
+                        {product.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                
+                {/* Show More/Less Button */}
+                {hasMoreCategories && (
+                  <button
+                    onClick={() => setShowMoreProducts(!showMoreProducts)}
+                    className="mt-4 text-amber-500 hover:text-amber-400 text-sm font-medium transition flex items-center gap-1"
                   >
-                    <span className="w-1 h-1 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition" />
-                    {product.name}
-                  </Link>
-                </li>
-              ))}
-            </ul> 
+                    {showMoreProducts ? (
+                      <>Show Less ↑</>
+                    ) : (
+                      <>Show More ↓ ({productCategories.length - 4} more)</>
+                    )}
+                  </button>
+                )}
+              </>
+            )}
           </div>
 
           {/* Column 4: Contact Info */}
@@ -190,7 +261,7 @@ export default function Footer() {
             
             {/* Copyright */}
             <p className="text-gray-500 text-xs">
-              © {new Date().getFullYear()} Commercial Tires. All rights reserved.
+              © {new Date().getFullYear()} Double Coin. All rights reserved.
             </p>
 
             {/* Additional Links */}
@@ -209,7 +280,7 @@ export default function Footer() {
       {/* Scroll to Top Button */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="fixed bottom-1 right-1 w-10 h-10 bg-amber-600 hover:bg-amber-700 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-200 hover:scale-110 z-50"
+        className="fixed bottom-6 right-6 w-10 h-10 bg-amber-600 hover:bg-amber-700 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-200 hover:scale-110 z-50"
         aria-label="Scroll to top"
       >
         ↑

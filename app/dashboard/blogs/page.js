@@ -8,12 +8,9 @@ import {
   togglePublishStatus,
   toggleFeaturedStatus,
   fetchBlogById,
-  updateBlog,
-  createBlog,
-  prepareBlogFormData,
-  formatBlogForDisplay,
   bulkUpdateStatus,
-  bulkDeleteBlogs
+  bulkDeleteBlogs, 
+  formatBlogForDisplay  // এই ইম্পর্ট যোগ করুন
 } from '@/services/blogService';
 import DeleteConfirmModal from '@/components/blog/deleteConfirmModal';
 import BlogViewModal from '@/components/blog/blogViewModal';
@@ -26,14 +23,17 @@ export default function AdminBlogManager() {
   const [loading, setLoading] = useState(true);
   const [selectedBlogs, setSelectedBlogs] = useState([]);
   const [showBulkActions, setShowBulkActions] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
     total: 0,
-    totalPages: 1
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false
   });
   
-  // Modal states (only delete and view modals)
+  // Modal states
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -51,15 +51,46 @@ export default function AdminBlogManager() {
     limit: 10
   });
 
+  // Load categories on mount
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
   // Load blogs on mount and filter change
   useEffect(() => {
     loadBlogs();
   }, [filters]);
 
+  const loadCategories = async () => {
+    try {
+      const result = await fetchCategories();
+      if (result.success) {
+        setCategories(result.categories);
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  };
+
   const loadBlogs = async () => {
     setLoading(true);
     try {
-      const result = await fetchBlogs(filters);
+      // শুধুমাত্র নন-খালি ফিল্টার পাঠান
+      const activeFilters = {};
+      
+      if (filters.search) activeFilters.search = filters.search;
+      if (filters.category) activeFilters.category = filters.category;
+      if (filters.status) activeFilters.status = filters.status;
+      if (filters.isFeatured) activeFilters.isFeatured = filters.isFeatured;
+      if (filters.isPublished !== '') activeFilters.isPublished = filters.isPublished;
+      
+      const result = await fetchBlogs({
+        page: filters.page,
+        limit: filters.limit,
+        ...activeFilters
+      });
+      
+      // গুরুত্বপূর্ণ: formatBlogForDisplay ব্যবহার করুন
       setBlogs(result.blogs.map(formatBlogForDisplay));
       setPagination(result.pagination);
     } catch (error) {
@@ -148,10 +179,11 @@ export default function AdminBlogManager() {
     }
   };
 
-  // View blog details handler
+  // View blog details handler - format করে দেখান
   const handleViewBlog = async (blog) => {
     try {
       const result = await fetchBlogById(blog.id);
+      // format করে নিন
       setViewingBlog(formatBlogForDisplay(result.blog));
       setShowViewModal(true);
     } catch (error) {
@@ -162,7 +194,7 @@ export default function AdminBlogManager() {
 
   // Edit blog - redirect to edit page
   const handleEditBlog = (blog) => {
-    router.push(`/dashboard/blogs/edit/${blog.id}`);
+    router.push(`/dashboard/blogs/edit?id=${blog.id}`);
   };
 
   // Create new blog - redirect to create page
@@ -182,7 +214,7 @@ export default function AdminBlogManager() {
   };
 
   const handleSelectAll = () => {
-    if (selectedBlogs.length === blogs.length) {
+    if (selectedBlogs.length === blogs.length && blogs.length > 0) {
       setSelectedBlogs([]);
       setShowBulkActions(false);
     } else {
@@ -202,6 +234,24 @@ export default function AdminBlogManager() {
     setSelectedBlogs([]);
   };
 
+  const handleResetFilters = () => {
+    setFilters({
+      search: '',
+      category: '',
+      status: '',
+      isFeatured: '',
+      isPublished: '',
+      page: 1,
+      limit: 10
+    });
+    setSelectedBlogs([]);
+  };
+
+  // Check if any filter is active
+  const hasActiveFilters = () => {
+    return filters.search || filters.category || filters.status || filters.isFeatured || filters.isPublished;
+  };
+
   // Stats Cards Component
   const StatCard = ({ title, value, icon, color }) => (
     <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
@@ -209,10 +259,7 @@ export default function AdminBlogManager() {
         <div>
           <p className="text-gray-500 text-sm font-medium">{title}</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-        </div>
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${color}`}>
-          {icon}
-        </div>
+        </div> 
       </div>
     </div>
   );
@@ -222,8 +269,7 @@ export default function AdminBlogManager() {
   const publishedBlogs = blogs.filter(b => b.isPublished).length;
   const draftBlogs = blogs.filter(b => b.status === 'draft').length;
   const scheduledBlogs = blogs.filter(b => b.status === 'scheduled').length;
-  const featuredBlogs = blogs.filter(b => b.isFeatured).length;
-  const totalViews = blogs.reduce((sum, b) => sum + (b.views || 0), 0);
+  const featuredBlogs = blogs.filter(b => b.isFeatured).length; 
 
   // Status badge color mapping
   const getStatusBadge = (status, isPublished) => {
@@ -327,18 +373,7 @@ export default function AdminBlogManager() {
                 </svg>
               }
               color="bg-purple-500"
-            />
-            <StatCard 
-              title="Total Views" 
-              value={totalViews.toLocaleString()} 
-              icon={
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              }
-              color="bg-orange-500"
-            />
+            /> 
           </div>
 
           {/* Bulk Actions Bar */}
@@ -384,7 +419,7 @@ export default function AdminBlogManager() {
 
           {/* Filters */}
           <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
                 <input
@@ -395,6 +430,7 @@ export default function AdminBlogManager() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                 <input
@@ -405,6 +441,7 @@ export default function AdminBlogManager() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select
@@ -412,25 +449,14 @@ export default function AdminBlogManager() {
                   onChange={(e) => handleFilterChange('status', e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">All</option>
+                  <option value="">All Status</option>
                   <option value="published">Published</option>
                   <option value="draft">Draft</option>
                   <option value="scheduled">Scheduled</option>
                   <option value="archived">Archived</option>
                 </select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Featured</label>
-                <select
-                  value={filters.isFeatured}
-                  onChange={(e) => handleFilterChange('isFeatured', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">All</option>
-                  <option value="true">Featured</option>
-                  <option value="false">Not Featured</option>
-                </select>
-              </div>
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Published</label>
                 <select
@@ -438,13 +464,27 @@ export default function AdminBlogManager() {
                   onChange={(e) => handleFilterChange('isPublished', e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">All</option>
-                  <option value="true">Published</option>
-                  <option value="false">Draft</option>
+                  <option value="">All (Published/Draft)</option>
+                  <option value="true">Published Only</option>
+                  <option value="false">Draft Only</option>
                 </select>
               </div>
+              
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Items per page</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Featured</label>
+                <select
+                  value={filters.isFeatured}
+                  onChange={(e) => handleFilterChange('isFeatured', e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">All (Featured/Not)</option>
+                  <option value="true">Featured Only</option>
+                  <option value="false">Non-Featured Only</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Items/Page</label>
                 <select
                   value={filters.limit}
                   onChange={(e) => handleFilterChange('limit', parseInt(e.target.value))}
@@ -455,7 +495,67 @@ export default function AdminBlogManager() {
                   <option value="50">50</option>
                 </select>
               </div>
+              
+              <div className="flex items-end">
+                <button
+                  onClick={handleResetFilters}
+                  className="w-full px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Reset Filters
+                </button>
+              </div>
             </div>
+            
+            {/* Active Filters Display */}
+            {hasActiveFilters() && (
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <div className="flex flex-wrap gap-2 items-center">
+                  <span className="text-xs text-gray-500">Active Filters:</span>
+                  {filters.search && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs">
+                      Search: {filters.search}
+                      <button onClick={() => handleFilterChange('search', '')} className="hover:text-blue-900">×</button>
+                    </span>
+                  )}
+                  {filters.category && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs">
+                      Category: {filters.category}
+                      <button onClick={() => handleFilterChange('category', '')} className="hover:text-green-900">×</button>
+                    </span>
+                  )}
+                  {filters.status && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full text-xs">
+                      Status: {filters.status === 'published' ? 'Published' : filters.status === 'draft' ? 'Draft' : filters.status === 'scheduled' ? 'Scheduled' : 'Archived'}
+                      <button onClick={() => handleFilterChange('status', '')} className="hover:text-yellow-900">×</button>
+                    </span>
+                  )}
+                  {filters.isPublished === 'true' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs">
+                      Published Only
+                      <button onClick={() => handleFilterChange('isPublished', '')} className="hover:text-green-900">×</button>
+                    </span>
+                  )}
+                  {filters.isPublished === 'false' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-xs">
+                      Draft Only
+                      <button onClick={() => handleFilterChange('isPublished', '')} className="hover:text-orange-900">×</button>
+                    </span>
+                  )}
+                  {filters.isFeatured === 'true' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs">
+                      Featured Only
+                      <button onClick={() => handleFilterChange('isFeatured', '')} className="hover:text-purple-900">×</button>
+                    </span>
+                  )}
+                  {filters.isFeatured === 'false' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-700 rounded-full text-xs">
+                      Non-Featured Only
+                      <button onClick={() => handleFilterChange('isFeatured', '')} className="hover:text-gray-900">×</button>
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Blogs Table */}
@@ -480,10 +580,7 @@ export default function AdminBlogManager() {
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Tags
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Views
-                    </th>
+                    </th> 
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Featured
                     </th>
@@ -530,7 +627,7 @@ export default function AdminBlogManager() {
                                 {blog.title}
                               </div>
                               <div className="text-xs text-gray-500 mt-1">
-                                {new Date(blog.customDate || blog.publishedAt || blog.createdAt).toLocaleDateString()} | By {blog.author || 'Admin'}
+                                {blog.customDate || blog.publishedAt ? new Date(blog.customDate || blog.publishedAt).toLocaleDateString() : 'Date not set'} | By {blog.author || 'Admin'}
                               </div>
                               {blog.isScheduled && blog.scheduledDate && (
                                 <div className="text-xs text-blue-600 mt-1">
@@ -556,16 +653,7 @@ export default function AdminBlogManager() {
                               <span className="text-xs text-gray-500">+{blog.tags.length - 2}</span>
                             )}
                           </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">{blog.views || 0}</span>
-                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                          </div>
-                        </td>
+                        </td> 
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button
                             onClick={() => handleToggleFeatured(blog)}
@@ -590,17 +678,7 @@ export default function AdminBlogManager() {
                           </button>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => handleViewBlog(blog)}
-                              className="text-blue-600 hover:text-blue-900 transition-colors p-1"
-                              title="View Details"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                              </svg>
-                            </button>
+                          <div className="flex items-center justify-end gap-2"> 
                             <button
                               onClick={() => handleEditBlog(blog)}
                               className="text-green-600 hover:text-green-900 transition-colors p-1"
@@ -638,15 +716,24 @@ export default function AdminBlogManager() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
                 <h3 className="mt-2 text-sm font-medium text-gray-900">No blogs found</h3>
-                <p className="mt-1 text-sm text-gray-500">Get started by creating your first blog post.</p>
-                <div className="mt-6">
+                <p className="mt-1 text-sm text-gray-500">
+                  {hasActiveFilters() ? 'Try adjusting your filters to see more results.' : 'Get started by creating your first blog post.'}
+                </p>
+                {hasActiveFilters() ? (
+                  <button
+                    onClick={handleResetFilters}
+                    className="mt-4 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                  >
+                    Clear Filters
+                  </button>
+                ) : (
                   <button
                     onClick={handleCreateBlog}
-                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                    className="mt-4 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
                   >
                     Create New Blog
                   </button>
-                </div>
+                )}
               </div>
             )}
 

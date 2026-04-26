@@ -8,9 +8,9 @@ import OfferBanner from "@/components/Home/OfferBanner";
 import { CatalogPageSkeleton } from "@/components/shared/RouteSkeletons";
 
 export const metadata = {
-  title: "Asian Import Export Co LTD - Global Trade Partner",
+  title: "Commercial Tire Co LTD - Global Trade Partner",
   description:
-    "Asian Import Export Co LTD offers comprehensive international trade services including agriculture, seafood, metals, trucks, vehicles, and wood products. Specializing in vehicle parts, truck tires, copper, aluminum, rice, sugar, nuts, and more.",
+    "Commercial Tire Co LTD offers comprehensive international trade services including agriculture, seafood, metals, trucks, vehicles, and wood products. Specializing in vehicle parts, truck tires, copper, aluminum, rice, sugar, nuts, and more.",
   keywords: [
     "import export company",
     "international trade",
@@ -29,7 +29,7 @@ export const metadata = {
     "bulk orders",
   ],
   openGraph: {
-    title: "Asian Import Export Co LTD - Your Global Trade Partner",
+    title: "Commercial Tire Co LTD - Your Global Trade Partner",
     description:
       "Comprehensive international trade services for agriculture, seafood, metals, trucks, vehicles, and wood products.",
     url: "https://asianimportexport.com",

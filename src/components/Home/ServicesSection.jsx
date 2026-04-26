@@ -91,7 +91,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <Link 
-      href={`/product/${productId}`}
+       href={`/product?id=${productId}`} 
       className="group block h-full"
     >
       <div 
