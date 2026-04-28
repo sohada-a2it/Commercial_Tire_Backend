@@ -1,4 +1,3 @@
-// Footer Component (updated)
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -23,7 +22,6 @@ import dataService from "@/services/dataService";
 export default function Footer() {
   const pathname = usePathname();
   
-  // Dashboard এ Footer দেখাবে না
   if (pathname?.startsWith("/dashboard")) return null;
 
   const [showMoreLinks, setShowMoreLinks] = useState(false);
@@ -31,7 +29,6 @@ export default function Footer() {
   const [productCategories, setProductCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
-  // Quick Links
   const quickLinks = [
     { label: "Home", to: "/" },
     { label: "About Us", to: "/aboutUs/" }, 
@@ -39,13 +36,11 @@ export default function Footer() {
     { label: "Contact Us", to: "/contact/" }, 
   ];
 
-  // Fetch categories dynamically
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         setLoadingCategories(true);
         const categories = await dataService.getCategories();
-        // Transform categories to product links format
         const formattedCategories = categories.map(cat => ({
           name: cat.name,
           link: `/products/c/${nameToSlug(cat.name)}/`,
@@ -54,7 +49,6 @@ export default function Footer() {
         setProductCategories(formattedCategories);
       } catch (error) {
         console.error("Failed to load categories:", error);
-        // Fallback to default categories if API fails
         setProductCategories([
           { name: "Truck Tires", link: "/products/truck" },
           { name: "Bus Tires", link: "/products/bus" },
@@ -69,14 +63,12 @@ export default function Footer() {
     fetchCategories();
   }, []);
 
-  // Helper function to convert name to slug
   const nameToSlug = (name) =>
     String(name || "")
       .toLowerCase()
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9-]/g, "");
 
-  // Contact Information
   const contactInfo = [
     {
       icon: <FaMapMarkerAlt className="text-amber-500 text-lg" />,
@@ -95,54 +87,49 @@ export default function Footer() {
     },
   ];
 
-  // Social Links
   const socialLinks = [
-    { icon: <FaFacebookF />, to: "https://facebook.com", label: "Facebook" },
-    { icon: <FaInstagram />, to: "https://instagram.com", label: "Instagram" },
-    { icon: <FaLinkedinIn />, to: "https://linkedin.com", label: "LinkedIn" },
-    { icon: <FaYoutube />, to: "https://youtube.com", label: "YouTube" },
-    { icon: <FaGlobe />, to: "https://heavydutytires.com", label: "Website" },
+    { icon: <FaFacebookF />, to: "#", label: "Facebook" },
+    { icon: <FaInstagram />, to: "#", label: "Instagram" },
+    { icon: <FaLinkedinIn />, to: "#", label: "LinkedIn" },
+    { icon: <FaYoutube />, to: "#", label: "YouTube" },
+    { icon: <FaGlobe />, to: "#", label: "Website" },
   ];
 
-  // Trust Badges
   const trustBadges = [
     { icon: <FaTruck />, text: "Global Shipping" },
     { icon: <FaShieldAlt />, text: "Certified Quality" },
     { icon: <FaClock />, text: "24/7 Support" },
   ];
 
-  // Determine which categories to show
   const displayedCategories = showMoreProducts ? productCategories : productCategories.slice(0, 4);
   const hasMoreCategories = productCategories.length > 4;
 
   return (
     <footer className="relative bg-black/80 backdrop-blur-xl border-b border-white/10 shadow-lg">
       
-      {/* Decorative Top Line */}
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-amber-600 to-transparent" />
 
-      {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-9">
         
-        {/* Top Section - 4 Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        {/* ✅ UPDATED GRID */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
           
-          {/* Column 1: Brand & Company Info */}
-          <div className="space-y-4">
+          {/* Column 1 */}
+          <div className="space-y-4 col-span-1">
             <div className="flex items-center gap-3">
               <div className="w-15 h-10 rounded-lg flex items-center justify-center">
                  <img src="/double.png" alt="Logo" />
               </div>
-              <div>
-                <h3 className="text-white font-bold text-xl">Double<span className="text-amber-500">Coin</span></h3>
+            </div>
+              <div> 
                 <p className="text-gray-500 text-xs">Tires Manufacturer</p>
               </div>
-            </div>
             
             <p className="text-gray-400 text-sm leading-relaxed">
               Premium commercial vehicle tires for trucks, buses, OTR, and industrial applications. 
               Trusted by fleet operators in 100+ countries.
             </p>   
+
             <div className="flex gap-3 justify-center">
               {socialLinks.map((social, idx) => (
                 <a
@@ -151,7 +138,6 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-gray-900 hover:bg-amber-600 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all duration-200"
-                  aria-label={social.label}
                 >
                   {social.icon}
                 </a>
@@ -159,17 +145,17 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Quick Links */}
-          <div>
+          {/* Column 2 */}
+          <div className="col-span-1">
             <h4 className="text-white font-semibold text-lg mb-5 pb-2 border-b border-gray-800 inline-block">
               Quick Links
             </h4>
             <ul className="space-y-4">
-              {(showMoreLinks ? quickLinks : quickLinks.slice(0, 6)).map((link, idx) => (
+              {quickLinks.map((link, idx) => (
                 <li key={idx}>
                   <Link
                     href={link.to}
-                    className="text-gray-400 hover:text-amber-500 text-sm transition-colors duration-200 flex items-center gap-2 group"
+                    className="text-gray-400 hover:text-amber-500 text-sm flex items-center gap-2 group"
                   >
                     <span className="w-1 h-1 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition" />
                     {link.label}
@@ -177,64 +163,39 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-            {quickLinks.length > 6 && (
-              <button
-                onClick={() => setShowMoreLinks(!showMoreLinks)}
-                className="mt-4 text-amber-500 hover:text-amber-400 text-sm font-medium transition"
-              >
-                {showMoreLinks ? "Show Less ↑" : "Show More ↓"}
-              </button>
-            )}
           </div>
 
-          {/* Column 3: Products - Dynamically loaded categories */}
-          <div>
+          {/* Column 3 */}
+          <div className="col-span-1">
             <h4 className="text-white font-semibold text-lg mb-5 pb-2 border-b border-gray-800 inline-block">
               Our Products
             </h4>
-            
+
             {loadingCategories ? (
-              // Loading skeleton
               <div className="space-y-3">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="h-8 bg-gray-800 rounded animate-pulse"></div>
                 ))}
               </div>
             ) : (
-              <>
-                <ul className="space-y-4">
-                  {displayedCategories.map((product, idx) => (
-                    <li key={product.id || idx}>
-                      <Link
-                        href={product.link}
-                        className="text-gray-400 hover:text-amber-500 text-sm transition-colors duration-200 flex items-center gap-2 group"
-                      >
-                        <span className="w-1 h-1 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition" />
-                        {product.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                
-                {/* Show More/Less Button */}
-                {hasMoreCategories && (
-                  <button
-                    onClick={() => setShowMoreProducts(!showMoreProducts)}
-                    className="mt-4 text-amber-500 hover:text-amber-400 text-sm font-medium transition flex items-center gap-1"
-                  >
-                    {showMoreProducts ? (
-                      <>Show Less ↑</>
-                    ) : (
-                      <>Show More ↓ ({productCategories.length - 4} more)</>
-                    )}
-                  </button>
-                )}
-              </>
+              <ul className="space-y-4">
+                {displayedCategories.map((product, idx) => (
+                  <li key={idx}>
+                    <Link
+                      href={product.link}
+                      className="text-gray-400 hover:text-amber-500 text-sm flex items-center gap-2 group"
+                    >
+                      <span className="w-1 h-1 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition" />
+                      {product.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
 
-          {/* Column 4: Contact Info */}
-          <div>
+          {/* Column 4 */}
+          <div className="col-span-1">
             <h4 className="text-white font-semibold text-lg mb-5 pb-2 border-b border-gray-800 inline-block">
               Contact Us
             </h4>
@@ -243,45 +204,26 @@ export default function Footer() {
                 <a
                   key={idx}
                   href={item.link}
-                  target={item.link.startsWith("http") ? "_blank" : "_self"}
-                  rel="noopener noreferrer"
-                  className="flex items-start gap-3 text-gray-400 hover:text-amber-500 text-sm transition-colors duration-200 group"
+                  className="flex items-start gap-3 text-gray-400 hover:text-amber-500 text-sm"
                 >
-                  <span className="mt-0.5">{item.icon}</span>
-                  <span className="leading-relaxed">{item.text}</span>
+                  {item.icon}
+                  <span>{item.text}</span>
                 </a>
               ))}
             </div>
           </div>
-        </div> 
+        </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-8 pt-6 border-t border-gray-800/50">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            
-            {/* Copyright */}
-            <p className="text-gray-500 text-xs">
-              © {new Date().getFullYear()} Double Coin. All rights reserved.
-            </p>
-
-            {/* Additional Links */}
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-              <Link href="/privacy" className="text-gray-500 hover:text-amber-500 text-xs transition">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-gray-500 hover:text-amber-500 text-xs transition">
-                Terms of Service
-              </Link> 
-            </div> 
-          </div>
+        {/* Bottom */}
+        <div className="mt-8 pt-6 border-t border-gray-800/50 text-center text-gray-500 text-xs">
+          © {new Date().getFullYear()} Double Coin. All rights reserved.
         </div>
       </div>
 
-      {/* Scroll to Top Button */}
+      {/* Scroll Top */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="fixed bottom-6 right-6 w-10 h-10 bg-amber-600 hover:bg-amber-700 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-200 hover:scale-110 z-50"
-        aria-label="Scroll to top"
+        className="fixed bottom-6 right-6 w-10 h-10 bg-amber-600 rounded-full text-white"
       >
         ↑
       </button>

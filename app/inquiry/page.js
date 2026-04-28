@@ -1,4 +1,4 @@
-// app/inquiry/page.jsx
+// app/inquiry/page.jsx - Complete corrected version
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -14,12 +14,9 @@ import {
   FaComment,
   FaPaperPlane,
   FaCheckCircle,
-  FaInfoCircle,
-  FaShoppingCart,
-  FaWhatsapp,
-  FaPhoneAlt,
   FaBox,
   FaTag,
+  FaRuler,
 } from "react-icons/fa";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 
@@ -52,9 +49,23 @@ const SuccessModal = ({ onClose, productName }) => (
 export default function InquiryPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  
+  // Get all parameters from URL
   const productId = searchParams.get("product");
   const productNameParam = searchParams.get("name");
   const productModelParam = searchParams.get("model");
+  const quantityParam = searchParams.get("quantity");
+  const sizeParam = searchParams.get("size");
+
+  // Debug logging
+  useEffect(() => {
+    console.log("URL Parameters received:");
+    console.log("productId:", productId);
+    console.log("productNameParam:", productNameParam);
+    console.log("productModelParam:", productModelParam);
+    console.log("quantityParam:", quantityParam);
+    console.log("sizeParam:", sizeParam);
+  }, [productId, productNameParam, productModelParam, quantityParam, sizeParam]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -64,7 +75,10 @@ export default function InquiryPage() {
     productName: "",
     productModel: "",
     quantity: "1",
+    size: "",
     message: "",
+    deliveryLocation: "",
+    urgentRequirement: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -73,35 +87,52 @@ export default function InquiryPage() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Auto-fill product name and model from URL params
-    if (productNameParam || productModelParam) {
-      const decodedName = productNameParam ? decodeURIComponent(productNameParam) : "";
-      const decodedModel = productModelParam ? decodeURIComponent(productModelParam) : "";
-      
-      setFormData(prev => ({
-        ...prev,
-        productName: decodedName,
-        productModel: decodedModel,
-        message: `Dear Team,
+    // Decode all parameters
+    const decodedName = productNameParam ? decodeURIComponent(productNameParam) : "";
+    const decodedModel = productModelParam ? decodeURIComponent(productModelParam) : "";
+    const decodedSize = sizeParam ? decodeURIComponent(sizeParam) : "";
+    const initialQuantity = quantityParam ? parseInt(quantityParam) : 1;
+    
+    console.log("Decoded values:");
+    console.log("decodedName:", decodedName);
+    console.log("decodedModel:", decodedModel);
+    console.log("decodedSize:", decodedSize);
+    console.log("initialQuantity:", initialQuantity);
+    
+    // Build the message template with all product details
+    const messageTemplate = `Dear Team,
 
 I am interested in purchasing:
 
 Product Name: ${decodedName}
 ${decodedModel ? `Model: ${decodedModel}` : ''}
+${decodedSize ? `Tire Size: ${decodedSize}` : ''}
+Quantity: ${initialQuantity} unit(s)
 
 Please provide me with:
 ✓ Best price quote
 ✓ Stock availability
 ✓ Delivery information
+✓ Bulk pricing (if applicable)
 
-Thank you.`
-      }));
-    }
-  }, [productNameParam, productModelParam]);
+Thank you.`;
+    
+    setFormData(prev => ({
+      ...prev,
+      productName: decodedName,
+      productModel: decodedModel,
+      size: decodedSize,
+      quantity: initialQuantity.toString(),
+      message: messageTemplate,
+    }));
+  }, [productNameParam, productModelParam, sizeParam, quantityParam]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : value 
+    }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
     }
@@ -121,62 +152,55 @@ Thank you.`
     return Object.keys(newErrors).length === 0;
   };
 
-  // app/inquiry/page.jsx - handleSubmit function update koro
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
-
-  setSubmitting(true);
-  try {
-    const response = await fetch(`${config.email.backendUrl}/api/send-email`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        type: "product_inquiry",
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        company: formData.company || "",
-        address: formData.deliveryLocation || "",
-        quantity: formData.quantity,
-        model: formData.productModel || formData.productName,
-        productName: formData.productName,
-        deliveryLocation: formData.deliveryLocation,
-        urgentRequirement: formData.urgentRequirement || false,
-        shippingTerm: formData.shippingTerm || "",
-        message: formData.message,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (response.ok && result.success) {
-      setShowSuccess(true);
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        company: "",
-        productName: "",
-        productModel: "",
-        quantity: "1",
-        deliveryLocation: "",
-        urgentRequirement: false,
-        shippingTerm: "",
-        message: "",
+    setSubmitting(true);
+    try {
+      const response = await fetch(`${config.email.backendUrl}/api/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "product_inquiry",
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          company: formData.company || "",
+          quantity: formData.quantity,
+          size: formData.size,
+          model: formData.productModel,
+          productName: formData.productName,
+          deliveryLocation: formData.deliveryLocation || "",
+          urgentRequirement: formData.urgentRequirement || false,
+          message: formData.message,
+        }),
       });
-    } else {
-      throw new Error(result.error || "Failed to send inquiry");
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setShowSuccess(true);
+        // Reset form but keep product info
+        setFormData(prev => ({
+          ...prev,
+          name: "",
+          email: "",
+          phone: "",
+          company: "",
+          deliveryLocation: "",
+          urgentRequirement: false,
+        }));
+      } else {
+        throw new Error(result.error || "Failed to send inquiry");
+      }
+    } catch (error) {
+      console.error("Error submitting inquiry:", error);
+      alert("Failed to send inquiry. Please try again or contact us directly.");
+    } finally {
+      setSubmitting(false);
     }
-  } catch (error) {
-    console.error("Error submitting inquiry:", error);
-    alert("Failed to send inquiry. Please try again or contact us directly.");
-  } finally {
-    setSubmitting(false);
-  }
-};
+  };
 
   const handleCloseSuccess = () => {
     setShowSuccess(false);
@@ -224,7 +248,7 @@ const handleSubmit = async (e) => {
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Product Name
+                    Product Name <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <FaTag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
@@ -233,8 +257,8 @@ const handleSubmit = async (e) => {
                       name="productName"
                       value={formData.productName}
                       onChange={handleChange}
-                      placeholder="e.g., RoadX RXT 2.0"
-                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50"
+                      readOnly
                     />
                   </div>
                 </div>
@@ -250,29 +274,48 @@ const handleSubmit = async (e) => {
                       name="productModel"
                       value={formData.productModel}
                       onChange={handleChange}
-                      placeholder="e.g., RXT-225"
-                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50"
+                      readOnly
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="mt-3">
-                <label className="block text-gray-700 text-sm font-medium mb-2">
-                  Quantity
-                </label>
-                <input
-                  type="number"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  min="1"
-                  className="w-full md:w-32 border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
+              <div className="grid md:grid-cols-2 gap-4 mt-3">
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Tire Size
+                  </label>
+                  <div className="relative">
+                    <FaRuler className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+                    <input
+                      type="text"
+                      name="size"
+                      value={formData.size}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-50"
+                      readOnly
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Quantity <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    min="1"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Customer Information */}
+            {/* Customer Information - Same as before */}
             <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
               <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                 <FaUser className="text-blue-500" />
@@ -352,6 +395,33 @@ const handleSubmit = async (e) => {
                     />
                   </div>
                 </div>
+
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Delivery Location
+                  </label>
+                  <input
+                    type="text"
+                    name="deliveryLocation"
+                    value={formData.deliveryLocation}
+                    onChange={handleChange}
+                    placeholder="City, Country"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    name="urgentRequirement"
+                    checked={formData.urgentRequirement}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-amber-500 focus:ring-amber-500 border-gray-300 rounded"
+                  />
+                  <label className="text-gray-700 text-sm font-medium">
+                    This is an urgent requirement
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -367,7 +437,6 @@ const handleSubmit = async (e) => {
                   value={formData.message}
                   onChange={handleChange}
                   rows={6}
-                  placeholder="Tell us about your requirements..."
                   className={`w-full border ${errors.message ? 'border-red-500' : 'border-gray-200'} rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none`}
                 />
               </div>
@@ -394,24 +463,6 @@ const handleSubmit = async (e) => {
             </button>
           </form>
         </div>
-
-        {/* Contact Info */}
-        {/* <div className="mt-6 grid md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
-            <FaWhatsapp className="w-5 h-5 text-green-500 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">Chat with us on</p>
-            <a href="https://wa.me/1234567890" className="text-amber-500 font-semibold text-sm">
-              WhatsApp
-            </a>
-          </div>
-          <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
-            <FaPhoneAlt className="w-5 h-5 text-amber-500 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">Call us directly</p>
-            <a href="tel:+1234567890" className="text-amber-500 font-semibold text-sm">
-              +1 (234) 567-8900
-            </a>
-          </div>
-        </div> */}
       </div>
 
       {showSuccess && (

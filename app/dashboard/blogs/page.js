@@ -10,7 +10,8 @@ import {
   fetchBlogById,
   bulkUpdateStatus,
   bulkDeleteBlogs, 
-  formatBlogForDisplay  // এই ইম্পর্ট যোগ করুন
+  formatBlogForDisplay ,
+  fetchBlogCategories 
 } from '@/services/blogService';
 import DeleteConfirmModal from '@/components/blog/deleteConfirmModal';
 import BlogViewModal from '@/components/blog/blogViewModal';
@@ -62,44 +63,68 @@ export default function AdminBlogManager() {
   }, [filters]);
 
   const loadCategories = async () => {
-    try {
-      const result = await fetchCategories();
-      if (result.success) {
-        setCategories(result.categories);
-      }
-    } catch (error) {
-      console.error('Error loading categories:', error);
+  try {
+    const result = await fetchBlogCategories();
+    if (result.success) {
+      setCategories(result.categories);
+      console.log('Loaded categories from DB:', result.categories.map(c => ({ name: c.name, displayName: c.displayName })));
     }
-  };
+  } catch (error) {
+    console.error('Error loading categories:', error);
+  }
+};
 
   const loadBlogs = async () => {
-    setLoading(true);
-    try {
-      // শুধুমাত্র নন-খালি ফিল্টার পাঠান
-      const activeFilters = {};
+  setLoading(true);
+  try {
+    const activeFilters = {};
+    
+    if (filters.search) activeFilters.search = filters.search;
+    if (filters.category) activeFilters.category = filters.category;
+    if (filters.status) activeFilters.status = filters.status;
+    if (filters.isFeatured) activeFilters.isFeatured = filters.isFeatured;
+    if (filters.isPublished !== '') activeFilters.isPublished = filters.isPublished;
+    
+    const result = await fetchBlogs({
+      page: filters.page,
+      limit: filters.limit,
+      ...activeFilters
+    });
+    
+    // blogs গুলোকে format করুন এবং category মাইগ্রেট করুন
+    const formattedBlogs = result.blogs.map(blog => {
+      const formatted = formatBlogForDisplay(blog);
       
-      if (filters.search) activeFilters.search = filters.search;
-      if (filters.category) activeFilters.category = filters.category;
-      if (filters.status) activeFilters.status = filters.status;
-      if (filters.isFeatured) activeFilters.isFeatured = filters.isFeatured;
-      if (filters.isPublished !== '') activeFilters.isPublished = filters.isPublished;
+      // ডিবাগ করার জন্য কনসোল লগ
+      console.log('Blog:', formatted.title);
+      console.log(' - categories array:', formatted.categories);
+      console.log(' - category field:', formatted.category);
       
-      const result = await fetchBlogs({
-        page: filters.page,
-        limit: filters.limit,
-        ...activeFilters
-      });
+      // যদি categories array খালি থাকে কিন্তু category ফিল্ডে মান থাকে
+      if ((!formatted.categories || formatted.categories.length === 0) && 
+          formatted.category && 
+          formatted.category !== 'uncategorized') {
+        console.log(' - Fixing: adding category to categories array');
+        formatted.categories = [formatted.category];
+      }
       
-      // গুরুত্বপূর্ণ: formatBlogForDisplay ব্যবহার করুন
-      setBlogs(result.blogs.map(formatBlogForDisplay));
-      setPagination(result.pagination);
-    } catch (error) {
-      console.error('Error loading blogs:', error);
-      alert('Failed to load blogs');
-    } finally {
-      setLoading(false);
-    }
-  };
+      // যদি এখনও categories খালি থাকে
+      if (!formatted.categories) {
+        formatted.categories = [];
+      }
+      
+      return formatted;
+    });
+    
+    setBlogs(formattedBlogs);
+    setPagination(result.pagination);
+  } catch (error) {
+    console.error('Error loading blogs:', error);
+    alert('Failed to load blogs');
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Delete blog handler
   const handleDelete = async () => {
@@ -432,15 +457,20 @@ export default function AdminBlogManager() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <input
-                  type="text"
-                  placeholder="Filter by category..."
-                  value={filters.category}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+  <select
+    value={filters.category}
+    onChange={(e) => handleFilterChange('category', e.target.value)}
+    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    <option value="">All Categories</option>
+    {categories.map((cat) => (
+      <option key={cat._id} value={cat.name}>
+        {cat.displayName}
+      </option>
+    ))}
+  </select>
+</div>
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -593,119 +623,155 @@ export default function AdminBlogManager() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {blogs.map((blog) => {
-                    const statusBadge = getStatusBadge(blog.status, blog.isPublished);
-                    return (
-                      <tr key={blog.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4">
-                          <input
-                            type="checkbox"
-                            checked={selectedBlogs.includes(blog.id)}
-                            onChange={() => handleSelectBlog(blog.id)}
-                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                          />
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 flex-shrink-0">
-                              {blog.coverImage?.url ? (
-                                <img 
-                                  src={blog.coverImage.url} 
-                                  alt={blog.title}
-                                  className="h-10 w-10 rounded-lg object-cover"
-                                />
-                              ) : (
-                                <div className="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center">
-                                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                  </svg>
-                                </div>
-                              )}
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900 line-clamp-1 max-w-xs">
-                                {blog.title}
-                              </div>
-                              <div className="text-xs text-gray-500 mt-1">
-                                {blog.customDate || blog.publishedAt ? new Date(blog.customDate || blog.publishedAt).toLocaleDateString() : 'Date not set'} | By {blog.author || 'Admin'}
-                              </div>
-                              {blog.isScheduled && blog.scheduledDate && (
-                                <div className="text-xs text-blue-600 mt-1">
-                                  Scheduled: {new Date(blog.scheduledDate).toLocaleDateString()}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            {blog.category || 'Uncategorized'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex flex-wrap gap-1">
-                            {blog.tags?.slice(0, 2).map((tag, idx) => (
-                              <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700">
-                                {tag}
-                              </span>
-                            ))}
-                            {blog.tags?.length > 2 && (
-                              <span className="text-xs text-gray-500">+{blog.tags.length - 2}</span>
-                            )}
-                          </div>
-                        </td> 
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <button
-                            onClick={() => handleToggleFeatured(blog)}
-                            className={`p-1 rounded transition-colors ${
-                              blog.isFeatured 
-                                ? 'text-yellow-500 hover:text-yellow-600' 
-                                : 'text-gray-300 hover:text-gray-400'
-                            }`}
-                            title={blog.isFeatured ? 'Remove from featured' : 'Add to featured'}
-                          >
-                            <svg className="w-5 h-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                            </svg>
-                          </button>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <button
-                            onClick={() => handleTogglePublish(blog)}
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors ${statusBadge.color}`}
-                          >
-                            {statusBadge.label}
-                          </button>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex items-center justify-end gap-2"> 
-                            <button
-                              onClick={() => handleEditBlog(blog)}
-                              className="text-green-600 hover:text-green-900 transition-colors p-1"
-                              title="Edit Blog"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={() => {
-                                setSelectedBlog(blog);
-                                setShowDeleteModal(true);
-                              }}
-                              className="text-red-600 hover:text-red-900 transition-colors p-1"
-                              title="Delete Blog"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
+  {blogs.map((blog) => {
+    const statusBadge = getStatusBadge(blog.status, blog.isPublished);
+    return (
+      <tr key={blog.id} className="hover:bg-gray-50 transition-colors">
+        <td className="px-6 py-4">
+          <input
+            type="checkbox"
+            checked={selectedBlogs.includes(blog.id)}
+            onChange={() => handleSelectBlog(blog.id)}
+            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+        </td>
+        <td className="px-6 py-4">
+          <div className="flex items-center">
+            <div className="h-10 w-10 flex-shrink-0">
+              {blog.coverImage?.url ? (
+                <img 
+                  src={blog.coverImage.url} 
+                  alt={blog.title}
+                  className="h-10 w-10 rounded-lg object-cover"
+                />
+              ) : (
+                <div className="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+            <div className="ml-4">
+              <div className="text-sm font-medium text-gray-900 line-clamp-1 max-w-xs">
+                {blog.title}
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                {blog.customDate || blog.publishedAt ? new Date(blog.customDate || blog.publishedAt).toLocaleDateString() : 'Date not set'} | By {blog.author || 'Admin'}
+              </div>
+              {blog.isScheduled && blog.scheduledDate && (
+                <div className="text-xs text-blue-600 mt-1">
+                  Scheduled: {new Date(blog.scheduledDate).toLocaleDateString()}
+                </div>
+              )}
+            </div>
+          </div>
+        </td>
+        {/* Multiple Categories Column */}
+        <td className="px-6 py-4">
+  <div className="flex flex-wrap gap-1">
+    {/* প্রথমে ডিবাগ করার জন্য */}
+    {console.log('Rendering categories for blog:', blog.title, blog.categories, blog.category)}
+    
+    {/* categories array চেক করুন */}
+    {blog.categories && blog.categories.length > 0 ? (
+      blog.categories.map((catName, idx) => {
+        const cat = categories.find(c => c.name === catName);
+        return (
+          <span 
+            key={idx} 
+            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+          >
+            {cat?.displayName || catName}
+          </span>
+        );
+      })
+    ) : blog.category && blog.category !== 'uncategorized' ? (
+      /* যদি single category থাকে */
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+        {blog.category}
+      </span>
+    ) : (
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+        Uncategorized
+      </span>
+    )}
+  </div>
+</td>
+        <td className="px-6 py-4">
+          <div className="flex flex-wrap gap-1">
+            {blog.tags?.slice(0, 2).map((tag, idx) => (
+              <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700">
+                {tag}
+              </span>
+            ))}
+            {blog.tags?.length > 2 && (
+              <span className="text-xs text-gray-500">+{blog.tags.length - 2}</span>
+            )}
+          </div>
+        </td> 
+        <td className="px-6 py-4 whitespace-nowrap">
+          <button
+            onClick={() => handleToggleFeatured(blog)}
+            className={`p-1 rounded transition-colors ${
+              blog.isFeatured 
+                ? 'text-yellow-500 hover:text-yellow-600' 
+                : 'text-gray-300 hover:text-gray-400'
+            }`}
+            title={blog.isFeatured ? 'Remove from featured' : 'Add to featured'}
+          >
+            <svg className="w-5 h-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+          </button>
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap">
+          <button
+            onClick={() => handleTogglePublish(blog)}
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors ${statusBadge.color}`}
+          >
+            {statusBadge.label}
+          </button>
+        </td>
+        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+          <div className="flex items-center justify-end gap-2"> 
+            <button
+              onClick={() => handleViewBlog(blog)}
+              className="text-blue-600 hover:text-blue-900 transition-colors p-1"
+              title="View Blog"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => handleEditBlog(blog)}
+              className="text-green-600 hover:text-green-900 transition-colors p-1"
+              title="Edit Blog"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedBlog(blog);
+                setShowDeleteModal(true);
+              }}
+              className="text-red-600 hover:text-red-900 transition-colors p-1"
+              title="Delete Blog"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
               </table>
             </div>
 

@@ -2,15 +2,15 @@
 
 import dynamic from 'next/dynamic';
 import EditorQuickReference from '@/components/blog/EditorQuickReference';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/Dashboard/DashboardLayout';
-import { 
-  FaTimes, 
-  FaPlus, 
-  FaImage, 
-  FaFileAlt, 
-  FaVideo, 
+import {
+  FaTimes,
+  FaPlus,
+  FaImage,
+  FaFileAlt,
+  FaVideo,
   FaHeadphones,
   FaCalendarAlt,
   FaClock,
@@ -18,14 +18,16 @@ import {
   FaFolder,
   FaUpload,
   FaArrowLeft,
-  FaSave
+  FaSave,
+  FaTrash,
+  FaCheck
 } from 'react-icons/fa';
-import { createBlog } from '@/services/blogService';
+import { createBlog, fetchBlogCategories, createBlogCategory, deleteBlogCategory } from '@/services/blogService';
 
 // Dynamically import the rich text editor wrapper
 const RichTextEditorWrapper = dynamic(
   () => import('@/components/blog/richTextEditor'),
-  { 
+  {
     ssr: false,
     loading: () => (
       <div className="border border-gray-300 rounded-xl overflow-hidden">
@@ -41,13 +43,13 @@ export default function CreateBlogPage() {
   const [savingDraft, setSavingDraft] = useState(false);
   const [errors, setErrors] = useState({});
   const [activeMediaTab, setActiveMediaTab] = useState('image');
-  
+
   // Form data
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     excerpt: '',
-    category: '',
+    categories: [],
     tags: [],
     metaTitle: '',
     metaDescription: '',
@@ -66,22 +68,138 @@ export default function CreateBlogPage() {
     audioTitle: '',
     faqs: [],
   });
-  
+
   // File states
   const [coverImageFile, setCoverImageFile] = useState(null);
   const [galleryImageFiles, setGalleryImageFiles] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [videoFile, setVideoFile] = useState(null);
   const [audioFile, setAudioFile] = useState(null);
-  
+
   // Preview states
   const [coverImagePreview, setCoverImagePreview] = useState('');
   const [galleryPreviews, setGalleryPreviews] = useState([]);
-  
+
   // UI states
   const [tagInput, setTagInput] = useState('');
   const [faqQuestion, setFaqQuestion] = useState('');
   const [faqAnswer, setFaqAnswer] = useState('');
+
+  // Category management states
+  const [allCategories, setAllCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [newCategory, setNewCategory] = useState({ name: '', displayName: '', description: '' });
+  const [categoryCreating, setCategoryCreating] = useState(false);
+  const [categoryError, setCategoryError] = useState('');
+  const [categoryDeleting, setCategoryDeleting] = useState(null);
+
+  // Load categories on mount
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    try {
+      setLoadingCategories(true);
+      const response = await fetchBlogCategories();
+      if (response.success) {
+        setAllCategories(response.categories || []);
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
+  // NEW: Handle category selection/deselection
+  const handleCategoryToggle = (category) => {
+    setFormData(prev => {
+      const currentCategories = prev.categories;
+      if (currentCategories.includes(category.name)) {
+        // Remove category if already selected
+        return {
+          ...prev,
+          categories: currentCategories.filter(c => c !== category.name)
+        };
+      } else {
+        // Add category if not selected
+        return {
+          ...prev,
+          categories: [...currentCategories, category.name]
+        };
+      }
+    });
+  };
+
+  // NEW: Remove category from selected list
+  const handleRemoveCategory = (categoryName) => {
+    setFormData(prev => ({
+      ...prev,
+      categories: prev.categories.filter(c => c !== categoryName)
+    }));
+  };
+
+  const handleCreateCategory = async () => {
+    try {
+      setCategoryError('');
+
+      if (!newCategory.name.trim() || !newCategory.displayName.trim()) {
+        setCategoryError('Category name and display name are required');
+        return;
+      }
+
+      setCategoryCreating(true);
+      const response = await createBlogCategory({
+        name: newCategory.name.toLowerCase().trim(),
+        displayName: newCategory.displayName.trim(),
+        description: newCategory.description.trim()
+      });
+
+      if (response.success) {
+        await loadCategories();
+        // Auto-select the new category
+        setFormData(prev => ({
+          ...prev,
+          categories: [...prev.categories, response.category.name] // এটা পরিবর্তন করুন
+        }));
+        setNewCategory({ name: '', displayName: '', description: '' });
+        setShowCategoryForm(false);
+        alert('Blog category created successfully!');
+      }
+    } catch (error) {
+      console.error('Error details:', error);
+      setCategoryError(error.message || 'Failed to create category');
+    } finally {
+      setCategoryCreating(false);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId, categoryName) => {
+    if (!confirm(`Are you sure you want to delete the category "${categoryName}"?`)) {
+      return;
+    }
+
+    try {
+      setCategoryDeleting(categoryId);
+      const response = await deleteBlogCategory(categoryId);
+
+      if (response.success) {
+        await loadCategories();
+        // Remove category from selected categories if it was selected
+        setFormData(prev => ({
+          ...prev,
+          categories: prev.categories.filter(c => c !== categoryName) // এটা পরিবর্তন করুন
+        }));
+        alert('Blog category deleted successfully!');
+      }
+    } catch (error) {
+      alert(`Error deleting category: ${error.message}`);
+      console.error('Error deleting category:', error);
+    } finally {
+      setCategoryDeleting(null);
+    }
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -139,12 +257,12 @@ export default function CreateBlogPage() {
   const handleGalleryImagesChange = (e) => {
     const files = Array.from(e.target.files);
     const totalImages = galleryImageFiles.length + files.length;
-    
+
     if (totalImages > 6) {
       alert(`Maximum 6 images allowed. You can only add ${6 - galleryImageFiles.length} more images.`);
       return;
     }
-    
+
     const validFiles = [];
     for (const file of files) {
       if (file.size > 5 * 1024 * 1024) {
@@ -157,7 +275,7 @@ export default function CreateBlogPage() {
       }
       validFiles.push(file);
     }
-    
+
     if (validFiles.length) {
       setGalleryImageFiles([...galleryImageFiles, ...validFiles]);
       validFiles.forEach(file => {
@@ -176,7 +294,7 @@ export default function CreateBlogPage() {
   const handleAttachmentsChange = (e) => {
     const files = Array.from(e.target.files);
     const maxSize = 50 * 1024 * 1024;
-    
+
     const validFiles = [];
     for (const file of files) {
       if (file.size > maxSize) {
@@ -185,7 +303,7 @@ export default function CreateBlogPage() {
       }
       validFiles.push(file);
     }
-    
+
     if (validFiles.length) {
       setAttachments(prev => [...prev, ...validFiles]);
     }
@@ -197,12 +315,14 @@ export default function CreateBlogPage() {
 
   const prepareFormData = () => {
     const submitData = new FormData();
-    
+
     // Basic fields
     submitData.append('title', formData.title.trim());
     submitData.append('content', formData.content);
     if (formData.excerpt) submitData.append('excerpt', formData.excerpt);
-    if (formData.category) submitData.append('category', formData.category);
+    if (formData.categories.length > 0) {
+      submitData.append('categories', JSON.stringify(formData.categories));
+    }
     if (formData.metaTitle) submitData.append('metaTitle', formData.metaTitle);
     if (formData.metaDescription) submitData.append('metaDescription', formData.metaDescription);
     if (formData.author) submitData.append('author', formData.author);
@@ -211,26 +331,26 @@ export default function CreateBlogPage() {
     submitData.append('status', formData.status);
     submitData.append('isFeatured', formData.isFeatured);
     submitData.append('featuredPriority', formData.featuredPriority);
-    
+
     // Dates
     if (formData.customDate) submitData.append('customDate', formData.customDate);
     if (formData.isScheduled && formData.scheduledDate) {
       submitData.append('isScheduled', true);
       submitData.append('scheduledDate', formData.scheduledDate);
     }
-    
+
     // Video & Audio
     if (formData.videoUrl) submitData.append('videoUrl', formData.videoUrl);
     if (formData.videoEmbedCode) submitData.append('videoEmbedCode', formData.videoEmbedCode);
     if (formData.audioUrl) submitData.append('audioUrl', formData.audioUrl);
     if (formData.audioTitle) submitData.append('audioTitle', formData.audioTitle);
-    
+
     // FAQs
     if (formData.faqs.length > 0) submitData.append('faqs', JSON.stringify(formData.faqs));
-    
+
     // Tags
     if (formData.tags.length > 0) submitData.append('tags', JSON.stringify(formData.tags));
-    
+
     // Files
     if (coverImageFile) submitData.append('coverImage', coverImageFile);
     if (galleryImageFiles.length > 0) {
@@ -241,7 +361,7 @@ export default function CreateBlogPage() {
     }
     if (videoFile) submitData.append('videoFile', videoFile);
     if (audioFile) submitData.append('audioFile', audioFile);
-    
+
     return submitData;
   };
 
@@ -255,11 +375,11 @@ export default function CreateBlogPage() {
           setFormData(prev => ({ ...prev, content: savedContent }));
         }
       }
-      
+
       const formDataToSend = prepareFormData();
       formDataToSend.set('status', 'draft');
       formDataToSend.set('isPublished', 'false');
-      
+
       const result = await createBlog(formDataToSend);
       if (result.success) {
         alert('Draft saved successfully!');
@@ -283,7 +403,7 @@ export default function CreateBlogPage() {
       if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    
+
     setLoading(true);
     try {
       // Trigger manual save from rich text editor
@@ -293,7 +413,7 @@ export default function CreateBlogPage() {
           setFormData(prev => ({ ...prev, content: savedContent }));
         }
       }
-      
+
       const formDataToSend = prepareFormData();
       const result = await createBlog(formDataToSend);
       if (result.success) {
@@ -426,36 +546,32 @@ export default function CreateBlogPage() {
                     <button
                       type="button"
                       onClick={() => setActiveMediaTab('image')}
-                      className={`px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${
-                        activeMediaTab === 'image' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500 hover:text-teal-600'
-                      }`}
+                      className={`px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${activeMediaTab === 'image' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500 hover:text-teal-600'
+                        }`}
                     >
                       <FaImage /> Images
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveMediaTab('video')}
-                      className={`px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${
-                        activeMediaTab === 'video' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500 hover:text-teal-600'
-                      }`}
+                      className={`px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${activeMediaTab === 'video' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500 hover:text-teal-600'
+                        }`}
                     >
                       <FaVideo /> Video
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveMediaTab('audio')}
-                      className={`px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${
-                        activeMediaTab === 'audio' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500 hover:text-teal-600'
-                      }`}
+                      className={`px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${activeMediaTab === 'audio' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500 hover:text-teal-600'
+                        }`}
                     >
                       <FaHeadphones /> Audio
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveMediaTab('attachments')}
-                      className={`px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${
-                        activeMediaTab === 'attachments' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500 hover:text-teal-600'
-                      }`}
+                      className={`px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${activeMediaTab === 'attachments' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500 hover:text-teal-600'
+                        }`}
                     >
                       <FaFileAlt /> Files
                     </button>
@@ -609,7 +725,7 @@ export default function CreateBlogPage() {
                       <FaPlus className="w-3 h-3" /> Add FAQ
                     </button>
                   </div>
-                  
+
                   <div className="space-y-2 max-h-60 overflow-y-auto">
                     {formData.faqs.map((faq, idx) => (
                       <div key={idx} className="text-sm border-b pb-2">
@@ -628,6 +744,7 @@ export default function CreateBlogPage() {
               </div>
 
               {/* Right Column - Settings */}
+              {/* Right Column - Settings */}
               <div className="space-y-6">
                 {/* Publish Settings */}
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
@@ -635,7 +752,7 @@ export default function CreateBlogPage() {
                     <span className="w-1 h-4 bg-teal-500 rounded-full"></span>
                     Publish Settings
                   </h3>
-                  
+
                   <div className="space-y-3">
                     <select
                       value={formData.status}
@@ -687,7 +804,7 @@ export default function CreateBlogPage() {
                     <FaCalendarAlt className="w-4 h-4 text-gray-500" />
                     Schedule
                   </h3>
-                  
+
                   <label className="flex items-center gap-2 cursor-pointer mb-3">
                     <input
                       type="checkbox"
@@ -716,22 +833,167 @@ export default function CreateBlogPage() {
                   <p className="text-xs text-gray-500 mt-1">Override published date</p>
                 </div>
 
-                {/* Info */}
+                {/* Categories Section - একবারই থাকবে */}
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                   <h3 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
                     <FaFolder className="w-4 h-4 text-gray-500" />
-                    Info
+                    Categories
                   </h3>
-                  
+
                   <div className="space-y-3">
-                    <input
-                      type="text"
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-teal-500"
-                      placeholder="Category"
-                    />
-                    
+                    {/* Category Selection - Multiple */}
+                    <div>
+                      <label className="block text-xs text-gray-600 font-medium mb-2">
+                        Select Categories (Multiple)
+                      </label>
+
+                      {/* Selected Categories Display */}
+                      {formData.categories.length > 0 && (
+                        <div className="mb-3 p-3 bg-teal-50 rounded-xl border border-teal-200">
+                          <div className="text-xs text-teal-700 mb-2 font-medium">Selected Categories:</div>
+                          <div className="flex flex-wrap gap-2">
+                            {formData.categories.map((catName) => {
+                              const cat = allCategories.find(c => c.name === catName);
+                              return (
+                                <span
+                                  key={catName}
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-teal-100 text-teal-700 rounded-lg text-sm font-medium border border-teal-300"
+                                >
+                                  {cat?.displayName || catName}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveCategory(catName)}
+                                    className="hover:text-red-600 ml-1"
+                                  >
+                                    <FaTimes className="w-2.5 h-2.5" />
+                                  </button>
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Category Checkboxes */}
+                      {/* Category Checkboxes */}
+                      <div className="border border-gray-300 rounded-xl p-3 max-h-48 overflow-y-auto">
+                        <div className="text-xs text-gray-500 mb-2 flex justify-between items-center">
+                          <span>Click to select multiple categories:</span>
+                          {allCategories.length > 0 && (
+                            <span className="text-red-500 text-xs">⚠️ Delete will remove category permanently</span>
+                          )}
+                        </div>
+                        {allCategories.map((cat) => (
+                          <div
+                            key={cat._id}
+                            className={`flex items-center justify-between gap-2 px-3 py-2 rounded-lg transition-colors ${formData.categories.includes(cat.name) ? 'bg-teal-50' : 'hover:bg-gray-50'
+                              }`}
+                          >
+                            <label className="flex items-center gap-2 flex-1 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={formData.categories.includes(cat.name)}
+                                onChange={() => handleCategoryToggle(cat)}
+                                className="rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+                              />
+                              <span className="text-sm">
+                                {cat.displayName}
+                                {cat.description && (
+                                  <span className="text-xs text-gray-400 ml-1">({cat.description})</span>
+                                )}
+                              </span>
+                            </label>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteCategory(cat._id, cat.displayName)}
+                              disabled={categoryDeleting === cat._id}
+                              className="text-red-400 hover:text-red-600 transition-colors p-1 disabled:opacity-50"
+                              title="Delete category"
+                            >
+                              {categoryDeleting === cat._id ? (
+                                <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                              ) : (
+                                <FaTrash className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          </div>
+                        ))}
+                        {allCategories.length === 0 && (
+                          <div className="text-center py-4 text-gray-500 text-sm">
+                            No categories available. Create one first.
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Create New Category Button */}
+                      <button
+                        type="button"
+                        onClick={() => setShowCategoryForm(!showCategoryForm)}
+                        className="mt-2 w-full px-3 py-2 bg-teal-50 hover:bg-teal-100 border border-teal-300 rounded-xl text-teal-600 font-medium transition-colors flex items-center justify-center gap-1 text-sm"
+                      >
+                        <FaPlus className="w-3.5 h-3.5" /> Create New Category
+                      </button>
+
+                      {/* Create Category Form */}
+                      {showCategoryForm && (
+                        <div className="mt-3 p-4 bg-teal-50 border border-teal-200 rounded-xl">
+                          <h4 className="font-medium text-gray-900 mb-3">Create New Category</h4>
+                          {categoryError && (
+                            <div className="mb-3 p-2 bg-red-100 border border-red-300 rounded-lg text-red-700 text-xs">
+                              {categoryError}
+                            </div>
+                          )}
+                          <div className="space-y-2">
+                            <input
+                              type="text"
+                              placeholder="Category name (e.g., tire-maintenance)"
+                              value={newCategory.name}
+                              onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-teal-500"
+                            />
+                            <input
+                              type="text"
+                              placeholder="Display name (e.g., Tire Maintenance)"
+                              value={newCategory.displayName}
+                              onChange={(e) => setNewCategory({ ...newCategory, displayName: e.target.value })}
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-teal-500"
+                            />
+                            <textarea
+                              placeholder="Description (optional)"
+                              value={newCategory.description}
+                              onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
+                              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-teal-500 resize-none"
+                              rows={2}
+                            />
+                            <div className="flex gap-2">
+                              <button
+                                type="button"
+                                onClick={handleCreateCategory}
+                                disabled={categoryCreating}
+                                className="flex-1 px-3 py-2 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-1"
+                              >
+                                <FaCheck className="w-3 h-3" /> {categoryCreating ? 'Creating...' : 'Create'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setShowCategoryForm(false);
+                                  setCategoryError('');
+                                  setNewCategory({ name: '', displayName: '', description: '' });
+                                }}
+                                className="flex-1 px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium text-sm transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
                     <input
                       type="text"
                       value={formData.author}
@@ -739,7 +1001,7 @@ export default function CreateBlogPage() {
                       className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-teal-500"
                       placeholder="Author name"
                     />
-                    
+
                     <div>
                       <label className="block text-xs text-gray-500 mb-1 flex items-center gap-1">
                         <FaClock className="w-3 h-3" /> Read time (minutes)
@@ -759,7 +1021,7 @@ export default function CreateBlogPage() {
                 {/* SEO */}
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                   <h3 className="font-medium text-gray-900 mb-3">SEO</h3>
-                  
+
                   <div className="space-y-3">
                     <div>
                       <label className="block text-xs text-gray-500 mb-1">Meta Title</label>
@@ -771,7 +1033,7 @@ export default function CreateBlogPage() {
                         placeholder="Meta title"
                       />
                     </div>
-                    
+
                     <div>
                       <label className="block text-xs text-gray-500 mb-1">Meta Description</label>
                       <textarea
@@ -791,27 +1053,7 @@ export default function CreateBlogPage() {
 
             {/* Action Buttons */}
             <div className="sticky bottom-0 bg-white border-t border-gray-200 mt-8 pt-4 pb-4 flex justify-end gap-3 rounded-lg shadow-lg">
-              <button
-                type="button"
-                onClick={saveAsDraft}
-                disabled={savingDraft}
-                className="px-6 py-2.5 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium flex items-center gap-2"
-              >
-                {savingDraft ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <FaSave className="w-4 h-4" />
-                    Save as Draft
-                  </>
-                )}
-              </button>
+
               <button
                 type="button"
                 onClick={() => router.back()}

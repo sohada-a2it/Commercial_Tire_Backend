@@ -8,7 +8,7 @@ import {
   ChevronLeft, ChevronRight, Eye, Star, ArrowRight,
   Folder, ChevronDown, ChevronUp, User
 } from 'lucide-react';
-import { fetchBlogs, formatBlogForDisplay } from '@/services/blogService';
+import { fetchBlogs, formatBlogForDisplay, fetchBlogCategories } from '@/services/blogService';
 import toast from 'react-hot-toast';
 
 export default function BlogsClient() {
@@ -39,6 +39,23 @@ export default function BlogsClient() {
   
   const [showFilters, setShowFilters] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [allCategories, setAllCategories] = useState([]); // সব ক্যাটাগরি লিস্ট
+
+  // load categories from API
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    try {
+      const result = await fetchBlogCategories();
+      if (result.success) {
+        setAllCategories(result.categories);
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  };
 
   useEffect(() => {
     const updatePerView = () => {
@@ -61,10 +78,19 @@ export default function BlogsClient() {
     loadBlogs();
   }, [filters]);
 
+  // Extract unique categories from blogs for filter
   useEffect(() => {
     if (blogs.length > 0) {
-      const uniqueCategories = [...new Set(blogs.map(blog => blog.category).filter(Boolean))];
-      setCategories(uniqueCategories);
+      const uniqueCategories = new Set();
+      blogs.forEach(blog => {
+        // Check both categories array and single category
+        if (blog.categories && blog.categories.length > 0) {
+          blog.categories.forEach(cat => uniqueCategories.add(cat));
+        } else if (blog.category && blog.category !== 'uncategorized') {
+          uniqueCategories.add(blog.category);
+        }
+      });
+      setCategories(Array.from(uniqueCategories));
     }
   }, [blogs]);
 
@@ -77,7 +103,19 @@ export default function BlogsClient() {
         status: 'published'
       });
       
-      const formattedBlogs = (result.blogs || []).map(formatBlogForDisplay);
+      const formattedBlogs = (result.blogs || []).map(blog => {
+        const formatted = formatBlogForDisplay(blog);
+        
+        // Ensure categories array exists
+        if ((!formatted.categories || formatted.categories.length === 0) && 
+            formatted.category && 
+            formatted.category !== 'uncategorized') {
+          formatted.categories = [formatted.category];
+        }
+        
+        return formatted;
+      });
+      
       setBlogs(formattedBlogs);
       
       const featured = formattedBlogs.filter(blog => blog.isFeatured).sort((a, b) => (b.featuredPriority || 0) - (a.featuredPriority || 0));
@@ -154,10 +192,19 @@ export default function BlogsClient() {
     return `${minutes} min read`;
   };
 
-  // ✅ BlogCard - লিংক আপডেট করা হয়েছে (কোয়েরি প্যারামিটার)
+  // Get category display name from API
+  const getCategoryDisplayName = (catName) => {
+    const cat = allCategories.find(c => c.name === catName);
+    return cat?.displayName || catName;
+  };
+
+  // ✅ BlogCard with multiple categories support
   const BlogCard = ({ blog, isFeatured = false, isFullWidth = false }) => {
     const [imageError, setImageError] = useState(false);
-    const blogLink = `/blog?id=${blog._id || blog.id}`;  // ✅ এটাই মূল পরিবর্তন
+    const blogLink = `/blog?id=${blog._id || blog.id}`;
+    
+    // Get categories to display
+    const displayCategories = blog.categories || (blog.category && blog.category !== 'uncategorized' ? [blog.category] : []);
     
     if (isFullWidth) {
       return (
@@ -186,11 +233,21 @@ export default function BlogsClient() {
             </Link>
             
             <div className="md:w-3/5 p-6 flex flex-col justify-center">
-              <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 mb-3">
-                {blog.category && (
-                  <span className="bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full">
-                    {blog.category}
+              {/* Multiple Categories Display */}
+              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-3">
+                {displayCategories.length > 0 ? (
+                  displayCategories.slice(0, 2).map((catName, idx) => (
+                    <span key={idx} className="bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full">
+                      {getCategoryDisplayName(catName)}
+                    </span>
+                  ))
+                ) : (
+                  <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+                    Uncategorized
                   </span>
+                )}
+                {displayCategories.length > 2 && (
+                  <span className="text-gray-400 text-xs">+{displayCategories.length - 2}</span>
                 )}
                 <div className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
@@ -254,14 +311,32 @@ export default function BlogsClient() {
         </Link>
         
         <div className="p-4 flex-1 flex flex-col">
-          <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-2">
-            {blog.category && (
-              <span className="text-amber-600 font-medium">{blog.category}</span>
+          {/* Multiple Categories Display */}
+          <div className="flex flex-wrap items-center gap-1.5 mb-2">
+            {displayCategories.length > 0 ? (
+              displayCategories.slice(0, 2).map((catName, idx) => (
+                <span key={idx} className="text-amber-600 font-medium text-xs">
+                  {getCategoryDisplayName(catName)}
+                  {idx < Math.min(displayCategories.length, 2) - 1 && <span className="text-gray-300 mx-0.5">•</span>}
+                </span>
+              ))
+            ) : (
+              <span className="text-gray-400 text-xs">Uncategorized</span>
             )}
-            <span>•</span>
+            {displayCategories.length > 2 && (
+              <span className="text-gray-400 text-xs">+{displayCategories.length - 2}</span>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
             <div className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
               <span>{formatDate(blog.customDate || blog.publishedAt || blog.createdAt)}</span>
+            </div>
+            <span>•</span>
+            <div className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              <span>{getReadTimeDisplay(blog.readTime)}</span>
             </div>
           </div>
           
@@ -284,19 +359,17 @@ export default function BlogsClient() {
               </div>
               <span className="text-xs text-gray-600 truncate max-w-[80px]">{blog.author || 'Admin'}</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-400">
-              <div className="flex items-center gap-0.5"> 
-              </div>
-              <Link href={blogLink} className="text-amber-600 hover:text-amber-700">
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+            <Link href={blogLink} className="text-amber-600 hover:text-amber-700">
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
       </article>
     );
   };
 
+  // ... বাকি কোড একই থাকবে (SkeletonCard, return statement etc.)
+  
   const SkeletonCard = () => (
     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
       <div className="h-40 bg-gray-200"></div>
@@ -394,7 +467,7 @@ export default function BlogsClient() {
                       filters.category === cat ? 'bg-amber-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    {cat}
+                    {getCategoryDisplayName(cat)}
                   </button>
                 ))}
                 {categories.length === 0 && !loading && <p className="text-xs text-gray-400">No categories</p>}

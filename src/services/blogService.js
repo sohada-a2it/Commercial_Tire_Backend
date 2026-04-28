@@ -9,6 +9,15 @@ const buildAuthHeaders = async (isJson = true) => {
   const authorizedSessionToken = getAuthorizedSession()?.token;
   const token = firebaseToken || authorizedSessionToken;
 
+  // Add debugging
+  if (!token) {
+    console.error('⚠️ No authentication token found!');
+    console.log('Firebase user:', auth.currentUser);
+    console.log('Session token:', getAuthorizedSession());
+  } else {
+    console.log('✅ Token found, length:', token.length);
+  }
+
   return {
     ...(isJson ? { "Content-Type": "application/json" } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -37,11 +46,11 @@ const parseResponse = async (response) => {
  */
 export const fetchBlogs = async (filters = {}) => {
   const params = new URLSearchParams();
-  
+
   // Pagination
   if (filters.page) params.append('page', filters.page);
   if (filters.limit) params.append('limit', filters.limit);
-  
+
   // Filters
   if (filters.category && filters.category !== 'all') params.append('category', filters.category);
   if (filters.tag) params.append('tag', filters.tag);
@@ -54,15 +63,15 @@ export const fetchBlogs = async (filters = {}) => {
   }
   if (filters.search) params.append('search', filters.search);
   if (filters.showScheduled) params.append('showScheduled', filters.showScheduled);
-  
+
   const headers = await buildAuthHeaders();
   const response = await fetch(
     `${config.email.backendUrl}/api/blogs${params.toString() ? `?${params.toString()}` : ""}`,
     { headers, cache: "no-store" }
   );
-  
+
   const data = await parseResponse(response);
-  
+
   return {
     success: true,
     blogs: data.data || [],
@@ -93,9 +102,9 @@ export const fetchBlogBySlug = async (slug) => {
   }
 
   const headers = await buildAuthHeaders();
-  const response = await fetch(`${config.email.backendUrl}/api/blogs/${slug}`, { 
-    headers, 
-    cache: "no-store" 
+  const response = await fetch(`${config.email.backendUrl}/api/blogs/${slug}`, {
+    headers,
+    cache: "no-store"
   });
   const data = await parseResponse(response);
 
@@ -103,8 +112,8 @@ export const fetchBlogBySlug = async (slug) => {
     throw new Error("Invalid blog response");
   }
 
-  return { 
-    success: true, 
+  return {
+    success: true,
     blog: data.data,
     related: data.related || []
   };
@@ -120,9 +129,9 @@ export const fetchBlogById = async (id) => {
   }
 
   const headers = await buildAuthHeaders();
-  const response = await fetch(`${config.email.backendUrl}/api/blogs/id/${id}`, { 
-    headers, 
-    cache: "no-store" 
+  const response = await fetch(`${config.email.backendUrl}/api/blogs/id/${id}`, {
+    headers,
+    cache: "no-store"
   });
   const data = await parseResponse(response);
 
@@ -166,13 +175,13 @@ export const fetchScheduledBlogs = async () => {
  */
 export const createBlog = async (formData) => {
   const headers = await buildAuthHeaders(false);
-  
+
   const response = await fetch(`${config.email.backendUrl}/api/blogs`, {
     method: "POST",
     headers,
     body: formData,
   });
-  
+
   const data = await parseResponse(response);
   return { success: true, blog: data.data };
 };
@@ -188,13 +197,13 @@ export const updateBlog = async (id, formData) => {
   }
 
   const headers = await buildAuthHeaders(false);
-  
+
   const response = await fetch(`${config.email.backendUrl}/api/blogs/${id}`, {
     method: "PUT",
     headers,
     body: formData,
   });
-  
+
   const data = await parseResponse(response);
   return { success: true, blog: data.data };
 };
@@ -213,7 +222,7 @@ export const deleteBlog = async (id) => {
     method: "DELETE",
     headers,
   });
-  
+
   const data = await parseResponse(response);
   return { success: true, message: data.message };
 };
@@ -232,7 +241,7 @@ export const togglePublishStatus = async (id) => {
     method: "PATCH",
     headers,
   });
-  
+
   const data = await parseResponse(response);
   return { success: true, blog: data.data, message: data.message };
 };
@@ -251,7 +260,7 @@ export const toggleFeaturedStatus = async (id) => {
     method: "PATCH",
     headers,
   });
-  
+
   const data = await parseResponse(response);
   return { success: true, blog: data.data, message: data.message };
 };
@@ -265,7 +274,7 @@ export const fetchBlogStats = async () => {
     headers,
     cache: "no-store"
   });
-  
+
   const data = await parseResponse(response);
   return {
     success: true,
@@ -324,16 +333,16 @@ export const bulkDeleteBlogs = async (ids) => {
  * @param {File} audioFile - Audio file (optional)
  */
 export const prepareBlogFormData = (
-  blogData, 
-  coverImage = null, 
-  galleryImages = [], 
+  blogData,
+  coverImage = null,
+  galleryImages = [],
   removeGalleryImages = [],
   attachments = [],
   videoFile = null,
   audioFile = null
 ) => {
   const formData = new FormData();
-  
+
   // Basic fields
   if (blogData.title) formData.append('title', blogData.title);
   if (blogData.content) formData.append('content', blogData.content);
@@ -345,7 +354,7 @@ export const prepareBlogFormData = (
   if (blogData.readTime) formData.append('readTime', blogData.readTime);
   if (blogData.isPublished !== undefined) formData.append('isPublished', blogData.isPublished);
   if (blogData.publishedAt) formData.append('publishedAt', blogData.publishedAt);
-  
+
   // New fields
   if (blogData.status) formData.append('status', blogData.status);
   if (blogData.isFeatured !== undefined) formData.append('isFeatured', blogData.isFeatured);
@@ -353,42 +362,42 @@ export const prepareBlogFormData = (
   if (blogData.customDate) formData.append('customDate', blogData.customDate);
   if (blogData.isScheduled !== undefined) formData.append('isScheduled', blogData.isScheduled);
   if (blogData.scheduledDate) formData.append('scheduledDate', blogData.scheduledDate);
-  
+
   // Video fields
   if (blogData.videoUrl) formData.append('videoUrl', blogData.videoUrl);
   if (blogData.videoEmbedCode) formData.append('videoEmbedCode', blogData.videoEmbedCode);
-  
+
   // Audio fields
   if (blogData.audioUrl) formData.append('audioUrl', blogData.audioUrl);
   if (blogData.audioTitle) formData.append('audioTitle', blogData.audioTitle);
-  
+
   // FAQs (send as JSON string)
   if (blogData.faqs && Array.isArray(blogData.faqs) && blogData.faqs.length > 0) {
     formData.append('faqs', JSON.stringify(blogData.faqs));
   }
-  
+
   // Tags (send as JSON string)
   if (blogData.tags && Array.isArray(blogData.tags)) {
     formData.append('tags', JSON.stringify(blogData.tags));
   } else if (typeof blogData.tags === 'string') {
     formData.append('tags', blogData.tags);
   }
-  
+
   // Gallery images URLs (for URL-based uploads)
   if (blogData.galleryImageUrls && Array.isArray(blogData.galleryImageUrls)) {
     formData.append('galleryImages', JSON.stringify(blogData.galleryImageUrls));
   }
-  
+
   // Cover image URL (for URL-based upload)
   if (blogData.coverImageUrl) {
     formData.append('coverImageUrl', blogData.coverImageUrl);
   }
-  
+
   // Cover image file
   if (coverImage) {
     formData.append('coverImage', coverImage);
   }
-  
+
   // Gallery images files (max 6)
   if (galleryImages && galleryImages.length > 0) {
     const imagesToUpload = galleryImages.slice(0, 6);
@@ -396,7 +405,7 @@ export const prepareBlogFormData = (
       formData.append('galleryImages', image);
     });
   }
-  
+
   // Attachment files (max 10)
   if (attachments && attachments.length > 0) {
     const attachmentsToUpload = attachments.slice(0, 10);
@@ -404,27 +413,27 @@ export const prepareBlogFormData = (
       formData.append('attachments', attachment);
     });
   }
-  
+
   // Video file
   if (videoFile) {
     formData.append('videoFile', videoFile);
   }
-  
+
   // Audio file
   if (audioFile) {
     formData.append('audioFile', audioFile);
   }
-  
+
   // Images to remove (for update)
   if (removeGalleryImages && removeGalleryImages.length > 0) {
     formData.append('removeGalleryImages', JSON.stringify(removeGalleryImages));
   }
-  
+
   // Replace entire gallery flag
   if (blogData.replaceGallery) {
     formData.append('replaceGallery', 'true');
   }
-  
+
   return formData;
 };
 
@@ -434,7 +443,7 @@ export const prepareBlogFormData = (
  */
 export const formatBlogForDisplay = (blog) => {
   if (!blog) return null;
-  
+
   return {
     id: blog._id || blog.id,
     title: blog.title || '',
@@ -442,6 +451,7 @@ export const formatBlogForDisplay = (blog) => {
     content: blog.content || '',
     excerpt: blog.excerpt || '',
     category: blog.category || 'uncategorized',
+    categories: blog.categories || [],
     tags: blog.tags || [],
     coverImage: blog.coverImage || { url: '', publicId: '', alt: '' },
     galleryImages: blog.galleryImages || [],
@@ -480,26 +490,26 @@ export const formatBlogForDisplay = (blog) => {
  */
 export const getBlogImageUrl = (image, options = {}) => {
   if (!image) return '';
-  
+
   const imageUrl = typeof image === 'string' ? image : image.url || '';
   if (!imageUrl) return '';
-  
+
   // If it's a Cloudinary URL, we can add transformations
   if (imageUrl.includes('cloudinary.com')) {
     const baseUrl = imageUrl.split('/upload/')[0];
     const path = imageUrl.split('/upload/')[1];
-    
+
     const transforms = [];
     if (options.width) transforms.push(`w_${options.width}`);
     if (options.height) transforms.push(`h_${options.height}`);
     if (options.quality) transforms.push(`q_${options.quality}`);
     if (options.crop) transforms.push(`c_${options.crop}`);
     if (options.format) transforms.push(`f_${options.format}`);
-    
+
     const transformString = transforms.length ? `${transforms.join(',')}/` : '';
     return `${baseUrl}/upload/${transformString}${path}`;
   }
-  
+
   return imageUrl;
 };
 
@@ -540,16 +550,16 @@ export const getAllGalleryImagesUrls = (blog, options = {}) => {
  */
 export const getVideoEmbedHtml = (blog, options = {}) => {
   if (!blog) return '';
-  
+
   if (blog.videoEmbedCode) {
     return blog.videoEmbedCode;
   }
-  
+
   if (blog.videoUrl) {
     const url = blog.videoUrl;
     const width = options.width || '100%';
     const height = options.height || '400';
-    
+
     // YouTube
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
       let videoId = '';
@@ -562,7 +572,7 @@ export const getVideoEmbedHtml = (blog, options = {}) => {
         return `<iframe width="${width}" height="${height}" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>`;
       }
     }
-    
+
     // Vimeo
     if (url.includes('vimeo.com')) {
       const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
@@ -571,7 +581,7 @@ export const getVideoEmbedHtml = (blog, options = {}) => {
       }
     }
   }
-  
+
   return '';
 };
 
@@ -581,7 +591,7 @@ export const getVideoEmbedHtml = (blog, options = {}) => {
  */
 export const getAudioPlayerHtml = (blog) => {
   if (!blog?.audioUrl) return '';
-  
+
   return `<audio controls style="width: 100%;">
     <source src="${blog.audioUrl}" type="audio/mpeg">
     Your browser does not support the audio element.
@@ -636,7 +646,7 @@ export const fetchBlogComments = async (blogId, filters = {}) => {
   const params = new URLSearchParams();
   if (filters.page) params.append('page', filters.page);
   if (filters.limit) params.append('limit', filters.limit);
-  
+
   const headers = await buildAuthHeaders();
   const response = await fetch(
     `${config.email.backendUrl}/api/blogs/${blogId}/comments${params.toString() ? `?${params.toString()}` : ""}`,
@@ -647,5 +657,153 @@ export const fetchBlogComments = async (blogId, filters = {}) => {
     success: true,
     comments: data.comments || [],
     pagination: data.pagination || {}
+  };
+};
+
+// ==================== BLOG CATEGORY FUNCTIONS ====================
+
+/**
+ * Get all blog categories
+ */
+export const fetchBlogCategories = async () => {
+  const headers = await buildAuthHeaders();
+  const response = await fetch(
+    `${config.email.backendUrl}/api/blog-categories`,
+    { headers, cache: "no-store" }
+  );
+  const data = await parseResponse(response);
+  return {
+    success: true,
+    categories: data.data || [],
+    count: data.count || 0
+  };
+};
+
+/**
+ * Get all blog categories with blog count
+ */
+export const fetchBlogCategoriesWithCount = async () => {
+  const headers = await buildAuthHeaders();
+  const response = await fetch(
+    `${config.email.backendUrl}/api/blog-categories/with-count`,
+    { headers, cache: "no-store" }
+  );
+  const data = await parseResponse(response);
+  return {
+    success: true,
+    categories: data.data || [],
+    count: data.count || 0
+  };
+};
+
+/**
+ * Get single blog category by ID
+ * @param {string} id - Category ID
+ */
+export const fetchBlogCategoryById = async (id) => {
+  if (!id) {
+    throw new Error("Category ID is required");
+  }
+
+  const headers = await buildAuthHeaders();
+  const response = await fetch(
+    `${config.email.backendUrl}/api/blog-categories/id/${id}`,
+    { headers }
+  );
+  const data = await parseResponse(response);
+  return { success: true, category: data.data };
+};
+
+/**
+ * Get single blog category by slug
+ * @param {string} slug - Category slug
+ */
+export const fetchBlogCategoryBySlug = async (slug) => {
+  if (!slug) {
+    throw new Error("Category slug is required");
+  }
+
+  const headers = await buildAuthHeaders();
+  const response = await fetch(
+    `${config.email.backendUrl}/api/blog-categories/slug/${slug}`,
+    { headers }
+  );
+  const data = await parseResponse(response);
+  return { success: true, category: data.data };
+};
+
+/**
+ * Create a new blog category
+ * @param {Object} categoryData - Category data
+ * @param {string} categoryData.name - Category internal name (lowercase, unique)
+ * @param {string} categoryData.displayName - Category display name
+ * @param {string} categoryData.description - Category description (optional)
+ * @param {string} categoryData.metaTitle - SEO meta title (optional)
+ * @param {string} categoryData.metaDescription - SEO meta description (optional)
+ */
+export const createBlogCategory = async (categoryData) => {
+  if (!categoryData.name || !categoryData.displayName) {
+    throw new Error("Category name and display name are required");
+  }
+
+  const headers = await buildAuthHeaders();
+  const response = await fetch(`${config.email.backendUrl}/api/blog-categories`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(categoryData),
+  });
+
+  const data = await parseResponse(response);
+  return {
+    success: true,
+    category: data.data,
+    message: data.message
+  };
+};
+
+/**
+ * Update an existing blog category
+ * @param {string} id - Category ID
+ * @param {Object} categoryData - Updated category data
+ */
+export const updateBlogCategory = async (id, categoryData) => {
+  if (!id) {
+    throw new Error("Category ID is required");
+  }
+
+  const headers = await buildAuthHeaders();
+  const response = await fetch(`${config.email.backendUrl}/api/blog-categories/${id}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(categoryData),
+  });
+
+  const data = await parseResponse(response);
+  return {
+    success: true,
+    category: data.data,
+    message: data.message
+  };
+};
+
+/**
+ * Delete a blog category
+ * @param {string} id - Category ID
+ */
+export const deleteBlogCategory = async (id) => {
+  if (!id) {
+    throw new Error("Category ID is required");
+  }
+
+  const headers = await buildAuthHeaders();
+  const response = await fetch(`${config.email.backendUrl}/api/blog-categories/${id}`, {
+    method: "DELETE",
+    headers,
+  });
+
+  const data = await parseResponse(response);
+  return {
+    success: true,
+    message: data.message
   };
 };

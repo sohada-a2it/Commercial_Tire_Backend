@@ -9,13 +9,9 @@ import {
   Linkedin, Check, ChevronLeft, Heart, MessageCircle,
   Download, FileText, ArrowLeft, ArrowUp, Printer, Copy,
   CheckCircle, AlertCircle, Headphones, Paperclip, ChevronDown,
-  ChevronUp, Send, ThumbsUp, X, Quote, Grid3x3, MoveRight
+  ChevronUp, Send, ThumbsUp, X, Quote, Grid3x3, MoveRight,Folder 
 } from "lucide-react";
-import {
-  fetchBlogById, formatBlogForDisplay, getCoverImageUrl,
-  getVideoEmbedHtml, getAudioPlayerHtml, formatFileSize,
-  addBlogComment, fetchBlogComments
-} from "@/services/blogService";
+import { fetchBlogById, formatBlogForDisplay, getCoverImageUrl, getVideoEmbedHtml, getAudioPlayerHtml, formatFileSize, addBlogComment, fetchBlogComments, fetchBlogCategories } from "@/services/blogService";
 import toast from "react-hot-toast";
 import DOMPurify from "dompurify";
 
@@ -285,10 +281,31 @@ export default function BlogDetailsContent() {
 
             <div className="absolute inset-0 flex items-end">
               <div className="max-w-5xl mx-auto px-4 md:px-6 w-full pb-12 md:pb-16">
-                <Link href={`/blog?category=${encodeURIComponent(blog.category)}`} className="inline-flex items-center gap-2 rounded-full bg-white/20 backdrop-blur-md px-4 py-1.5 text-sm font-medium text-white hover:bg-white/30 transition-all mb-5 group">
-                  <Tag className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
-                  {blog.category || "Uncategorized"}
-                </Link>
+                {/* Hero Section - Category Badge অংশটি replace করুন */}
+<Link 
+  href={`/blog?category=${encodeURIComponent(blog.categories?.[0] || blog.category || 'uncategorized')}`} 
+  className="inline-flex items-center gap-2 rounded-full bg-white/20 backdrop-blur-md px-4 py-1.5 text-sm font-medium text-white hover:bg-white/30 transition-all mb-5 group"
+>
+  <Tag className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+  {blog.categories && blog.categories.length > 0 
+    ? blog.categories.map(cat => cat.displayName || cat).join(', ')
+    : (blog.category || "Uncategorized")}
+</Link>
+{/* Hero Section এর category উপরে বা নিচে multiple badges দেখাতে চাইলে */}
+{blog.categories && blog.categories.length > 1 && (
+  <div className="flex flex-wrap gap-2 mb-4">
+    {blog.categories.map((cat, idx) => (
+      <Link 
+        key={idx}
+        href={`/blog?category=${encodeURIComponent(typeof cat === 'string' ? cat : cat.name)}`}
+        className="inline-flex items-center gap-1 rounded-full bg-white/20 backdrop-blur-md px-3 py-1 text-xs font-medium text-white hover:bg-white/30 transition-all"
+      >
+        <Tag className="w-3 h-3" />
+        {typeof cat === 'string' ? cat : (cat.displayName || cat.name)}
+      </Link>
+    ))}
+  </div>
+)}
 
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-5 leading-tight drop-shadow-2xl">
                   {blog.title}
@@ -403,7 +420,30 @@ export default function BlogDetailsContent() {
                   </div>
                 </div>
               )}
-
+{/* Tags এর পরে বা আগে Categories দেখানোর জন্য - এই অংশটি Tags এর উপরে বা নিচে যোগ করুন */}
+{blog.categories && blog.categories.length > 0 && (
+  <div className="mt-8 pt-6 border-t border-gray-200">
+    <div className="flex items-center gap-2 mb-4">
+      <Folder className="w-5 h-5 text-amber-500" />
+      <h4 className="font-semibold text-gray-900">Categories</h4>
+    </div>
+    <div className="flex flex-wrap gap-2">
+      {blog.categories.map((cat, index) => {
+        const categoryName = typeof cat === 'string' ? cat : cat.name;
+        const displayName = typeof cat === 'string' ? cat : (cat.displayName || cat.name);
+        return (
+          <Link 
+            key={index}
+            href={`/blog?category=${encodeURIComponent(categoryName)}`}
+            className="rounded-full bg-gradient-to-r from-amber-50 to-amber-50 px-3.5 py-1.5 text-sm text-amber-700 hover:from-amber-500 hover:to-amber-500 hover:text-white transition-all duration-200 border border-amber-200 hover:border-transparent"
+          >
+            {displayName}
+          </Link>
+        );
+      })}
+    </div>
+  </div>
+)}
               {blog.tags && blog.tags.length > 0 && (
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <div className="flex items-center gap-2 mb-4">
@@ -442,13 +482,36 @@ export default function BlogDetailsContent() {
               )} 
 
               <div className="mt-12 pt-8 border-t border-gray-200 flex justify-between">
-                <Link href="/blog" className="inline-flex items-center gap-2 text-gray-600 hover:text-amber-600 transition-colors group">
-                  <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to all articles
-                </Link>
-                <Link href={`/blog?category=${encodeURIComponent(blog.category)}`} className="inline-flex items-center gap-2 text-gray-600 hover:text-amber-600 transition-colors group">
-                  More in {blog.category} <MoveRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
+  <Link href="/blog" className="inline-flex items-center gap-2 text-gray-600 hover:text-amber-600 transition-colors group">
+    <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to all articles
+  </Link>
+  
+  {/* একাধিক category থাকলে সবগুলো লিংক দেখাবে */}
+  {blog.categories && blog.categories.length > 0 && (
+    <div className="flex gap-3">
+      {blog.categories.slice(0, 2).map((cat, idx) => {
+        const categoryName = typeof cat === 'string' ? cat : cat.name;
+        const displayName = typeof cat === 'string' ? cat : (cat.displayName || cat.name);
+        return (
+          <Link 
+            key={idx}
+            href={`/blog?category=${encodeURIComponent(categoryName)}`}
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-amber-600 transition-colors group"
+          >
+            More in {displayName} <MoveRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        );
+      })}
+    </div>
+  )}
+  
+  {/* Single category থাকলে পুরাতন স্টাইল */}
+  {(!blog.categories || blog.categories.length === 0) && blog.category && (
+    <Link href={`/blog?category=${encodeURIComponent(blog.category)}`} className="inline-flex items-center gap-2 text-gray-600 hover:text-amber-600 transition-colors group">
+      More in {blog.category} <MoveRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+    </Link>
+  )}
+</div>
             </div>
           </div>
         </div>
